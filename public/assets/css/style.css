@@ -1,0 +1,323 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* General */
+a{
+    text-decoration: none !important;
+}
+th{
+    color: #b8b9bb;
+    font-size: .9rem;
+
+}
+.td-members img{
+    margin: -3px !important;
+}
+.stats span{
+    font-size: 12px;
+    font-weight: 600;
+    color: #b73026;
+}
+
+.stats span:last-child{
+
+    color: #111010b4;
+}
+
+button .mdi{
+    font-size: 1.5rem;
+}
+
+
+
+img{
+
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin:0 10px;
+
+}
+
+table .progress{
+    height: 10px;
+    border-radius: 5px;
+ }
+
+/* body */
+
+.body-container {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    height: 100vh;
+    width: 344px;
+
+}
+.sidebar .nav-item .menu-icon{
+    margin-right: 10px;
+}
+/* nav */
+/* module nav */
+.module-nav {
+    margin-top: 12px;
+}
+
+.module-nav .txt-dark{
+    color: #141414fb;
+    font-size: 18px;
+}
+
+/* mainbar */
+  .main-container {
+    width: calc(100% - 344px);
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 48px 0 0 0;
+    margin-top: .8rem;
+    padding-top: 2rem;
+}
+/* text colors */
+.txt-dark{
+    color: #101828;
+}
+
+.txt-gray{
+    color: #b1b6c0;
+}
+
+.txt-warning{
+    color:#e7c630;
+}
+
+.txt-primary{
+    color: #3185fc;
+}
+.txt-success{
+    color: #027a48;
+}
+
+.txt-danger{
+    color: #b73026;
+}
+
+/* background color */
+
+.bgc-light{
+    background-color: #fcfcfd;
+}
+
+.bgc-dark{
+    background-color: #101828;
+}
+
+.grid-margin{
+    border: #e6e6e6 solid 1px;
+    padding: 2rem;
+}
+
+.grid-margin:first-child{
+    border-bottom: #3185fc 3px solid;
+    background-color: #eaf3ff;
+
+}
+
+
+/* cards */
+.card{
+    background-color: #ffffff;
+}
+
+.card-header{
+    background-color: #ffffff;
+}
+
+/* table */
+
+tr:nth-child(odd) td {
+    background-color: #f9fafb; /* Set the background color for even rows */
+  }
+
+/* button */
+
+.btn-pri{
+    background-color: #0072bb;
+    font-size: .9rem;
+    color: #eaf3ff;
+
+}
+
+.btn-sec{
+    background-color: #f1f7f4;
+    font-size: .9rem;
+    color: #101828;
+    border: #101828 1px solid;
+    margin-left: 8px;
+}
+
+.btn-action{
+    padding: 15px 30px;
+    margin-right:20px;
+}
+.add-link{
+   font-weight: 700;
+}
+
+.plus{
+    padding-right: 4px;
+    font-weight: 900;
+}
+
+.department-tag{
+  border-radius: 10px;
+  padding: 8px;
+ background: #eceff3;
+ font-size: .4 rem;
+ margin: 0 !important;
+}
+
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    padding-top: 3rem;
+}
+
+.nav .nav-item{
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin: 1.6rem  .4rem;
+
+}
+
+.nav .nav-item .txt-light{
+    color: #b8b9bb;
+
+}
+
+.grid-margin h4{
+    font-size: 1.3rem;
+    font-weight: 400;
+
+}
+
+.grid-margin h5{
+    font-size: .9rem;
+    font-weight: 500;
+}
+
+.grid-margin h6{
+    font-size: 2rem;
+    font-weight: 600;
+
+}
+
+.grid-margin .icon-item{
+
+}
+
+.welcome h1{
+    font-size: 2rem;
+    font-weight: 800;
+
+}
+
+.welcome h3{
+
+    font-size: 1.8 rem;
+    font-weight: 400;
+    padding-top: .2rem;
+
+}
+
+.welcome h4{
+
+    font-size: 1.6rem;
+    font-weight: 500;
+    padding-top: 1rem;
+
+}
+
+.active-period{
+    margin-left: 25px;
+    font-weight: 500;
+}
+
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-field {
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+    padding-left: 32px;
+    font-size: 16px;
+    border: 1px solid rgba(128, 128, 128, 0.384);
+    border-radius: 8px;
+}
+
+.mdi-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 24px;
+}
+
+.top-header h2{
+    font-size: 2rem;
+    font-weight: 600;
+
+}
+
+.top-header p{
+    font-size: 1.3rem;
+}
+
+/* configurations */
+.configs .card-body h5{
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.configs .card-body span{
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.configs .col-9 h2{
+    font-size: 1.2rem;
+    font-weight: 600;
+
+}
+
+.configs .col-9 p{
+    font-size: 1.1rem;
+    font-weight: 300;
+
+}
+
+.profile-edit img{
+    width: 100px;
+    height: auto;
+}
+
+.align-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+
