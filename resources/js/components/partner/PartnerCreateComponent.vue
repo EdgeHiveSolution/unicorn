@@ -246,19 +246,19 @@
 
         <div class="row">
     <div class="col-md-4">
-        <select id="member" class="form-control" name="member" v-model="formData.member_id">
+        <select id="member_id" class="form-control" name="member" v-model="formData.member_id">
             <option value="">Enter name or email address <i class="mdi mdi-account"></i></option>
             <option v-for="member in members" :value="member.id">{{ member.email }}</option>
         </select>
     </div>
     <div class="col-md-3">
-        <select id="country" class="form-control" name="department" v-model="formData.department_id">
+        <select id="department_id" class="form-control" name="department" v-model="formData.department_id">
             <option value="">Select department <i class="mdi mdi-account"></i></option>
             <option v-for="department in departments" :value="department.id">{{ department.name }}</option>
         </select>
     </div>
     <div class="col-md-3">
-        <select id="role" class="form-control" name="role" v-model="formData.role_id">
+        <select id="role_id" class="form-control" name="role" v-model="formData.role_id">
             <option value="">Select Role<span class="mdi mdi-chevron-down"></span></option>
             <option v-for="role in roles" :value="role.id">{{ role.name }}</option>
         </select>
@@ -270,15 +270,17 @@
     </div>
 </div>
 
-<!-- Display selected items -->
-<ul>
-    <li v-for="item in selectedItems">
-        {{ item.memberEmail }} - {{ item.departmentName }} - {{ item.roleName }}
-        <button type="button" class="btn btn-danger" @click="removeFromList(index)">
-            Remove
-        </button>
+    <!-- Display selected items -->
+    <ul>
+    <li v-for="(item, index) in selectedItems" class="list-item">
+
+        <span>
+            <i class="mdi mdi-email-outline"></i>
+            {{ item.memberEmail }} <span class="btn-suc"> {{ item.departmentName }} </span> <span class="btn-suc">{{ item.roleName }}</span>
+        </span>
+        <i class="mdi mdi-delete delete-icon" @click="removeFromList(index)"></i>
     </li>
-</ul>
+    </ul>
         <span v-if="errors.documents" class="invalid-feedback" role="alert">
           <strong>{{ errors.documents }}</strong>
         </span>
@@ -419,24 +421,28 @@
 
 
         // Make an API request to submit the form data to the backend
-        const formData = new FormData();
 
-        formData.append('name', this.formData.name);
-        formData.append('email', this.formData.email);
-        formData.append('website', this.formData.website);
-        formData.append('phone', this.formData.phone);
-        formData.append('address', this.formData.address);
-        formData.append('logo', this.formData.logo);
-        formData.append('country', this.formData.country);
-        formData.append('business_type', this.formData.business_type);
-        formData.append('about', this.formData.about);
-        formData.append('document_id', this.formData.document_id);
-        formData.append('members',members);
-        formData.append('country_id', this.formData.country_id);
-        formData.append('role_id', this.formData.role_id);
+        const partnerData = {
+        name: this.formData.name,
+        email: this.formData.email,
+        website: this.formData.website,
+        phone: this.formData.phone,
+        address: this.formData.address,
+        logo: this.formData.logo,
+        country: this.formData.country,
+        business_type: this.formData.business_type,
+        about: this.formData.about,
+        document_id: this.formData.document_id,
+        members: this.selectedItems.map(item => ({
+        memberEmail: item.memberEmail,
+        departmentName: item.departmentName,
+        roleName: item.roleName
+        }))
+    };
+
 
         let uri = this.base_url + 'api/v1/partner-create';
-        axios.post(uri, formData)
+        axios.post(uri, partnerData)
             .then(response => {
             // Handle the successful response
             console.log(response.data);
@@ -468,5 +474,28 @@
     padding-top: 18px;
     text-align: left;
   }
+
+
+  .list-item {
+    list-style-type: none;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .delete-icon {
+    color: rgb(116, 106, 106);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .btn-suc{
+    background-color: #ccccccc5;
+  }
+
+
 </style>
 

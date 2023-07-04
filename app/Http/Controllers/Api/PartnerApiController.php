@@ -30,19 +30,7 @@ class PartnerApiController extends Controller
        return $formattedPartners;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     *
-     */
     public function store(Request $request)
     {
         dd($request);
@@ -50,31 +38,31 @@ class PartnerApiController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'about' => 'required',
-            'members' => 'required',
+            'members' => 'required|array',
+            'members.*' => 'exists:members,id', // Assuming 'members' is an array of member IDs
         ]);
 
         $partner = Partner::create([
             'name' => $request->name,
             'email' => $request->email,
+            'website' => $request->website,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'logo' => $request->logo,
+            'country' => $request->country,
+            'business_type' => $request->business,
             'about' => $request->about,
+            'documents' => $request->documents,
         ]);
 
-        $members = explode(',', $request->members);
-        foreach ($members as $memberEmail) {
-            $member = Member::create([
-                'partner_id' => $partner->id,
-                'email' => trim($memberEmail),
-            ]);
-
-            // Send email to the member
-            Mail::to($member->email)->send(new MemberInvitation($member));
-        }
+        $partner->members()->sync($request->members);
 
         return response()->json([
             'success' => 'Partner created successfully',
             'redirect' => '/dpartners',
         ]);
     }
+
 
     /**
      * Display the specified resource.
