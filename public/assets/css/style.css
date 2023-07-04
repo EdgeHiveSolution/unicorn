@@ -159,8 +159,15 @@ tr:nth-child(odd) td {
     background-color: #f1f7f4;
     font-size: .9rem;
     color: #101828;
-    border: #101828 1px solid;
+    border: #101828 1px solid ;
     margin-left: 8px;
+}
+
+.btn-suc{
+    background-color: #29ec8a46;
+    border-radius: 15px;
+    padding: 3px;
+
 }
 
 .btn-action{
