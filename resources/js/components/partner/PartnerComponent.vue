@@ -59,7 +59,7 @@
                             <span class="pl-2">{{ partner.name }}</span>
                           </div>
                           <div class="d-flex align-items-center">
-                            <span class="active-period txt-gray">Date Joined: {{ partner.created_at }}</span>
+                            <span class="active-period txt-gray">Date Joined: {{ partner.formatted_created_at }}</span>
                           </div>
                         </td>
                         <td>
@@ -122,9 +122,11 @@
         fetchPartners(){
                 let uri =this.base_url+`api/v1/partner-list`;
                 axios.get(uri).then((response) => {
-                    this.partners = response.data.data;
+                    this.partners = response.data;
                 });
             },
+
+
       showFilters() {
         // Implement your logic to show filters
       }
