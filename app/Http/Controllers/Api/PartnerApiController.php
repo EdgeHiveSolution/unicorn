@@ -18,7 +18,7 @@ class PartnerApiController extends Controller
      */
     public function index()
     {
-        return Partner::with('departments', 'members')->paginate(10);
+        return Partner::with('departments', 'members')->get();
     }
 
     /**
