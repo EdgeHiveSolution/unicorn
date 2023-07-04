@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use App\Models\Member;
 use App\Models\Partner;
 use Illuminate\Http\Request;
@@ -18,7 +19,15 @@ class PartnerApiController extends Controller
      */
     public function index()
     {
-        return Partner::with('departments', 'members')->get();
+        $partners = Partner::with('departments', 'members')->get();
+
+
+        $formattedPartners = $partners->map(function ($partner) {
+            $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
+            return $partner;
+        });
+
+       return $formattedPartners;
     }
 
     /**
