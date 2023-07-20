@@ -1,5 +1,6 @@
 <template>
     <div>
+        <flash-message></flash-message>
       <!-- Alerts -->
       <div class="alert alert-success" role="alert" v-if="alert_success">
         Department created successfully!
@@ -188,7 +189,7 @@
   </template>
 
   <script>
-  import axios from 'axios';
+
 
   export default {
     data() {
@@ -236,9 +237,9 @@
         axios
           .post(uri, formData)
           .then((response) => {
-            this.alert_success = true;
+            alert('Department created successifully!')
             window.location.href = '/departments';
-            console.log(response.data);
+
           })
           .catch((error) => {
             this.alert_error = true;
@@ -249,6 +250,3 @@
   };
   </script>
 
-  <style>
-  /* CSS styles... */
-  </style>

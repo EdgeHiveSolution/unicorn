@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('kpi_metrics', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('photo')->nullable();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('title');
+            $table->foreignId('type_id')->constrained()->onDelete('cascade');
+            $table->enum('response_period', ['weekly', 'daily', 'monthly','quartely']);
+            $table->foreignId('tracking_id')->constrained()->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('kpi_metrics');
     }
 };

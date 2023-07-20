@@ -24,7 +24,7 @@
             <p class="txt-gray">Configure metric types used in setting up and measuring KPIs</p>
             <div class="">
               <div class="btn btn-primary my-2">
-                <a href="" class="text-light add-link" data-toggle="modal" data-target="#exampleModalCenter"><span class="plus">+</span> Metric</a>
+                <a href="" class="text-light add-link" data-toggle="modal" data-target="#submitMetricModal"><span class="plus">+</span> Metric</a>
               </div>
             </div>
 
@@ -61,8 +61,8 @@
                           <td>{{ metric.name }}</td>
                           <td>{{ metric.unit }}</td>
                           <td>
-                            <button class="btn btn-pri" data-toggle="modal" data-target="#editMetricModal">
-                              Edit
+                            <button class="btn btn-pri" @click="editMetric(metric)">
+                                 Edit
                             </button>
                             <button type="button" class="btn">
                               <form :id="'update-form-' + metric.id" :method="'POST'" :action="`/metrics/${metric.id}`">
@@ -86,7 +86,7 @@
         </div>
       </div>
 
-      <div class="modal fade p-5" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal fade p-5" id="submitMetricModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
           <div class="modal-content p-5">
             <p><i class="mdi mdi-image-filter-none h1"></i></p>
@@ -122,7 +122,8 @@
                 </div>
               </div>
               <div class="text-left">
-                <button class="btn btn-light border-dark btn-action" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-light border-dark btn-action" data-dismiss="modal">Cancel</button>
+
                 <button type="submit" class="btn btn-primary  btn-action">Add</button>
               </div>
             </form>
@@ -180,6 +181,7 @@
   export default {
     data() {
       return {
+        success: "",
         metrics: [],
         newMetric: {
           name: "",
@@ -206,25 +208,51 @@
             });
       },
       submitMetric() {
-            // Perform API call to add a new metric
-               const formData = new FormData();
-                formData.append('name',this.newMetric.name);
-                formData.append('unit', this.newMetric.unit);
+        const formData = new FormData();
+        formData.append('name', this.newMetric.name);
+        formData.append('unit', this.newMetric.unit);
 
-                let uri = this.base_url + `api/v1/metric-create`;
-                axios.post(uri, formData)
-                    .then(function (response) {
-                        this.success = response.data.success;
-                        window.location = response.data.redirect;
-                    })
-                    .catch(function (error) {
-                        this.errors = error;
-                    });
-      },
-      updateMetric() {
-        // Perform API call to update the selected metric
-      },
+        let uri = this.base_url + `api/v1/metric-create`;
+        axios.post(uri, formData)
+            .then((response) => {
+            this.success = response.data.success;
+            this.fetchMetrics(); // Refresh the metrics
+            $('#submitMetricModal').modal('hide'); // Close the modal
+            })
+            .catch((error) => {
+            this.errors = error.response.data.errors;
+            });
+        },
+
+        editMetric(metric) {
+      // Set the selected metric
+      this.selectedMetric = { ...metric };
+
+      // Open the edit modal
+      $('#editMetricModal').modal('show');
     },
+
+
+
+    updateMetric() {
+      const formData = new FormData();
+      formData.append('name', this.selectedMetric.name);
+      formData.append('unit', this.selectedMetric.unit);
+
+      let uri = this.base_url + `api/v1/metric-update`;
+      axios
+        .post(uri, formData)
+        .then((response) => {
+          this.success = response.data.success;
+          this.fetchMetrics(); // Refresh the metrics
+          $('#editMetricModal').modal('hide'); // Close the modal
+        })
+        .catch((error) => {
+          this.errors = error.response.data.errors;
+        });
+    },
+  },
+
   };
   </script>
 

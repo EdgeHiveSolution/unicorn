@@ -1,55 +1,52 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
-
     <ul class="nav">
-
         <div>
             <li class="nav-item">
-                <a class="nav-link" href="/">
+                <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/">
                     <span class="menu-icon">
-                        <i class="mdi mdi-poll text-warning"></i>
+                        <i class="mdi mdi-poll"></i>
                     </span>
                     <span class="menu-title txt-light">Dashboard</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/partners">
+                <a class="nav-link {{ Request::is('partners') ? 'active' : '' }}" href="/partners">
                     <span class="menu-icon">
-                        <i class="mdi mdi-account-multiple txt-light"></i>
+                        <i class="mdi mdi-account-multiple"></i>
                     </span>
                     <span class="menu-title txt-light">Partners</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/departments">
+                <a class="nav-link {{ Request::is('departments') ? 'active' : '' }}" href="/departments">
                     <span class="menu-icon">
-                        <i class="mdi mdi-buffer txt-light"></i>
+                        <i class="mdi mdi-buffer"></i>
                     </span>
                     <span class="menu-title txt-light">Departments</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/configurations">
+                <a class="nav-link {{ Request::is('configurations') ? 'active' : '' }}" href="/configurations">
                     <span class="menu-icon">
-                        <i class="mdi mdi-wrench txt-light"></i>
+                        <i class="mdi mdi-wrench"></i>
                     </span>
                     <span class="menu-title txt-light">Configurations</span>
                 </a>
             </li>
-
         </div>
         <div>
             <li class="nav-item">
-                <a class="nav-link" href="/profile/{{ Auth::user()->id }}">
+                <a class="nav-link {{ Request::is('profile/*') ? 'active' : '' }}" href="/profile/{{ Auth::user()->id }}">
                     <span class="menu-icon">
-                        <i class="mdi mdi-account txt-light"></i>
+                        <i class="mdi mdi-account"></i>
                     </span>
                     <span class="menu-title txt-light">My profile</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/settings">
+                <a class="nav-link {{ Request::is('settings') ? 'active' : '' }}" href="/settings">
                     <span class="menu-icon">
-                        <i class="mdi mdi-settings txt-light"></i>
+                        <i class="mdi mdi-settings"></i>
                     </span>
                     <span class="menu-title txt-light">Settings</span>
                 </a>
@@ -90,3 +87,15 @@
 
 
 </nav>
+@push('scripts')
+<script>
+  $(document).ready(function() {
+    $('.nav-item .nav-link').each(function() {
+      if ($(this).attr('href') === window.location.pathname) {
+        $(this).addClass('active');
+      }
+    });
+  });
+</script>
+@endpush
+

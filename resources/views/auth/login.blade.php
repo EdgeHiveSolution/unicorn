@@ -4,6 +4,7 @@
     <div class="container">
         <div class="row justify-content-center align-items-center vh-100">
             <div class="col-md-6 col-lg-4">
+                <h2>Sign in to your account</h2>
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
@@ -48,7 +49,7 @@
                     </div>
 
                     <div class="mt-3">
-                        <button type="submit" class="btn btn-primary w-100 p-3">
+                        <button type="submit" class="btn btn-primary w-100 px-3">
                             <i class="mdi mdi-account-outline"></i> {{ __('Continue') }}
                         </button>
                     </div>

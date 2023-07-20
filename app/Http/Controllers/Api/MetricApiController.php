@@ -43,30 +43,22 @@ class MetricApiController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+   public function update(Request $request, Metric $metric)
     {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+       
 
+        // Update the metric
+        $metric->update([
+            'name' => $request->name,
+            'unit' => $request->unit,
+
+        ]);
+
+        // Return a success message
+        return response()->json(['success' => 'Metric updated successfully']);
+    }
     /**
      * Remove the specified resource from storage.
      */

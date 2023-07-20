@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('department_partner', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('department_id')->constrained();
+            $table->foreignId('partner_id')->constrained();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('department_partner');
     }
 };

@@ -45,7 +45,7 @@ class PartnerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      */
-    
+
 
     /**
      * Display the specified resource.
@@ -55,10 +55,16 @@ class PartnerController extends Controller
      */
     public function show(Partner $partner)
     {
-        $data = ['partner'=> $partner];
+        $partner->load('members');
+
+        $data = [
+            'partner' => $partner,
+        ];
+
 
         return view('partner.show', $data);
     }
+
 
     /**
      * Show the form for editing the specified resource.

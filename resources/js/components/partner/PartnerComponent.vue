@@ -54,10 +54,11 @@
                     <tbody>
                       <tr v-for="partner in partners" :key="partner.id">
                         <td>
-                          <div class="d-flex align-items-center">
-                            <img src="assets/images/faces/face1.jpg" alt="image" />
-                            <span class="pl-2">{{ partner.name }}</span>
-                          </div>
+                            <div class="d-flex align-items-center">
+                                <img :src="partner.logo" alt="logo" />
+                                <span class="pl-2">{{ partner.name }}</span>
+                            </div>
+
                           <div class="d-flex align-items-center">
                             <span class="active-period txt-gray">Date Joined: {{ partner.formatted_created_at }}</span>
                           </div>
@@ -71,10 +72,10 @@
                           <span class="txt-dark">{{ partner.business_type }}</span><br>
                           <span class="txt-gray">{{ partner.about }}</span>
                         </td>
-                        <td class="td-members">
-                          <img src="assets/images/faces/face1.jpg" alt="image" />
-                          <img src="assets/images/faces/face3.jpg" alt="image" />
-                          <img src="assets/images/faces/face4.jpg" alt="image" />
+                        <td class="td-members" >
+
+                          <img v-for="member in partner.members" src="assets/images/faces/face1.jpg" alt="image" />
+
                         </td>
                         <td>
                           48%
@@ -85,10 +86,10 @@
                           off track
                         </td>
                         <td>
-                          <button class="btn btn-pri px-2 py-1 d-flex align-items-center">
-                            <i class="mdi mdi-eye-outline text-light"></i>
-                            <router-link :to="`/partners/${partner.id}`" class="text-light">View</router-link>
-                          </button>
+                            <button class="btn btn-pri px-1 py-1 d-flex align-items-center">
+                            <i class="mdi mdi-eye-outline text-light mx-2"></i>
+                            <a :href="'/partners/' + partner.id" class="text-light">View</a>
+                            </button>
                         </td>
                       </tr>
                     </tbody>

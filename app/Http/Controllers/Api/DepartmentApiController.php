@@ -21,8 +21,9 @@ class DepartmentApiController extends Controller
      */
     public function index()
     {
-        return Department::all();
+        return Department::with('members','partners')->get();
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -42,11 +43,12 @@ class DepartmentApiController extends Controller
      */
     public function store(Request $request)
     {
+
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email',
             'about' => 'required',
-            'members' => 'required',
+            'members.*' => 'exists:members,email',
         ]);
 
         $department = Department::create([
@@ -56,21 +58,25 @@ class DepartmentApiController extends Controller
         ]);
 
         $members = explode(',', $request->members);
+        $memberIds = [];
         foreach ($members as $memberEmail) {
             $member = Member::create([
-                'department_id' => $department->id,
                 'email' => trim($memberEmail),
             ]);
+            $memberIds[] = $member->id;
 
-            Mail::to($member->email)->send(new MemberInvitation($member));
-
+           // Mail::to($member->email)->send(new MemberInvitation($member));
         }
+
+         // Assign the members to the department
+         $department->members()->attach($memberIds);
 
         return response()->json([
             'success' => 'Department created successfully',
-            'redirect' => '/departments',
+
         ]);
     }
+
 
 
 

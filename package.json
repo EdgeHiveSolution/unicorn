@@ -14,5 +14,9 @@
         "sass": "^1.56.1",
         "vite": "^4.0.0",
         "vue": "^3.2.37"
+    },
+    "dependencies": {
+        "@smartweb/vue-flash-message": "^0.6.10",
+        "date-fns": "^2.30.0"
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Member;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Department extends Model
 {
@@ -15,7 +16,17 @@ class Department extends Model
 
     ];
 
-    public function members(){
-        return $this->hasMany(Member::class, 'department_id');
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(Member::class);
+    }
+
+    public function partners(): BelongsToMany
+    {
+        return $this->belongsToMany(Partner::class);
+    }
+
+    public function kpis(){
+        return $this->hasMany(Kpi::class);
     }
 }

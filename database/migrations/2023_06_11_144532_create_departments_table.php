@@ -18,7 +18,6 @@ class CreateDepartmentsTable extends Migration
             $table->string('name')->unique();
             $table->string('email')->unique();
             $table->longText('about')->nullable();
-            $table->json('members')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

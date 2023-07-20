@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use Carbon\Carbon;
 use App\Models\Member;
 use App\Models\Partner;
+use App\Mail\PartnerAdded;
+use App\Models\Department;
 use Illuminate\Http\Request;
-use App\Mail\MemberInvitation;
+use App\Models\PartnerDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 
@@ -21,45 +23,90 @@ class PartnerApiController extends Controller
     {
         $partners = Partner::with('departments', 'members')->get();
 
+        $formattedPartners = $partners->map(function ($partner) {
+            $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
+            return $partner;
+        });
+
+        return $formattedPartners;
+    }
+
+    public function latest()
+    {
+        $partners = Partner::with('departments', 'members')
+            ->latest('created_at')
+            ->take(3)
+            ->get();
 
         $formattedPartners = $partners->map(function ($partner) {
             $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
             return $partner;
         });
 
-       return $formattedPartners;
+        return $formattedPartners;
     }
-
 
     public function store(Request $request)
     {
-        dd($request);
-        $this->validate($request, [
+        $members =json_decode($request->members);
+
+        $request->validate([
             'name' => 'required',
             'email' => 'required|email',
+            'phone' => 'nullable',
+            'address' => 'nullable',
+            'country_id' => 'nullable|integer',
+            'business_type' => 'nullable',
             'about' => 'required',
-            'members' => 'required|array',
-            'members.*' => 'exists:members,id', // Assuming 'members' is an array of member IDs
+            'document_id' => 'nullable',
+
         ]);
 
-        $partner = Partner::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'website' => $request->website,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'logo' => $request->logo,
-            'country' => $request->country,
-            'business_type' => $request->business,
-            'about' => $request->about,
-            'documents' => $request->documents,
-        ]);
 
-        $partner->members()->sync($request->members);
+        // Store the logo file in the public/partners folder
+        $logo_name = "";
+        if ($request->hasFile('logo')) {
+            $this->validate($request, [
+                'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
+            ]);
+
+            $logo = $request->file('logo');
+            $file_name = strtolower($request->name) . "-logo" . time() . '.' . $logo->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads/partners/logos/');
+            $logo->move($destinationPath, $file_name);
+            $logo_name = url('/uploads/partners/logos/') . '/' . $file_name;
+        }
+
+    $partner = Partner::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'website' => $request->website,
+        'phone' => $request->phone,
+        'address' => $request->address,
+        'logo' => $logo_name,
+        'country_id' => $request->country_id,
+        'business_type' => $request->business_type,
+        'about' => $request->about,
+        'document_id' => $request->documents,
+    ]);
+
+    foreach ($members as $member) {
+        // Create the member using the email
+        $newMember = Member::firstOrCreate(['email' => $member->email]);
+
+        // Fill the values in the pivot table (member_partner)
+        $partner->members()->attach($newMember->id, [
+            'department_id' => $member->department_id,
+            'role' => $member->role,
+        ]);
+    }
+
+
+
 
         return response()->json([
             'success' => 'Partner created successfully',
-            'redirect' => '/dpartners',
+          
         ]);
     }
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('units', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('data_type');
+            $table->foreignId('type_id')->constrained()->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

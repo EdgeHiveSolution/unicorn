@@ -21,7 +21,7 @@ class CreatePartnersTable extends Migration
             $table->string('email')->unique();
             $table->string('website')->nullable();
             $table->string('logo')->nullable();
-            $table->string('country')->nullable();
+            $table->foreignId('country_id')->constrained();
             $table->string('business_type')->nullable();
             $table->longText('about');
             $table->string('documents')->nullable();

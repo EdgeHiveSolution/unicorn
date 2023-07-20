@@ -255,6 +255,12 @@ tr:nth-child(odd) td {
     margin-left: 25px;
     font-weight: 500;
 }
+/* .mdi-email{
+    font-size: 2rem !important;
+} */
+input{
+   padding: 15px !important;
+}
 
 .input-container {
     position: relative;
@@ -265,6 +271,7 @@ tr:nth-child(odd) td {
 .input-field {
     background: transparent;
     border: none;
+    text-align: center;
     padding: 8px 12px;
     padding-left: 32px;
     font-size: 16px;
@@ -332,6 +339,19 @@ tr:nth-child(odd) td {
   .btn-pri{
     padding: 1px 5px !important;
   }
+
+  .nav-item .menu-icon {
+    color: #b8b9bb;
+}
+
+.nav-item .menu-title {
+    color: #b8b9bb;
+}
+
+.nav-item .active .menu-icon {
+    color: rgba(250, 250, 22, 0.979);
+}
+
 
 
 

@@ -6,24 +6,33 @@ use App\Models\Partner;
 use App\Models\Department;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Member extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name', 'email','department_id','partner_id'
+        'name','email','photo'
 
     ];
 
-    public function department(){
-        return $this->belongsTo(Department::class, 'department_id');
+    public function departments(): BelongsToMany
+    {
+        return $this->belongsToMany(Department::class);
     }
 
-    public function partners()
+    // app/Models/Member.php
+
+    public function partners(): BelongsToMany
     {
         return $this->belongsToMany(Partner::class);
     }
+
+    public function kpis(){
+        return $this->hasMany(Kpi::class);
+    }
+
 
 
 }

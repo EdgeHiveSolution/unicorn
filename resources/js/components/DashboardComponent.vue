@@ -1,6 +1,6 @@
 <template>
     <div class="welcome">
-      <h1 class="txt-dark">Welcome Back, {{ userName }}</h1>
+      <h1 class="txt-dark">Welcome Back, {{ firstName }}</h1>
       <h3 class="txt-gray">Track and manage the team’s overall performance.</h3>
       <h4 class="txt-dark">Performance Overview</h4>
 
@@ -64,7 +64,7 @@
                     <tr v-for="partner in partners" :key="partner.id">
                       <td>
                         <div class="d-flex align-items-center">
-                          <img :src="partner.image" alt="image" />
+                         <img :src="partner.logo" alt="logo" />
                           <span class="pl-2">{{ partner.name }}</span>
                         </div>
                         <div class="d-flex align-items-center">
@@ -130,10 +130,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="partner in partners" :key="partner.id">
+                    <tr v-for="partner in Newpartners" :key="partner.id">
                       <td>
                         <div class="d-flex align-items-center">
-                          <img :src="partner.image" alt="image" />
+                        <img :src="partner.logo" alt="logo" />
                           <span class="pl-2">{{ partner.name }}</span>
                         </div>
                         <div class="d-flex align-items-center">
@@ -188,31 +188,42 @@
         atRisk: 1,
         onTrack: 6,
         partners: [],
+        Newpartners:[],
         currentPage: 1,
         totalPages: 0,
       };
     },
     mounted() {
       this.fetchPartners();
+      this.fetchNewPartners();
+    },
+    computed: {
+        firstName() {
+        const names = this.userName.split(' ');
+        return names[0]; // Only use the first name
+        },
     },
     methods: {
       handlePageChange(page) {
         // Update 'partners' with the data of the requested page
         this.currentPage = page;
       },
+
+
       fetchPartners(){
                 let uri =this.base_url+`api/v1/partner-list`;
                 axios.get(uri).then((response) => {
                     this.partners = response.data;
                 });
             },
+            fetchNewPartners(){
+                let uri =this.base_url+`api/v1/partner-new`;
+                axios.get(uri).then((response) => {
+                    this.Newpartners = response.data;
+                });
+            },
     },
   };
   </script>
 
-  <style scoped>
-
-
-
-  </style>
 
