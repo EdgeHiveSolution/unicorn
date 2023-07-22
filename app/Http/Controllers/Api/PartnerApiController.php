@@ -10,7 +10,10 @@ use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Models\PartnerDetail;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Util\PasswordGeneratorUtil;
 
 class PartnerApiController extends Controller
 {
@@ -21,7 +24,7 @@ class PartnerApiController extends Controller
      */
     public function index()
     {
-        $partners = Partner::with('departments', 'members')->get();
+        $partners = Partner::with('departments', 'members','kpis')->get();
 
         $formattedPartners = $partners->map(function ($partner) {
             $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
@@ -33,7 +36,7 @@ class PartnerApiController extends Controller
 
     public function latest()
     {
-        $partners = Partner::with('departments', 'members')
+        $partners = Partner::with('departments', 'members,kpis')
             ->latest('created_at')
             ->take(3)
             ->get();
@@ -89,10 +92,16 @@ class PartnerApiController extends Controller
         'about' => $request->about,
         'document_id' => $request->documents,
     ]);
+    $password_generator = new PasswordGeneratorUtil();
+        $password = $password_generator->generatePassword();
 
     foreach ($members as $member) {
         // Create the member using the email
-        $newMember = Member::firstOrCreate(['email' => $member->email]);
+        $newMember = Member::firstOrCreate([
+                'email' => $member->email,
+                'password' => Hash::make($password),
+                'is_active' => 1,
+            ]);
 
         // Fill the values in the pivot table (member_partner)
         $partner->members()->attach($newMember->id, [
@@ -106,32 +115,10 @@ class PartnerApiController extends Controller
 
         return response()->json([
             'success' => 'Partner created successfully',
-          
+
         ]);
     }
 
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -140,19 +127,74 @@ class PartnerApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+
+
+     public function update(Request $request)
+     {
+
+         $validatedData = $request->validate([
+             'name' => 'string|max:255',
+             'email' => 'email|max:255',
+             'website' => 'string|max:255',
+             'phone' => 'string|max:20',
+             'address' => 'string|max:255',
+             'business_type' => 'string|max:100',
+             'about' => 'string|max:1000',
+             'logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+         ]);
+
+
+         $partnerId = $request->id;
+
+
+         $partner = Partner::findOrFail($partnerId);
+
+
+         if ($request->hasFile('logo')) {
+
+             $logoFile = $request->file('logo');
+
+
+             $logoFileName = time() . '_' . $logoFile->getClientOriginalName();
+
+
+             $logoFile->storeAs('public/partner_logos', $logoFileName);
+
+
+             $partner->logo = 'storage/partner_logos/' . $logoFileName;
+         }
+
+         // Update the partner model with the validated data (including the updated logo file URL, if applicable)
+         $partner->update($validatedData);
+
+         // Save the changes to the database
+         $partner->save();
+
+         // Return a response indicating the success of the update
+         return response()->json(['message' => 'Partner updated successfully'], 200);
+     }
+
+
+
+
+     public function destroy($id)
+{
+    // Retrieve the partner by ID from the database (including soft deleted partners)
+    $partner = Partner::withTrashed()->findOrFail($id);
+
+    // Handle the partner logo file deletion (if it exists)
+    if (!empty($partner->logo)) {
+        // Get the logo file name from the URL
+        $logoFileName = basename($partner->logo);
+
+        // Delete the logo file from the storage (e.g., public/storage/partner_logos)
+        Storage::delete('public/partner_logos/' . $logoFileName);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    // Soft delete the partner by setting the deleted_at timestamp
+    $partner->delete();
+
+    // Return a response indicating the success of the deletion
+    return response()->json(['message' => 'Partner deleted successfully'], 200);
+}
 }

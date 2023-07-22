@@ -11,6 +11,25 @@ class Kpi extends Model
 
     protected $fillable =[
         'title',
+        'member_id',
+        'partner_id',
         'review_period'
     ];
+
+    public function partner()
+    {
+        return $this->belongsTo(Partner::class);
+    }
+
+    public function member()
+    {
+        return $this->belongsTo(Partner::class);
+    }
+
+    public function kpi_metrics()
+    {
+        return $this->hasMany(Kpi_metric::class);
+    }
+
+
 }

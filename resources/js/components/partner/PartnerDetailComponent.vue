@@ -44,7 +44,9 @@
                                 @click="currentPage = 3"
                             >
                                 Members
-                                <span class="member-count">{{members.length }}</span>
+                                <span class="member-count">{{
+                                    members.length
+                                }}</span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -567,7 +569,7 @@
                     <form
                         id="form-submit"
                         class="row g-3"
-                        @submit.prevent="formSubmit"
+                        @submit.prevent="partnerSubmit"
                         method="POST"
                     >
                         <div class="row mb-2 p-3">
@@ -802,107 +804,54 @@
                         <hr />
 
                         <div class="row mb-2">
-                            <label
-                                for="members"
-                                class="col-md-3 col-form-label text-md-start"
-                            >
-                                {{ "Members" }} <br /><span class="txt-gray">
-                                    {{
-                                        "Invite or select the relevant members to this organisation."
-                                    }}
-                                </span>
-                            </label>
+                <label for="members" class="col-md-3 col-form-label text-md-start">
+                    {{ "Members" }} <br /><span class="txt-gray">
+                        {{ "Invite or select the relevant members to this organisation." }}
+                    </span>
+                </label>
 
-                            <div class="col-md-9 offset-md-0 text-center">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <input
-                                            class="form-control py-2 pr-5"
-                                            autocomplete="member_email"
-                                            autofocus
-                                            type="email"
-                                            placeholder="Enter email address"
-                                            name="member_email"
-                                            v-model="formData.member_email"
-                                        />
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select
-                                            id="department_id"
-                                            class="form-control"
-                                            name="department"
-                                            v-model="formData.department_id"
-                                        >
-                                            <option value="">
-                                                Select department
-                                                <i class="mdi mdi-account"></i>
-                                            </option>
-                                            <option
-                                                v-for="department in departments"
-                                                :value="department.id"
-                                            >
-                                                {{ department.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select
-                                            id="role_id"
-                                            class="form-control"
-                                            name="role"
-                                            v-model="formData.role"
-                                        >
-                                            <option value="">
-                                                Select role
-                                            </option>
-                                            <option value="leader">
-                                                Software
-                                            </option>
-                                            <option value="mentor">
-                                                Mentor
-                                            </option>
-                                            <option value="advisor">
-                                                Advisor
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button
-                                            type="button"
-                                            class="btn btn-warning ml-0 text-light mt-md-0 mt-2"
-                                            @click.prevent="addToList"
-                                        >
-                                            Add
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Display selected items -->
-                                <ul>
-                                    <li
-                                        v-for="(item, index) in selectedItems"
-                                        class="list-item"
-                                    >
-                                        <span>
-                                            <i
-                                                class="mdi mdi-email-outline"
-                                            ></i>
-                                            {{ item.memberEmail }}
-                                            <span class="btn-suc">
-                                                {{ item.departmentName }}
-                                            </span>
-                                            <span class="btn-suc">{{
-                                                item.roleName
-                                            }}</span>
-                                        </span>
-                                        <i
-                                            class="mdi mdi-delete delete-icon"
-                                            @click="removeFromList(index)"
-                                        ></i>
-                                    </li>
-                                </ul>
-                            </div>
+                <div class="col-md-9 offset-md-0 text-center">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input class="form-control py-2 pr-5" autocomplete="member_email" autofocus type="email" placeholder="Enter email address" name="member_email" v-model="member.email">
                         </div>
+                        <div class="col-md-3">
+                            <select id="department_id" class="form-control" name="department" v-model="member.department_id">
+                                <option value="">Select department <i class="mdi mdi-account"></i></option>
+                                <option v-for="department in departments" :value="department.id">{{ department.name }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="role_id" class="form-control" name="role" v-model="member.role">
+                                <option value="">Select role</option>
+                                <option value="leader">leader</option>
+                                <option value="mentor">Mentor</option>
+                                <option value="advisor">Advisor</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-warning ml-0 text-light mt-md-0 mt-2" @click.prevent="addToList">Add</button>
+                        </div>
+                    </div>
+
+                    <ul>
+                        <li v-for="(item, index) in selectedItems" class="list-item">
+                            <span>
+                                <i class="mdi mdi-email-outline"></i>
+                                {{ item.memberEmail }}
+                                <span class="btn-suc">
+                                    {{ item.departmentId ? getDepartmentName(item.departmentId) : '' }}
+                                </span>
+                                <span class="btn-suc">{{ item.roleName }}</span>
+                            </span>
+                            <i class="mdi mdi-delete delete-icon" @click="removeFromList(index)"></i>
+                        </li>
+                    </ul>
+
+
+                </div>
+            </div>
+
 
                         <hr />
                         <div class="row mb-2 p-3">
@@ -910,26 +859,26 @@
                                 for="documents"
                                 class="col-md-3 col-form-label text-md-start"
                                 >{{ "Account status" }}
-
                             </label>
 
                             <div class="col-md-5 offset-md-0 text-left">
                                 <div class="col-9 styled">
-                                   <div class="">
-                                    <button class="btn btn-light border">
+                                <div class="">
+                                    <button type="button" class="btn btn-light border" @click="deactivateAccount">
                                         Deactivate account
                                     </button>
-                                   </div>
+                                </div>
 
-                                    <div class="mt-3">
-                                        <button class="btn btn-danger">
+                                <div class="mt-3">
+                                    <button type="button" class="btn btn-danger" @click="closeAccount">
                                         Close account
                                     </button>
-                                    </div>
                                 </div>
                             </div>
+
+                            </div>
                         </div>
-                        <hr>
+                        <hr />
 
                         <div class="align-right mb-5">
                             <div class="text-right mt-3 mb-5">
@@ -951,87 +900,106 @@
                 <hr />
             </div>
             <div id="members" v-if="currentPage === 3">
-    <!-- Members content -->
-    <div class="d-flex align-items-center">
-        <img :src="partner.logo" alt="logo" />
-        <div class="partner-info">
-            <h4>{{ partner.name }}</h4>
-            <p>
-                Status:
-                <span class="text-success">{{ " Active" }}</span>
-            </p>
-        </div>
-    </div>
-    <div class="m-info mt-5">
-        <h4>Members</h4>
-        <p>All members assigned to this partner </p>
-    </div>
-
-    <div class="row">
-        <div class="col-12 px-0">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between my-3">
-                    <div>
-                        <div class="input-container">
-                            <i class="mdi mdi-magnify mdi-icon"></i>
-                            <input class="input-field" type="text" placeholder="Search members">
-                        </div>
-                    </div>
-                    <div>
-                        <button class="btn btn-light p-3">
-                            <i class="mdi mdi-sort-variant text-dark"></i>
-                            Filters
-                        </button>
+                <!-- Members content -->
+                <div class="d-flex align-items-center">
+                    <img :src="partner.logo" alt="logo" />
+                    <div class="partner-info">
+                        <h4>{{ partner.name }}</h4>
+                        <p>
+                            Status:
+                            <span class="text-success">{{ " Active" }}</span>
+                        </p>
                     </div>
                 </div>
-                <div class="card-body mb-5">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Member</th>
-                                    <th>Status</th>
-                                    <th>Departments</th>
-                                    <th>Active KPIs progress</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="member in members">
-                                    <td>
-                                        {{member.email}}
-                                    </td>
-                                    <td class="status">
-                                       <span>
-                                        active
-                                       </span>
-                                    </td>
-                                    <td>
-                                     {{'Admin'}}
-                                    </td>
-                                    <td>
-                                       {{ 3 }}
-                                    </td>
-                                    <td>
-                                        <button
-                                                class="btn btn-pri px-2 py-1 d-flex align-items-center"
-                                            >
-                                                <i
-                                                    class="mdi mdi-eye-outline text-light"
-                                                ></i>
-                                                <a :href="'/members/' + member.id" class="text-light">View</a>
-                                            </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <pagination :total="totalPages" :current="currentPage" @page-change="handlePageChange"></pagination>
+                <div class="m-info mt-5">
+                    <h4>Members</h4>
+                    <p>All members assigned to this partner</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 px-0">
+                        <div class="card">
+                            <div
+                                class="card-header d-flex justify-content-between my-3"
+                            >
+                                <div>
+                                    <div class="input-container">
+                                        <i class="mdi mdi-magnify mdi-icon"></i>
+                                        <input
+                                            class="input-field"
+                                            type="text"
+                                            placeholder="Search members"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="btn btn-light p-3">
+                                        <i
+                                            class="mdi mdi-sort-variant text-dark"
+                                        ></i>
+                                        Filters
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body mb-5">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Member</th>
+                                                <th>Status</th>
+                                                <th>Departments</th>
+                                                <th>Active KPIs progress</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="member in members">
+                                                <td>
+                                                    {{ member.email }}
+                                                </td>
+                                                <td class="status">
+                                                    <span> active </span>
+                                                </td>
+                                                <td>
+                                                    <span class="depart-tag">
+                                                        {{ "Admin" }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {{ 3 }}
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        class="btn btn-pri px-2 py-1 d-flex align-items-center"
+                                                    >
+                                                        <i
+                                                            class="mdi mdi-eye-outline text-light"
+                                                        ></i>
+                                                        <a
+                                                            :href="
+                                                                '/members/' +
+                                                                member.id
+                                                            "
+                                                            class="text-light"
+                                                            >View</a
+                                                        >
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <pagination
+                                        :total="totalPages"
+                                        :current="currentPage"
+                                        @page-change="handlePageChange"
+                                    ></pagination>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
             <div id="kpis" v-if="currentPage === 4">
                 <!-- KPIs content -->
@@ -1047,242 +1015,466 @@
                 </div>
 
                 <div class="m-info mt-3">
-                        <h4>KPIs</h4>
-                        <p>Key milestones for {{ partner.name }}</p>
+                    <h4>KPIs</h4>
+                    <p>Key milestones for {{ partner.name }}</p>
                 </div>
                 <div class="btn btn-primary my-2">
-                    <a href="#" class="text-light add-link" data-toggle="modal" data-target="#addKpimodal">
+                    <a
+                        href="#"
+                        class="text-light add-link"
+                        data-toggle="modal"
+                        data-target="#addKpimodal"
+                    >
                         <span class="plus">+</span> Add KPI
                     </a>
                 </div>
 
                 <div class="row">
-        <div class="col-12 px-0">
-          <div class="card">
-           <div class="d-flex justify-content-between p-4">
-             <div>
-                <h4>Hardware sales</h4>
-                <p>Review period: {{ "1st August 2022 to 30th October 2022" }}</p>
-             </div>
-             <div>
-                <button data-toggle="modal" data-target="#addKpiMetricModal" class="btn btn-light border">
-                   + Add KPI metric
-                </button>
-
-             </div>
-           </div>
-            <div class="card-header d-flex justify-content-between my-3">
-              <div>
-                <div class="input-container">
-                  <i class="mdi mdi-magnify mdi-icon"></i>
-                  <input class="input-field" type="text" placeholder="Search for partners">
-                </div>
-              </div>
-              <div>
-                <button class="btn btn-light p-3">
-                  <i class="mdi mdi-sort-variant text-dark"></i>
-                  Filters
-                </button>
-              </div>
-            </div>
-            <div class="card-body mb-5">
-              <div class="table-responsive">
-
-                <table class="table">
-
-                  <thead>
-                    <tr>
-                      <th>Partner</th>
-                      <th>Progress</th>
-                      <th>Members</th>
-                      <th>Departments</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="partner in partners" :key="partner.id">
-                      <td>
-                        <div class="d-flex align-items-center">
-                         <img :src="partner.logo" alt="logo" />
-                          <span class="pl-2">{{ partner.name }}</span>
+                    <div class="col-12 px-0">
+                        <div class="card">
+                            <div class="d-flex justify-content-between p-4">
+                                <div>
+                                    <h4>Hardware sales</h4>
+                                    <p>
+                                        Review period:
+                                        {{
+                                            "1st August 2022 to 30th October 2022"
+                                        }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <button
+                                        data-toggle="modal"
+                                        data-target="#addKpiMetricModal"
+                                        class="btn btn-light border"
+                                    >
+                                        + Add KPI metric
+                                    </button>
+                                </div>
+                            </div>
+                            <div
+                                class="card-header d-flex justify-content-between my-3"
+                            >
+                                <div>
+                                    <div class="input-container">
+                                        <i class="mdi mdi-magnify mdi-icon"></i>
+                                        <input
+                                            class="input-field"
+                                            type="text"
+                                            placeholder="Search for partners"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="btn btn-light p-3">
+                                        <i
+                                            class="mdi mdi-sort-variant text-dark"
+                                        ></i>
+                                        Filters
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body mb-5">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Partner</th>
+                                                <th>Progress</th>
+                                                <th>Members</th>
+                                                <th>Departments</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr
+                                                v-for="partner in partners"
+                                                :key="partner.id"
+                                            >
+                                                <td>
+                                                    <div
+                                                        class="d-flex align-items-center"
+                                                    >
+                                                        <img
+                                                            :src="partner.logo"
+                                                            alt="logo"
+                                                        />
+                                                        <span class="pl-2">{{
+                                                            partner.name
+                                                        }}</span>
+                                                    </div>
+                                                    <div
+                                                        class="d-flex align-items-center"
+                                                    >
+                                                        <span
+                                                            class="active-period txt-gray"
+                                                            >Active Period:
+                                                            {{
+                                                                "8 months ago"
+                                                            }}</span
+                                                        >
+                                                    </div>
+                                                </td>
+                                                <td class="stats">
+                                                    <span>{{ "48%" }}</span>
+                                                    <div class="progress">
+                                                        <div
+                                                            class="progress-bar bg-primary"
+                                                            role="progressbar"
+                                                            :style="{
+                                                                width: '48%',
+                                                            }"
+                                                            aria-valuenow="5"
+                                                            aria-valuemin="0"
+                                                            aria-valuemax="100"
+                                                        ></div>
+                                                    </div>
+                                                </td>
+                                                <td class="td-members">
+                                                    <img
+                                                        v-for="member in partner.members"
+                                                        :key="member.id"
+                                                        src="member.image"
+                                                        alt="image"
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="department-tag"
+                                                        v-for="department in partner.departments"
+                                                        :key="department.id"
+                                                        >{{
+                                                            department.name
+                                                        }}</span
+                                                    >
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        class="btn btn-pri px-1 py-1 d-flex align-items-center"
+                                                    >
+                                                        <i
+                                                            class="mdi mdi-eye-outline text-light mx-2"
+                                                        ></i>
+                                                        <a
+                                                            :href="
+                                                                '/partners/' +
+                                                                partner.id
+                                                            "
+                                                            class="text-light"
+                                                            >View Details</a
+                                                        >
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <pagination
+                                        :total="totalPages"
+                                        :current="currentPage"
+                                        @page-change="handlePageChange"
+                                    ></pagination>
+                                </div>
+                            </div>
                         </div>
-                        <div class="d-flex align-items-center">
-                          <span class="active-period txt-gray">Active Period: {{ '8 months ago' }}</span>
+                    </div>
+                </div>
+                <div
+                    class="modal fade p-5"
+                    id="addKpimodal"
+                    tabindex="-1"
+                    role="dialog"
+                >
+                    <div
+                        class="modal-dialog modal-dialog-centered modal-lg"
+                        role="document"
+                    >
+                        <div class="modal-content p-5">
+                            <p><i class="mdi mdi-image-filter-none h1"></i></p>
+                            <h3>Add New KPI</h3>
+                            <form  id="form-submit" class="row g-3" @submit.prevent="submitKpi" method="POST">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="name" class="col-form-label text-md-start">Kpi Title</label>
+                                        <input
+                                            id="name"
+                                            name="name"
+                                            placeholder="Enter KPI name"
+                                            class="form-control"
+                                            type="text"
+                                            v-model="kpi_title"
+                                        />
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label
+                                            for="unit"
+                                            class="col-form-label text-md-start"
+                                            >Owner</label
+                                        >
+                                        <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="mdi mdi-image-filter-none"></i>
+                                            </span>
+                                        </div>
+                                        <select name="unit" class="form-select" v-model="kpi_owner">
+                                            <option value="">Select or KPI owner</option>
+                                            <option v-for="member in members" :value="member.id" :key="member.id">
+                                                {{ member.email }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    </div>
+                                </div>
+
+                    <div class="mb-3">
+                        <label for="review_end_date" class="col-form-label text-md-start">KPI Review period</label>
+                        <input
+                        id="review_end_date"
+                        name="review_end_date"
+                        class="form-control"
+                        type="date"
+                        v-model="review_end_date"
+                        />
+                    </div>
+
+                                <div class="text-left">
+                                    <button
+                                        type="button"
+                                        class="btn btn-light border-dark btn-action"
+                                        data-dismiss="modal"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary btn-action"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                      </td>
-                      <td class="stats">
-                        <span>{{ '48%' }}</span>
-                        <div class="progress">
-                          <div class="progress-bar bg-primary" role="progressbar" :style="{ width: '48%' }" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div
+                    class="modal fade p-5"
+                    id="addKpiMetricModal"
+                    tabindex="-1"
+                    role="dialog"
+                >
+                    <div
+                        class="modal-dialog modal-dialog-centered modal-lg"
+                        role="document"
+                    >
+                        <div class="modal-content p-5">
+                            <p><i class="mdi mdi-image-filter-none h1"></i></p>
+                            <h3>Add KPI Metric type</h3>
+                            <p>
+                                Add a performance metric to the
+                                <b>{{ "Hardware sales " }} KPI</b>
+                            </p>
+                            <form @submit.prevent="submitKpiMetric">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label
+                                            for="name"
+                                            class="col-form-label text-md-start"
+                                            >Metric title</label
+                                        >
+                                        <input
+                                            id="name"
+                                            name="name"
+                                            placeholder="Enter name"
+                                            class="form-control"
+                                            type="text"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label
+                                            for="unit"
+                                            class="col-form-label text-md-start"
+                                            >Type</label
+                                        >
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i
+                                                        class="mdi mdi-image-filter-none"
+                                                    ></i>
+                                                </span>
+                                            </div>
+                                            <select
+                                                name="unit"
+                                                class="form-select"
+                                            >
+                                                <option value="">
+                                                    Select or create standard
+                                                    unit
+                                                </option>
+                                                <option value="select">
+                                                    Create standard unit
+                                                </option>
+                                                <option value="count">
+                                                    Count
+                                                </option>
+                                                <option value="currency">
+                                                    Currency
+                                                </option>
+                                                <option value="time">
+                                                    Time
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label
+                                        for="name"
+                                        class="col-form-label text-md-start"
+                                        >Response Period</label
+                                    >
+                                    <input
+                                        id="name"
+                                        name="name"
+                                        placeholder="Enter name"
+                                        class="form-control"
+                                        type="date"
+                                    />
+                                </div>
+                                <div class="row mb-3">
+                                    <label
+                                        for="name"
+                                        class="col-form-label text-md-start"
+                                        >Assigned Members</label
+                                    >
+                                    <div class="col-md-6">
+                                        <input
+                                            id="name"
+                                            name="name"
+                                            placeholder="Enter name"
+                                            class="form-control"
+                                            type="text"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i
+                                                        class="mdi mdi-image-filter-none"
+                                                    ></i>
+                                                </span>
+                                            </div>
+                                            <select
+                                                name="unit"
+                                                class="form-select"
+                                            >
+                                                <option value="">
+                                                    Select or create standard
+                                                    unit
+                                                </option>
+                                                <option value="select">
+                                                    Create standard unit
+                                                </option>
+                                                <option value="count">
+                                                    Count
+                                                </option>
+                                                <option value="currency">
+                                                    Currency
+                                                </option>
+                                                <option value="time">
+                                                    Time
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <label
+                                    for="name"
+                                    class="col-form-label text-md-start"
+                                    >Tracking criteria</label
+                                >
+                                <table class="table border set-metric">
+                                    <thead>
+                                        <tr>
+                                            <th>Performance flag</th>
+                                            <th>Percentage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>On Track</td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    v-model="
+                                                        kpiMetric.onTrackValue
+                                                    "
+                                                />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>At Risk</td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    v-model="
+                                                        kpiMetric.atRiskMin
+                                                    "
+                                                />
+                                                -
+                                                <input
+                                                    type="text"
+                                                    v-model="
+                                                        kpiMetric.atRiskMax
+                                                    "
+                                                />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Off Track</td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    v-model="
+                                                        kpiMetric.offTrackMin
+                                                    "
+                                                />
+                                                -
+                                                <input
+                                                    type="text"
+                                                    v-model="
+                                                        kpiMetric.offTrackMax
+                                                    "
+                                                />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="text-left">
+                                    <button
+                                        type="button"
+                                        class="btn btn-light border-dark btn-action"
+                                        data-dismiss="modal"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary btn-action"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                      </td>
-                      <td class="td-members">
-                        <img v-for="member in partner.members" :key="member.id" src="member.image" alt="image" />
-                      </td>
-                      <td>
-                        <span class="department-tag" v-for="department in partner.departments" :key="department.id">{{ department.name }}</span>
-                      </td>
-                      <td>
-                        <button class="btn btn-pri px-1 py-1 d-flex align-items-center">
-                          <i class="mdi mdi-eye-outline text-light mx-2"></i>
-                          <a :href="'/partners/' + partner.id" class="text-light">View Details</a>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <pagination :total="totalPages" :current="currentPage" @page-change="handlePageChange"></pagination>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    <div class="modal fade p-5" id="addKpimodal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content p-5">
-        <p><i class="mdi mdi-image-filter-none h1"></i></p>
-        <h3>Add Metric type</h3>
-        <form @submit.prevent="submitKpi">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="name" class="col-form-label text-md-start">Kpi Title</label>
-                <input id="name" name="name" placeholder="Enter name" class="form-control" type="text">
-            </div>
-            <div class="col-md-6">
-            <label for="unit" class="col-form-label text-md-start">Owner</label>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                <span class="input-group-text">
-                    <i class="mdi mdi-image-filter-none"></i>
-                </span>
+                    </div>
                 </div>
-                <select name="unit" class="form-select">
-                <option value="">Select or create standard unit</option>
-                <option value="select">Create standard unit</option>
-                <option value="count">Count</option>
-                <option value="currency">Currency</option>
-                <option value="time">Time</option>
-                </select>
-            </div>
-
-            </div>
-        </div>
-        <div class="mb-3">
-                <label for="name" class="col-form-label text-md-start">Kpi Review Period</label>
-                <input id="name" name="name" placeholder="Enter name" class="form-control" type="date">
-            </div>
-        <div class="text-left">
-            <button type="button" class="btn btn-light border-dark btn-action" data-dismiss="modal">Cancel</button>
-
-            <button type="submit" class="btn btn-primary  btn-action">Add</button>
-        </div>
-        </form>
-    </div>
-    </div>
-    </div>
-    <div class="modal fade p-5" id="addKpiMetricModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content p-5">
-        <p><i class="mdi mdi-image-filter-none h1"></i></p>
-        <h3>Add KPI Metric type</h3>
-        <p>Add a performance metric to the <b>{{ 'Hardware sales ' }} KPI</b></p>
-        <form @submit.prevent="submitKpi">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="name" class="col-form-label text-md-start">Metric title</label>
-                <input id="name" name="name" placeholder="Enter name" class="form-control" type="text">
-            </div>
-            <div class="col-md-6">
-            <label for="unit" class="col-form-label text-md-start">Type</label>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                <span class="input-group-text">
-                    <i class="mdi mdi-image-filter-none"></i>
-                </span>
-                </div>
-                <select name="unit" class="form-select">
-                <option value="">Select or create standard unit</option>
-                <option value="select">Create standard unit</option>
-                <option value="count">Count</option>
-                <option value="currency">Currency</option>
-                <option value="time">Time</option>
-                </select>
-            </div>
-
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="name" class="col-form-label text-md-start">Response Period</label>
-            <input id="name" name="name" placeholder="Enter name" class="form-control" type="date">
-        </div>
-        <div class="row mb-3">
-            <label for="name" class="col-form-label text-md-start">Assigned Members</label>
-            <div class="col-md-6">
-
-                <input id="name" name="name" placeholder="Enter name" class="form-control" type="text">
-            </div>
-            <div class="col-md-6">
-
-            <div class="input-group">
-                <div class="input-group-prepend">
-                <span class="input-group-text">
-                    <i class="mdi mdi-image-filter-none"></i>
-                </span>
-                </div>
-                <select name="unit" class="form-select">
-                <option value="">Select or create standard unit</option>
-                <option value="select">Create standard unit</option>
-                <option value="count">Count</option>
-                <option value="currency">Currency</option>
-                <option value="time">Time</option>
-                </select>
-            </div>
-
-            </div>
-        </div>
-
-            <label for="name" class="col-form-label text-md-start">Tracking criteria</label>
-           <table class="table border set-metric">
-                <thead>
-                    <tr>
-                    <th>Performance flag</th>
-                    <th>Percentage</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                    <td>On Track</td>
-                    <td><input type="text" v-model="kpiMetric.onTrackValue" /></td>
-                    </tr>
-                    <tr>
-                    <td>At Risk</td>
-                    <td>
-                        <input type="text" v-model="kpiMetric.atRiskMin" />
-                        -
-                        <input type="text" v-model="kpiMetric.atRiskMax" />
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>Off Track</td>
-                    <td>
-                        <input type="text" v-model="kpiMetric.offTrackMin" />
-                        -
-                        <input type="text" v-model="kpiMetric.offTrackMax" />
-                    </td>
-                    </tr>
-                </tbody>
-            </table>
-
-
-        <div class="text-left">
-            <button type="button" class="btn btn-light border-dark btn-action" data-dismiss="modal">Cancel</button>
-
-            <button type="submit" class="btn btn-primary  btn-action">Add</button>
-        </div>
-        </form>
-    </div>
-    </div>
-    </div>
             </div>
         </div>
     </div>
@@ -1293,19 +1485,28 @@ import { format } from "date-fns";
 
 export default {
     props: {
-    partner: {
-        type: Object,
-        required: true
-    },
-    members: {
-        type: Array,
-        required: true
-    }
+        partner: {
+            type: Object,
+            required: true,
+        },
+        members: {
+            type: Array,
+            required: true,
+        },
     },
 
     data() {
         return {
             members: this.partner.members,
+
+            member: {
+            email: "",
+            department_id: "",
+            role: ""
+            },
+            selectedItems: [],
+            departments: [],
+
             success: "",
             searchQuery: "",
             currentPage: 1,
@@ -1328,7 +1529,6 @@ export default {
                 atRiskMax: 45,
                 offTrackMin: 10,
                 offTrackMax: 45,
-
             },
             formData: {
                 name: "",
@@ -1347,6 +1547,10 @@ export default {
 
                 role_id: "",
             },
+            kpi_title: '',
+            kpi_owner: '',
+            review_start_date: '', // Initialize the properties with empty values or with your default dates
+            review_end_date: ''
         };
     },
     mounted() {
@@ -1363,7 +1567,95 @@ export default {
                 this.countries = response.data;
             });
         },
+
+  deactivateAccount() {
+    // Set the is_active field to 0 to deactivate the partner
+    this.partner.is_active = 0;
+
+    // Call the partnerSubmit method to save the changes to the server
+    this.partnerSubmit();
+  },
+
+  closeAccount() {
+    // Make an API request to delete the partner from the server
+    let uri = this.base_url + `api/v1/partner-delete/${this.partner.id}`;
+    axios
+      .delete(uri)
+      .then((response) => {
+        // Handle the successful response from the server
+        alert('Partner account closed');
+        // Redirect the user to a new page or perform other actions as needed
+      })
+      .catch((error) => {
+        // Handle errors from the server or API request
+        console.error('Error closing partner account:', error);
+        // You may want to show an error message to the user here
+      });
+  },
+
+        partnerSubmit() {
+    // Validate form data before submitting (you can add your own validation logic here)
+
+    // Prepare the data to be sent to the server for partner update
+    const partnerData = {
+      id: this.partner.id,
+      name: this.partner.name,
+      email: this.partner.email,
+      website: this.partner.website,
+      phone: this.partner.phone,
+      address: this.partner.address,
+      logo: this.partner.logo,
+      business_type: this.partner.business_type,
+      about: this.partner.about,
+      // Add other partner data fields as needed
+    };
+
+    // Send the partner data to the server for updating the partner information
+    // Replace 'your_update_partner_endpoint' with the actual API endpoint to update the partner information
+    let uri = this.base_url + `api/v1/partner-update`;
+    axios
+      .patch(uri, partnerData)
+      .then((response) => {
+        // Handle the successful response from the server
+        const updatedPartner = response.data;
+        this.partner = updatedPartner;
+        alert('Partner information updated');
+        window.location.reload();
+      })
+      .catch((error) => {
+        // Handle errors from the server or API request
+        console.error('Error updating partner:', error);
+        // You may want to show an error message to the user here
+      });
+  },
+
+        submitKpi() {
+
+      // Create a new FormData object
+      const formData = new FormData();
+      formData.append('title', this.kpi_title);
+      formData.append('member_id', this.kpi_owner);
+      formData.append('review_period', this.review_end_date);
+      formData.append('partner_id', this.partner.id);
+
+      // Make the POST request using Axios
+      const uri = this.base_url + 'api/v1/kpi-create';
+      axios.post(uri, formData)
+        .then(response => {
+            alert('Kpi created successifully!')
+          // Clear the form fields after successful submission
+          this.kpi_title = '';
+          this.kpi_owner = '';
+          this.kpi_period = '';
+        })
+        .catch(error => {
+          // Handle errors if the request fails
+          console.error('Error submitting the form:', error);
+        });
     },
+    },
+
+
 };
 </script>
 
@@ -1397,22 +1689,26 @@ img {
 }
 
 .set-metric input[type="text"] {
-  width: 70px;
-  height: 30px;
-  border-radius: 5px;
-  border: 1px solid gray;
+    width: 70px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid gray;
 }
-.member-count{
+.member-count {
     background-color: rgba(195, 195, 209, 0.733);
     padding: 7px;
     border-radius: 50%;
-    font-size: .7rem;
+    font-size: 0.7rem;
 }
 
-.status span{
+.status span {
     background-color: rgba(51, 255, 0, 0.164);
     padding: 8px;
     border-radius: 15px;
 }
-
+.depart-tag {
+    background-color: rgba(235, 240, 234, 0.685);
+    padding: 8px;
+    border-radius: 15px;
+}
 </style>

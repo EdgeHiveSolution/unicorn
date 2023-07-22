@@ -102,7 +102,7 @@
       <div class="my-5">
         <div class="col-12 px-0">
             <h3 class="text-dark">New partners</h3>
-          <div class="card">
+          <div class="card" v-if="Newpartners.length > 0">
             <div class="card-header d-flex justify-content-between my-3">
               <div>
                 <div class="input-container">
@@ -165,6 +165,9 @@
               </div>
             </div>
           </div>
+          <div v-else>
+         <p> There are no new partners.</p>
+        </div>
         </div>
       </div>
     </div>

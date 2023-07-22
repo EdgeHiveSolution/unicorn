@@ -13,16 +13,22 @@ class MemberInvitation extends Mailable
     use Queueable, SerializesModels;
 
     public $member;
+    public $departmentName;
+    public $password;
 
     /**
      * Create a new message instance.
      *
      * @param  Member  $member
+     * @param  string  $departmentName
+     * @param  string  $password
      * @return void
      */
-    public function __construct(Member $member)
+    public function __construct(Member $member, $departmentName, $password)
     {
         $this->member = $member;
+        $this->departmentName = $departmentName;
+        $this->password = $password;
     }
 
     /**
@@ -32,17 +38,10 @@ class MemberInvitation extends Mailable
      */
     public function build()
     {
-        $department = $this->member->departments->first();
-
-    if ($department) {
-        $departmentName = $department->name;
-    } else {
-        $departmentName = 'Unknown Department';
-    }
-
-
         return $this->subject('Department Invitation')
-                    ->view('mail.member_invitation', compact('departmentName'));
+                    ->view('mail.member_invitation');
     }
 }
+
+
 

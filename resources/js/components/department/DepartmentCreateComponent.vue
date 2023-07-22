@@ -1,59 +1,76 @@
 <template>
     <div>
         <flash-message></flash-message>
-      <!-- Alerts -->
-      <div class="alert alert-success" role="alert" v-if="alert_success">
-        Department created successfully!
-      </div>
-      <div class="alert alert-danger" role="alert" v-if="alert_error">
-        Error in creating department!
-      </div>
-
-      <!-- Breadcrumb -->
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="/departments">Departments</a>
-          </li>
-          <li class="breadcrumb-item active" aria-current="page">
-            New Department
-          </li>
-        </ol>
-      </nav>
-
-      <!-- Page content -->
-      <h2>New Department</h2>
-      <p>Add a new department to UNICON.</p>
-
-      <div class="d-flex justify-content-between">
-        <div>
-          <h3>Department Info</h3>
-          <p>Enter the details of the department here.</p>
+        <!-- Alerts -->
+        <div class="alert alert-success" role="alert" v-if="alert_success">
+            Department created successfully!
         </div>
-        <div>
-          <button class="btn btn-light border-dark p-3 btn-action">Cancel</button>
-          <button class="btn btn-primary p-3 btn-action" form="form-submit" type="submit">Add</button>
+        <div class="alert alert-danger" role="alert" v-if="alert_error">
+            Error in creating department!
         </div>
-      </div>
 
-      <!-- Department form -->
-      <form id="form-submit" class="row g-3" @submit.prevent="formSubmit" method="post">
-        <div class="row mb-2 p-3">
-          <label for="name" class="col-md-3 col-form-label text-md-start">{{ "Name" }}</label>
-          <div class="col-md-5 offset-md-0 text-center">
-            <input
-              id="name"
-              name="name"
-              class="form-control form-control-lg"
-              type="text"
-              v-model="name"
-              autocomplete="name"
-              autofocus
-            />
-          </div>
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/departments">Departments</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    New Department
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page content -->
+        <h2>New Department</h2>
+        <p>Add a new department to UNICON.</p>
+
+        <div class="d-flex justify-content-between">
+            <div>
+                <h3>Department Info</h3>
+                <p>Enter the details of the department here.</p>
+            </div>
+            <div>
+                <button class="btn btn-light border-dark p-3 btn-action">
+                    Cancel
+                </button>
+                <button
+                    class="btn btn-primary p-3 btn-action"
+                    form="form-submit"
+                    type="submit"
+                >
+                    Add
+                </button>
+            </div>
         </div>
-       <hr>
-       <div class="row mb-2 p-3">
+
+        <!-- Department form -->
+        <form
+            id="form-submit"
+            class="row g-3"
+            @submit.prevent="formSubmit"
+            method="post"
+        >
+            <div class="row mb-2 p-3">
+                <label
+                    for="name"
+                    class="col-md-3 col-form-label text-md-start"
+                    >{{ "Name" }}</label
+                >
+                <div class="col-md-5 offset-md-0 text-center">
+                    <input
+                        id="name"
+                        name="name"
+                        class="form-control form-control-lg"
+                        type="text"
+                        v-model="name"
+                        autocomplete="name"
+                        autofocus
+                    />
+                </div>
+            </div>
+            <hr />
+            <div class="row mb-2 p-3">
                 <label
                     for="email"
                     class="col-md-3 col-form-label text-md-start"
@@ -130,34 +147,40 @@
                 >
                 <div class="col-md-5 offset-md-0 text-center">
                     <div class="row">
-                        <div class="col-md-10">
-                            <select
-                                id="role"
+                        <div class="input-group">
+                            <input
+                                placeholder="Select team member or enter email address"
+                                list="memberEmails"
+                                id="email"
                                 class="form-control"
-                                name="role"
+                                name="email"
                                 v-model="selectedMember"
-                                @change="addMemberToList"
-                            >
-                                <option value="">
-                                    Select team member or enter email
-                                    address<span
-                                        class="mdi mdi-chevron-down"
-                                    ></span>
-                                </option>
-                                <option
-                                    v-for="member in members"
-                                    :value="member.email"
+                                @input="handleMemberInput"
+                                @keydown.enter.prevent="addMemberToList"
+                            />
+                            <div class="input-group-append mx-3">
+                                <button
+                                    class="btn btn-warning"
+                                    @click.prevent="addMemberToList"
                                 >
-                                    {{ member.email }}
-                                </option>
-                            </select>
+                                    Add
+                                </button>
+                            </div>
                         </div>
+                        <datalist id="memberEmails">
+                            <option
+                                v-for="member in memberEmails"
+                                :value="member"
+                            >
+                                {{ member }}
+                            </option>
+                        </datalist>
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-10">
                             <ul class="list-group">
                                 <li
-                                    class="list-group-item"
+                                    class="list-group-item my-2 p-0"
                                     v-for="(email, index) in selectedMembers"
                                     :key="index"
                                 >
@@ -179,74 +202,95 @@
             </div>
 
             <hr />
-        <div class="text-right mt-3 mb-5">
-          <button class="btn btn-light border-dark btn-action">Cancel</button>
-          <button type="submit" class="btn btn-primary btn-action">Add</button>
-        </div>
-        <div class="dropdown-divider mb-5"></div>
-      </form>
+            <div class="text-right mt-3 mb-5">
+                <button class="btn btn-light border-dark btn-action">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary btn-action">
+                    Add
+                </button>
+            </div>
+            <div class="dropdown-divider mb-5"></div>
+        </form>
     </div>
-  </template>
+</template>
 
-  <script>
-
-
-  export default {
+<script>
+export default {
     data() {
-      return {
-        name: "",
-        email: "",
-        about: "",
-        alert_error: false,
-        alert_success: false,
-        base_url: "../",
-        member_id: "",
-        members: [],
-        selectedMember: "",
-        selectedMembers: [],
-      };
+        return {
+            name: "",
+            email: "",
+            about: "",
+            alert_error: false,
+            alert_success: false,
+            base_url: "../",
+            member_id: "",
+            members: [],
+            selectedMember: "",
+            selectedMembers: [],
+            memberEmails: [],
+        };
     },
     mounted() {
-      this.fetchMembers();
+        this.fetchMembers();
     },
     methods: {
-      fetchMembers() {
-        let uri = this.base_url + `api/v1/user-list`;
-        axios.get(uri).then((response) => {
-          this.members = response.data;
-        });
-      },
-      addMemberToList() {
-        if (this.selectedMember) {
-          this.selectedMembers.push(this.selectedMember);
-          this.selectedMember = "";
-        }
-      },
-      removeMemberFromList(index) {
-        this.selectedMembers.splice(index, 1);
-      },
-      formSubmit() {
-        const formData = new FormData();
-        formData.append("name", this.name);
-        formData.append("email", this.email);
-        formData.append("about", this.about);
-        formData.append("members", this.selectedMembers.join(','));
+        fetchMembers() {
+            let uri = this.base_url + `api/v1/member-list`;
+            axios.get(uri).then((response) => {
+                this.members = response.data;
+            });
+        },
+        handleMemberInput() {
+            if (this.selectedMember) {
+                this.memberEmails = this.members
+                    .filter((member) =>
+                        member.email.includes(this.selectedMember)
+                    )
+                    .map((member) => member.email);
+            } else {
+                this.memberEmails = [];
+            }
+        },
+        addMemberToList() {
+            if (this.selectedMember) {
+                // Check if entered email exists in members array
+                const existingMember = this.members.find(
+                    (member) => member.email === this.selectedMember
+                );
+                if (existingMember) {
+                    this.selectedMembers.push(this.selectedMember);
+                } else {
+                    this.selectedMembers.push(this.selectedMember);
+                }
+                this.selectedMember = "";
+                this.memberEmails = [];
+            }
+        },
+        removeMemberFromList(index) {
+            this.selectedMembers.splice(index, 1);
+        },
+        formSubmit() {
+            const formData = new FormData();
+            formData.append("name", this.name);
+            formData.append("email", this.email);
+            formData.append("about", this.about);
+            formData.append("members", this.selectedMembers.join(","));
 
-        let uri = this.base_url + `api/v1/department-create`;
+            let uri = this.base_url + `api/v1/department-create`;
 
-        axios
-          .post(uri, formData)
-          .then((response) => {
-            alert('Department created successifully!')
-            window.location.href = '/departments';
-
-          })
-          .catch((error) => {
-            this.alert_error = true;
-            console.log(error);
-          });
-      },
+            axios
+                .post(uri, formData)
+                .then((response) => {
+                    alert("Department created successifully!");
+                    window.location.href = "/departments";
+                })
+                .catch((error) => {
+                    this.alert_error = true;
+                    console.log(error);
+                });
+        },
     },
-  };
-  </script>
-
+};
+</script>

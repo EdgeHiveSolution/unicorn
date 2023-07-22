@@ -8,7 +8,7 @@
 <body>
     <h2>Department Invitation</h2>
 
-    <p>Dear {{ $member->email }},</p>
+    <p>Greetings!,</p>
 
     <p>You have been invited to join the {{ $departmentName }} department.</p>
 
@@ -16,7 +16,7 @@
 
     <ul>
         <li>Email: {{ $member->email }}</li>
-        <li>Password: {{ 'test1234' }}</li> <!-- Make sure to replace with the actual member's password -->
+        <li>Password: {{ $password }}</li> 
     </ul>
 
     <p>Visit our website at <a href="{{ url('/') }}">unicorn</a> to log in and access your account.</p>

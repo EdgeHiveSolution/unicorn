@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Partner extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'name', 'address', 'phone', 'email', 'website', 'logo', 'country_id', 'business_type', 'description', 'documents', 'about',
@@ -21,9 +23,14 @@ class Partner extends Model
         ->withPivot('role');
     }
 
+    /**
+     * The departments that belong to the partner.
+     */
     public function departments()
     {
-        return $this->belongsToMany(Department::class);
+        return $this->belongsToMany(Department::class, 'member_partner')
+            ->withPivot('member_id', 'role')
+            ->withTimestamps();
     }
 
     public function country()
@@ -31,7 +38,8 @@ class Partner extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function kpis(){
+    public function kpis()
+    {
         return $this->hasMany(Kpi::class);
     }
 

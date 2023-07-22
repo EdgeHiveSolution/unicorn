@@ -67,7 +67,7 @@
                                             <br />
                                             <span class="txt-gray">
                                                 Partners:
-                                                {{ department.members.length }}</span
+                                                {{ department.partners.length }}</span
                                             >
                                         </td>
 
@@ -89,22 +89,12 @@
                                         </td>
 
                                         <td>
-                                            <div class="progress">
-                                                <div
-                                                    class="progress-bar bg-primary"
-                                                    role="progressbar"
-                                                    :style="{
-                                                        width:
-                                                            department.progress +
-                                                            '%',
-                                                    }"
-                                                    aria-valuenow="75"
-                                                    aria-valuemin="0"
-                                                    aria-valuemax="100"
-                                                >
-                                                    {{100 }}%
-                                                </div>
-                                            </div>
+                                        48%
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" :style="{ width: '68%' }"
+                                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        on track
                                         </td>
                                         <td>
                                             <button

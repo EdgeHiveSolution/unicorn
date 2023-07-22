@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use App\Models\Admin; // Add the correct namespace for the Admin model
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -36,5 +37,9 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+
+        // Add route model binding for the Admin model
+        Route::model('admin', Admin::class);
     }
 }
+

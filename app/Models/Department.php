@@ -21,9 +21,14 @@ class Department extends Model
         return $this->belongsToMany(Member::class);
     }
 
-    public function partners(): BelongsToMany
+      /**
+     * The partners that belong to the department.
+     */
+    public function partners()
     {
-        return $this->belongsToMany(Partner::class);
+        return $this->belongsToMany(Partner::class, 'member_partner')
+            ->withPivot('member_id', 'role')
+            ->withTimestamps();
     }
 
     public function kpis(){

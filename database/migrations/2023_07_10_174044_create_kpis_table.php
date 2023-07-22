@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->foreignId('member_id')->constrained()->onDelete('cascade');
-            $table->enum('review_period', ['weekly', 'daily', 'monthly','quartely']);
+            $table->foreignId('partner_id')->constrained()->onDelete('cascade');
+            $table->string('review_period_range');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,3 +30,4 @@ return new class extends Migration
         Schema::dropIfExists('kpis');
     }
 };
+

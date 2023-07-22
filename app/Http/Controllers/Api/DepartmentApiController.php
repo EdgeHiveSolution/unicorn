@@ -7,7 +7,10 @@ use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Mail\MemberInvitation;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Util\PasswordGeneratorUtil;
+
 
 
 
@@ -25,15 +28,7 @@ class DepartmentApiController extends Controller
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -41,9 +36,9 @@ class DepartmentApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      */
+
     public function store(Request $request)
     {
-
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email',
@@ -59,37 +54,34 @@ class DepartmentApiController extends Controller
 
         $members = explode(',', $request->members);
         $memberIds = [];
+        $password_generator = new PasswordGeneratorUtil();
+        $password = $password_generator->generatePassword();
         foreach ($members as $memberEmail) {
             $member = Member::create([
                 'email' => trim($memberEmail),
+                'password' => Hash::make($password),
+                'is_active' => 1,
             ]);
             $memberIds[] = $member->id;
 
-           // Mail::to($member->email)->send(new MemberInvitation($member));
+
+         
+            Mail::to($member->email)->queue(new MemberInvitation($member, $request->name, $password));
         }
 
-         // Assign the members to the department
-         $department->members()->attach($memberIds);
+        // Assign the members to the department
+        $department->members()->attach($memberIds);
 
         return response()->json([
             'success' => 'Department created successfully',
-
         ]);
     }
 
 
 
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+
+
 
     /**
      * Show the form for editing the specified resource.

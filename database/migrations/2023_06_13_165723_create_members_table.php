@@ -20,6 +20,8 @@ class CreateMembersTable extends Migration
             $table->string('photo')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
+            $table->string('password');
+            $table->boolean('is_active')->default(true); 
             $table->timestamps();
             $table->softDeletes();
         });

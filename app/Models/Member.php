@@ -13,7 +13,7 @@ class Member extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name','email','photo'
+        'name','email','photo','is_active','password'
 
     ];
 
