@@ -152,6 +152,7 @@ tr:nth-child(odd) td {
     background-color: #0072bb;
     font-size: .9rem;
     color: #eaf3ff;
+  
 
 }
 
@@ -354,4 +355,56 @@ input{
 
 
 
+/* Add media queries for medium devices */
+@media screen and (max-width: 768px) {
+    .body-container {
+      flex-direction: column;
+    }
+    .sidebar {
+      width: 100%;
+    }
+    .main-container {
+      width: 100%;
+      border-radius: 0;
+      margin-top: 0;
+    }
+  }
+
+  /* Add media queries for small devices */
+  @media screen and (max-width: 576px) {
+    .nav .nav-item {
+      font-size: 1.2rem;
+      margin: 1.2rem  .4rem;
+    }
+
+    /* Adjust the font size and padding for input fields on small devices */
+    .input-field {
+      font-size: 14px;
+      padding: 6px 10px;
+    }
+
+    /* Adjust the font size for top header elements on small devices */
+    .top-header h2 {
+      font-size: 1.8rem;
+    }
+    .top-header p {
+      font-size: 1.1rem;
+    }
+  }
+
+  /* Add media queries for extra small devices (e.g., smartphones) */
+  @media screen and (max-width: 375px) {
+    /* Further adjust the font size for input fields on extra small devices */
+    .input-field {
+      font-size: 12px;
+    }
+
+    /* Further adjust the font size for top header elements on extra small devices */
+    .top-header h2 {
+      font-size: 1.6rem;
+    }
+    .top-header p {
+      font-size: 1rem;
+    }
+  }
 

@@ -55,7 +55,12 @@ class PartnerController extends Controller
      */
     public function show(Partner $partner)
     {
-        $partner->load('members');
+        $partner->load([
+            'members',
+            'kpis',
+            'departments',
+            'kpiMetrics' // Load nested relationship 'kpiMetrics' inside 'kpis'
+        ]);
 
         $data = [
             'partner' => $partner,
@@ -64,6 +69,7 @@ class PartnerController extends Controller
 
         return view('partner.show', $data);
     }
+
 
 
     /**

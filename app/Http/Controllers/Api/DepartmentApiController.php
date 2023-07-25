@@ -65,11 +65,11 @@ class DepartmentApiController extends Controller
             $memberIds[] = $member->id;
 
 
-         
-            Mail::to($member->email)->queue(new MemberInvitation($member, $request->name, $password));
+
+          //  Mail::to($member->email)->queue(new MemberInvitation($member, $request->name, $password));
         }
 
-        // Assign the members to the department
+        
         $department->members()->attach($memberIds);
 
         return response()->json([

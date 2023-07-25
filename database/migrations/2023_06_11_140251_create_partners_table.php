@@ -25,6 +25,7 @@ class CreatePartnersTable extends Migration
             $table->string('business_type')->nullable();
             $table->longText('about');
             $table->string('documents')->nullable();
+            $table->string('password');
             $table->boolean('is_active')->default(true); 
             $table->timestamps();
             $table->softDeletes();

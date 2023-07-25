@@ -47,7 +47,7 @@ class MetricApiController extends Controller
    public function update(Request $request, Metric $metric)
     {
 
-       
+
 
         // Update the metric
         $metric->update([
@@ -56,14 +56,25 @@ class MetricApiController extends Controller
 
         ]);
 
-        // Return a success message
+        
         return response()->json(['success' => 'Metric updated successfully']);
     }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+
+        // Find the metric by its ID
+        $metric = Metric::find($request->id);
+
+        if (!$metric) {
+            return response()->json(['error' => 'Metric not found'], 404);
+        }
+
+        // Delete the metric
+        $metric->delete();
+
+        return response()->json(['success' => 'Metric deleted successfully']);
     }
 }

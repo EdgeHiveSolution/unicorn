@@ -11,9 +11,9 @@ class Kpi extends Model
 
     protected $fillable =[
         'title',
-        'member_id',
+        'kpiOwner_id',
         'partner_id',
-        'review_period'
+        'review_period_range'
     ];
 
     public function partner()
@@ -21,14 +21,19 @@ class Kpi extends Model
         return $this->belongsTo(Partner::class);
     }
 
-    public function member()
+    public function members()
     {
-        return $this->belongsTo(Partner::class);
+        return $this->hasMany(Member::class);
     }
 
-    public function kpi_metrics()
+    public function kpiOwner()
     {
-        return $this->hasMany(Kpi_metric::class);
+        return $this->belongsTo(KpiOwner::class);
+    }
+
+    public function kpiMetrics()
+    {
+        return $this->hasMany(KpiMetric::class);
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use App\Models\Kpi;
 use App\Models\Partner;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class KpiApiController extends Controller
      */
     public function index()
     {
-        return Kpi::with('members','partners','departments')->get();
+        return Kpi::with('members','partners','departments','kpiMetrics')->get();
     }
 
     /**
@@ -25,20 +26,27 @@ class KpiApiController extends Controller
 
         $this->validate($request, [
             'title' => 'required',
-            'member_id' => 'required',
-           // 'review_period_range' => 'required',
+            'kpiOwner_id' => 'required',
+            'partner_id' => 'required',
+            'review_start_date' => 'required',
+            'review_end_date' => 'required',
         ]);
 
+        $start_date = Carbon::createFromFormat('Y-m-d', $request-> review_start_date,)->isoFormat('Do MMMM YYYY');
+        $end_date = Carbon::createFromFormat('Y-m-d',  $request-> review_end_date)->isoFormat('Do MMMM YYYY');
+
+        $date_range = $start_date . ' to ' . $end_date;
 
           $kpi =  Kpi::create([
             'title' => $request->title,
-            'member_id' => $request->member_id,
-            'review_period_range' => $request->review_period,
+            'kpiOwner_id' => $request->kpiOwner_id,
+            'partner_id' => $request->partner_id,
+            'review_period_range' => $date_range,
         ]);
         $partner_id = $request->partner_id;
 
 
-           // Associate the KPI with the partner
+
                 $partner = Partner::findOrFail($partner_id);
                 $partner->kpis()->save($kpi);
 
@@ -48,25 +56,6 @@ class KpiApiController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //

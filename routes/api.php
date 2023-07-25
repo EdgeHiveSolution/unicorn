@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\MemberApiController;
 use App\Http\Controllers\Api\MetricApiController;
 use App\Http\Controllers\Api\CountryApiController;
 use App\Http\Controllers\Api\PartnerApiController;
+use App\Http\Controllers\Api\KpiMetricApiController;
 use App\Http\Controllers\Api\DepartmentApiController;
 
 
@@ -31,10 +32,12 @@ Route::patch('v1/department-update',[DepartmentApiController::class, 'update']);
 Route::delete('v1/department-delete',[DepartmentApiController::class, 'destroy']);
 
 
-Route::get('v1/unit-list',[UnitApiController::class, 'index']);
-Route::post('v1/unit-create',[UnitApiController::class, 'store']);
+Route::get('v1/standardUnit-list',[UnitApiController::class, 'index']);
+Route::post('v1/standardUnit-create',[UnitApiController::class, 'store']);
 Route::patch('v1/unit-update',[UnitApiController::class, 'update']);
-Route::delete('v1/unit-delete',[UnitApiController::class, 'destroy']);
+
+Route::delete('v1/metric-delete', [MetricApiController::class, 'destroy']);
+
 
 Route::get('v1/metric-list',[MetricApiController::class, 'index']);
 Route::post('v1/metric-create',[MetricApiController::class, 'store']);
@@ -50,6 +53,11 @@ Route::get('v1/kpi-list',[KpiApiController::class, 'index']);
 Route::post('v1/kpi-create',[KpiApiController::class, 'store']);
 Route::patch('v1/kpi-update',[KpiApiController::class, 'update']);
 Route::delete('v1/kpi-delete',[KpiApiController::class, 'destroy']);
+
+Route::get('v1/kpiMetric-list',[KpiMetricApiController::class, 'index']);
+Route::post('v1/kpiMetric-create',[KpiMetricApiController::class, 'store']);
+Route::patch('v1/kpiMetric-update',[KpiMetricApiController::class, 'update']);
+Route::delete('v1/kpiMetric-delete',[KpiMetricApiController::class, 'destroy']);
 
 Route::get('v1/admin-list',[AdminApiController::class, 'index']);
 Route::post('v1/admin-create',[AdminApiController::class, 'store']);

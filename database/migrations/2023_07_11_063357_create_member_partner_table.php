@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('partner_id')->constrained();
             $table->string('role')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

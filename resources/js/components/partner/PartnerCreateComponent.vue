@@ -498,7 +498,7 @@ export default {
         },
     },
     methods: {
-         // New method to get department name by ID
+         
     getDepartmentName(departmentId) {
         const department = this.departments.find((department) => department.id === departmentId);
         return department ? department.name : "";

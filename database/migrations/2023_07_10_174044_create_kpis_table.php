@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('kpis', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('member_id')->constrained()->onDelete('cascade');
+            $table->string('kpiOwner_id');
             $table->foreignId('partner_id')->constrained()->onDelete('cascade');
             $table->string('review_period_range');
             $table->timestamps();

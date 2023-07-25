@@ -203,12 +203,12 @@
     computed: {
         firstName() {
         const names = this.userName.split(' ');
-        return names[0]; // Only use the first name
+        return names[0]; 
         },
     },
     methods: {
       handlePageChange(page) {
-        // Update 'partners' with the data of the requested page
+
         this.currentPage = page;
       },
 

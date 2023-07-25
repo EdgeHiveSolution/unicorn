@@ -14,7 +14,7 @@
                             <h2>{{ user.name }}</h2>
                             <p>Email: {{ user.email }}</p>
                             <p>Username: {{ user.username }}</p>
-                            <!-- Display other user details as needed -->
+                           
                         </div>
                     </div>
                 </div>
@@ -42,7 +42,7 @@ export default {
             let uri =this.base_url+`api/v1/profile`;
                 axios.get(uri).then((response) => {
                     this.user = response.data;
-                   
+
                 });
         }
     }

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Models\Unit;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class UnitApiController extends Controller
 {
@@ -12,7 +13,7 @@ class UnitApiController extends Controller
      */
     public function index()
     {
-        //
+        return Unit::all();
     }
 
     /**
@@ -28,7 +29,18 @@ class UnitApiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validation
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:100',
+
+        ]);
+
+       
+        $unit = Unit::create($validatedData);
+
+
+        return response()->json(['message' => 'Unit created successfully', 'data' => $unit], 201);
     }
 
     /**
@@ -63,3 +75,4 @@ class UnitApiController extends Controller
         //
     }
 }
+ // Fill the values in the pivot table (member_partner)

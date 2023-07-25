@@ -255,7 +255,7 @@ export default {
         },
         addMemberToList() {
             if (this.selectedMember) {
-                // Check if entered email exists in members array
+              
                 const existingMember = this.members.find(
                     (member) => member.email === this.selectedMember
                 );

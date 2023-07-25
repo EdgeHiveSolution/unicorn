@@ -24,7 +24,7 @@ class PartnerApiController extends Controller
      */
     public function index()
     {
-        $partners = Partner::with('departments', 'members','kpis')->get();
+        $partners = Partner::with('departments', 'members','kpis','kpiMetrics')->get();
 
         $formattedPartners = $partners->map(function ($partner) {
             $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
@@ -80,6 +80,9 @@ class PartnerApiController extends Controller
             $logo_name = url('/uploads/partners/logos/') . '/' . $file_name;
         }
 
+    $password_generator = new PasswordGeneratorUtil();
+    $password = $password_generator->generatePassword();
+
     $partner = Partner::create([
         'name' => $request->name,
         'email' => $request->email,
@@ -91,6 +94,8 @@ class PartnerApiController extends Controller
         'business_type' => $request->business_type,
         'about' => $request->about,
         'document_id' => $request->documents,
+        'password' => Hash::make($password),
+        'is_active' => 1,
     ]);
     $password_generator = new PasswordGeneratorUtil();
         $password = $password_generator->generatePassword();
@@ -103,7 +108,7 @@ class PartnerApiController extends Controller
                 'is_active' => 1,
             ]);
 
-        // Fill the values in the pivot table (member_partner)
+       
         $partner->members()->attach($newMember->id, [
             'department_id' => $member->department_id,
             'role' => $member->role,
@@ -187,14 +192,14 @@ class PartnerApiController extends Controller
         // Get the logo file name from the URL
         $logoFileName = basename($partner->logo);
 
-        // Delete the logo file from the storage (e.g., public/storage/partner_logos)
+
         Storage::delete('public/partner_logos/' . $logoFileName);
     }
 
-    // Soft delete the partner by setting the deleted_at timestamp
+
     $partner->delete();
 
-    // Return a response indicating the success of the deletion
+
     return response()->json(['message' => 'Partner deleted successfully'], 200);
 }
 }

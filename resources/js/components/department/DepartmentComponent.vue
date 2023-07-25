@@ -164,6 +164,4 @@ export default {
 };
 </script>
 
-<style>
-/* Add your custom styles here */
-</style>
+

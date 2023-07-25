@@ -12,6 +12,7 @@ import PartnerDetailComponent from './components/partner/PartnerDetailComponent.
 import ConfigurationComponent from './components/configuration/ConfigurationComponent.vue';
 import DepartmentComponent from './components/department/DepartmentComponent.vue';
 import DepartmentCreateComponent from './components/department/DepartmentCreateComponent.vue';
+import DepartmentDetailComponent from './components/department/DepartmentDetailComponent.vue';
 import ProfileEditComponent from './components/profile/ProfileEditComponent.vue';
 
 app.component('dashboard-component', DashboardComponent);
@@ -23,6 +24,7 @@ app.component('partner-create-component', PartnerCreateComponent);
 app.component('configuration-component', ConfigurationComponent)
 app.component('department-component', DepartmentComponent);
 app.component('department-create-component', DepartmentCreateComponent);
+app.component('department-detail-component', DepartmentDetailComponent);
 
 app.mount('#app');
 

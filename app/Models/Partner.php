@@ -12,7 +12,7 @@ class Partner extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'address', 'phone', 'email', 'website', 'logo', 'country_id', 'business_type', 'description', 'documents', 'about',
+        'name', 'address', 'phone', 'email', 'website', 'logo', 'country_id', 'business_type','is_active','password', 'description', 'documents', 'about',
 
     ];
 
@@ -41,6 +41,11 @@ class Partner extends Model
     public function kpis()
     {
         return $this->hasMany(Kpi::class);
+    }
+
+    public function kpiMetrics()
+    {
+        return $this->hasMany(KpiMetric::class);
     }
 
 }
