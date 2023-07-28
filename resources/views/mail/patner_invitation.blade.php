@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Invitation</title>
+    <title>Partner Invitation</title>
 </head>
 <body>
-    <h2>Department Invitation</h2>
+    <h2>Partner Invitation</h2>
 
     <p>Greetings!,</p>
 
-    <p>You have been invited to join the {{ $departmentName }} department.</p>
+    <p>You have been invited to the partner department.</p>
 
     @if ($actionType === 'login' && $member)
         <p>Please find below your login details:</p>

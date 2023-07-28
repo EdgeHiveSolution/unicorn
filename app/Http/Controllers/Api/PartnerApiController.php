@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Util\PasswordGeneratorUtil;
+use App\Mail\PartnerInvitation;
 
 class PartnerApiController extends Controller
 {
@@ -100,13 +101,18 @@ class PartnerApiController extends Controller
     $password_generator = new PasswordGeneratorUtil();
         $password = $password_generator->generatePassword();
 
-    foreach ($members as $member) {
-        // Create the member using the email
-        $newMember = Member::firstOrCreate([
-                'email' => $member->email,
-                'password' => Hash::make($password),
-                'is_active' => 1,
-            ]);
+        foreach ($members as $member) {
+            // Check if the member already exists
+            $existingMember = Member::where('email', $member->email)->first();
+    
+            if ($existingMember) {
+                // Member exists, send the login URL
+                 Mail::to($existingMember->email)->queue(new PatnerInvitation($existingMember, $password, 'login'));
+            } else {
+                // Member is new, send the register URL
+                 Mail::to($member->email)->queue(new PatnerInvitation(null, null, 'register'));
+            }
+    
 
        
         $partner->members()->attach($newMember->id, [

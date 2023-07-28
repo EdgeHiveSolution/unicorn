@@ -936,11 +936,13 @@ export default {
             errors: {},
         };
     },
+
     mounted() {
         // Fetch metrics data
         this.fetchMetrics();
         this.fetchStandardUnits();
     },
+
     methods: {
         fetchMetrics() {
             // Perform API call to fetch metrics data
@@ -950,6 +952,7 @@ export default {
             });
         },
 
+
         fetchStandardUnits() {
             // Perform API call to fetch metrics data
             let uri = this.base_url + "api/v1/standardUnit-list";
@@ -957,6 +960,7 @@ export default {
                 this.units = response.data;
             });
         },
+
         submitMetric() {
             const formData = new FormData();
             formData.append("name", this.newMetric.name);
@@ -980,6 +984,8 @@ export default {
                     this.errors = error.response.data.errors;
                 });
         },
+
+        
 
         submitStandardUnit() {
             const formData = new FormData();
