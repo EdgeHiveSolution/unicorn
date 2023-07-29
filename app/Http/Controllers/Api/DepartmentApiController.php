@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Util\PasswordGeneratorUtil;
+use App\Mail\PatnerInvitation;
 
 
 

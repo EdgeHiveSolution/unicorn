@@ -10,7 +10,7 @@
 
     <p>Greetings!,</p>
 
-    <p>You have been invited to the partner department.</p>
+    <p>{{ $partnerName }} have  invited you to their organization.</p>
 
     @if ($actionType === 'login' && $member)
         <p>Please find below your login details:</p>
