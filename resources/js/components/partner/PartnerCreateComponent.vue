@@ -586,10 +586,15 @@ export default {
 
             const uri = this.base_url + 'api/v1/partner-create';
             axios.post(uri, formData)
-                .then((response) => {
-                    alert('Partner created successifully!')
-                    window.location.href = "/partners";
-                })
+                 .then((response) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Partner created successfully!',
+          }).then(() => {
+            window.location.href = '/departments';
+          });
+        })
                 .catch((error) => {
                     console.error(error);
                 });

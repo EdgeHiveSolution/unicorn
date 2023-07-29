@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Util\PasswordGeneratorUtil;
+use App\Mail\PatnerInvitation;
+use App\Models\KpiMetric;
+use Illuminate\Support\Facades\Log;
+
 
 class PartnerApiController extends Controller
 {
@@ -100,28 +104,39 @@ class PartnerApiController extends Controller
     $password_generator = new PasswordGeneratorUtil();
         $password = $password_generator->generatePassword();
 
-    foreach ($members as $member) {
-        // Create the member using the email
-        $newMember = Member::firstOrCreate([
-                'email' => $member->email,
-                'password' => Hash::make($password),
-                'is_active' => 1,
-            ]);
 
-       
-        $partner->members()->attach($newMember->id, [
-            'department_id' => $member->department_id,
-            'role' => $member->role,
-        ]);
-    }
-
-
-
-
-        return response()->json([
-            'success' => 'Partner created successfully',
-
-        ]);
+        foreach ($members as $member) {
+            // Check if the member already exists
+            $existingMember = Member::where('email', $member->email)->first();
+        
+            if ($existingMember) {
+                // Member exists, send the login URL
+                try {
+                    Mail::to($existingMember->email)->send(new PatnerInvitation($existingMember, $password, 'login', $request->name));
+                    $partner->members()->attach($existingMember->id, [
+                        'department_id' => $member->department_id,
+                        'role' => $member->role,
+                    ]);
+                } catch (\Exception $e) {
+                    // Log the error message
+                    Log::info('Error sending email to existing member: ' . $e->getMessage());
+                }
+            } else {
+                // Member is new, send the register URL
+                try {
+                    Mail::to($member)->send(new PatnerInvitation(null, null, 'register', $request->name));
+                    // Note: For new members, $member is an email string, not an object, so we can't access properties like $member->department_id directly.
+                    // You might need to update this part accordingly based on your data structure.
+                    $partner->members()->attach($newMember->id, [
+                        'department_id' => $member->department_id,
+                        'role' => $member->role,
+                    ]);
+                } catch (\Exception $e) {
+                    // Log the error message
+                    Log::info('Error sending email to new member: ' . $e->getMessage());
+                }
+            }
+        }
     }
 
 

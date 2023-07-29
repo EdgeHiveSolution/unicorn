@@ -26,8 +26,9 @@ use App\Http\Controllers\ConfigurationController;
 
 
 Auth::routes();
+
 Route::get('/', [DashboardController::class, 'index'])->name('home');
-Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('home.dashboard');
 
 Auth::routes();
 

@@ -1,8 +1,6 @@
 <template>
     <div>
-      <div v-if="success" class="alert alert-success">
-        {{ success }}
-      </div>
+     
 
       <div class="top-header">
         <h2>Partners</h2>
@@ -40,60 +38,75 @@
                   <p>No partner found</p>
                 </template>
                 <template v-else>
+                  
                   <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Partner</th>
-                        <th>Status</th>
-                        <th>About</th>
-                        <th>Members</th>
-                        <th>Active KPIs</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="partner in partners" :key="partner.id">
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img :src="partner.logo" alt="logo" />
-                                <span class="pl-2">{{ partner.name }}</span>
-                            </div>
+      <thead>
+        <tr>
+          <th>Partner</th>
+          <th>Status</th>
+          <th>About</th>
+          <th>Members</th>
+          <th>Active KPIs</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="partner in partners" :key="partner.id">
+          <td>
+            <div class="d-flex align-items-center">
+              <img :src="partner.logo" alt="logo" />
+              <span class="pl-2">{{ partner.name }}</span>
+            </div>
 
-                          <div class="d-flex align-items-center">
-                            <span class="active-period txt-gray">Date Joined: {{ partner.formatted_created_at }}</span>
-                          </div>
-                        </td>
-                        <td>
-                          <button class="btn btn-suc">
-                            <span class="txt-success">Active</span>
-                          </button>
-                        </td>
-                        <td>
-                          <span class="txt-dark">{{ partner.business_type }}</span><br>
-                          <span class="txt-gray">{{ partner.about }}</span>
-                        </td>
-                        <td class="td-members" >
+            <div class="d-flex align-items-center">
+              <span class="active-period txt-gray">Date Joined: {{ partner.formatted_created_at }}</span>
+            </div>
+          </td>
+          <td>
+            <button class="btn btn-suc">
+              <span class="txt-success">Active</span>
+            </button>
+          </td>
+          <td>
+            <span class="txt-dark">{{ partner.business_type }}</span><br>
+            <span class="txt-gray">{{ partner.about }}</span>
+          </td>
+          <td class="td-members">
+            <img v-for="member in partner.members" :key="member.id" :src="member.image" alt="image" />
+          </td>
+          <td>
+            <div v-if="partner.kpiMetrics && partner.kpiMetrics.length > 0">
+              {{ calculateKpiProgress(partner.kpiMetrics) }}%
+              <div class="progress">
+                <div class="progress-bar bg-warning" role="progressbar" :style="{ width: calculateKpiProgress(partner.kpiMetrics) + '%' }"
+                  :aria-valuenow="calculateKpiProgress(partner.kpiMetrics)" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <span v-if="calculateKpiProgress(partner.kpiMetrics) < 50" class="text-danger">off track</span>
+              <span v-else-if="calculateKpiProgress(partner.kpiMetrics) >= 50 && calculateKpiProgress(partner.kpiMetrics) < 80"
+                class="text-warning">at risk</span>
+              <span v-else class="text-success">on track</span>
+            </div>
+            <div v-else>
+              0%
+              <div class="progress">
+                <div class="progress-bar bg-warning" role="progressbar" :style="{ width: '0%' }"
+                  aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              off track
+            </div>
+          </td>
+          <td>
+            <button class="btn btn-pri px-1 py-1 d-flex align-items-center">
+              <i class="mdi mdi-eye-outline text-light mx-2"></i>
+              <a :href="'/partners/' + partner.id" class="text-light">View</a>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-                          <img v-for="member in partner.members" src="assets/images/faces/face1.jpg" alt="image" />
 
-                        </td>
-                        <td>
-                          48%
-                          <div class="progress">
-                            <div class="progress-bar bg-warning" role="progressbar" :style="{ width: '48%' }"
-                              aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                          off track
-                        </td>
-                        <td>
-                            <button class="btn btn-pri px-1 py-1 d-flex align-items-center">
-                            <i class="mdi mdi-eye-outline text-light mx-2"></i>
-                            <a :href="'/partners/' + partner.id" class="text-light">View</a>
-                            </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+
                   <pagination :current-page="currentPage" :total-pages="totalPages" @page-change="fetchPartners" />
                 </template>
               </div>
@@ -104,36 +117,42 @@
     </div>
   </template>
 
-  <script>
-  export default {
-    data() {
-      return {
-        success: '',
-        searchQuery: '',
-        partners: [],
-        currentPage: 1,
-        base_url:'../',
-        totalPages: 0
-      };
-    },
-    mounted() {
-      this.fetchPartners();
-    },
-    methods: {
-        fetchPartners(){
-                let uri =this.base_url+`api/v1/partner-list`;
-                axios.get(uri).then((response) => {
-                    this.partners = response.data;
-                });
-            },
+  
+ <script>
+import axios from 'axios';
 
-
-      showFilters() {
-        // Implement your logic to show filters
+export default {
+  data() {
+    return {
+     success: '',
+      searchQuery: '',
+      partners: [],
+      currentPage: 1,
+      base_url: '../',
+      totalPages: 0
+    };
+  },
+  mounted() {
+    this.fetchPartners();
+  },
+  methods: {
+    fetchPartners() {
+      let uri = this.base_url + `api/v1/partner-list`;
+      axios.get(uri).then((response) => {
+        this.partners = response.data;
+      });
+    },
+    calculateKpiProgress(kpiMetrics) {
+      if (!kpiMetrics || kpiMetrics.length === 0) {
+        return 0;
       }
+      let totalProgress = kpiMetrics.reduce((acc, kpiMetric) => acc + kpiMetric.on_track_value, 0);
+      let avgProgress = totalProgress / kpiMetrics.length;
+      return Math.round(avgProgress);
     }
-  };
-  </script>
+  }
+};
+</script>
 
   <style scoped>
   /* Add any necessary CSS styles here */

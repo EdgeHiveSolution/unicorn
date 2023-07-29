@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partner Invitation</title>
+    <title>Member Invitation</title>
 </head>
 <body>
+    <h2>Department Invitation</h2>
 
+    <p>Greetings!,</p>
 
+    <p>You have been invited to join the {{ $departmentName }} department.</p>
 
+    @if ($actionType === 'login' && $member)
+        <p>Please find below your login details:</p>
+        <ul>
+            <li>Email: {{ $member->email }}</li>
+            <li>Password: {{ $password }}</li>
+        </ul>
+        <p>Visit our website at <a href="{{ $url }}">Unicorn</a> to log in and access your account.</p>
+    @else
+        <p>Visit our website at <a href="{{ $url }}">Unicorn</a> to register and access your account.</p>
+    @endif
 
-    <p> You’ve been successfully added to the  Organisation.</p>
-
-    <h5 class="text-dark">Download the UNICON app to get started:</h5>
-
-   <div class="row">
-    <p>Get it on googleplay</p> or <p>Download on App store</p>
-   </div>
-
-   <button class="btn btn-primary px-3 py-2"> <i class="mdi mdi-checkbox-marked-circle"></i> Proceed to dashboard</button>
+    <p>Thank you!</p>
 </body>
 </html>

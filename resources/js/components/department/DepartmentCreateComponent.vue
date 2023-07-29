@@ -2,12 +2,12 @@
     <div>
         <flash-message></flash-message>
         <!-- Alerts -->
-        <div class="alert alert-success" role="alert" v-if="alert_success">
+        <!-- <div class="alert alert-success" role="alert" v-if="alert_success">
             Department created successfully!
         </div>
         <div class="alert alert-danger" role="alert" v-if="alert_error">
             Error in creating department!
-        </div>
+        </div> -->
 
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
@@ -255,7 +255,6 @@ export default {
         },
         addMemberToList() {
             if (this.selectedMember) {
-              
                 const existingMember = this.members.find(
                     (member) => member.email === this.selectedMember
                 );
@@ -283,8 +282,13 @@ export default {
             axios
                 .post(uri, formData)
                 .then((response) => {
-                    alert("Department created successifully!");
-                    window.location.href = "/departments";
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Department created successfully!",
+                    }).then(() => {
+                        window.location.href = "/departments";
+                    });
                 })
                 .catch((error) => {
                     this.alert_error = true;

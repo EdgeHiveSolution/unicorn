@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Util\PasswordGeneratorUtil;
+use App\Mail\PatnerInvitation;
 
 
 
@@ -37,45 +38,90 @@ class DepartmentApiController extends Controller
      *
      */
 
-    public function store(Request $request)
-    {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email',
-            'about' => 'required',
-            'members.*' => 'exists:members,email',
-        ]);
+     public function store(Request $request)
+     {
+         $this->validate($request, [
+             'name' => 'required',
+             'email' => 'required|email',
+             'about' => 'required',
+             'members.*' => 'email',
+         ]);
+     
+         $department = Department::create([
+             'name' => $request->name,
+             'email' => $request->email,
+             'about' => $request->about,
+         ]);
+     
+         $members = explode(',', $request->members);
+         $memberIds = [];
+         $password_generator = new PasswordGeneratorUtil();
+         $password = $password_generator->generatePassword();
+         foreach ($members as $memberEmail) {
+             // Check if the member already exists
+             $existingMember = Member::where('email', trim($memberEmail))->first();
+     
+             if ($existingMember) {
+                 // Member exists, send the login URL
+                  Mail::to($existingMember->email)->queue(new MemberInvitation($existingMember, $request->name, $password, 'login'));
+             } else {
+                 // Member is new, send the register URL
+                  Mail::to($memberEmail)->queue(new MemberInvitation(null, $request->name, null, 'register'));
+             }
+         }
+     
+         $department->members()->attach($memberIds);
+     
+         return response()->json([
+             'success' => 'Department created successfully',
+         ]);
+     }
+     
 
-        $department = Department::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'about' => $request->about,
-        ]);
-
-        $members = explode(',', $request->members);
-        $memberIds = [];
-        $password_generator = new PasswordGeneratorUtil();
-        $password = $password_generator->generatePassword();
-        foreach ($members as $memberEmail) {
-            $member = Member::create([
-                'email' => trim($memberEmail),
-                'password' => Hash::make($password),
-                'is_active' => 1,
-            ]);
-            $memberIds[] = $member->id;
 
 
 
-          //  Mail::to($member->email)->queue(new MemberInvitation($member, $request->name, $password));
-        }
+
+
+    // public function store(Request $request)
+    // {
+    //     $this->validate($request, [
+    //         'name' => 'required',
+    //         'email' => 'required|email',
+    //         'about' => 'required',
+    //         'members.*' => 'exists:members,email',
+    //     ]);
+
+    //     $department = Department::create([
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'about' => $request->about,
+    //     ]);
+
+    //     $members = explode(',', $request->members);
+    //     $memberIds = [];
+    //     $password_generator = new PasswordGeneratorUtil();
+    //     $password = $password_generator->generatePassword();
+    //     foreach ($members as $memberEmail) {
+    //         $member = Member::create([
+    //             'email' => trim($memberEmail),
+    //             'password' => Hash::make($password),
+    //             'is_active' => 1,
+    //         ]);
+    //         $memberIds[] = $member->id;
+
+
+
+    //       //  Mail::to($member->email)->queue(new MemberInvitation($member, $request->name, $password));
+    //     }
 
         
-        $department->members()->attach($memberIds);
+    //     $department->members()->attach($memberIds);
 
-        return response()->json([
-            'success' => 'Department created successfully',
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => 'Department created successfully',
+    //     ]);
+    // }
 
 
 

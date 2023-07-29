@@ -89,12 +89,25 @@
                                         </td>
 
                                         <td>
-                                        48%
-                                        <div class="progress">
-                                            <div class="progress-bar bg-success" role="progressbar" :style="{ width: '68%' }"
-                                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        on track
+                                            <div v-if="department.kpiMetrics && department.kpiMetrics.length > 0">
+                                                {{ calculateKpiProgress(department.kpiMetrics) }}%
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-success" role="progressbar" :style="{ width: calculateKpiProgress(department.kpiMetrics) + '%' }"
+                                                        :aria-valuenow="calculateKpiProgress(department.kpiMetrics)" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <span v-if="calculateKpiProgress(department.kpiMetrics) < 50" class="text-danger">off track</span>
+                                                <span v-else-if="calculateKpiProgress(department.kpiMetrics) >= 50 && calculateKpiProgress(department.kpiMetrics) < 80"
+                                                    class="text-warning">at risk</span>
+                                                <span v-else class="text-success">on track</span>
+                                            </div>
+                                            <div v-else>
+                                                0%
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-warning" role="progressbar" :style="{ width: '0%' }"
+                                                        :aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                off track
+                                            </div>
                                         </td>
                                         <td>
                                             <button
@@ -139,6 +152,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
@@ -160,8 +175,14 @@ export default {
                 this.departments = response.data;
             });
         },
+        calculateKpiProgress(kpiMetrics) {
+            if (!kpiMetrics || kpiMetrics.length === 0) {
+                return 0;
+            }
+            let totalProgress = kpiMetrics.reduce((acc, kpiMetric) => acc + kpiMetric.on_track_value, 0);
+            let avgProgress = totalProgress / kpiMetrics.length;
+            return Math.round(avgProgress);
+        }
     },
 };
 </script>
-
-
