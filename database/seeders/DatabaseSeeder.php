@@ -14,10 +14,21 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-
+            
+            RoleSeeder::class,
             AdminSeeder::class,
+            UserSeeder::class, 
+            DepartmentSeeder::class,
             CountrySeeder::class,
-           // PartnerSeeder::class
+            PartnerSeeder::class,
+            DepartmentPartnerSeeder::class,
+            MemberSeeder::class,
+            KpiSeeder::class,
+            MemberPartnerSeeder::class, 
+            DepartmentMemberSeeder::class,
+          
+           
+            
         ]);
         // \App\Models\User::factory(10)->create();
 

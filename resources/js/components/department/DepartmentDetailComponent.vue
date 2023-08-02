@@ -12,29 +12,30 @@
         <nav class="navbar navbar-expand-lg navbar">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a href="#performance" class="nav-link">Performance</a>
+              <a href="#performance" class="nav-link"  @click="activeTab = 'performance'" :class="{ active: activeTab === 'performance' }">Performance</a>
             </li>
             <li class="nav-item">
-              <a href="#partner" class="nav-link">Partner <span class="encircle">{{ partners.length }}</span></a>
+              <a href="#partner" class="nav-link" @click="activeTab = 'partner'" :class="{ active: activeTab === 'partner' }">Partners <span class="encircle">{{ partners.length }}</span></a>
             </li>
             <li class="nav-item">
-              <a href="#members" class="nav-link">
+              <a href="#members" class="nav-link" @click="activeTab = 'members'" :class="{ active: activeTab === 'members' }">
                 Members
                 <span class="encircle">{{ members.length }}</span>
               </a>
             </li>
             <li class="nav-item">
-              <a href="#details" class="nav-link">Details</a>
+              <a href="#details" class="nav-link" @click="activeTab = 'details'" :class="{ active: activeTab === 'details' }">Details</a>
             </li>
           </ul>
         </nav>
         <hr class="pt-0" />
       </div>
 
-      <div class="dropdown-divider"></div>
+       <div class="dropdown-divider"></div>
+       <div v-if="activeTab === 'performance'">
       <h3>Performance Overview</h3>
 
-      <div class="row">
+       <div class="row">
         <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
           <div class="card bg-light">
             <div class="card-body">
@@ -72,14 +73,28 @@
         <div class="col-12 grid-margin">
           <div class="card">
             <div class="card-header d-flex justify-content-between my-3">
-              <div>
+                 <div class="input-container">
+                                <i class="mdi mdi-magnify mdi-icon"></i>
+                                <input style="height: 10px"
+
+                                    class="input-field"
+                                    type="text"
+                                    placeholder="Search for partners"
+                                    
+                                />
+                            </div>
+              <!-- <div>
                 <input class="btn btn-light p-3" type="text" placeholder="search for partners">
-              </div>
+              </div> -->
               <div>
-                <button class="btn btn-light p-3">
-                  <i class="mdi mdi-format-align-bottom text-dark"></i>
-                  Filters
-                </button>
+             
+
+                 <button style="height: 10px"
+                                class="btn btn-light p-3 btn-icon"
+                            >
+                                <i class="mdi mdi-sort-variant text-dark"></i>
+                                Filters
+                            </button>
               </div>
             </div>
             <div class="card-body">
@@ -91,7 +106,7 @@
                       <th>Progress</th>
                       <th>Members</th>
                       <th>Departments</th>
-                      <th>Action</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -115,28 +130,523 @@
                         </div>
                       </td>
                       <td>
-                        <img v-for="member in partner.members" :src="member.image" :alt="member.name" :key="member.name" />
+                        <img v-for="member in members" :src="member.image" alt="member.email" :key="member.id" />
                       </td>
                       <td>
                         <span
-                          class="bg-warning p-2 border-3 m-2"
-                          v-for="department in partner.departments"
-                          :key="department"
+                          class="department-tag"
+                          v-for="department in department"
+                          :key="department.id"
                         >
-                          {{ department }}
+                          {{ this.department.name }}
                         </span>
                       </td>
                       <td>
-                        <div class="btn btn-primary p-2">View details</div>
+                        <div @click="goToPerformancePartner" class="btn btn-primary p-2">View details</div>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
+
+
+
+
+            
+          </div>
+          
+
+
+
+
+           <br>
+
+           <div class="card">
+            <h3>Department Metrics</h3>
+            <div class="card-header d-flex justify-content-between my-3">
+                 <div class="input-container">
+                                <i class="mdi mdi-magnify mdi-icon"></i>
+                                <input style="height: 10px"
+                                    class="input-field"
+                                    type="text"
+                                    placeholder="Search KPI Metrics"
+                                    
+                                />
+                            </div>
+              <!-- <div>
+                <input class="btn btn-light p-3" type="text" placeholder="search for partners">
+              </div> -->
+              <div>
+             <div style="display: flex; align-items: center;  justify-content: space-between;">
+                        
+             <button  class="btn btn-light p-1 btn-icon" style="background-color: lightgrey; color: #76aefd; height: 35px">
+              All Departments
+              <i class="mdi mdi-close" style="font-size: 17px; margin-left: 5px;"></i>
+            </button>
+              <div style="margin-left: 10px;"></div>
+
+                 <button style="height: 10px"
+                                class="btn btn-light p-3 btn-icon"
+                            >
+                                <i class="mdi mdi-sort-variant text-dark"></i>
+                                Filters
+                            </button>
+              </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>KPI Metric</th>
+                      <th>Current Value</th>
+                      <th>Target</th>
+                      <th>Progress</th>
+                      <th>Top Drivers</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Replace the static data with dynamic data using v-for directive -->
+                    <tr>
+                      <td>
+
+                       <span class="txt-gray">
+                                                Partners:
+                                                </span>
+
+                      </td>
+                      <td>
+                       
+                      </td>
+                      <td>
+                      </td>
+                      <td>
+                      
+                      </td>
+
+                      <td>
+                      </td>
+                  
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+
+
+
+            
           </div>
         </div>
       </div>
+
+      </div>
+
+
+       <!-- Partner tab content -->
+      <div v-else-if="activeTab === 'partner'">
+        <!-- Your Partner tab content here -->
+        <!-- ... -->
+        <div>  <h3>     </h3></div>
+   <div class="card">
+           
+            <div class="card-header d-flex justify-content-between my-3">
+                 <div class="input-container">
+                                <i class="mdi mdi-magnify mdi-icon"></i>
+                                <input style="height: 10px"
+                                    class="input-field"
+                                    type="text"
+                                    placeholder="Search KPI Metrics"
+                                    
+                                />
+                            </div>
+              <!-- <div>
+                <input class="btn btn-light p-3" type="text" placeholder="search for partners">
+              </div> -->
+              <div>
+             
+
+                 <button style="height: 10px"
+                                class="btn btn-light p-3 btn-icon"
+                            >
+                                <i class="mdi mdi-sort-variant text-dark"></i>
+                                Filters
+                            </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>KPI Metric</th>
+                      <th>Current </th>
+                      <th>Target</th>
+                      <th>Progress</th>
+                   
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Replace the static data with dynamic data using v-for directive -->
+                    <tr>
+                      <td>
+
+
+                      </td>
+                      <td>
+                       
+                      </td>
+                      <td>
+                      </td>
+                      <td>
+                      
+                      </td>
+
+                      
+                  
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+
+
+
+            
+          </div>
+        </div>
+      
+
+    
+
+
+
+        
+      
+
+      <!-- Members tab content -->
+      <div v-else-if="activeTab === 'members'">
+        <!-- Your Members tab content here -->
+        <!-- ... -->
+
+
+         <div><h3>Department Members</h3></div>
+
+         <div>The progress of all members in the  {{ department.name }} department.</div><br>
+        <div class="card">
+            
+            <div class="card-header d-flex justify-content-between my-3">
+                 <div class="input-container">
+                                <i class="mdi mdi-magnify mdi-icon"></i>
+                                <input style="height: 10px"
+                                    class="input-field"
+                                    type="text"
+                                    placeholder="Search Members"
+                                    
+                                />
+                            </div>
+              <!-- <div>
+                <input class="btn btn-light p-3" type="text" placeholder="search for partners">
+              </div> -->
+              <div style="display: flex; align-items: center;  justify-content: space-between;">
+                        
+             <button  class="btn btn-light p-1 btn-icon" style="background-color: lightgrey; color: blue; height: 35px">
+              All
+              <i class="mdi mdi-close" style="font-size: 17px; margin-left: 5px;"></i>
+            </button>
+              <div style="margin-left: 10px;"></div>
+
+                 <button style="height: 10px"
+                                class="btn btn-light p-3 btn-icon"
+                            >
+                                <i class="mdi mdi-sort-variant text-dark"></i>
+                                Filters
+                            </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Member</th>
+                      <th>Status </th>
+                      <th>Partners</th>
+                      <th>Partners At Risk/Off Track</th>
+                   
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Replace the static data with dynamic data using v-for directive -->
+                    <tr>
+                      <td>
+                       
+
+
+                      </td>
+                      <td>
+                       
+                      </td>
+                      <td>
+                      </td>
+                      <td>
+                      
+                      </td>
+
+                      
+                  
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+
+
+
+            
+          </div>
+      </div>
+
+
+
+        <!-- Details tab content -->
+        <div v-else-if="activeTab === 'details'">
+          <!-- Your Details tab content here -->
+          <!-- ... -->
+            <div class="d-flex justify-content-between">
+            <div>
+                <h3 style="font-size: 16px">Department Info</h3>
+                <p>Enter the details of the department here.</p>
+            </div>
+            <div class="btn-icon">
+                <button
+                    class="btn btn-light border-dark p-3 btn-action cancel-btn"
+                >
+                    Cancel
+                </button>
+                <button
+                    class="btn btn-primary p-3 btn-action add-btn"
+                    form="form-submit"
+                    type="submit"
+                >
+                    Add
+                </button>
+            </div>
+        </div>
+
+
+
+<form
+            id="form-submit"
+            class="row g-3"
+            @submit.prevent="formSubmit"
+            method="post"
+           >
+            <div class="row mb-2 p-3">
+                <label
+                    for="name"
+                    class="col-md-3 col-form-label text-md-start"
+                    >{{ "Name" }}</label
+                >
+                <div class="col-md-5 offset-md-0 text-center">
+                    <input
+                        style="height: 10px"
+                        id="name"
+                        name="name"
+                        class="form-control form-control-lg"
+                        type="text"
+                        v-model="department.name"
+                        autocomplete="name"
+                        autofocus
+                    />
+                </div>
+            </div>
+            <hr />
+            <div class="row mb-2 p-3">
+                <label
+                    for="email"
+                    class="col-md-3 col-form-label text-md-start"
+                    >{{ "Email Address" }}</label
+                >
+                <div class="col-md-5 offset-md-0 text-center">
+                    <input
+                        style="height: 10px"
+                        id="email"
+                        name="email"
+                        class="form-control form-control-lg"
+                        type="email"
+                        v-model="department.email"
+                        autocomplete="email"
+                        autofocus
+                    />
+                </div>
+            </div>
+            <hr />
+
+            <div class="row mb-2 p-3">
+                <label for="about" class="col-md-3 col-form-label text-md-start"
+                    >{{ "About" }} <br /><span class="text-muted"
+                        >Write a brief of the department.</span
+                    ></label
+                >
+                <div class="col-md-5 offset-md-0 text-center">
+                    <div class="d-flex m-3 justify-content-space-between">
+                        <select
+                            style="width: 300px; height: 45px"
+                            class="form-select form-control form-select-lg mb-3"
+                            aria-label=".form-select-lg example"
+                        >
+                            <option value="normal_text">Normal Text</option>
+                            <option value="long_text">Long Text</option>
+                            <option value="short_text">Short Text</option>
+                        </select>
+
+                        <i
+                            ><span
+                                class="text-muted mx-3 h3 text-gray"
+                                id="bold"
+                                ><b>B</b></span
+                            ></i
+                        >
+                        <i
+                            ><span
+                                class="text-muted mdi mdi-format-italic mx-3 h3 text-gray"
+                                id="italic"
+                                ><i></i></span
+                        ></i>
+
+                        <i class="mx-3 h3 mdi mdi-link text-gray" id="link"></i>
+                        <i
+                            class="mx-3 h3 mdi mdi-format-list-bulleted text-gray"
+                            id="dotted"
+                        ></i>
+
+                        <i
+                            class="mx-3 h3 mdi mdi-format-list-numbered text-gray"
+                            id="dotted"
+                        ></i>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <textarea
+                            class="form-control"
+                            name="about"
+                            placeholder="Write company about here"
+                            style="height: 100px"
+                            v-model="department.about"
+                        ></textarea>
+                        <label></label>
+                    </div>
+                </div>
+            </div>
+            <hr />
+
+            <div class="row mb-2 p-3">
+                <label for="email" class="col-md-3 col-form-label text-md-start"
+                    >{{ "Members" }} <br /><span class="text-muted"
+                        >Invite or select the relevant members to this
+                        department</span
+                    ></label
+                >
+                <div class="col-md-5 offset-md-0 text-center">
+                    <div class="row">
+                        <div class="input-group">
+                            <input
+                                style="
+                                    border-radius: 10px;
+                                    width: 200px;
+                                    height: 40px;
+                                "
+                                placeholder="Select team member or enter email address"
+                                list="memberEmails"
+                                id="email"
+                                class="form-control"
+                                name="email"
+                                v-model="selectedMember"
+                                @input="handleMemberInput"
+                                @keydown.enter.prevent="addMemberToList"
+                            />
+                            <div class="input-group-append mx-3">
+                                <button
+                                    style="color: white"
+                                    class="btn btn-warning"
+                                    @click.prevent="addMemberToList"
+                                >
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                        <datalist id="memberEmails">
+                            <option
+                                v-for="member in memberEmails"
+                                :value="member"
+                            >
+                                {{ member }}
+                            </option>
+                        </datalist>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-10">
+                            <ul class="list-group">
+                                <li
+                                    class="list-group-item my-2 p-0"
+                                    v-for="(email, index) in selectedMembers"
+                                    :key="index"
+                                >
+                                    {{ email }}
+                                    <button
+                                        class="btn btn-sm txt-gray float-end"
+                                        @click="removeMemberFromList(index)"
+                                    >
+                                        <i
+                                            class="mx-3 h3 mdi mdi-delete text-gray"
+                                            id="dotted"
+                                        ></i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+            
+            <div   class="text-right mt-3 mb-5">
+                <div class="btn-icon  text-end">
+                    <button
+                        style="border: lightgrey"
+                        class="btn btn-light border-dark p-3 btn-action cancel-btn"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        class="btn btn-primary p-3 btn-action add-btn"
+                        form="form-submit"
+                        type="submit"
+                    >
+                        Add
+                    </button>
+                </div>
+            </div>
+            
+            <div class="dropdown-divider mb-5"></div>
+        </form>
+
+
+
+
+
+
+
+        </div>
+
+
     </div>
   </template>
 
@@ -157,59 +667,90 @@
         },
     },
     data() {
+
       return {
+        
         department: {
           name: this.department.name, 
         },
+
         partnerCount: 6,
         memberCount: 6,
         offTrackCount: 3,
         atRiskCount: 1,
         onTrackCount: 6,
-        partners: [
-          {
-            name: "Ranson Labs",
-            image: "assets/images/faces/face1.jpg",
-            progress: 48,
-            members: [
-              { name: "Member 1", image: "assets/images/faces/face1.jpg" },
-              { name: "Member 2", image: "assets/images/faces/face3.jpg" },
-              { name: "Member 3", image: "assets/images/faces/face4.jpg" },
-            ],
-            departments: ["Accounting", "Admin", "Sales", "..."],
-          },
-          {
-            name: "Popote",
-            image: "assets/images/faces/face2.jpg",
-            progress: 18,
-            members: [
-              { name: "Member 4", image: "assets/images/faces/face1.jpg" },
-              { name: "Member 5", image: "assets/images/faces/face5.jpg" },
-              { name: "Member 6", image: "assets/images/faces/face6.jpg" },
-            ],
-            departments: ["Admin", "Marketing", "Sales"],
-          },
-          {
-            name: "Soko Digi",
-            image: "assets/images/faces/face9.jpg",
-            progress: 56,
-            members: [
-              { name: "Member 7", image: "assets/images/faces/face9.jpg" },
-              { name: "Member 8", image: "assets/images/faces/face6.jpg" },
-              { name: "Member 9", image: "assets/images/faces/face1.jpg" },
-            ],
-            departments: ["Marketing", "Sales"],
-          },
-        ],
+        activeTab: 'performance',
+
+
+
+
+
+
+        department: {
+                name: this.department.name,
+                email: this.department.email,
+                about: this.department.about,
+            },
+    
       };
+
     },
+
+     mounted() {
+    console.log("Members are", this.members);
+    console.log("Departments are", this.department);
+     console.log("Partners are", this.partners);
+     console.log("Department is",this.department.name )
+     // Log the contents of the "members" prop to the console
+  },
   };
   </script>
-<style>
+<style scoped>
 .encircle {
   padding: 3px;
   border-radius: 50%;
   background-color: rgba(128, 128, 128, 0.089);
   color: rgba(24, 23, 23, 0.911);
+}
+
+
+ .btn-icon {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+  }
+
+
+  h3{
+
+    font-weight: bold;
+  }
+
+  .nav-link.active {
+  border-bottom: 2px solid blue; /* Add an underline to the active tab */
+  /* You can also change the background color or any other styles to indicate the active tab */
+}
+
+
+
+.btn-action {
+    padding: 2px 5px; /* Adjust the padding as needed */
+    line-height: 0.2; /* Set line-height to 1 to remove any extra spacing */
+    width: 70px;
+}
+
+.cancel-btn:hover {
+    /* Set any hover styles to 'initial' or 'none' to remove the effect */
+    background-color: initial;
+    color: initial;
+    border-color: initial;
+    border: 1px solid grey;
+    border: 1px solid rgba(0, 0, 0, 0.5); /* Adjust the opacity (last value) as needed */
+
+    /* Add any other styles you want to reset on hover */
+}
+
+.text-gray {
+    font-size: 20px;
 }
 </style>

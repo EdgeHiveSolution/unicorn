@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('department_id')->constrained();
             $table->foreignId('partner_id')->constrained();
+            $table->string('role')->nullable(); 
             $table->timestamps();
             $table->softDeletes();
+           
         });
     }
 

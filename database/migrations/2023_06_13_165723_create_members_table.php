@@ -20,10 +20,15 @@ class CreateMembersTable extends Migration
             $table->string('photo')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
-            $table->string('password');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_role_id')->nullable();
             $table->boolean('is_active')->default(true); 
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_role_id')->references('id')->on('user_roles')->onDelete('set null');
+
+
         });
     }
 

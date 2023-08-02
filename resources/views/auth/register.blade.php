@@ -41,6 +41,21 @@
                                 </span>
                             @enderror
                         </div>
+
+                        <div>
+
+                           @if(isset($partnerId))
+                                <input type="hidden" name="partner_id" value="{{ $partnerId }}">
+                            @endif
+
+                            </div>
+                          <div>
+                             @if(isset($departmentId))
+                            <input type="hidden" name="department_id" value="{{ $departmentId }}">
+                             @endif
+
+                            </div>
+
                         <div class="mt-2"> <!-- Reduced top margin -->
                             <label for="password" class="col-form-label text-end">{{ __('Password') }}</label>
                             <div class="input-group">

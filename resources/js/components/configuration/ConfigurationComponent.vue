@@ -185,6 +185,9 @@
                                         <option value="select">
                                             Create standard unit
                                         </option>
+
+                                     <option v-for="unit in units" :key="unit.id" :value="unit.name">{{ unit.name }}</option>
+
                                         <option value="count">Count</option>
                                         <option value="currency">
                                             Currency
@@ -430,11 +433,11 @@
             id="submitStandardUnitModal"
             tabindex="-1"
             role="dialog"
-        >
+              >
             <div
                 class="modal-dialog modal-dialog-centered modal-lg"
                 role="document"
-            >
+                 >
                 <div class="modal-content p-5">
                     <p><i class="mdi mdi-image-filter-none h1"></i></p>
                     <h3>Add standard unit</h3>

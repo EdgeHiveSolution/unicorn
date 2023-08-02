@@ -13,10 +13,17 @@ return new class extends Migration
     {
         Schema::create('department_member', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained();
-            $table->foreignId('member_id')->constrained();
+            // $table->foreignId('department_id')->constrained();
+            $table->unsignedBigInteger('department_id')->nullable();
+            $table->unsignedBigInteger('member_id')->nullable();
+            // $table->foreignId('member_id')->constrained();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('set null');
+            $table->foreign('member_id')->references('id')->on('members')->onDelete('set null');
+
+
         });
     }
 

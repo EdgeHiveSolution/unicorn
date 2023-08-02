@@ -33,6 +33,7 @@ class UnitApiController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:100',
+            // 'metric_id' => 'required|exists:metrics, id'
 
         ]);
 

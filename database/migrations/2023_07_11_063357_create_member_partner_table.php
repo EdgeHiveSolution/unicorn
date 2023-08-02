@@ -13,14 +13,16 @@ return new class extends Migration
     {
         Schema::create('member_partner', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained();
+            $table->foreignId('department_id')->nullable()->constrained();
             $table->foreignId('member_id')->constrained();
             $table->foreignId('partner_id')->constrained();
             $table->string('role')->nullable();
+            $table->foreignId('kpi_id')->nullable()->constrained(); // Add foreign key for kpi_id
             $table->timestamps();
             $table->softDeletes();
         });
     }
+    
 
     /**
      * Reverse the migrations.

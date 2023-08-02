@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\UserRole;
+use App\Models\Member;
 
-class Admin extends Authenticatable
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -25,6 +27,19 @@ class Admin extends Authenticatable
         'password',
     ];
 
+
+
+    public function userrole()
+
+    {
+        return $this->belongsTo(UserRole::class, 'user_role_id');
+    }
+
+
+    public function member()
+    {
+        return $this->hasOne(Member::class,'user_id');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

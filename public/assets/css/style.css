@@ -77,12 +77,12 @@ table .progress{
 
 /* mainbar */
   .main-container {
-    width: calc(100% - 344px);
+    width: calc(100% - 250px);
     display: flex;
     flex-direction: column;
 
     border-radius: 48px 0 0 0;
-    margin-top: .8rem;
+    margin-top: .12rem;
     padding-top: 2rem;
 }
 /* text colors */
@@ -347,6 +347,7 @@ input{
 
 .nav-item .menu-title {
     color: #b8b9bb;
+    font-size: 20px;
 }
 
 .nav-item .active .menu-icon {
