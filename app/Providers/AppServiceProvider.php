@@ -22,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Support\Facades\URL::defaults(['X-CSRF-TOKEN' => \Illuminate\Support\Facades\Request::header('X-CSRF-TOKEN')]);
         Schema::defaultStringLength(191);
-       // \URL::forceScheme('https');
+        \URL::forceScheme('https');
     }
 }

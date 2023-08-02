@@ -53,7 +53,7 @@
             </li>
             <li class="auth-items">
                 <div class="d-flex">
-                    <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="image" width="40rem"
+                    <img src="{{ secure_asset('assets/images/faces/face1.jpg') }}" alt="image" width="40rem"
                         height="40rem" style="border-radius: 50%" />
                     <div class="ml-4">
                         <div class="row align-items-center">
