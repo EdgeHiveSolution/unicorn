@@ -10,12 +10,24 @@
         </div> -->
 
         <!-- Breadcrumb -->
+        <div v-if="isLoading">
+            <h1 class="plans_text mt-5 mb-3">Please wait..</h1>
+            <b-spinner
+                style="width: 3rem; height: 3rem"
+                variant="info"
+                label=""
+            ></b-spinner>
+        </div>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                     <a href="/departments">Departments</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">
+                <li
+                    style="font-weight: bold; color: black"
+                    class="breadcrumb-item active"
+                    aria-current="page"
+                >
                     New Department
                 </li>
             </ol>
@@ -27,15 +39,17 @@
 
         <div class="d-flex justify-content-between">
             <div>
-                <h3>Department Info</h3>
+                <h3 style="font-size: 16px">Department Info</h3>
                 <p>Enter the details of the department here.</p>
             </div>
-            <div>
-                <button class="btn btn-light border-dark p-3 btn-action">
+            <div class="btn-icon">
+                <button
+                    class="btn btn-light border-dark p-3 btn-action cancel-btn"
+                >
                     Cancel
                 </button>
                 <button
-                    class="btn btn-primary p-3 btn-action"
+                    class="btn btn-primary p-3 btn-action add-btn"
                     form="form-submit"
                     type="submit"
                 >
@@ -50,7 +64,7 @@
             class="row g-3"
             @submit.prevent="formSubmit"
             method="post"
-        >
+           >
             <div class="row mb-2 p-3">
                 <label
                     for="name"
@@ -59,6 +73,7 @@
                 >
                 <div class="col-md-5 offset-md-0 text-center">
                     <input
+                        style="height: 10px"
                         id="name"
                         name="name"
                         class="form-control form-control-lg"
@@ -78,6 +93,7 @@
                 >
                 <div class="col-md-5 offset-md-0 text-center">
                     <input
+                        style="height: 10px"
                         id="email"
                         name="email"
                         class="form-control form-control-lg"
@@ -97,9 +113,10 @@
                     ></label
                 >
                 <div class="col-md-5 offset-md-0 text-center">
-                    <div class="d-flex m-3 justify-content-center">
+                    <div class="d-flex m-3 justify-content-space-between">
                         <select
-                            class="form-select form-select-lg mb-3"
+                            style="width: 300px; height: 45px"
+                            class="form-select form-control form-select-lg mb-3"
                             aria-label=".form-select-lg example"
                         >
                             <option value="normal_text">Normal Text</option>
@@ -108,18 +125,27 @@
                         </select>
 
                         <i
-                            ><span class="text-muted mx-3 h3" id="bold"
+                            ><span
+                                class="text-muted mx-3 h3 text-gray"
+                                id="bold"
                                 ><b>B</b></span
                             ></i
                         >
                         <i
                             ><span
-                                class="text-muted mdi mdi-format-italic mx-3 h3"
+                                class="text-muted mdi mdi-format-italic mx-3 h3 text-gray"
                                 id="italic"
                                 ><i></i></span
                         ></i>
+
+                        <i class="mx-3 h3 mdi mdi-link text-gray" id="link"></i>
                         <i
                             class="mx-3 h3 mdi mdi-format-list-bulleted text-gray"
+                            id="dotted"
+                        ></i>
+
+                        <i
+                            class="mx-3 h3 mdi mdi-format-list-numbered text-gray"
                             id="dotted"
                         ></i>
                     </div>
@@ -149,6 +175,11 @@
                     <div class="row">
                         <div class="input-group">
                             <input
+                                style="
+                                    border-radius: 10px;
+                                    width: 200px;
+                                    height: 40px;
+                                "
                                 placeholder="Select team member or enter email address"
                                 list="memberEmails"
                                 id="email"
@@ -160,6 +191,7 @@
                             />
                             <div class="input-group-append mx-3">
                                 <button
+                                    style="color: white"
                                     class="btn btn-warning"
                                     @click.prevent="addMemberToList"
                                 >
@@ -202,13 +234,22 @@
             </div>
 
             <hr />
-            <div class="text-right mt-3 mb-5">
-                <button class="btn btn-light border-dark btn-action">
-                    Cancel
-                </button>
-                <button type="submit" class="btn btn-primary btn-action">
-                    Add
-                </button>
+           <div class="text-right mt-3 mb-5 text-end">
+                <div class="btn-icon">
+                    <button
+                        style="border: lightgrey"
+                        class="btn btn-light border-dark p-3 btn-action"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        class="btn btn-primary p-3 btn-action add-btn"
+                        form="form-submit"
+                        type="submit"
+                    >
+                        Add
+                    </button>
+                </div>
             </div>
             <div class="dropdown-divider mb-5"></div>
         </form>
@@ -224,6 +265,7 @@ export default {
             about: "",
             alert_error: false,
             alert_success: false,
+            isLoading: false,
             base_url: "../",
             member_id: "",
             members: [],
@@ -271,6 +313,18 @@ export default {
             this.selectedMembers.splice(index, 1);
         },
         formSubmit() {
+
+             if (!this.name || !this.email || !this.about || this.selectedMembers.length === 0) {
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: "Please fill in all the required fields and select at least one member.",
+          customClass: {
+            container: "custom-swal",
+          },
+        });
+        return; // 
+      }
             const formData = new FormData();
             formData.append("name", this.name);
             formData.append("email", this.email);
@@ -287,6 +341,7 @@ export default {
                         title: "Success!",
                         text: "Department created successfully!",
                     }).then(() => {
+                        this.isLoading = true;
                         window.location.href = "/departments";
                     });
                 })
@@ -298,3 +353,37 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+h2 {
+    font-weight: bold;
+}
+
+.btn-action {
+    padding: 2px 5px; /* Adjust the padding as needed */
+    line-height: 0.2; /* Set line-height to 1 to remove any extra spacing */
+    width: 70px;
+}
+
+.cancel-btn:hover {
+    /* Set any hover styles to 'initial' or 'none' to remove the effect */
+    background-color: initial;
+    color: initial;
+    border-color: initial;
+    border: 1px solid grey;
+    border: 1px solid rgba(0, 0, 0, 0.5); /* Adjust the opacity (last value) as needed */
+
+    /* Add any other styles you want to reset on hover */
+}
+
+.text-gray {
+    font-size: 20px;
+}
+
+
+.custom-swal {
+  font-size: 14px; /* Adjust the font size as desired */
+  padding: 10px; /* Adjust the padding as desired */
+  max-width: 200px; /* Adjust the maximum width as desired */
+}
+</style>

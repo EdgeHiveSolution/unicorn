@@ -1,7 +1,17 @@
+
 import './bootstrap';
+
+
 import { createApp } from 'vue';
 
+
+
+
 const app = createApp({});
+
+
+
+
 
 import DashboardComponent from './components/DashboardComponent.vue';
 
@@ -25,6 +35,8 @@ app.component('configuration-component', ConfigurationComponent)
 app.component('department-component', DepartmentComponent);
 app.component('department-create-component', DepartmentCreateComponent);
 app.component('department-detail-component', DepartmentDetailComponent);
+
+
 
 app.mount('#app');
 

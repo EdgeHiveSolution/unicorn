@@ -5,6 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\KpiMetric;
+use App\Models\Department;
+use App\Models\Member;
+use App\Models\Kpi;
+use App\Models\Country;
+use App\Models\DepartmentPartner;
+use App\Models\MemberPartner;
+
+
+
 
 class Partner extends Model
 {
@@ -17,21 +27,31 @@ class Partner extends Model
     ];
 
 
-    public function members()
-    {
-        return $this->belongsToMany(Member::class, 'member_partner', 'partner_id', 'member_id')
-        ->withPivot('role');
-    }
+    // public function members()
+    // {
+    //     return $this->belongsToMany(Member::class, 'member_partner', 'partner_id', 'member_id')
+    //     ->withPivot('role');
+    // }
 
     /**
      * The departments that belong to the partner.
      */
     public function departments()
     {
-        return $this->belongsToMany(Department::class, 'member_partner')
-            ->withPivot('member_id', 'role')
-            ->withTimestamps();
+        return $this->belongsToMany(Department::class, 'department_partner')
+              ->using(DepartmentPartner::class)
+              ->withPivot('department_id', 'partner_id', 'role')
+              ->withTimestamps();
     }
+
+
+    public function members()
+{
+    return $this->belongsToMany(Member::class, 'member_partner')
+        ->using(MemberPartner::class)
+        ->withPivot('department_id', 'role', 'member_id')
+        ->withTimestamps();
+}
 
     public function country()
     {

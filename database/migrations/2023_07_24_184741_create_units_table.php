@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
+            $table->unsignedBigInteger('metric_id')->nullable();
             $table->timestamps();
+            $table->foreign('metric_id')->references('id')->on('metrics');
+
+            
         });
     }
 

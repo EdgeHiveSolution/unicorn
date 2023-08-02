@@ -21,10 +21,7 @@ class Kpi extends Model
         return $this->belongsTo(Partner::class);
     }
 
-    public function members()
-    {
-        return $this->hasMany(Member::class);
-    }
+   
 
     public function kpiOwner()
     {
@@ -35,6 +32,11 @@ class Kpi extends Model
     {
         return $this->hasMany(KpiMetric::class);
     }
+
+
+
+
+
 
 
 }

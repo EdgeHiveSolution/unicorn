@@ -478,10 +478,10 @@
 
             <div class="align-right mb-5">
                 <div class="text-right mt-3 mb-5">
-                    <button class="btn btn-light border-dark btn-action">
+                    <button  class="btn btn-light border-dark btn-action">
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-primary btn-action">
+                    <button  type="submit" class="btn btn-primary btn-action">
                         Add
                     </button>
                 </div>
@@ -629,6 +629,18 @@ export default {
         },
 
         formSubmit() {
+
+      if (!this.name || !this.email || !this.about || this.selectedMembers.length === 0) {
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: "Please fill in all the required fields and select at least one member.",
+          customClass: {
+            container: "custom-swal",
+          },
+        });
+        return; // 
+      }
             const formData = new FormData();
 
             formData.append("name", this.formData.name);
@@ -730,5 +742,23 @@ export default {
 
 .form-control {
     padding-left: 30px;
+}
+
+
+.btn-action {
+    padding: 2px 5px; /* Adjust the padding as needed */
+    line-height: 0.2; /* Set line-height to 1 to remove any extra spacing */
+    width: 70px;
+}
+
+.cancel-btn:hover {
+    /* Set any hover styles to 'initial' or 'none' to remove the effect */
+    background-color: initial;
+    color: initial;
+    border-color: initial;
+    border: 1px solid grey;
+    border: 1px solid rgba(0, 0, 0, 0.5); /* Adjust the opacity (last value) as needed */
+
+    /* Add any other styles you want to reset on hover */
 }
 </style>

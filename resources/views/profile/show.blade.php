@@ -15,7 +15,7 @@
             <div class="row mb-2 p-3">
                 <label for="name" class="col-md-3 col-form-label text-md-start">{{ __('Photo') }}</label>
                 <div class="col-md-5 offset-md-4 text-center profile-edit">
-                    <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="profile">
+                    <img src="{{ secure_asset('assets/images/faces/face1.jpg') }}" alt="profile">
                     @error('name')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>

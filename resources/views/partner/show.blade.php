@@ -6,5 +6,6 @@
         :kpimetrics="{{ json_encode($partner->kpimetrics) }}" :kpis="{{ json_encode($partner->kpis) }}">
     </partner-detail-component>
 
-    
+   
+
 @endsection

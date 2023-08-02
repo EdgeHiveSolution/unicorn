@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Unit;
+
+
 
 class Metric extends Model
 {
@@ -13,6 +16,14 @@ class Metric extends Model
         'name', 'unit',
 
     ];
+
+
+
+
+    public function units(): HasMany
+    {
+        return $this->hasMany(Unit::class);
+    }
 
 
 }

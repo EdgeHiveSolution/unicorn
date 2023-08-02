@@ -16,7 +16,8 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    #'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Unicon'),
 
     /*
     |--------------------------------------------------------------------------
@@ -55,7 +56,9 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    #'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://unicon1-4e6bc01d9a83.herokuapp.com'),
+
 
     'asset_url' => env('ASSET_URL'),
 

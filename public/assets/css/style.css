@@ -19,7 +19,8 @@ th{
 .stats span{
     font-size: 12px;
     font-weight: 600;
-    color: #b73026;
+    color: black;
+   /* color: #b73026;*/
 }
 
 .stats span:last-child{
@@ -77,12 +78,12 @@ table .progress{
 
 /* mainbar */
   .main-container {
-    width: calc(100% - 344px);
+    width: calc(100% - 250px);
     display: flex;
     flex-direction: column;
 
     border-radius: 48px 0 0 0;
-    margin-top: .8rem;
+    margin-top: .12rem;
     padding-top: 2rem;
 }
 /* text colors */
@@ -143,14 +144,19 @@ table .progress{
 /* table */
 
 tr:nth-child(odd) td {
-    background-color: #f9fafb; /* Set the background color for even rows */
+    background-color: #f9fafb;
+   /* background-color: #FFF5F5F5;*/
+    /* Set the background color for even rows */
   }
 
 /* button */
 
 .btn-pri{
+    /*background-color: #0072bb;*/
     background-color: #0072bb;
-    font-size: .9rem;
+    font-size: 10px !important;
+    height: 35px;
+    width: 100px;
     color: #eaf3ff;
   
 
@@ -158,7 +164,7 @@ tr:nth-child(odd) td {
 
 .btn-sec{
     background-color: #f1f7f4;
-    font-size: .9rem;
+    font-size: 10px;
     color: #101828;
     border: #101828 1px solid ;
     margin-left: 8px;
@@ -189,7 +195,8 @@ tr:nth-child(odd) td {
   padding: 8px;
  background: #eceff3;
  font-size: .4 rem;
- margin: 0 !important;
+ margin-right: 5px;
+ /*margin: 0 !important;*/
 }
 
 
@@ -347,6 +354,7 @@ input{
 
 .nav-item .menu-title {
     color: #b8b9bb;
+    font-size: 20px;
 }
 
 .nav-item .active .menu-icon {

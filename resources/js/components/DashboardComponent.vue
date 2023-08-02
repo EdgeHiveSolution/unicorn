@@ -1,8 +1,8 @@
 <template>
     <div class="welcome">
-      <h1 class="txt-dark">Welcome Back, {{ firstName }}</h1>
-      <h3 class="txt-gray">Track and manage the team’s overall performance.</h3>
-      <h4 class="txt-dark">Performance Overview</h4>
+      <h1 style="font-size: 20px" class="txt-dark">Welcome Back, {{ firstName }}</h1>
+      <h3 style="font-size: 20px" class="txt-gray">Track and manage the team’s overall performance.</h3>
+      <h4 style="font-size: 20px; font-weight: semi-bold" class="txt-dark">Performance Overview</h4>
 
       <div class="row">
         <div class="col-xl-3 col-sm-6 grid-margin">
@@ -38,11 +38,12 @@
               <div>
                 <div class="input-container">
                   <i class="mdi mdi-magnify mdi-icon"></i>
-                  <input class="input-field" type="text" placeholder="Search for partners">
+                  <input class="input-field" style="height: 10px"
+                   type="text" placeholder="Search for partners">
                 </div>
               </div>
               <div>
-                <button class="btn btn-light p-3">
+                <button  style="height: 10px" class="btn btn-light p-3 btn-icon">
                   <i class="mdi mdi-sort-variant text-dark"></i>
                   Filters
                 </button>
@@ -84,9 +85,10 @@
                         <span class="department-tag" v-for="department in partner.departments" :key="department.id">{{ department.name }}</span>
                       </td>
                       <td>
-                        <button class="btn btn-pri px-1 py-1 d-flex align-items-center">
+                        <button class="btn  view-btn">
+                        <a :href="'/partners/' + partner.id" class="text-light">
                           <i class="mdi mdi-eye-outline text-light mx-2"></i>
-                          <a :href="'/partners/' + partner.id" class="text-light">View Details</a>
+                          View Details</a>
                         </button>
                       </td>
                     </tr>
@@ -141,7 +143,7 @@
                         </div>
                       </td>
                       <td class="stats">
-                        <span>{{ '48%' }}</span>
+                        <p class="progress_text text-muted">{{ '48%' }}</p>
                         <div class="progress">
                           <div class="progress-bar bg-primary" role="progressbar" :style="{ width: '48%' }" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
@@ -174,6 +176,7 @@
   </template>
 
   <script>
+
   export default {
     props: {
     userName: {
@@ -230,3 +233,47 @@
   </script>
 
 
+<style scoped>
+
+
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.view-btn {
+  cursor: pointer;
+  font-size: 12px; /* Adjust font size */
+  background-color: #0072bb;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the content horizontally */
+  border-radius: 8px;
+  height: 35px;
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.view-btn a {
+  display: flex;
+  align-items: center;
+
+
+
+}
+
+.view-btn i {
+  margin-right: 8px;
+}
+
+.progress_text{
+color: #000;
+}
+
+</style>

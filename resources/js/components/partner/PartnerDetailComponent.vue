@@ -44,7 +44,7 @@
                                 @click="currentPage = 3"
                             >
                                 Members
-                                <span class="member-count">{{
+                                <span class="encircle">{{
                                     members.length
                                 }}</span>
                             </a>
@@ -94,8 +94,9 @@
                     <h4>Progress Burndown</h4>
                     <p>This show the progress to complete the KPIs</p>
                 </div>
-
-                <div class="progress-chart card">char here</div>
+                <div class="card">
+                    <div class="progress-chart card">char here</div>
+                </div>
                 <div class="my-5">
                     <h4>Metrics across portfolio</h4>
 
@@ -111,6 +112,7 @@
                                                 class="mdi mdi-magnify mdi-icon"
                                             ></i>
                                             <input
+                                                style="height: 10px"
                                                 class="input-field"
                                                 type="text"
                                                 placeholder="Search KPI metrics"
@@ -118,7 +120,10 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <button class="btn btn-light p-3">
+                                        <button
+                                            style="height: 10px"
+                                            class="btn btn-light p-3 btn-icon"
+                                        >
                                             <i
                                                 class="mdi mdi-sort-variant text-dark"
                                             ></i>
@@ -174,8 +179,8 @@
 
                     <div class="card" v-for="kpi in kpis">
                         <div class="m-4 mb-0">
-                            <h4>{{ kpi.title}}</h4>
-                            <p>{{ kpi.review_period_range}}</p>
+                            <h4>{{ kpi.title }}</h4>
+                            <p>{{ kpi.review_period_range }}</p>
                             <p></p>
                         </div>
                         <div
@@ -224,10 +229,10 @@
                                                 {{ kpimetric.type }}
                                             </td>
                                             <td class="td-members">
-                                                {{ kpimetric.title}}
+                                                {{ kpimetric.title }}
                                             </td>
                                             <td>
-                                                {{kpimetric.title}}
+                                                {{ kpimetric.title }}
                                             </td>
                                             <td>
                                                 {{ kpimetric.title }}
@@ -285,7 +290,7 @@
                         class="row g-3"
                         @submit.prevent="partnerSubmit"
                         method="POST"
-                    >
+                      >
                         <div class="row mb-2 p-3">
                             <label
                                 for="name"
@@ -597,7 +602,7 @@
                                     <li
                                         v-for="(item, index) in selectedItems"
                                         class="list-item"
-                                    >
+                                      >
                                         <span>
                                             <i
                                                 class="mdi mdi-email-outline"
@@ -705,6 +710,7 @@
                                     <div class="input-container">
                                         <i class="mdi mdi-magnify mdi-icon"></i>
                                         <input
+                                            style="height: 10px"
                                             class="input-field"
                                             type="text"
                                             placeholder="Search members"
@@ -712,7 +718,10 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <button class="btn btn-light p-3">
+                                    <button
+                                        style="height: 10px"
+                                        class="btn btn-light p-3 btn-icon"
+                                    >
                                         <i
                                             class="mdi mdi-sort-variant text-dark"
                                         ></i>
@@ -738,23 +747,23 @@
                                                     {{ member.email }}
                                                 </td>
                                                 <td class="status">
-                                                    <span> active </span>
+                                                    <span> {{ member.is_active =  'Active'}} </span>
                                                 </td>
                                                 <td>
                                                     <span class="depart-tag">
-                                                        {{ "Admin" }}
+                                                        {{ }}
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    {{ 3 }}
+                                                    {{  }}
                                                 </td>
                                                 <td>
                                                     <button
-                                                        class="btn btn-pri px-2 py-1 d-flex align-items-center"
+                                                        class="btn btn-sm px-2 py-2 btn-pri  d-flex flex-row justify-content-center align-items-center"
                                                     >
-                                                        <i
+                                                        <span
                                                             class="mdi mdi-eye-outline text-light"
-                                                        ></i>
+                                                        ></span>
                                                         <a
                                                             :href="
                                                                 '/members/' +
@@ -797,10 +806,10 @@
                     <h4>KPIs</h4>
                     <p>Key milestones for {{ partner.name }}</p>
                 </div>
-                <div class="btn btn-primary my-2">
+                <div class="btn btn-primary btn-sm my-2">
                     <a
                         href="#"
-                        class="text-light add-link"
+                        class="text-light add-link text-sm"
                         data-toggle="modal"
                         data-target="#addKpimodal"
                     >
@@ -932,7 +941,7 @@
                                                         class="btn btn-pri px-1 py-1 d-flex align-items-center"
                                                     >
                                                         <i
-                                                            class="mdi mdi-eye-outline text-light mx-2"
+                                                            class="mdi mdi-eye-outline text-light mx-2 align-self-center"
                                                         ></i>
                                                         <a
                                                             :href="
@@ -1412,6 +1421,12 @@ export default {
             type: Array,
             required: true,
         },
+
+        department: {
+            type: Array,
+            required: true,
+        },
+        
         kpis: {
             type: Array,
             required: true,
@@ -1499,6 +1514,8 @@ export default {
             new Date(this.partner.created_at),
             "'Date Joined: ' do MMMM yyyy"
         );
+
+        console.log("Department is", this.department)
     },
     methods: {
         openAddKpiMetricModal(kpi) {
@@ -1506,7 +1523,6 @@ export default {
             $("#addKpiMetricModal").modal("show");
         },
         showDateInputs() {
-
             this.showInputs = !this.showInputs;
         },
         fetchCountries() {
@@ -1522,14 +1538,11 @@ export default {
             });
         },
         toggleDateInputs(kpiId) {
-
             this.showInputs[kpiId] = !this.showInputs[kpiId];
         },
 
         deactivateAccount() {
-
             this.partner.is_active = 0;
-
 
             this.partnerSubmit();
         },
@@ -1576,15 +1589,12 @@ export default {
         },
 
         closeAccount() {
-
             let uri =
                 this.base_url + `api/v1/partner-delete/${this.partner.id}`;
             axios
                 .delete(uri)
                 .then((response) => {
-
                     alert("Partner account closed");
-
                 })
                 .catch((error) => {
                     // Handle errors from the server or API request
@@ -1594,7 +1604,6 @@ export default {
         },
 
         partnerSubmit() {
-
             const partnerData = {
                 id: this.partner.id,
                 name: this.partner.name,
@@ -1605,24 +1614,19 @@ export default {
                 logo: this.partner.logo,
                 business_type: this.partner.business_type,
                 about: this.partner.about,
-
             };
-
 
             let uri = this.base_url + `api/v1/partner-update`;
             axios
                 .patch(uri, partnerData)
                 .then((response) => {
-
                     const updatedPartner = response.data;
                     this.partner = updatedPartner;
                     alert("Partner information updated");
                     window.location.reload();
                 })
                 .catch((error) => {
-
                     console.error("Error updating partner:", error);
-                   
                 });
         },
 
@@ -1700,6 +1704,10 @@ a {
     border-bottom: 2px solid blue;
 }
 
+.add-link{
+    font-size: 14px;
+}
+
 .p-progress h5 {
     font-size: 1.2rem;
 }
@@ -1728,7 +1736,7 @@ img {
 .member-count {
     background-color: rgba(195, 195, 209, 0.733);
     padding: 7px;
-    border-radius: 50%;
+    border-radius: 40%;
     font-size: 0.7rem;
 }
 
@@ -1747,5 +1755,23 @@ img {
     border: 1px solid rgba(128, 128, 128, 0.534);
     border-radius: 10px;
     width: 70%;
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.encircle {
+    padding: 3px;
+    border-radius: 50%;
+    background-color: rgba(128, 128, 128, 0.089);
+    color: rgba(24, 23, 23, 0.911);
+}
+
+.nav-link{
+   font-size: 14px;
+   font-weight: 600;
 }
 </style>
