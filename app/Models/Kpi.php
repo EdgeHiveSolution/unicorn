@@ -16,11 +16,15 @@ class Kpi extends Model
         'review_period_range'
     ];
 
+
+
     public function partner()
     {
         return $this->belongsTo(Partner::class);
     }
 
+
+    
    
 
     public function kpiOwner()
@@ -28,15 +32,12 @@ class Kpi extends Model
         return $this->belongsTo(KpiOwner::class);
     }
 
+
+
+
     public function kpiMetrics()
     {
         return $this->hasMany(KpiMetric::class);
     }
-
-
-
-
-
-
 
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\CountryApiController;
 use App\Http\Controllers\Api\PartnerApiController;
 use App\Http\Controllers\Api\KpiMetricApiController;
 use App\Http\Controllers\Api\DepartmentApiController;
+use App\Http\Controllers\Api\ProgressApiController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -37,6 +38,8 @@ Route::post('v1/standardUnit-create',[UnitApiController::class, 'store']);
 Route::patch('v1/unit-update',[UnitApiController::class, 'update']);
 
 Route::delete('v1/metric-delete', [MetricApiController::class, 'destroy']);
+
+Route::post('v1/progress', [ProgressApiController::class, 'store']);
 
 
 Route::get('v1/metric-list',[MetricApiController::class, 'index']);

@@ -63,9 +63,9 @@ class Partner extends Model
         return $this->hasMany(Kpi::class);
     }
 
-    public function kpiMetrics()
-    {
-        return $this->hasMany(KpiMetric::class);
-    }
+    // public function kpiMetrics()
+    // {
+    //     return $this->hasMany(KpiMetric::class);
+    // }
 
 }

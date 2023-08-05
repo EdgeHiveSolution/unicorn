@@ -29,9 +29,15 @@
                                 />
                             </div>
                         </div>
+        <div style="display: flex; align-items: center;  justify-content: space-between;">
+                        
+             <button  class="btn btn-light p-1 btn-icon" style="background-color: lightgrey; color: #76aefd; height: 30px; width:60px">
+              All
+              <i class="mdi mdi-close" style="font-size: 17px; margin-left: 5px;"></i>
+            </button>
+              <div style="margin-left: 10px;"></div>
 
-                        <div>
-                            <button
+                       <button
                                 style="height: 10px"
                                 class="btn btn-light p-3 btn-icon"
                                 @click="showFilters = !showFilters"
@@ -39,7 +45,7 @@
                                 <i class="mdi mdi-sort-variant text-dark"></i>
                                 Filters
                             </button>
-                        </div>
+              </div>
                     </div>
 
                     <div class="card-body">
@@ -248,7 +254,9 @@ export default {
         fetchPartners() {
             let uri = this.base_url + `api/v1/partner-list`;
             axios.get(uri).then((response) => {
+                 console.log("API Response:", response.data);
                 this.partners = response.data;
+                
             });
         },
         calculateKpiProgress(kpiMetrics) {

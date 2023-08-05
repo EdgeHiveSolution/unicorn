@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('type');
+            $table->string('target');
             $table->string('response_period');
-            $table->foreignId('partner_id')->constrained()->onDelete('cascade');
+            // $table->foreignId('partner_id')->constrained()->onDelete('cascade');
             $table->foreignId('kpi_id')->constrained()->onDelete('cascade');
+            $table->double('timely_value', 10, 2)->nullable();
             $table->string('on_track_value');
             $table->string('off_track_min');
             $table->string('off_track_max');

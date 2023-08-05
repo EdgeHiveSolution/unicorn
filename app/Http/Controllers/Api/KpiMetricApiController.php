@@ -7,6 +7,7 @@ use App\Models\Partner;
 use App\Models\KpiMetric;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 class KpiMetricApiController extends Controller
 {
@@ -31,45 +32,99 @@ class KpiMetricApiController extends Controller
      */
 
 
-public function store(Request $request)
-{
-    $this->validate($request, [
-        'title' => 'required',
-        'type' => 'required',
-        'response_period' => 'required',
-        'kpi_id' => 'required',
-        'partner_id' => 'required',
-        'on_track_value' => 'required',
-        'off_track_min' => 'required',
-        'off_track_max' => 'required',
-        'at_risk_min' => 'required',
-        'at_risk_max' => 'required',
-    ]);
+     public function store(Request $request)
 
-    $kpiMetric = KpiMetric::create([
-        'title' => $request->title,
-        'type' => $request->type,
-        'response_period' => $request->response_period,
-        'kpi_id' => $request->kpi_id,
-        'partner_id' => $request->partner_id,
-        'on_track_value' => $request->on_track_value,
-        'off_track_min' => $request->off_track_min,
-        'off_track_max' => $request->off_track_max,
-        'at_risk_min' => $request->at_risk_min,
-        'at_risk_max' => $request->at_risk_max,
-    ]);
+     {
+        $this->validate($request, [
+            'title' => 'required',
+            'type' => 'required',
+            'response_period' => 'required',
+            'kpi_id' => 'required',
+            'target' => 'required',
+            'on_track_value' => 'required',
+            'off_track_min' => 'required',
+            'off_track_max' => 'required',
+            'at_risk_min' => 'required',
+            'at_risk_max' => 'required',
+        ]);
+
+        $kpi = Kpi::findOrFail($request->kpi_id);
+
+        // Extract start and end dates from review_period_range
+        $pattern = '/(\d{1,2})\w{2} (\w+) (\d{4})/';
+        preg_match_all($pattern, $kpi->review_period_range, $matches);
+        
+        // Parse start date components
+        $startDay = $matches[1][0];
+        $startMonth = $matches[2][0];
+        $startYear = $matches[3][0];
+        $startMonthNumeric = array_search($startMonth, [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ]) + 1;
+        
+        // Parse end date components
+        $endDay = $matches[1][1];
+        $endMonth = $matches[2][1];
+        $endYear = $matches[3][1];
+        $endMonthNumeric = array_search($endMonth, [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ]) + 1;
+        
+        // Create Carbon instances for start and end dates
+        $start_date = Carbon::create($startYear, $startMonthNumeric, $startDay, 0, 0, 0);
+        $end_date = Carbon::create($endYear, $endMonthNumeric, $endDay, 0, 0, 0);
+        
+        $daysDifference = $end_date->diffInDays($start_date);
+        
+        
+        
+
+        
+                // Calculate timely value based on response period
+                if ($request->response_period === 'weekly') {
+                    $timely_value = $request->target / ($daysDifference / 7);
+                } elseif ($request->response_period === 'monthly') {
+                    $timely_value = $request->target / ($daysDifference / 30);
+                } elseif ($request->response_period === 'quarterly') {
+                    $timely_value = $request->target / ($daysDifference / 90);
+                } else {
+                    $timely_value = 0; // Set a default value if response period is not recognized
+                }
 
 
-    $partner = Partner::findOrFail($request->partner_id);
+        // Create KpiMetric
+        $kpiMetric = KpiMetric::create([
+            'title' => $request->title,
+            'type' => $request->type,
+            'response_period' => $request->response_period,
+            'kpi_id' => $request->kpi_id,
+            'target' => $request->target,
+            'timely_value' => $timely_value,
+            'on_track_value' => $request->on_track_value,
+            'off_track_min' => $request->off_track_min,
+            'off_track_max' => $request->off_track_max,
+            'at_risk_min' => $request->at_risk_min,
+            'at_risk_max' => $request->at_risk_max,
+        ]);
 
-    
-    $partner->kpiMetrics()->save($kpiMetric);
+        
+        $kpi = Kpi::findOrFail($request->kpi_id);
+        $partner = $kpi->partner;
+        
+        // Associate the KPI Metric with the KPI and Partner
+        $kpiMetric->kpi()->associate($kpi);
+        $kpiMetric->save();
+        
+        $partner->kpis()->save($kpi);
 
+        return response()->json([
+            'success' => 'Kpi metric created successfully',
+        ]);
 
-     $kpi_id = $request->kpi_id;
-     $kpi = Kpi::findOrFail($kpi_id);
-     $kpi->kpiMetrics()->save($kpiMetric);
-}
+    }
+
 
 
     /**

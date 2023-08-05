@@ -254,7 +254,7 @@ export default {
             let uri = this.base_url + `api/v1/department-list`;
             axios.get(uri).then((response) => {
                 this.departments = response.data;
-                console.log(this.departments);
+                console.log("Departments are:", this.departments);
             });
         },
         calculateKpiProgress(kpiMetrics) {

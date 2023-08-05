@@ -989,7 +989,6 @@ export default {
         },
 
         
-
         submitStandardUnit() {
             const formData = new FormData();
             formData.append("name", this.newStandardUnit.name);
@@ -1038,6 +1037,7 @@ export default {
                     this.errors = error.response.data.errors;
                 });
         },
+
         deleteMetric(metricId) {
             if (confirm("Are you sure you want to delete this metric?")) {
                 let uri = this.base_url + `api/v1/metric-delete`;
@@ -1055,6 +1055,7 @@ export default {
     },
 };
 </script>
+
 
 <style scoped>
 .btn-pri {

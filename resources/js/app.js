@@ -1,17 +1,11 @@
-
 import './bootstrap';
 
 
 import { createApp } from 'vue';
-
-
+// import { BootstrapVue } from 'bootstrap-vue';
 
 
 const app = createApp({});
-
-
-
-
 
 import DashboardComponent from './components/DashboardComponent.vue';
 
@@ -24,6 +18,8 @@ import DepartmentComponent from './components/department/DepartmentComponent.vue
 import DepartmentCreateComponent from './components/department/DepartmentCreateComponent.vue';
 import DepartmentDetailComponent from './components/department/DepartmentDetailComponent.vue';
 import ProfileEditComponent from './components/profile/ProfileEditComponent.vue';
+
+// app.use(BootstrapVue);
 
 app.component('dashboard-component', DashboardComponent);
 app.component('partner-component', PartnerComponent);

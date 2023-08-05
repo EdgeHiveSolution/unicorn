@@ -11,6 +11,7 @@ use App\Models\MemberPartner;
 use App\Models\User;
 use AppModels\UserRole;
 use App\Models\DepartmentMember;
+use App\Models\KpiMetric;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
@@ -59,6 +60,14 @@ class Member extends Model
         return $this->hasMany(Kpi::class);
     }
 
+    
+
+    // public function kpiMetrics(){
+    //     return $this->hasMany(KpiMetric::class);
+    // }
+
+
+
     public function partners()
     {
         return $this->belongsToMany(Partner::class, 'member_partner')
@@ -68,4 +77,5 @@ class Member extends Model
     }
 
 
+    
 }
