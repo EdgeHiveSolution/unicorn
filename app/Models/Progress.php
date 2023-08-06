@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\KpiMetric;
+use App\Models\KpiMetricMember;
 
 class Progress extends Model
 {
@@ -19,15 +19,20 @@ class Progress extends Model
         'notes',
         'current_value',
         'target_value',
-        'kpi_metric_id'
+        'kpi_metric_member_id'
     ];
 
 
 
-    public function kpiMetric()
-    {
-        return $this->belongsTo(KpiMetric::class);
-    }
+    // public function kpiMetric()
+    // {
+    //     return $this->belongsTo(KpiMetric::class);
+    // }
 
+
+    public function kpiMetricMember()
+    {
+        return $this->belongsTo(KpiMetricMember::class, 'kpi_metric_member_id');
+    }
 
 }

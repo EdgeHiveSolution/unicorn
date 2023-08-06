@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('progress', function (Blueprint $table) {
+        Schema::create('kpi_metric_members', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('kpi_metric_id')->nullable();
-            $table->string('title');
-            $table->string('notes');
-            $table->double('current_value');
-            $table->double('target_value');
+            $table->unsignedBigInteger('member_id')->nullable();
+            $table->double('target');
+            $table->double('timely_value', 10, 2);
             $table->timestamps();
             $table->foreign('kpi_metric_id')->references('id')->on('kpi_metrics')->onDelete('set null');
+            $table->foreign('member_id')->references('id')->on('members')->onDelete('set null');
+            $table->softDeletes();
+
 
         });
     }
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('progress');
+        Schema::dropIfExists('kpi_metric_members');
     }
 };

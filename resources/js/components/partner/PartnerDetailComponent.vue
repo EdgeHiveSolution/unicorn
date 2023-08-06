@@ -1799,11 +1799,23 @@ export default {
         submitKpiMetric() {
             console.log("Target1 is :", this.formData.target);
             console.log("Target2 is :", this.member.target);
+            console.log("Member is:", this.members);
+            console.log("Email is:", this.member.email);
             // Create a new FormData object
+            const membersWithTarget = this.members.map((member) => {
+                // Clone the member object
+                const modifiedMember = { ...member };
+                // Attach the target property to the cloned member object
+                modifiedMember.target = this.member.target; 
+
+                return modifiedMember;
+            });
+
+            console.log("Members array is:"+JSON.stringify( membersWithTarget));
             const formData = new FormData();
             formData.append("title", this.kpiMetric.title);
             formData.append("type", this.kpiMetric.type);
-            formData.append("target", this.member.target);
+           // formData.append("target", this.member.target);
             formData.append("response_period", this.kpiMetric.responsePeriod);
             formData.append("partner_id", this.partner.id);
             formData.append("on_track_value", this.kpiMetric.onTrackValue);
@@ -1813,12 +1825,15 @@ export default {
             formData.append("at_risk_max", this.kpiMetric.atRiskMax);
             formData.append("kpi_id", this.selectedKpi.id);
 
-            formData.append("members", JSON.stringify(this.members));
+           // formData.append("members", JSON.stringify(this.members));
+           formData.append("members", JSON.stringify(membersWithTarget));
+
 
             // Make the POST request using Axios
             const uri = this.base_url + "api/v1/kpiMetric-create";
+            const headers = { 'Content-Type': 'application/json' };
             axios
-                .post(uri, formData)
+                .post(uri, formData, { headers })
                 .then((response) => {
                     $("#addKpiMetricModal").modal("hide"); // show the modal
                     Swal.fire({
@@ -1836,17 +1851,19 @@ export default {
                 .catch((error) => {
                     // Handle errors if the request fails
                     console.error("Error submitting the form:", error);
+                    console.log("Response:", error.response);
+
                 });
         },
 
         getCurrentDate() {
-            const currentDate = new Date(); 
-            const year = currentDate.getFullYear(); 
-            const month = String(currentDate.getMonth() + 1).padStart(2, "0"); 
-            const day = String(currentDate.getDate()).padStart(2, "0"); 
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+            const day = String(currentDate.getDate()).padStart(2, "0");
 
-            const formattedDate = `${year}-${month}-${day}`; 
-            return formattedDate; 
+            const formattedDate = `${year}-${month}-${day}`;
+            return formattedDate;
         },
 
         sendInfo(kpimetric) {
@@ -1868,7 +1885,7 @@ export default {
             formData.append("title", this.kpimetric_title);
             formData.append("value", this.kpimetric_value);
             formData.append("notes", this.kpimetric_notes);
-            formData.append("kpi_metric_id", this.selectedKpiMetric.id);
+            formData.append("kpi_metric_member_id", this.selectedKpiMetric.id);
             formData.append("target", this.selectedKpiMetric.timely_value);
             // formData.append("kpi_metric_id", kpimetric1.id); // Use kpimetric1.id
             // formData.append("target", kpimetric1.timely_value); // Use kpimetric1.timely_value
