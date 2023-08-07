@@ -17,6 +17,8 @@ class KpiMetricMember extends Model
 
     protected $fillable = ['kpi_metric_id', 'member_id', 'target', 'timely_value'];
 
+    
+
             public function kpiMetric()
         {
             return $this->belongsTo(KpiMetric::class);

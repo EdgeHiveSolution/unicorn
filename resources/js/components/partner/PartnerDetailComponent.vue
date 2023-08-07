@@ -930,7 +930,7 @@
                                                 <td>
                                                     <button
                                                         @click="
-                                                            sendInfo(kpimetric)
+                                                            sendInfo(kpimetric,kpi)
                                                         "
                                                         data-toggle="modal"
                                                         data-target="#addKpimodal2"
@@ -1438,7 +1438,7 @@
                             <form
                                 id="form-submit"
                                 @submit.prevent="
-                                    submitProgress(selectedKpiMetric)
+                                    submitProgress(selectedKpiMetric, selectedKpiMember)
                                 "
                                 method="POST"
                             >
@@ -1516,6 +1516,7 @@
 </template>
 
 <script>
+import store from "../../store";
 import { format } from "date-fns";
 
 export default {
@@ -1543,6 +1544,8 @@ export default {
             type: Array,
             required: true,
         },
+
+       
     },
 
     data() {
@@ -1552,6 +1555,7 @@ export default {
             members: this.partner.members,
             kpiMetrics: [],
             selectedKpiTitle: "",
+            selectedMemberKpi: "",
             selectedKpi: null,
             timelyValue: null,
 
@@ -1637,6 +1641,8 @@ export default {
         console.log("Department prop:", this.department);
         console.log("Members prop:", this.members);
         console.log("Partners prop:", this.partner);
+
+        console.log("User Related Data:",JSON.stringify(this.$store.state.loggedUser));
     },
 
     methods: {
@@ -1866,11 +1872,14 @@ export default {
             return formattedDate;
         },
 
-        sendInfo(kpimetric) {
+        sendInfo(kpimetric, kpiMember) {
             this.selectedKpiMetric = kpimetric;
+            this.selectedKpiMember = kpiMember;
         },
 
-        submitProgress(kpimetric1) {
+        submitProgress(kpimetric1,kpi1) {
+        console.log("User Data:",JSON.stringify(store.state.loggedUser));
+
             console.log("kpimetrics:", this.partner.kpis[0].kpi_metrics);
             console.log("this.partner.kpis:", this.partner.kpis); // Log the entire kpis array
             console.log("this.partner.kpis[0]:", this.partner.kpis[0]); // Log the first item in the kpis array
@@ -1880,16 +1889,30 @@ export default {
                 this.partner.kpis[0].kpi_metrics[0].timely_value
             );
 
+            let kpi_metric_member1 = store.state.loggedUser.member.kpi_metric_members.find(element =>{
+                return element.member_id===store.state.loggedUser.member.id;
+            })
+
+             let kpi_metric_member_id1 =  kpi_metric_member1.id;
+
+             let timely_value1 = kpi_metric_member1.timely_value;
+
+            console.log("Timely value:" +timely_value1);
+            console.log("Kpi Metric Member:"+kpi_metric_member_id1);
             console.log("Kpi Metric 1:" + JSON.stringify(kpimetric1));
+           console.log("Kpi 1:" + JSON.stringify(kpi1));
+
+            console.log("User Data:",JSON.stringify(store.state.loggedUser));
             const formData = new FormData();
             formData.append("title", this.kpimetric_title);
             formData.append("value", this.kpimetric_value);
             formData.append("notes", this.kpimetric_notes);
-            formData.append("kpi_metric_member_id", this.selectedKpiMetric.id);
-            formData.append("target", this.selectedKpiMetric.timely_value);
-            // formData.append("kpi_metric_id", kpimetric1.id); // Use kpimetric1.id
+            formData.append("kpi_metric_member_id",kpi_metric_member_id1);
+            formData.append("timely_vale",timely_value1);
+             formData.append("kpi_metric_id", kpimetric1.id);
+             formData.append("kpi_id", kpi1.id);// Use kpimetric1.id
             // formData.append("target", kpimetric1.timely_value); // Use kpimetric1.timely_value
-
+  
             // Make the POST request using Axios
             const uri = this.base_url + "api/v1/progress";
             axios

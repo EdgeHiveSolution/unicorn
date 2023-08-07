@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\PartnerApiController;
 use App\Http\Controllers\Api\KpiMetricApiController;
 use App\Http\Controllers\Api\DepartmentApiController;
 use App\Http\Controllers\Api\ProgressApiController;
+use App\Http\Controllers\Api\UserController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -70,5 +71,7 @@ Route::delete('v1/admin-delete',[AdminApiController::class, 'destroy']);
 
 Route::get('v1/country-list',[CountryApiController::class, 'index']);
 Route::get('v1/role-list',[RoleApiController::class, 'index']);
+
+Route::get('v1/user', [UserController::class, 'getUserWithRelatedData']);
 
 

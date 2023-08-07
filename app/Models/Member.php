@@ -33,7 +33,7 @@ class Member extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function userRole()
@@ -73,7 +73,7 @@ class Member extends Model
     {
         return $this->belongsToMany(Partner::class, 'member_partner')
             ->using(MemberPartner::class)
-            ->withPivot('department_id', 'role')
+            ->withPivot('department_id', 'role', 'member_id')
             ->withTimestamps();
     }
 
@@ -81,6 +81,10 @@ class Member extends Model
             
             public function kpiMetricMembers()
         {
-            return $this->hasMany(KpiMetricMember::class);
+            return $this->hasMany(KpiMetricMember::class, 'member_id');
         }
+
+
+
+
 }

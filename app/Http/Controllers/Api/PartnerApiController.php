@@ -28,7 +28,7 @@ class PartnerApiController extends Controller
      */
     public function index()
     {
-        $partners = Partner::with('departments', 'members','kpis.kpiMetrics')->get();
+        $partners = Partner::with('departments', 'members','kpis.kpiMetrics.kpiMetricMembers')->get();
 
         $formattedPartners = $partners->map(function ($partner) {
             $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');

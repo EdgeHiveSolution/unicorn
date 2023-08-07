@@ -19,7 +19,6 @@ return new class extends Migration
             // $table->foreignId('member_id')->constrained();
             $table->timestamps();
             $table->softDeletes();
-
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('set null');
             $table->foreign('member_id')->references('id')->on('members')->onDelete('set null');
 

@@ -58,9 +58,10 @@ class Partner extends Model
         return $this->belongsTo(Country::class);
     }
 
+
     public function kpis()
     {
-        return $this->hasMany(Kpi::class);
+        return $this->hasMany(Kpi::class, 'partner_id');
     }
 
     // public function kpiMetrics()
@@ -68,4 +69,6 @@ class Partner extends Model
     //     return $this->hasMany(KpiMetric::class);
     // }
 
+
+    
 }

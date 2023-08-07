@@ -1,4 +1,5 @@
 import './bootstrap';
+import store from './store.js';
 
 
 import { createApp } from 'vue';
@@ -33,6 +34,6 @@ app.component('department-create-component', DepartmentCreateComponent);
 app.component('department-detail-component', DepartmentDetailComponent);
 
 
-
+app.use(store); 
 app.mount('#app');
 
