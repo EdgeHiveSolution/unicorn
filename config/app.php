@@ -56,7 +56,7 @@ return [
     |
     */
 
-    //'url' => env('APP_URL', 'http://localhost'),
+    /*'url' => env('APP_URL', 'http://localhost'),*/
     'url' => env('APP_URL', 'https://unicon1-4e6bc01d9a83.herokuapp.com'),
 
 
