@@ -10,7 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\ConfigurationController;
+use App\Http\Controllers\Util\ConfigurationController;
 
 /*
 |--------------------------------------------------------------------------
