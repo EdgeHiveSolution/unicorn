@@ -35,5 +35,7 @@ class KpiMetricMember extends Model
             {
                 return $this->hasOne(Progress::class, 'kpi_metric_member_id');
             }
+
+            
 }
 

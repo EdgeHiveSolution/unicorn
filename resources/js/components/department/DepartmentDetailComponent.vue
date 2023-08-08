@@ -382,16 +382,25 @@
                   </thead>
                   <tbody>
                     <!-- Replace the static data with dynamic data using v-for directive -->
-                    <tr>
+                    <tr v-for="member in members">
                       <td>
                        
-
-
+                          {{ member.email }}
+                      </td>
+                      <td class="status">
+                       <span>
+                                                        {{
+                                                            (member.is_active =
+                                                                "Active")
+                                                        }}
+                                                    </span>
                       </td>
                       <td>
-                       
-                      </td>
-                      <td>
+                      <span v-for="partner in department.partners" :key="partner.id">
+
+                            {{partner.name}}
+                      
+                      </span>
                       </td>
                       <td>
                       
@@ -757,5 +766,11 @@ nav-link{
 
 .text-gray {
     font-size: 20px;
+}
+
+.status span {
+    background-color: rgba(51, 255, 0, 0.164);
+    padding: 8px;
+    border-radius: 15px;
 }
 </style>
