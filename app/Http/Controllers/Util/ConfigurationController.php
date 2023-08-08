@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Util;
 
 use App\Models\Metric;
 use Illuminate\Http\Request;
