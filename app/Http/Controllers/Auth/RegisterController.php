@@ -12,6 +12,9 @@ use App\Models\Member;
 use App\Models\Department;
 use App\Models\User;
 use App\Models\Partner;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+
 
 
 class RegisterController extends Controller
@@ -83,6 +86,22 @@ class RegisterController extends Controller
         }
     
         return $user;
+    }
+
+
+
+    protected function registered(Request $request, $user)
+    {
+        // Load the user with its related data
+        $user->load('userrole', 'member.kpiMetricMembers.progress');
+
+        // Store the user in the session
+        Session::put('user', $user);
+        Session::save();
+        
+        Log::info("User Registered and stored in session:", ['user' => $user]);
+
+        return redirect($this->redirectTo);
     }
     
                 

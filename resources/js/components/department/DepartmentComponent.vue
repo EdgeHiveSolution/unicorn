@@ -108,7 +108,7 @@
                                                     department.kpiMetrics
                                                         .length > 0
                                                 "
-                                            >
+                                               >
                                                 {{
                                                     calculateKpiProgress(
                                                         department.kpiMetrics
