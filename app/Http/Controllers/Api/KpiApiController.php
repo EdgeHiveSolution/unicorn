@@ -18,6 +18,7 @@ class KpiApiController extends Controller
         return Kpi::with('members','partners','departments','kpiMetrics')->get();
     }
 
+    
     /**
      * Store a newly created resource in storage.
      */

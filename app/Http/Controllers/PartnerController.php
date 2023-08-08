@@ -54,21 +54,22 @@ class PartnerController extends Controller
      * onse
      */
     public function show(Partner $partner)
-    {
-        $partner->load([
-            'members',
-            'kpis',
-            'departments',
-            'kpiMetrics' // Load nested relationship 'kpiMetrics' inside 'kpis'
-        ]);
+{
+    $partner->load([
+        'members',
+        'kpis',
+        'departments'
+    ]);
 
-        $data = [
-            'partner' => $partner,
-        ];
+    // Load kpiMetrics for each KPI
+    $partner->kpis->load('kpiMetrics');
 
+    $data = [
+        'partner' => $partner,
+    ];
 
-        return view('partner.show', $data);
-    }
+    return view('partner.show', $data);
+}
 
 
 

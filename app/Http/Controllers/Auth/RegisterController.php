@@ -59,6 +59,8 @@ class RegisterController extends Controller
     
         // Create a corresponding member for the user and set the user_id
         $member = Member::create([
+            'name' =>$user->name,
+            'email' =>$user->email,
             'user_id' => $user->id, // Set the user_id for the member
         ]);
     

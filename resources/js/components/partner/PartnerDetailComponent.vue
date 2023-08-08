@@ -190,6 +190,7 @@
                                 <div class="input-container">
                                     <i class="mdi mdi-magnify mdi-icon"></i>
                                     <input
+                                        style="height: 25px"
                                         class="input-field"
                                         type="text"
                                         placeholder="Search KPI metrics"
@@ -197,7 +198,10 @@
                                 </div>
                             </div>
                             <div>
-                                <button class="btn btn-light p-3">
+                                <button
+                                    style="height: 10px"
+                                    class="btn btn-light p-3 btn-icon"
+                                >
                                     <i
                                         class="mdi mdi-sort-variant text-dark"
                                     ></i>
@@ -290,7 +294,7 @@
                         class="row g-3"
                         @submit.prevent="partnerSubmit"
                         method="POST"
-                      >
+                    >
                         <div class="row mb-2 p-3">
                             <label
                                 for="name"
@@ -602,7 +606,7 @@
                                     <li
                                         v-for="(item, index) in selectedItems"
                                         class="list-item"
-                                      >
+                                    >
                                         <span>
                                             <i
                                                 class="mdi mdi-email-outline"
@@ -747,19 +751,29 @@
                                                     {{ member.email }}
                                                 </td>
                                                 <td class="status">
-                                                    <span> {{ member.is_active =  'Active'}} </span>
-                                                </td>
-                                                <td>
-                                                    <span class="depart-tag">
-                                                        {{ }}
+                                                    <span>
+                                                        {{
+                                                            (member.is_active =
+                                                                "Active")
+                                                        }}
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    {{  }}
+                                                    <span
+                                                        class="department-tag"
+                                                        v-for="department in this
+                                                            .partner
+                                                            .departments"
+                                                        :key="department.id"
+                                                        >{{
+                                                            department.name
+                                                        }}</span
+                                                    >
                                                 </td>
+                                                <td>{{}}</td>
                                                 <td>
                                                     <button
-                                                        class="btn btn-sm px-2 py-2 btn-pri  d-flex flex-row justify-content-center align-items-center"
+                                                        class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
                                                     >
                                                         <span
                                                             class="mdi mdi-eye-outline text-light"
@@ -847,6 +861,7 @@
                                     <div class="input-container">
                                         <i class="mdi mdi-magnify mdi-icon"></i>
                                         <input
+                                            style="height: 25px"
                                             class="input-field"
                                             type="text"
                                             placeholder="Search for metrics"
@@ -854,7 +869,10 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <button class="btn btn-light p-3">
+                                    <button
+                                        style="height: 10px"
+                                        class="btn btn-light p-3 btn-icon"
+                                    >
                                         <i
                                             class="mdi mdi-sort-variant text-dark"
                                         ></i>
@@ -870,89 +888,82 @@
                                                 <th>KPI metric</th>
                                                 <th>Target</th>
                                                 <th>Response period</th>
-                                                <th>Assigned to</th>
-                                                <th>Departments</th>
+                                                <th></th>
+                                                <!-- <th>Assigned to</th>
+                                                <th>Departments</th> -->
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <!-- <tr
+                                                v-for="kpi in partner.kpis"
+                                                :key="kpi.id"
+
+                                                 > -->
                                             <tr
-                                                v-for="partner in partners"
+                                                v-for="kpimetric in kpi.kpi_metrics"
                                                 :key="kpimetric.id"
                                             >
                                                 <td>
-                                                    <div
-                                                        class="d-flex align-items-center"
-                                                    >
-                                                        <img
-                                                            :src="partner.logo"
-                                                            alt="logo"
-                                                        />
-                                                        <span class="pl-2">{{
-                                                            partner.name
-                                                        }}</span>
-                                                    </div>
-                                                    <div
-                                                        class="d-flex align-items-center"
-                                                    >
-                                                        <span
-                                                            class="active-period txt-gray"
-                                                            >Active Period:
+                                                    <div>
+                                                        <span>
                                                             {{
-                                                                "8 months ago"
-                                                            }}</span
+                                                                kpimetric.title
+                                                            }}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td class="">
+                                                    <div>
+                                                        {{ kpimetric.target }}
+                                                        <!-- Display KPI target, assuming target is a property of the KPI -->
+                                                    </div>
+                                                </td>
+                                                <td class="">
+                                                    <div>
+                                                        {{
+                                                            kpimetric.response_period
+                                                        }}
+                                                        <!-- Display KPI response_period -->
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <button
+                                                        @click="
+                                                            sendInfo(kpimetric,kpi)
+                                                        "
+                                                        data-toggle="modal"
+                                                        data-target="#addKpimodal2"
+                                                        class="btn view-btn"
+                                                    >
+                                                        <a
+                                                            href="#"
+                                                            class="text-light add-link text-sm"
                                                         >
-                                                    </div>
+                                                            <i
+                                                                class="mdi mdi-eye-outline text-light"
+                                                            ></i>
+                                                            View</a
+                                                        >
+                                                    </button>
                                                 </td>
-                                                <td class="stats">
-                                                    <span>{{ "48%" }}</span>
-                                                    <div class="progress">
-                                                        <div
-                                                            class="progress-bar bg-primary"
-                                                            role="progressbar"
-                                                            :style="{
-                                                                width: '48%',
-                                                            }"
-                                                            aria-valuenow="5"
-                                                            aria-valuemin="0"
-                                                            aria-valuemax="100"
-                                                        ></div>
-                                                    </div>
-                                                </td>
-                                                <td class="td-members">
+                                                <!-- <td class="td-members">
                                                     <img
                                                         v-for="member in partner.members"
                                                         :key="member.id"
-                                                        src="member.image"
-                                                        alt="image"
+                                                        :src="member.photo"
+                                                        :alt="member.email"
                                                     />
-                                                </td>
-                                                <td>
+                                                </td> -->
+                                                <!-- <td>
                                                     <span
                                                         class="department-tag"
                                                         v-for="department in partner.departments"
                                                         :key="department.id"
-                                                        >{{
-                                                            department.name
-                                                        }}</span
                                                     >
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        class="btn btn-pri px-1 py-1 d-flex align-items-center"
-                                                    >
-                                                        <i
-                                                            class="mdi mdi-eye-outline text-light mx-2 align-self-center"
-                                                        ></i>
-                                                        <a
-                                                            :href="
-                                                                '/partners/' +
-                                                                partner.id
-                                                            "
-                                                            class="text-light"
-                                                            >View Details</a
-                                                        >
-                                                    </button>
-                                                </td>
+                                                        {{ department.name }}
+                                                    </span>
+                                                </td> -->
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1112,7 +1123,7 @@
                                                             autofocus
                                                             type="number"
                                                             placeholder="Enter target"
-                                                            name="member_target"
+                                                            name="target"
                                                             v-model="
                                                                 member.target
                                                             "
@@ -1357,6 +1368,9 @@
                                                             v-model="
                                                                 review_start_date
                                                             "
+                                                            :min="
+                                                                getCurrentDate()
+                                                            "
                                                         />
                                                     </div>
                                                 </div>
@@ -1374,6 +1388,9 @@
                                                             type="date"
                                                             v-model="
                                                                 review_end_date
+                                                            "
+                                                            :min="
+                                                                review_start_date
                                                             "
                                                         />
                                                     </div>
@@ -1403,12 +1420,103 @@
                         </div>
                     </div>
                 </div>
+
+                <div
+                    class="modal fade p-5"
+                    id="addKpimodal2"
+                    tabindex="-1"
+                    role="dialog"
+                >
+                    <div
+                        class="modal-dialog modal-dialog-centered modal-lg"
+                        role="document"
+                    >
+                        <div class="modal-content p-5">
+                            <h3>Progress Update</h3>
+                            <h4></h4>
+
+                            <form
+                                id="form-submit"
+                                @submit.prevent="
+                                    submitProgress(selectedKpiMetric, selectedKpiMember)
+                                "
+                                method="POST"
+                            >
+                                <div class="mb-3">
+                                    <label
+                                        for="name"
+                                        class="col-form-label text-md-start"
+                                        >Title</label
+                                    >
+                                    <input
+                                        id="name"
+                                        name="name"
+                                        placeholder="Progress Title"
+                                        class="form-control"
+                                        type="text"
+                                        v-model="kpimetric_title"
+                                    />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label
+                                        for="name"
+                                        class="col-form-label text-md-start"
+                                        >Value</label
+                                    >
+                                    <input
+                                        id="name"
+                                        name="value"
+                                        placeholder="KES 0"
+                                        class="form-control"
+                                        type="text"
+                                        v-model="kpimetric_value"
+                                    />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label
+                                        for="name"
+                                        class="col-form-label text-md-start"
+                                        >Notes</label
+                                    >
+                                    <textarea
+                                        id="name"
+                                        name="notes"
+                                        placeholder="Any extra notes about this update"
+                                        class="form-control"
+                                        v-model="kpimetric_notes"
+                                        style="height: 100px"
+                                    ></textarea>
+                                </div>
+
+                                <div class="text-center">
+                                    <button
+                                        type="button"
+                                        class="btn btn-light border-dark btn-action"
+                                        data-dismiss="modal"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary btn-action"
+                                    >
+                                        Update
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import store from "../../store";
 import { format } from "date-fns";
 
 export default {
@@ -1417,6 +1525,7 @@ export default {
             type: Object,
             required: true,
         },
+
         members: {
             type: Array,
             required: true,
@@ -1426,7 +1535,7 @@ export default {
             type: Array,
             required: true,
         },
-        
+
         kpis: {
             type: Array,
             required: true,
@@ -1435,6 +1544,8 @@ export default {
             type: Array,
             required: true,
         },
+
+       
     },
 
     data() {
@@ -1444,12 +1555,16 @@ export default {
             members: this.partner.members,
             kpiMetrics: [],
             selectedKpiTitle: "",
+            selectedMemberKpi: "",
             selectedKpi: null,
+            timelyValue: null,
 
             member: {
                 email: "",
                 target: "",
             },
+
+            selectedKpiMetric: "",
 
             selectedItems: [],
             departments: [],
@@ -1471,10 +1586,17 @@ export default {
 
                 business_type: this.partner.business_type,
                 about: this.partner.about,
+                kpis: this.partner.kpis,
             },
+
+            kpimetric_title: "",
+            kpimetric_value: "",
+            kpimetric_notes: "",
+
             kpiMetric: {
                 title: "",
                 type: "",
+                target: "",
                 responsePeriod: "",
                 members: [],
                 onTrackValue: 10,
@@ -1490,6 +1612,7 @@ export default {
                 phone: "",
                 address: "",
                 logo: "",
+                target: "",
 
                 business_type: "",
                 about: "",
@@ -1515,8 +1638,13 @@ export default {
             "'Date Joined: ' do MMMM yyyy"
         );
 
-        console.log("Department is", this.department)
+        console.log("Department prop:", this.department);
+        console.log("Members prop:", this.members);
+        console.log("Partners prop:", this.partner);
+
+        console.log("User Related Data:",JSON.stringify(this.$store.state.loggedUser));
     },
+
     methods: {
         openAddKpiMetricModal(kpi) {
             this.selectedKpi = kpi;
@@ -1594,7 +1722,13 @@ export default {
             axios
                 .delete(uri)
                 .then((response) => {
-                    alert("Partner account closed");
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Partner account Closed successfully!",
+                    }).then(() => {
+                        window.location.reload();
+                    });
                 })
                 .catch((error) => {
                     // Handle errors from the server or API request
@@ -1622,8 +1756,13 @@ export default {
                 .then((response) => {
                     const updatedPartner = response.data;
                     this.partner = updatedPartner;
-                    alert("Partner information updated");
-                    window.location.reload();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Partner created successfully!",
+                    }).then(() => {
+                        window.location.reload();
+                    });
                 })
                 .catch((error) => {
                     console.error("Error updating partner:", error);
@@ -1644,11 +1783,18 @@ export default {
             axios
                 .post(uri, formData)
                 .then((response) => {
-                    alert("Kpi created successifully!");
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Kpi created created successfully!",
+                    }).then(() => {
+                        this.kpi_title = "";
+                        this.kpi_owner = "";
+                        this.kpi_period = "";
+
+                        window.location.reload();
+                    });
                     // Clear the form fields after successful submission
-                    this.kpi_title = "";
-                    this.kpi_owner = "";
-                    this.kpi_period = "";
                 })
                 .catch((error) => {
                     // Handle errors if the request fails
@@ -1657,10 +1803,25 @@ export default {
         },
 
         submitKpiMetric() {
+            console.log("Target1 is :", this.formData.target);
+            console.log("Target2 is :", this.member.target);
+            console.log("Member is:", this.members);
+            console.log("Email is:", this.member.email);
             // Create a new FormData object
+            const membersWithTarget = this.members.map((member) => {
+                // Clone the member object
+                const modifiedMember = { ...member };
+                // Attach the target property to the cloned member object
+                modifiedMember.target = this.member.target; 
+
+                return modifiedMember;
+            });
+
+            console.log("Members array is:"+JSON.stringify( membersWithTarget));
             const formData = new FormData();
             formData.append("title", this.kpiMetric.title);
             formData.append("type", this.kpiMetric.type);
+           // formData.append("target", this.member.target);
             formData.append("response_period", this.kpiMetric.responsePeriod);
             formData.append("partner_id", this.partner.id);
             formData.append("on_track_value", this.kpiMetric.onTrackValue);
@@ -1670,20 +1831,105 @@ export default {
             formData.append("at_risk_max", this.kpiMetric.atRiskMax);
             formData.append("kpi_id", this.selectedKpi.id);
 
-            formData.append("members", JSON.stringify(this.members));
+           // formData.append("members", JSON.stringify(this.members));
+           formData.append("members", JSON.stringify(membersWithTarget));
+
 
             // Make the POST request using Axios
             const uri = this.base_url + "api/v1/kpiMetric-create";
+            const headers = { 'Content-Type': 'application/json' };
+            axios
+                .post(uri, formData, { headers })
+                .then((response) => {
+                    $("#addKpiMetricModal").modal("hide"); // show the modal
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Kpi Metric created successfully!",
+                    }).then(() => {
+                        this.kpi_title = "";
+                        this.kpi_owner = "";
+                        this.kpi_period = "";
+
+                        window.location.reload();
+                    });
+                })
+                .catch((error) => {
+                    // Handle errors if the request fails
+                    console.error("Error submitting the form:", error);
+                    console.log("Response:", error.response);
+
+                });
+        },
+
+        getCurrentDate() {
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+            const day = String(currentDate.getDate()).padStart(2, "0");
+
+            const formattedDate = `${year}-${month}-${day}`;
+            return formattedDate;
+        },
+
+        sendInfo(kpimetric, kpiMember) {
+            this.selectedKpiMetric = kpimetric;
+            this.selectedKpiMember = kpiMember;
+        },
+
+        submitProgress(kpimetric1,kpi1) {
+        console.log("User Data:",JSON.stringify(store.state.loggedUser));
+
+            console.log("kpimetrics:", this.partner.kpis[0].kpi_metrics);
+            console.log("this.partner.kpis:", this.partner.kpis); // Log the entire kpis array
+            console.log("this.partner.kpis[0]:", this.partner.kpis[0]); // Log the first item in the kpis array
+            console.log("ID is:", this.partner.kpis[0].kpi_metrics[0].id);
+            console.log(
+                "Timely Value:",
+                this.partner.kpis[0].kpi_metrics[0].timely_value
+            );
+
+            let kpi_metric_member1 = store.state.loggedUser.member.kpi_metric_members.find(element =>{
+                return element.member_id===store.state.loggedUser.member.id;
+            })
+
+             let kpi_metric_member_id1 =  kpi_metric_member1.id;
+
+             let timely_value1 = kpi_metric_member1.timely_value;
+
+            console.log("Timely value:" +timely_value1);
+            console.log("Kpi Metric Member:"+kpi_metric_member_id1);
+            console.log("Kpi Metric 1:" + JSON.stringify(kpimetric1));
+           console.log("Kpi 1:" + JSON.stringify(kpi1));
+
+            console.log("User Data:",JSON.stringify(store.state.loggedUser));
+            const formData = new FormData();
+            formData.append("title", this.kpimetric_title);
+            formData.append("value", this.kpimetric_value);
+            formData.append("notes", this.kpimetric_notes);
+            formData.append("kpi_metric_member_id",kpi_metric_member_id1);
+            formData.append("timely_vale",timely_value1);
+             formData.append("kpi_metric_id", kpimetric1.id);
+             formData.append("kpi_id", kpi1.id);// Use kpimetric1.id
+            // formData.append("target", kpimetric1.timely_value); // Use kpimetric1.timely_value
+  
+            // Make the POST request using Axios
+            const uri = this.base_url + "api/v1/progress";
             axios
                 .post(uri, formData)
                 .then((response) => {
-                    $("#addKpiMetricModal").modal("hide"); // show the modal
-                    alert("Kpi metric created successifully!");
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Progress updated successfully!",
+                    }).then(() => {
+                        this.kpimetric_title = "";
+                        this.kpimetric_value = "";
+                        this.kpimetric_notes = "";
 
+                        window.location.reload();
+                    });
                     // Clear the form fields after successful submission
-                    this.kpi_title = "";
-                    this.kpi_owner = "";
-                    this.kpi_period = "";
                 })
                 .catch((error) => {
                     // Handle errors if the request fails
@@ -1704,7 +1950,7 @@ a {
     border-bottom: 2px solid blue;
 }
 
-.add-link{
+.add-link {
     font-size: 14px;
 }
 
@@ -1770,8 +2016,29 @@ img {
     color: rgba(24, 23, 23, 0.911);
 }
 
-.nav-link{
-   font-size: 14px;
-   font-weight: 600;
+.nav-link {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.view-btn {
+    cursor: pointer;
+    font-size: 12px; /* Adjust font size */
+    padding: 5px 10px; /* Adjust padding (top/bottom, left/right) */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the content horizontally */
+    border-radius: 8px;
+    height: 35px;
+    background-color: #0072bb;
+}
+
+.view-btn a {
+    display: flex;
+    align-items: center;
+}
+
+.view-btn i {
+    margin-right: 8px;
 }
 </style>

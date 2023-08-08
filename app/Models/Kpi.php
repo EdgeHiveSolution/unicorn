@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Progress;
+use App\Models\KpiMetric;
+use App\Models\Partner;
+
 class Kpi extends Model
 {
     use HasFactory;
@@ -16,17 +20,24 @@ class Kpi extends Model
         'review_period_range'
     ];
 
+
+
     public function partner()
     {
         return $this->belongsTo(Partner::class);
     }
 
+
+    
    
 
     public function kpiOwner()
     {
         return $this->belongsTo(KpiOwner::class);
     }
+
+
+
 
     public function kpiMetrics()
     {
@@ -35,8 +46,11 @@ class Kpi extends Model
 
 
 
-
-
+    
+    public function progress()
+    {
+        return $this->hasMany(Progress::class);
+    }
 
 
 }

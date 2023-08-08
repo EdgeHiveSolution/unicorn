@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Partner;
 use Illuminate\Http\Request;
+use Session;
+use Illuminate\Support\Facades\Log;
+
 
 class DashboardController extends Controller
 {
@@ -12,10 +15,12 @@ class DashboardController extends Controller
      *
      * @return void
      */
+
     public function __construct()
     {
         $this->middleware('auth');
     }
+
 
     /**
      * Show the application dashboard.
@@ -24,12 +29,16 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $loggeduser= Session::get('user');
+        Log::info('Session User', ['user'=> $loggeduser]);
+       // dd($loggeduser);
 
         $partners = Partner::latest()->cursorPaginate(4);
 
         $data = [
             'partners' => $partners,
+            'loggeduser' => $loggeduser
         ];
-        return view('dashboard.index', $data);
+        return view('dashboard.index', ['data'=> $data]);
     }
 }

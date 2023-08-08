@@ -21,4 +21,7 @@ class KpiOwner extends Model
     }
 
 
+    
+
+
 }

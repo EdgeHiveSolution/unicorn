@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Partner;
+use App\Models\Kpi;
+use App\Models\KpiMetric;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,29 +14,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
         $this->call([
-            
             RoleSeeder::class,
             AdminSeeder::class,
             UserSeeder::class, 
-            DepartmentSeeder::class,
-            CountrySeeder::class,
-            PartnerSeeder::class,
-            DepartmentPartnerSeeder::class,
-            MemberSeeder::class,
-            KpiSeeder::class,
-            MemberPartnerSeeder::class, 
-            DepartmentMemberSeeder::class,
-          
-           
-            
+            // DepartmentSeeder::class,
+             CountrySeeder::class,
+            // PartnerSeeder::class,
+            // DepartmentPartnerSeeder::class,
+            // MemberSeeder::class,
+            // KpiSeeder::class,
+            // KpiMetricsSeeder::class,
+            // MemberPartnerSeeder::class, 
+            // DepartmentMemberSeeder::class,
         ]);
-        // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+       
     }
 }

@@ -1,17 +1,17 @@
 <?php
-
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\KpiMetric;
+use App\Models\Kpi;
 
 class KpiMetricsSeeder extends Seeder
-{
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+{ public function run(): void
     {
-        //
+        $kpis = Kpi::all();
+
+        foreach ($kpis as $kpi) {
+            $kpi->kpiMetrics()->saveMany(KpiMetric::factory(2)->make());
+        }
     }
 }

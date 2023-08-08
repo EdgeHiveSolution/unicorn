@@ -10,14 +10,25 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Models\UserRole;
 use App\Models\Member;
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    const ROLE_SUPERADMIN = 'Admin';
+    const ROLE_MEMBER = 'Member';
+    const ROLE_PARTNER = 'Partner';
+    const MEMBER_PARTNER = 'Member_partner';
+   
+    
+
+
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
+     * 
      */
     protected $fillable = [
         'name',
@@ -27,7 +38,10 @@ class User extends Authenticatable
         'password',
     ];
 
-
+    public function isAdmin()
+    {
+        return $this->userrole && $this->userrole->name === 'admin';
+    }
 
     public function userrole()
 
@@ -35,6 +49,7 @@ class User extends Authenticatable
         return $this->belongsTo(UserRole::class, 'user_role_id');
     }
 
+    protected $with = ['member.kpiMetricMembers'];
 
     public function member()
     {

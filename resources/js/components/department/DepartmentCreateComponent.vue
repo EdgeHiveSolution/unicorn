@@ -64,7 +64,7 @@
             class="row g-3"
             @submit.prevent="formSubmit"
             method="post"
-           >
+        >
             <div class="row mb-2 p-3">
                 <label
                     for="name"
@@ -234,7 +234,7 @@
             </div>
 
             <hr />
-           <div class="text-right mt-3 mb-5 text-end">
+            <div class="text-right mt-3 mb-5 text-end">
                 <div class="btn-icon">
                     <button
                         style="border: lightgrey"
@@ -313,18 +313,30 @@ export default {
             this.selectedMembers.splice(index, 1);
         },
         formSubmit() {
+            console.log("formSubmit method called");
 
-             if (!this.name || !this.email || !this.about || this.selectedMembers.length === 0) {
-        Swal.fire({
-          icon: "error",
-          title: "Error!",
-          text: "Please fill in all the required fields and select at least one member.",
-          customClass: {
-            container: "custom-swal",
-          },
-        });
-        return; // 
-      }
+            this.isLoading = true;
+
+            if (
+                !this.name ||
+                !this.email ||
+                !this.about ||
+                this.selectedMembers.length === 0
+            ) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Please fill in all the required fields and select at least one member.",
+                    customClass: {
+                        container: "custom-swal",
+                    },
+                });
+                this.isLoading = false; // Reset isLoading in case of error
+                return;
+            }
+
+            console.log("Form data valid. Submitting...");
+
             const formData = new FormData();
             formData.append("name", this.name);
             formData.append("email", this.email);
@@ -340,14 +352,18 @@ export default {
                         icon: "success",
                         title: "Success!",
                         text: "Department created successfully!",
-                    }).then(() => {
-                        this.isLoading = true;
-                        window.location.href = "/departments";
                     });
                 })
                 .catch((error) => {
                     this.alert_error = true;
                     console.log(error);
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                    if (!this.alert_error) {
+                        console.log("Redirecting to /departments");
+                        window.location.href = "/departments"; // Redirect only on success
+                    }
                 });
         },
     },
@@ -380,10 +396,9 @@ h2 {
     font-size: 20px;
 }
 
-
 .custom-swal {
-  font-size: 14px; /* Adjust the font size as desired */
-  padding: 10px; /* Adjust the padding as desired */
-  max-width: 200px; /* Adjust the maximum width as desired */
+    font-size: 14px; /* Adjust the font size as desired */
+    padding: 10px; /* Adjust the padding as desired */
+    max-width: 200px; /* Adjust the maximum width as desired */
 }
 </style>
