@@ -45,13 +45,13 @@ class Progress extends Model
 
     public function kpi()
     {
-        return $this->belongsTo(Kpi::class);
+        return $this->belongsTo(Kpi::class, 'kpi_id');
     }
 
 
     public function kpiMetric()
     {
-        return $this->belongsTo(KpiMetric::class);
+        return $this->belongsTo(KpiMetric::class, 'kpi_metric_id');
     }
 
 

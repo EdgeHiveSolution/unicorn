@@ -57,7 +57,7 @@ class LoginController extends Controller
                 
                 protected function authenticated(Request $request, $user)
             {
-                $user->load('userrole', 'member.kpiMetricMembers');
+                $user->load('userrole', 'member.kpiMetricMembers.progress');
                 
                 // You can log the user to verify that the related properties are loaded.
               //  Log::info("User object:", ['user' => $user]);

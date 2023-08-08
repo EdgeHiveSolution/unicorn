@@ -215,15 +215,16 @@
                                     <thead>
                                         <tr>
                                             <th>KPI Metric</th>
-                                            <th>Value</th>
-                                            <th>Top drivers</th>
+                                            <th>Current</th>
+                                            <th>Target</th>
                                             <th>Progress</th>
-                                            <th>Key departments</th>
+                                            <th>Assigned  To</th>
+                                            <th>Departments</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr
-                                            v-for="kpimetric in kpimetrics"
+                                            v-for="progress in loggedUser"
                                             :key="kpimetric.id"
                                         >
                                             <td>
@@ -233,6 +234,9 @@
                                                 {{ kpimetric.type }}
                                             </td>
                                             <td class="td-members">
+                                                {{ kpimetric.title }}
+                                            </td>
+                                            <td>
                                                 {{ kpimetric.title }}
                                             </td>
                                             <td>

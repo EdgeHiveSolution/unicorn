@@ -13,6 +13,9 @@ use App\Models\KpiMetricMember;
 class ProgressApiController extends Controller
 {
 
+
+
+
     public function store(Request $request)
 {
     $this->validate($request, [
@@ -27,8 +30,11 @@ class ProgressApiController extends Controller
     // Find the corresponding KpiMetricMember based on the request parameters
     $kpiMetricMember = KpiMetricMember::findOrFail($request->kpi_metric_member_id);
 
-    // Set the target_value based on the timely_value of the KpiMetricMember
-    $targetValue = $kpiMetricMember->timely_value;
+    // Find the corresponding KpiMetric based on the request parameters
+    $kpiMetric = KpiMetric::findOrFail($request->kpi_metric_id);
+
+    // Set the target_value based on the total target from the KpiMetric
+    $targetValue = $kpiMetric->target;
 
     // Create the progress update
     $progress = Progress::create([
@@ -36,13 +42,28 @@ class ProgressApiController extends Controller
         'current_value' => $request->value,
         'target_value' => $targetValue,
         'notes' => $request->notes,
-        'kpi_id' =>$request->kpi_id,
-        'kpi_metric_id'=>$request->kpi_metric_id,
-        'kpi_metric_member_id' =>$kpiMetricMember->id,
+        'kpi_id' => $request->kpi_id,
+        'kpi_metric_id' => $request->kpi_metric_id,
+        'kpi_metric_member_id' => $kpiMetricMember->id,
     ]);
 
+    // Calculate the sum of current_value for progress updates with the same kpi_metric_id
+    $totalCurrentValue = Progress::where('kpi_metric_id', $request->kpi_metric_id)
+                                 ->sum('current_value');
+
+    // Update the sum of current_value for progress updates with the same kpi_metric_id
+    Progress::where('kpi_metric_id', $request->kpi_metric_id)
+            ->update(['current_value' => $totalCurrentValue]);
+    
+    
     // Associate the progress with the KpiMetricMember
     $kpiMetricMember->progress()->save($progress);
+
+    
+    $progress->kpiMetricMember()->associate($kpiMetricMember);
+    $progress->kpi()->associate($kpiMetric->kpi); 
+    $progress->kpiMetric()->associate($kpiMetric);
+
 
     return response()->json([
         'success' => 'Progress update created successfully',
