@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Util;
 
+use App\Http\Controllers\Controller;
 use App\Models\Metric;
 use Illuminate\Http\Request;
-//use Illuminate\Http\Controllers\Controller;
 use App\Models\Configuration;
 
 class ConfigurationController extends Controller

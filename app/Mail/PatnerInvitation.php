@@ -61,6 +61,8 @@ class PatnerInvitation extends Mailable
         return $this->subject('Partner Invitation')
             ->view('mail.patner_invitation', [
                 'url' => $url,
+                'actionType' => $this->actionType,
+
             ]);
     }
 }
