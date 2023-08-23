@@ -5,7 +5,7 @@
         <div class="row justify-content-center align-items-center vh-100">
             <div class="col-md-6 col-lg-4">
                 <h2>Sign in to your account</h2>
-                <form method="POST" action="{{ secure_url(route('login')) }}">
+                <form method="POST" action="{{ route('login') }}">
                     @csrf
 
                     <div class="mt-3">
