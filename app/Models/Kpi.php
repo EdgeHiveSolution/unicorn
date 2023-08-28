@@ -47,10 +47,10 @@ class Kpi extends Model
 
 
     
-    public function progress()
-    {
-        return $this->hasMany(Progress::class);
-    }
+    // public function progress()
+    // {
+    //     return $this->hasMany(Progress::class);
+    // }
 
 
 }

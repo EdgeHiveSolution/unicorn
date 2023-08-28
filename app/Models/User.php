@@ -11,6 +11,7 @@ use App\Models\UserRole;
 use App\Models\Member;
 
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -70,6 +71,8 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
+
+     
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',

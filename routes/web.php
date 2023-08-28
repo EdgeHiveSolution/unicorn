@@ -11,6 +11,9 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\Util\ConfigurationController;
+use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\KpiMetricController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +56,14 @@ Route::resource('units', UnitController::class);
 
 //Units Routes
 Route::resource('profile', ProfileController::class);
+
+//Progress
+Route::resource('progress', ProgressController::class);
+
+//Member
+Route::resource('members', MemberController::class);
+
+
+//Member
+Route::resource('kpimetrics', KpiMetricController::class);
+

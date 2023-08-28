@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Progress;
 use App\Models\KpiMetricMember;
+use App\Models\Kpi;
+use App\Models\Member;
 
 class KpiMetric extends Model
 {
@@ -32,25 +34,19 @@ class KpiMetric extends Model
     {
         return $this->belongsTo(Kpi::class);
     }
+
+
     
 
-    public function partner()
-    {
-        return $this->belongsTo(Partner::class);
-    }
+   
 
     public function members()
     {
-        return $this->hasMany(Members::class);
+        return $this->hasMany(Member::class);
     }
 
 
 
-
-    public function progress()
-    {
-        return $this->hasMany(Progress::class);
-    }
 
     
     public function kpiMetricMembers()

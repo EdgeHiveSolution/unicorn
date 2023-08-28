@@ -257,7 +257,14 @@
 </template>
 
 <script>
+import { BSpinner } from 'bootstrap-vue';
+
 export default {
+
+     components: {
+        BSpinner,
+    },
+    
     data() {
         return {
             name: "",

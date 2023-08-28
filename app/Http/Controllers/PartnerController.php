@@ -62,7 +62,7 @@ class PartnerController extends Controller
     ]);
 
     // Load kpiMetrics for each KPI
-    $partner->kpis->load('kpiMetrics');
+    $partner->kpis->load('kpiMetrics.kpiMetricMembers.progress');
 
     $data = [
         'partner' => $partner,

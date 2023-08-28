@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\KpiMetric;
+use App\Models\Progress;
 
-
-class KpiMetricController extends Controller
+class ProgressController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -18,20 +18,20 @@ class KpiMetricController extends Controller
      *
      *
      */
-    // public function index()
+    public function index()
 
-    // {
-    //     $members = Member::latest()->cursorPaginate(5);
-
-
-    //     $data = [
-    //         'members' => $members,
-
-    //     ];
+    {
+        $progress = Progress::latest()->cursorPaginate(5);
 
 
-    //     return view('member.index', $data);
-    // }
+        $data = [
+            'progress' => $progress,
+
+        ];
+
+
+        return view('progress.index', $data);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -58,29 +58,26 @@ class KpiMetricController extends Controller
      * @param  \App\Models\Department  $department
      *
      */
-    // public function show()
+    // public function show(Progress $progress)
     // {
-    //     $partners = Partner::latest()->cursorPaginate(4);
-
-    //     $data = [
-    //         'partners' => $partners,
-    //     ];
-    //     return view('member.show',  ['data'=> $data]);
+    //     return view('progress.show',['progress'=> $progress]);
     // }
 
 
-        public function show(KpiMetric $kpimetric)
+    public function show(Progress $progress)
+{
+    // Fetch the associated KpiMetricMember
+    $kpiMetricMember = $progress->kpiMetricMember;
 
-        {
-            return view('progress.show', ['kpimetric' => $kpimetric]);
-        }
+    // Load the KpiMetrics and their related KPIs
+    $kpiMetricMember->load('kpiMetric.kpi');
 
-//     public function show($memberId)
-// {
-//     $member = Member::findOrFail($memberId); // Fetch the specific member by ID
+    return view('progress.show', [
+        'progress' => $progress,
+        'kpiMetricMember' => $kpiMetricMember,
+    ]);
+}
 
-//     return view('member.show', ['member'=>$member]);
-// }
 
     /**
      * Show the form for editing the specified resource.
@@ -105,4 +102,5 @@ class KpiMetricController extends Controller
      * @param  \App\Models\Department  $department
      * @return \Illuminate\Http\Response
      */
+   
 }

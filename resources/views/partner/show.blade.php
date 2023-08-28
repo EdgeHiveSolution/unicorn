@@ -6,7 +6,6 @@
          :kpis="{{ json_encode($partner->kpis) }}"  :department="{{ json_encode($partner->department) }}"   
         >  
 
-
     </partner-detail-component>
 
 

@@ -41,6 +41,7 @@ Route::patch('v1/unit-update',[UnitApiController::class, 'update']);
 Route::delete('v1/metric-delete', [MetricApiController::class, 'destroy']);
 
 Route::post('v1/progress', [ProgressApiController::class, 'store']);
+Route::get('v1/kpimetrics/{kpimetricId}/progress',  [ProgressApiController::class, 'getProgressForKpiMetric']);
 
 
 Route::get('v1/metric-list',[MetricApiController::class, 'index']);
@@ -49,6 +50,8 @@ Route::patch('v1/metric-update',[MetricApiController::class, 'update']);
 Route::delete('v1/metric-delete',[MetricApiController::class, 'destroy']);
 
 Route::get('v1/member-list',[MemberApiController::class, 'index']);
+//Route::get('v1/members/{id}', [MemberApiController::class, 'show']);
+Route::get('v1/members/{memberId}/kpis-and-metrics', [MemberApiController::class, 'getKpisAndMetricsForMember']);
 Route::post('v1/member-create',[MemberApiController::class, 'store']);
 Route::patch('v1/member-update',[MemberApiController::class, 'update']);
 Route::delete('v1/member-delete',[MemberApiController::class, 'destroy']);

@@ -27,6 +27,9 @@ class Partner extends Model
     ];
 
 
+  protected $with = ['departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress'];
+
+
     // public function members()
     // {
     //     return $this->belongsToMany(Member::class, 'member_partner', 'partner_id', 'member_id')

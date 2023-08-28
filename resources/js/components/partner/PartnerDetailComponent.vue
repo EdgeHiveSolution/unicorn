@@ -226,37 +226,38 @@
                                     <tbody>
                                         <tr
                                             v-for="(
-                                                progressItem, index
-                                            ) in userProgressItems"
+                                                kpiMetric, index
+                                            ) in kpi.kpi_metrics"
                                             :key="index"
                                         >
                                             <td>
-                                                <span
-                                                    v-for="(
-                                                        kpiMetric, index
-                                                    ) in kpi.kpi_metrics"
-                                                    :key="index"
-                                                >
-                                                    {{ kpiMetric.title }}</span
-                                                >
+                                                {{ kpiMetric.title }}
                                             </td>
                                             <td class="stats">
-                                                {{
-                                                    progressItem.progress
-                                                        .current_value
-                                                }}
+                                                <span
+                                                    v-for="(
+                                                        kpiMetricMember, index
+                                                    ) in kpiMetric.kpi_metric_members"
+                                                    :key="index"
+                                                >
+                                                    {{
+                                                        kpiMetricMember.progress
+                                                    }}
+                                                </span>
                                             </td>
                                             <td class="td-members">
-                                                {{
-                                                    progressItem.progress
-                                                        .target_value
-                                                }}
+                                                {{ kpiMetric.target }}
+                                                <!-- {{
+                                                       kpiMetric.kpi_metric_members ?   kpiMetric.kpi_metric_members : ""
+                                                }} -->
                                             </td>
                                             <td>
                                                 <div>
                                                     {{
                                                         getProgressPercentage(
-                                                            progressItem.progress
+                                                            kpiMetric
+                                                                .kpi_metric_members
+                                                                .progress
                                                         )
                                                     }}%
                                                     <div class="progress">
@@ -266,7 +267,9 @@
                                                             :style="{
                                                                 width:
                                                                     getProgressPercentage(
-                                                                        progressItem.progress
+                                                                        kpiMetric
+                                                                            .kpi_metric_members
+                                                                            .progress
                                                                     ) + '%',
                                                             }"
                                                             aria-valuemin="0"
@@ -277,7 +280,9 @@
                                                 <div
                                                     v-if="
                                                         isOffTrack(
-                                                            progressItem.progress,
+                                                            kpiMetric
+                                                                .kpi_metric_members
+                                                                .progress,
                                                             kpiMetric
                                                         )
                                                     "
@@ -288,7 +293,9 @@
                                                 <div
                                                     v-else-if="
                                                         isAtRisk(
-                                                            progressItem.progress,
+                                                            kpiMetric
+                                                                .kpi_metric_members
+                                                                .progress,
                                                             kpiMetric
                                                         )
                                                     "
@@ -313,7 +320,8 @@
                                                 />
                                             </td>
                                             <td>
-                                                <span class="txt-dark"
+                                                <span
+                                                    class="txt-dark"
                                                     v-for="department in partner.departments"
                                                     :key="department.id"
                                                 >
@@ -862,7 +870,7 @@
                                                         }}</span
                                                     >
                                                 </td>
-                                                <td>{{}}</td>
+                                                <td> {{ }} </td>
                                                 <td>
                                                     <button
                                                         class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
@@ -1021,24 +1029,17 @@
 
                                                 <td>
                                                     <button
-                                                        @click="
-                                                            sendInfo(
-                                                                kpimetric,
-                                                                kpi
-                                                            )
-                                                        "
-                                                        data-toggle="modal"
-                                                        data-target="#addKpimodal2"
+                                                        
                                                         class="btn view-btn"
-                                                    >
+                                                        >
                                                         <a
-                                                            href="#"
+                                                            :href=" '/kpimetrics/' + kpimetric.id"
                                                             class="text-light add-link text-sm"
                                                         >
                                                             <i
                                                                 class="mdi mdi-eye-outline text-light"
                                                             ></i>
-                                                            View</a
+                                                            Activity</a
                                                         >
                                                     </button>
                                                 </td>
@@ -1683,6 +1684,7 @@ export default {
                 business_type: this.partner.business_type,
                 about: this.partner.about,
                 kpis: this.partner.kpis,
+                kpi_metrics: this.partner.kpis.kpi_metrics,
             },
 
             kpimetric_title: "",
@@ -1731,21 +1733,20 @@ export default {
         loggedUser() {
             return this.$store.state.loggedUser;
         },
-        userProgressItems() {
-            if (
-                this.loggedUser &&
-                this.loggedUser.member &&
-                this.loggedUser.member.kpi_metric_members
-            ) {
-                return this.loggedUser.member.kpi_metric_members;
-
-                console.log(
-                    "Items are:",
-                    this.loggedUser.member.kpi_metric_members
-                );
-            }
-            return [];
-        },
+        // userProgressItems() {
+        //     console.log(
+        //         "Items are:",
+        //         this.loggedUser.member.kpi_metric_members
+        //     );
+        //     if (
+        //         this.loggedUser &&
+        //         this.loggedUser.member &&
+        //         this.loggedUser.member.kpi_metric_members
+        //     ) {
+        //         return this.loggedUser.member.kpi_metric_members;
+        //     }
+        //     return [];
+        // },
     },
 
     mounted() {
@@ -1756,14 +1757,19 @@ export default {
             "'Date Joined: ' do MMMM yyyy"
         );
 
-        console.log("Department prop:", this.department);
-        console.log("Members prop:", this.members);
         console.log("Partners prop:", this.partner);
-        console.log("Kpi Metrics are:", JSON.stringify(this.kpis));
+        console.log("Kpi Metrics are:", JSON.stringify(this.partner.kpis));
+        console.log("New Kpis are :", JSON.stringify(this.kpis));
         console.log(
             "User Related Data:",
             JSON.stringify(this.$store.state.loggedUser)
         );
+
+        // console.log("Items are:", this.loggedUser.member.kpi_metric_members);
+
+        // console.log("userProgressItems:", this.userProgressItems);
+
+        //console.log("Kpi Metric Members:", JSON.stringify(this.partner.kpi_metrics));
     },
 
     methods: {
@@ -1951,6 +1957,7 @@ export default {
         },
 
         submitKpiMetric() {
+            const partner = this.partner;
             console.log("Target1 is :", this.formData.target);
             console.log("Target2 is :", this.member.target);
             console.log("Member is:", this.members);
@@ -1990,6 +1997,17 @@ export default {
             axios
                 .post(uri, formData, { headers })
                 .then((response) => {
+                    console.log(
+                        "Response from server:" + JSON.stringify(response.data)
+                    );
+
+                    // const updatedLoggedUser = {
+                    //     ...this.$store.state.loggedUser,
+                    // };
+                    // updatedLoggedUser.member.kpi_metric_members =
+                    //     response.data.kpi_metric_members;
+                    // this.$store.dispatch("updateLoggedUser", updatedLoggedUser);
+
                     $("#addKpiMetricModal").modal("hide"); // show the modal
                     Swal.fire({
                         icon: "success",
@@ -2000,7 +2018,7 @@ export default {
                         this.kpi_owner = "";
                         this.kpi_period = "";
 
-                        window.location.reload();
+                        window.location.href = "/partners/" + partner.id;
                     });
                 })
                 .catch((error) => {
@@ -2026,26 +2044,35 @@ export default {
         },
 
         submitProgress(kpimetric1, kpi1) {
+            const partner = this.partner;
             console.log("User Data:", JSON.stringify(store.state.loggedUser));
 
             console.log("kpimetrics:", this.partner.kpis[0].kpi_metrics);
             console.log("this.partner.kpis:", this.partner.kpis); // Log the entire kpis array
-            console.log("this.partner.kpis[0]:", this.partner.kpis[0]); // Log the first item in the kpis array
+            // console.log("this.partner.kpis[0]:", this.partner.kpis[0]); // Log the first item in the kpis array
             console.log("ID is:", this.partner.kpis[0].kpi_metrics[0].id);
             console.log(
                 "Timely Value:",
                 this.partner.kpis[0].kpi_metrics[0].timely_value
             );
 
-            let kpi_metric_member1 =
-                store.state.loggedUser.member.kpi_metric_members.find(
-                    (element) => {
-                        return (
-                            element.member_id ===
-                            store.state.loggedUser.member.id
-                        );
-                    }
+            let kpi_metric_member1 = this.partner.kpis
+                .flatMap((kpi) => kpi.kpi_metrics)
+                .flatMap((kpi_metric) => kpi_metric.kpi_metric_members)
+                .find(
+                    (element) =>
+                        element.member_id === store.state.loggedUser.member.id
                 );
+
+            // let kpi_metric_member1 =
+            //     this.kpis.kpi_metrics.kpi_metric_members.find(
+            //         (element) => {
+            //             return (
+            //                 element.member_id ===
+            //                 store.state.loggedUser.member.id
+            //             );
+            //         }
+            //     );
 
             let kpi_metric_member_id1 = kpi_metric_member1.id;
 
@@ -2072,6 +2099,17 @@ export default {
             axios
                 .post(uri, formData)
                 .then((response) => {
+                    console.log(
+                        "Response for Progress from server:",
+                        response.data
+                    );
+
+                    // const updatedLoggedUser = {
+                    //     ...this.$store.state.loggedUser,
+                    // };
+                    // updatedLoggedUser.member.kpi_metric_members.progress =
+                    //     response.data.progress;
+                    // this.$store.dispatch("updateLoggedUser", updatedLoggedUser);
                     Swal.fire({
                         icon: "success",
                         title: "Success!",

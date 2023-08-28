@@ -28,19 +28,24 @@ class PartnerApiController extends Controller
      */
     public function index()
     {
-        $partners = Partner::with('departments', 'members','kpis.kpiMetrics.kpiMetricMembers')->get();
+        $partners = Partner::with('departments', 'members','kpis.kpiMetrics.kpiMetricMembers.progress')->get();
+
+        Log::info("Partner is:", ['partner'=>$partners]); 
 
         $formattedPartners = $partners->map(function ($partner) {
             $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
             return $partner;
         });
 
+        Log::info("Partners are :", ['partners'=>$formattedPartners]); 
         return $formattedPartners;
+
+       
     }
 
     public function latest()
     {
-        $partners = Partner::with('departments', 'members,kpis')
+        $partners = Partner::with('departments', 'members', 'kpis')
             ->latest('created_at')
             ->take(3)
             ->get();
@@ -55,7 +60,7 @@ class PartnerApiController extends Controller
      
 
         public function store(Request $request)
-        {
+          {
             Log::info('Test log message');
             try {
                 // Log the request data for debugging purposes

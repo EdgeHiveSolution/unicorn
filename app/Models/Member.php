@@ -26,10 +26,9 @@ class Member extends Model
         
     ];
 
-    // public function departments(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Department::class);
-    // }
+
+    protected $with = ['departments' , 'kpiMetricMembers'];
+   
 
     public function user()
     {
@@ -50,23 +49,12 @@ class Member extends Model
          ->withTimestamps();
 }
 
-    // app/Models/Member.php
-
-    // public function partners(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Partner::class);
-    // }
-
+    
     public function kpis(){
         return $this->hasMany(Kpi::class);
     }
 
-    
-
-    // public function kpiMetrics(){
-    //     return $this->hasMany(KpiMetric::class);
-    // }
-
+   
 
 
     public function partners()

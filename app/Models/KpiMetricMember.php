@@ -20,22 +20,27 @@ class KpiMetricMember extends Model
     
 
             public function kpiMetric()
-        {
-            return $this->belongsTo(KpiMetric::class);
-        }
 
-
-                    public function member()
             {
-                return $this->belongsTo(Member::class);
+            return $this->belongsTo(KpiMetric::class);
             }
+
+
+            public function member()
+            {
+              return $this->belongsTo(Member::class);
+            }
+
 
 
             public function progress()
+            
             {
-                return $this->hasOne(Progress::class, 'kpi_metric_member_id');
+                return $this->hasMany(Progress::class);
             }
 
+
+            
             
 }
 

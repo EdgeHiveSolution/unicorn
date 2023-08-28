@@ -124,6 +124,7 @@ class KpiMetricApiController extends Controller
             // Sum up the timely values for all members
             $totalTimelyValue += $timelyValue;
         }
+        
     
         // Create KpiMetric
         $kpiMetric = KpiMetric::create([
@@ -157,13 +158,14 @@ class KpiMetricApiController extends Controller
             $timelyValue = 0; // Set a default value if response period is not recognized
         }
         
-        // Create KpiMetricMember entry
-        KpiMetricMember::create([
+       
+        $kpiMetricMembers = KpiMetricMember::create([
             'kpi_metric_id' => $kpiMetric->id,
             'member_id' => $member['id'],
             'target' => $individualTarget,
             'timely_value' => $timelyValue,
         ]);
+
 
 
     }
@@ -178,22 +180,10 @@ class KpiMetricApiController extends Controller
 
     
     return response()->json([
-        'success' => 'Kpi metric created successfully',
-    ]);
+      'kpi_metric_members' => [$kpiMetricMembers]
+    ], 200);
 
-    // // Update the KpiMetric entry with the total target and total timely value
-    // $kpiMetric->target = $totalTarget;
-    // $kpiMetric->timely_value = $totalTimelyValue;
-    // $kpiMetric->save();
-
-    // $kpi = Kpi::findOrFail($request->kpi_id);
-    // $partner = $kpi->partner;
-    
-    // // Associate the KPI Metric with the KPI and Partner
-    // $kpiMetric->kpi()->associate($kpi);
-    // $kpiMetric->save();
-    
-    // $partner->kpis()->save($kpi);;
+   
 
 }
 

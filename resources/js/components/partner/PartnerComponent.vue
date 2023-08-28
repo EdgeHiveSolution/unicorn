@@ -256,6 +256,8 @@ export default {
             axios.get(uri).then((response) => {
                  console.log("API Response:", response.data);
                 this.partners = response.data;
+
+                console.log("New Partners:", JSON.stringify(this.partners));
                 
             });
         },
