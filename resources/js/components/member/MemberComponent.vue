@@ -94,62 +94,55 @@
                             </div>
                             <div class="card-body mb-5">
                                 <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>KPI Metric</th>
-                                                <th>Current</th>
-                                                <th>Target</th>
-                                                <th>Progress</th>
-
-                                                <!-- <th>Assigned to</th>
-                                                <th>Departments</th> -->
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- <div v-if="member.member  && member.member.kpiMetrics"> -->
-                                            <tr
-                                                v-for="progressData in kpiMetricData.progress"
-                                                :key="progressData.id"
-                                            >
-                                                <td>
-                                                    <div>
-                                                        <span>
-                                                           {{ kpiMetricData.kpiMetric.title }}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td class="">
-                                                    <div>
-                                                       {{ progressData.current_value }}
-                                                        <!-- Display KPI target, assuming target is a property of the KPI -->
-                                                    </div>
-                                                </td>
-                                                <td class="">
-                                                    <div>
-                                                         {{ progressData.target_value }}
-                                                    </div>
-                                                </td>
-
-                                                 <td class="stats">
-                                            <p class="progress_text text-muted">
-                                                {{ "48%" }}
-                                            </p>
-                                            <div class="progress">
-                                                <div
-                                                    class="progress-bar bg-primary"
-                                                    role="progressbar"
-                                                    :style="{ width: '48%' }"
-                                                    aria-valuenow="5"
-                                                    aria-valuemin="0"
-                                                    aria-valuemax="100"
-                                                ></div>
-                                            </div>
-                                        </td>
-                                            </tr>
-                                            <!-- </div> -->
-                                        </tbody>
-                                    </table>
+                                   <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>KPI Metric</th>
+                                    <th>Current</th>
+                                    <th>Target</th>
+                                    <th>Progress</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- <tr v-for="progressData in kpiMetricData" :key="progressData.id"> -->
+                                   <tr>
+                                    <td>
+                                    <div>
+                                     <!-- <span>{{ kpiMetricData.kpiMetric.title }}</span> -->
+                                        <span>{{ kpiMetricData.kpiMetric.title }}</span>
+                                    </div>
+                                    </td>
+                                    <td class="">
+                                     <!-- <div>{{ progressData.progress_sum.current_sum }}</div> -->
+                                                    <div>{{ kpiMetricData.progress_sum.current_sum }}</div>
+                        </td>
+                        <td class="">
+                        <!-- <div>{{ progressData.progress_sum.target_sum }}</div> -->
+                        <div>{{ kpiMetricData.progress_sum.target_sum }}</div>
+                        </td>
+                        <td>
+                        <td class="stats">
+                            <p class="progress_text text-muted">
+                            {{ calculateProgressPercentage( kpiMetricData.progress_sum) }}%
+                            </p>
+                            <div class="progress">
+                            <div
+                                :class="getProgressBarClass( kpiMetricData.progress_sum, kpiMetricData.kpiMetric)"
+                                role="progressbar"
+                                :style="{ width: calculateProgressPercentage( kpiMetricData.progress_sum) + '%' }"
+                                aria-valuenow="5"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                            ></div>
+                            </div>
+                            <p class="progress-status">
+                            {{ calculateProgressStatus( kpiMetricData.progress_sum, kpiMetricData.kpiMetric) }}
+                            </p>
+                        </td>
+        </td>
+      </tr>
+    </tbody>
+  </table>
                                     <pagination
                                         :total="totalPages"
                                         :current="currentPage"
@@ -201,6 +194,41 @@ export default {
     },
 
     methods: {
+calculateProgressPercentage(progressSum) {
+      const currentSum = progressSum.current_sum;
+      const targetSum = progressSum.target_sum;
+      const percentage = (currentSum / targetSum) * 100;
+      return percentage.toFixed(2);
+    },
+    calculateProgressStatus(progressSum, kpiMetric) {
+      const progressPercentage = parseFloat(this.calculateProgressPercentage(progressSum));
+
+      if (progressPercentage >= parseFloat(kpiMetric.on_track_value)) {
+        return "On Track";
+      } else if (
+        progressPercentage >= parseFloat(kpiMetric.at_risk_min) &&
+        progressPercentage < parseFloat(kpiMetric.on_track_value)
+      ) {
+        return "At Risk";
+      } else {
+        return "Off Track";
+      }
+    },
+    getProgressBarClass(progressSum, kpiMetric) {
+      const progressPercentage = parseFloat(this.calculateProgressPercentage(progressSum));
+
+      if (progressPercentage >= parseFloat(kpiMetric.on_track_value)) {
+        return "bg-success"; // On track
+      } else if (
+        progressPercentage >= parseFloat(kpiMetric.at_risk_min) &&
+        progressPercentage < parseFloat(kpiMetric.on_track_value)
+      ) {
+        return "bg-warning"; // At risk
+      } else {
+        return "bg-danger"; // Off track
+      }
+    },
+  
         // fetchMemberDetails() {
         //     const uri = this.base_url + `api/v1/members/${this.memberId}`;
         //     axios

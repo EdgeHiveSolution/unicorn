@@ -10,12 +10,8 @@
                         v-for="(item, index) in progressData.progress_data"
                         :key="index"
                     >
-
-                    
                         <div>
-                        
                             <div class="card mb-5">
-                            
                                 <div class="d-flex justify-content-between p-4">
                                     <div>
                                         <h4>
@@ -26,21 +22,18 @@
                                         </h4>
                                     </div>
 
-                                     
-                            <button
-                                data-toggle="modal"
-                                class="btn btn-light border"
-                                data-target="#addKpimodal2"
-                            >
-                                + Add Progress
-                            </button>
-                      
+                                    <button
+                                        data-toggle="modal"
+                                        class="btn btn-light border"
+                                        data-target="#addKpimodal2"
+                                    >
+                                        + Add Progress
+                                    </button>
                                 </div>
-                                
+
                                 <div
                                     class="card-header d-flex justify-content-between my-3"
                                 >
-
                                     <div>
                                         <div class="input-container">
                                             <i
@@ -161,7 +154,19 @@
                                                                 }"
                                                             ></div>
                                                         </div>
-                                                        
+
+                                                        <p
+                                                            class="progress-status"
+                                                        >
+                                                            {{
+                                                                calculateProgressStatus(
+                                                                    progressEntry,
+                                                                    item
+                                                                        .kpi_metric_member
+                                                                        .kpi_metric
+                                                                )
+                                                            }}
+                                                        </p>
                                                     </td>
 
                                                     <td></td>
@@ -200,7 +205,93 @@
             </div>
         </div>
 
-        
+        <div
+            class="modal fade p-5"
+            id="addKpimodal2"
+            tabindex="-1"
+            role="dialog"
+        >
+            <div
+                class="modal-dialog modal-dialog-centered modal-lg"
+                role="document"
+            >
+                <div class="modal-content p-5">
+                    <h3>Submit Progress</h3>
+                    <h4></h4>
+
+                    <form
+                        id="form-submit"
+                        @submit.prevent="submitProgress()"
+                        method="POST"
+                    >
+                        <div class="mb-3">
+                            <label
+                                for="name"
+                                class="col-form-label text-md-start"
+                                >Title</label
+                            >
+                            <input
+                                id="name"
+                                name="name"
+                                placeholder="Progress Title"
+                                class="form-control"
+                                type="text"
+                                v-model="kpimetric_title"
+                            />
+                        </div>
+
+                        <div class="mb-3">
+                            <label
+                                for="name"
+                                class="col-form-label text-md-start"
+                                >Value</label
+                            >
+                            <input
+                                id="name"
+                                name="value"
+                                placeholder="KES 0"
+                                class="form-control"
+                                type="text"
+                                v-model="kpimetric_value"
+                            />
+                        </div>
+
+                        <div class="mb-3">
+                            <label
+                                for="name"
+                                class="col-form-label text-md-start"
+                                >Notes</label
+                            >
+                            <textarea
+                                id="name"
+                                name="notes"
+                                placeholder="Any extra notes about this update"
+                                class="form-control"
+                                v-model="kpimetric_notes"
+                                style="height: 100px"
+                            ></textarea>
+                        </div>
+
+                        <div class="text-center">
+                            <button
+                                type="button"
+                                class="btn btn-light border-dark btn-action"
+                                data-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-action"
+                            >
+                                Add
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -354,6 +445,23 @@ export default {
             return percentage.toFixed(2);
         },
 
+        calculateProgressStatus(progressEntry, kpiMetric) {
+            const progressPercentage = parseFloat(
+                this.calculateProgressPercentage(progressEntry)
+            );
+
+            if (progressPercentage >= parseFloat(kpiMetric.on_track_value)) {
+                return "On Track";
+            } else if (
+                progressPercentage >= parseFloat(kpiMetric.at_risk_min) &&
+                progressPercentage < parseFloat(kpiMetric.on_track_value)
+            ) {
+                return "At Risk";
+            } else {
+                return "Off Track";
+            }
+        },
+
         getProgressBarClass(progressEntry, kpiMetric) {
             const progressPercentage =
                 this.calculateProgressPercentage(progressEntry);
@@ -371,8 +479,11 @@ export default {
         },
         fetchKpiMetricsDetails() {
             const kpimetricId = this.$props.kpimetricId;
+            const kpiMetricMemberId =
+                this.$store.state.loggedUser.member.kpi_metric_members[0].id; // Replace [0] with the appropriate index
             const uri =
-                this.base_url + `api/v1/kpimetrics/${kpimetricId}/progress`;
+                this.base_url +
+                `api/v1/kpimetrics/${kpimetricId}/progress/${kpiMetricMemberId}`;
             axios
                 .get(uri)
                 .then((response) => {

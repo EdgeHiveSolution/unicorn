@@ -177,7 +177,7 @@
                     <h4>KPI Breakdown</h4>
                     <p>A breakdown of each KPI performance</p>
 
-                    <div class="card" v-for="kpi in kpis">
+                    <div class="card" v-for="kpi in this.partner.kpis">
                         <div class="m-4 mb-0">
                             <h4>{{ kpi.title }}</h4>
                             <p>{{ kpi.review_period_range }}</p>
@@ -220,44 +220,36 @@
                                             <th>Progress</th>
                                             <th>Assigned To</th>
                                             <th>Departments</th>
-                                            <th></th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr
-                                            v-for="(
-                                                kpiMetric, index
-                                            ) in kpi.kpi_metrics"
-                                            :key="index"
+                                            v-for="kpiMetric in kpi.kpi_metrics"
+                                            :key="kpiMetric.id"
                                         >
                                             <td>
                                                 {{ kpiMetric.title }}
                                             </td>
-                                            <td class="stats">
-                                                <span
-                                                    v-for="(
-                                                        kpiMetricMember, index
-                                                    ) in kpiMetric.kpi_metric_members"
-                                                    :key="index"
-                                                >
-                                                    {{
-                                                        kpiMetricMember.progress
-                                                    }}
-                                                </span>
+                                            <td>
+                                                {{
+                                                    calculateCurrentSum(
+                                                        kpiMetric
+                                                    )
+                                                }}
                                             </td>
-                                            <td class="td-members">
-                                                {{ kpiMetric.target }}
-                                                <!-- {{
-                                                       kpiMetric.kpi_metric_members ?   kpiMetric.kpi_metric_members : ""
-                                                }} -->
+                                            <td>
+                                                {{
+                                                    calculateTargetSum(
+                                                        kpiMetric
+                                                    )
+                                                }}
                                             </td>
                                             <td>
                                                 <div>
                                                     {{
-                                                        getProgressPercentage(
+                                                        calculateProgressPercentage(
                                                             kpiMetric
-                                                                .kpi_metric_members
-                                                                .progress
                                                         )
                                                     }}%
                                                     <div class="progress">
@@ -266,10 +258,8 @@
                                                             role="progressbar"
                                                             :style="{
                                                                 width:
-                                                                    getProgressPercentage(
+                                                                    calculateProgressPercentage(
                                                                         kpiMetric
-                                                                            .kpi_metric_members
-                                                                            .progress
                                                                     ) + '%',
                                                             }"
                                                             aria-valuemin="0"
@@ -277,39 +267,13 @@
                                                         ></div>
                                                     </div>
                                                 </div>
-                                                <div
-                                                    v-if="
-                                                        isOffTrack(
-                                                            kpiMetric
-                                                                .kpi_metric_members
-                                                                .progress,
-                                                            kpiMetric
-                                                        )
-                                                    "
-                                                    class="text-danger"
-                                                >
-                                                    Off track
-                                                </div>
-                                                <div
-                                                    v-else-if="
-                                                        isAtRisk(
-                                                            kpiMetric
-                                                                .kpi_metric_members
-                                                                .progress,
-                                                            kpiMetric
-                                                        )
-                                                    "
-                                                    class="text-warning"
-                                                >
-                                                    At risk
-                                                </div>
-                                                <div
-                                                    v-else
-                                                    class="text-success"
-                                                >
-                                                    On track
-                                                </div>
+                                                {{
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    )
+                                                }}
                                             </td>
+
                                             <td class="td-members">
                                                 <img
                                                     v-for="member in this
@@ -319,28 +283,20 @@
                                                     alt="image"
                                                 />
                                             </td>
-                                            <td>
-                                                <span
-                                                    class="txt-dark"
-                                                    v-for="department in partner.departments"
-                                                    :key="department.id"
+                                            <td  >
+                                                <span 
+                                                    v-for="member in members"
+                                                    :key="member.id"
                                                 >
-                                                    {{ department.name }}</span
-                                                >
-                                            </td>
-                                            <td>
-                                                <button class="btn view-btn">
-                                                    <a
-                                                        href=""
-                                                        class="text-light"
+                                                    <span class="depart-tag"
+                                                        v-for="department in member.departments"
+                                                        :key="department.id"
                                                     >
-                                                        <i
-                                                            class="mdi mdi-eye-outline text-light"
-                                                        ></i>
-                                                        Activity</a
-                                                    >
-                                                </button>
+                                                        {{ department.name }}
+                                                    </span>
+                                                </span>
                                             </td>
+
                                         </tr>
                                     </tbody>
                                 </table>
@@ -870,7 +826,7 @@
                                                         }}</span
                                                     >
                                                 </td>
-                                                <td> {{ }} </td>
+                                                <td>{{}}</td>
                                                 <td>
                                                     <button
                                                         class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
@@ -1029,11 +985,13 @@
 
                                                 <td>
                                                     <button
-                                                        
                                                         class="btn view-btn"
-                                                        >
+                                                    >
                                                         <a
-                                                            :href=" '/kpimetrics/' + kpimetric.id"
+                                                            :href="
+                                                                '/kpimetrics/' +
+                                                                kpimetric.id
+                                                            "
                                                             class="text-light add-link text-sm"
                                                         >
                                                             <i
@@ -1765,7 +1723,8 @@ export default {
             JSON.stringify(this.$store.state.loggedUser)
         );
 
-        // console.log("Items are:", this.loggedUser.member.kpi_metric_members);
+        console.log("Members are:", JSON.stringify(this.members));
+        console.log("Departments are:", JSON.stringify(this.department));
 
         // console.log("userProgressItems:", this.userProgressItems);
 
@@ -1773,33 +1732,45 @@ export default {
     },
 
     methods: {
-        getProgressPercentage(progress) {
-            if (progress && progress.target_value !== 0) {
-                const percentage =
-                    (progress.current_value / progress.target_value) * 100;
-                return parseFloat(percentage.toFixed(1)); // Round to 1 decimal place
+        calculateCurrentSum(kpiMetric) {
+            let currentSum = 0;
+            kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+                kpiMetricMember.progress.forEach((progressEntry) => {
+                    currentSum += progressEntry.current_value;
+                });
+            });
+            return currentSum;
+        },
+        calculateTargetSum(kpiMetric) {
+            let targetSum = 0;
+            kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+                targetSum += kpiMetricMember.timely_value;
+            });
+            return targetSum;
+        },
+        calculateProgressPercentage(kpiMetric) {
+            const currentSum = this.calculateCurrentSum(kpiMetric);
+            const targetSum = this.calculateTargetSum(kpiMetric);
+            const percentage = (currentSum / targetSum) * 100;
+            return percentage.toFixed(2);
+        },
+        calculateProgressStatus(kpiMetric) {
+            const progressPercentage = parseFloat(
+                this.calculateProgressPercentage(kpiMetric)
+            );
+
+            if (progressPercentage >= parseFloat(kpiMetric.on_track_value)) {
+                return "On Track";
+            } else if (
+                progressPercentage >= parseFloat(kpiMetric.at_risk_min) &&
+                progressPercentage < parseFloat(kpiMetric.on_track_value)
+            ) {
+                return "At Risk";
             } else {
-                return 0;
+                return "Off Track";
             }
         },
-        isOffTrack(progress, kpiMetric) {
-            const percentage = this.getProgressPercentage(progress);
-            return (
-                percentage > kpiMetric.offTrackMax ||
-                percentage < kpiMetric.offTrackMin
-            );
-        },
-        isAtRisk(progress, kpiMetric) {
-            const percentage = this.getProgressPercentage(progress);
-            return (
-                percentage >= kpiMetric.atRiskMin &&
-                percentage <= kpiMetric.atRiskMax
-            );
-        },
-        isOnTrack(progress, kpiMetric) {
-            const percentage = this.getProgressPercentage(progress);
-            return percentage <= kpiMetric.onTrackValue;
-        },
+
         openAddKpiMetricModal(kpi) {
             this.selectedKpi = kpi;
             $("#addKpiMetricModal").modal("show");

@@ -6,6 +6,7 @@ use App\Models\Member;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
+use App\Models\KpiMetric;
 
 
 
@@ -35,38 +36,75 @@ class MemberApiController extends Controller
         //
     }
     
+
+
     public function getKpisAndMetricsForMember($memberId)
-    {
+{
+    $member = Member::with(['departments'])->findOrFail($memberId);
     
+    // Get the KpiMetricMembers of the member
+    $kpiMetricMembers = $member->kpiMetricMembers;
 
-        $member = Member::with(['departments'])->findOrFail($memberId);
-        
-        // Get the KpiMetricMembers of the member
-        $kpiMetricMembers = $member->kpiMetricMembers;
-    
-        // Get the associated KpiMetrics
-        $kpiMetrics = [];
-        foreach ($kpiMetricMembers as $kpiMetricMember) {
-            $kpiMetrics[] = [
-                'kpiMetric' => $kpiMetricMember->kpiMetric,
-                'progress' => $kpiMetricMember->progress,
-            ];
-        }
-    
-        // Get the associated KPIs from KpiMetrics
-        $kpis = [];
-        foreach ($kpiMetrics as $kpiMetricData) {
-            $kpis[] = $kpiMetricData['kpiMetric']->kpi;
-        }
-
-        
-    
-        return response()->json([
-            'member' => $member,
-            'kpis' => $kpis,
-            'kpiMetrics' => $kpiMetrics,
-        ]);
+    // Calculate the summation of current_value and target_value based on your conditions
+    $progressSummation = [];
+    foreach ($kpiMetricMembers as $kpiMetricMember) {
+        $progressSummation[$kpiMetricMember->id] = [
+            'current_sum' => $kpiMetricMember->progress->sum('current_value'),
+            'target_sum' => KpiMetric::where('id', $kpiMetricMember->kpi_metric_id)->sum('timely_value'),
+        ];
     }
+
+    // Get the associated KpiMetrics and KPIs
+    $kpiMetrics = [];
+    $kpis = [];
+    foreach ($kpiMetricMembers as $kpiMetricMember) {
+        $kpiMetrics[] = [
+            'kpiMetric' => $kpiMetricMember->kpiMetric,
+            'progress' => $kpiMetricMember->progress,
+            'progress_sum' => $progressSummation[$kpiMetricMember->id],
+        ];
+        $kpis[] = $kpiMetricMember->kpiMetric->kpi;
+    }
+
+    return response()->json([
+        'member' => $member,
+        'kpis' => $kpis,
+        'kpiMetrics' => $kpiMetrics,
+    ]);
+}
+
+    // public function getKpisAndMetricsForMember($memberId)
+    // {
+    
+
+    //     $member = Member::with(['departments'])->findOrFail($memberId);
+        
+    //     // Get the KpiMetricMembers of the member
+    //     $kpiMetricMembers = $member->kpiMetricMembers;
+    
+    //     // Get the associated KpiMetrics
+    //     $kpiMetrics = [];
+    //     foreach ($kpiMetricMembers as $kpiMetricMember) {
+    //         $kpiMetrics[] = [
+    //             'kpiMetric' => $kpiMetricMember->kpiMetric,
+    //             'progress' => $kpiMetricMember->progress,
+    //         ];
+    //     }
+    
+    //     // Get the associated KPIs from KpiMetrics
+    //     $kpis = [];
+    //     foreach ($kpiMetrics as $kpiMetricData) {
+    //         $kpis[] = $kpiMetricData['kpiMetric']->kpi;
+    //     }
+
+        
+    
+    //     return response()->json([
+    //         'member' => $member,
+    //         'kpis' => $kpis,
+    //         'kpiMetrics' => $kpiMetrics,
+    //     ]);
+    // }
     
 
     /**
