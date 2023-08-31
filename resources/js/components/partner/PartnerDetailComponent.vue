@@ -254,7 +254,7 @@
                                                     }}%
                                                     <div class="progress">
                                                         <div
-                                                            class="progress-bar bg-success"
+                                                            class="progress-bar"
                                                             role="progressbar"
                                                             :style="{
                                                                 width:
@@ -279,7 +279,7 @@
                                                     v-for="member in this
                                                         .partner.members"
                                                     :key="member.id"
-                                                    :src="member.image"
+                                                   src="assets/images/faces/face1.jpg"
                                                     alt="image"
                                                 />
                                             </td>
@@ -1655,11 +1655,11 @@ export default {
                 target: "",
                 responsePeriod: "",
                 members: [],
-                onTrackValue: 10,
-                atRiskMin: 10,
-                atRiskMax: 45,
-                offTrackMin: 45,
-                offTrackMax: 100,
+                onTrackValue: 70,
+                atRiskMin: 40,
+                atRiskMax: 60,
+                offTrackMin: 0,
+                offTrackMax: 30,
             },
             formData: {
                 name: "",
@@ -1972,12 +1972,12 @@ export default {
                         "Response from server:" + JSON.stringify(response.data)
                     );
 
-                    // const updatedLoggedUser = {
-                    //     ...this.$store.state.loggedUser,
-                    // };
-                    // updatedLoggedUser.member.kpi_metric_members =
-                    //     response.data.kpi_metric_members;
-                    // this.$store.dispatch("updateLoggedUser", updatedLoggedUser);
+                    const updatedLoggedUser = {
+                        ...this.$store.state.loggedUser,
+                    };
+                    updatedLoggedUser.member.kpi_metric_members =
+                        response.data.kpi_metric_members;
+                    this.$store.dispatch("updateLoggedUser", updatedLoggedUser);
 
                     $("#addKpiMetricModal").modal("hide"); // show the modal
                     Swal.fire({

@@ -31,12 +31,11 @@ class Department extends Model
           ->withPivot('department_id', 'member_id')
             ->withTimestamps();
     }
-
+    
 
     public function partners()
-
     {
-        return $this->belongsToMany(Partner::class, 'department_partner')
+        return $this->belongsToMany(Partner::class, 'department_partner', 'department_id', 'partner_id')
             ->using(DepartmentPartner::class)
             ->withPivot('department_id', 'partner_id', 'role')
             ->withTimestamps();

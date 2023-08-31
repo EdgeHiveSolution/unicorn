@@ -9,7 +9,9 @@
 </style>
 @section('content')
     <department-detail-component :department="{{ json_encode($department) }}" :members="{{ json_encode($department->members) }}" :partners="{{ json_encode($department->partners) }}">
-    </department-detail-component>
 
     
+    </department-detail-component>
+
+ 
 @endsection

@@ -650,6 +650,8 @@ export default {
                     role: item.roleName,
                 };
             });
+        
+        console.log("Our Departments/Members:",  JSON.stringify(members));
             formData.append("members", JSON.stringify(members));
 
             const uri = this.base_url + "api/v1/partner-create";

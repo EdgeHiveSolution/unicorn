@@ -431,6 +431,13 @@ export default {
             "User Related Data:",
             JSON.stringify(this.$store.state.loggedUser)
         );
+
+        console.log(
+            "Kpi Metric Members are:",
+            JSON.stringify(
+                this.$store.state.loggedUser.member.kpi_metric_members
+            )
+        );
     },
 
     methods: {
@@ -477,10 +484,26 @@ export default {
                 return "bg-danger"; // Off track
             }
         },
+
         fetchKpiMetricsDetails() {
             const kpimetricId = this.$props.kpimetricId;
-            const kpiMetricMemberId =
-                this.$store.state.loggedUser.member.kpi_metric_members[0].id; // Replace [0] with the appropriate index
+
+            // Get the kpiMetricMemberId based on the matching kpi_metric_id
+            const matchingKpiMetricId = kpimetricId; // Assuming the kpi_metric_id is the same as kpimetricId
+            const kpiMetricMember =
+                this.$store.state.loggedUser.member.kpi_metric_members.find(
+                    (member) => {
+                        return member.kpi_metric_id === matchingKpiMetricId;
+                    }
+                );
+
+            if (!kpiMetricMember) {
+                console.log("No matching KPI Metric Member found.");
+                return; // Exit the function if no matching member is found
+            }
+
+            const kpiMetricMemberId = kpiMetricMember.id;
+
             const uri =
                 this.base_url +
                 `api/v1/kpimetrics/${kpimetricId}/progress/${kpiMetricMemberId}`;
@@ -494,6 +517,24 @@ export default {
                     console.error("Error fetching member details:", error);
                 });
         },
+
+        // fetchKpiMetricsDetails() {
+        //     const kpimetricId = this.$props.kpimetricId;
+        //     const kpiMetricMemberId =
+        //         this.$store.state.loggedUser.member.kpi_metric_members[0].id; // Replace [0] with the appropriate index
+        //     const uri =
+        //         this.base_url +
+        //         `api/v1/kpimetrics/${kpimetricId}/progress/${kpiMetricMemberId}`;
+        //     axios
+        //         .get(uri)
+        //         .then((response) => {
+        //             console.log("Api Response:", response.data);
+        //             this.progressData = response.data;
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error fetching member details:", error);
+        //         });
+        // },
 
         submitProgress() {
             const loggedMemberId = store.state.loggedUser.member.id;

@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('department_partner', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained();
-            $table->foreignId('partner_id')->constrained();
+            $table->unsignedBigInteger('department_id')->nullable();
+            $table->unsignedBigInteger('partner_id')->nullable();
             $table->string('role')->nullable(); 
             $table->timestamps();
-            $table->softDeletes();
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('set null');
+            $table->foreign('partner_id')->references('id')->on('partners')->onDelete('set null');
+
+
            
         });
     }

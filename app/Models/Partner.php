@@ -41,10 +41,10 @@ class Partner extends Model
      */
     public function departments()
     {
-        return $this->belongsToMany(Department::class, 'department_partner')
-              ->using(DepartmentPartner::class)
-              ->withPivot('department_id', 'partner_id', 'role')
-              ->withTimestamps();
+        return $this->belongsToMany(Department::class, 'department_partner', 'partner_id', 'department_id')
+            ->using(DepartmentPartner::class)
+            ->withPivot('department_id', 'partner_id', 'role')
+            ->withTimestamps();
     }
 
 

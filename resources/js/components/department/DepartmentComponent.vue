@@ -18,7 +18,7 @@
                 <div class="card">
                     <div
                         class="card-header d-flex justify-content-between my-3"
-                        >
+                    >
                         <div>
                             <div class="input-container">
                                 <i class="mdi mdi-magnify mdi-icon"></i>
@@ -32,15 +32,31 @@
                             </div>
                         </div>
 
-                        <div style="display: flex; align-items: center;  justify-content: space-between;">
-                        
-             <button  class="btn btn-light p-1 btn-icon" style="background-color: lightgrey; color: #76aefd; height: 30px; width:60px">
-              All
-              <i class="mdi mdi-close" style="font-size: 17px; margin-left: 5px;"></i>
-            </button>
-              <div style="margin-left: 10px;"></div>
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                            "
+                        >
+                            <button
+                                class="btn btn-light p-1 btn-icon"
+                                style="
+                                    background-color: lightgrey;
+                                    color: #76aefd;
+                                    height: 30px;
+                                    width: 60px;
+                                "
+                            >
+                                All
+                                <i
+                                    class="mdi mdi-close"
+                                    style="font-size: 17px; margin-left: 5px"
+                                ></i>
+                            </button>
+                            <div style="margin-left: 10px"></div>
 
-                       <button
+                            <button
                                 style="height: 10px"
                                 class="btn btn-light p-3 btn-icon"
                                 @click="showFilters = !showFilters"
@@ -48,9 +64,7 @@
                                 <i class="mdi mdi-sort-variant text-dark"></i>
                                 Filters
                             </button>
-              </div>
-
-                        
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -68,22 +82,21 @@
                                 </thead>
                                 <tbody>
                                     <tr
-                                        v-for="department in departments"
+                                        v-for="department in departmentsWithProgress"
                                         :key="department.id"
                                     >
                                         <td>
-                                            <span class="txt-dark">
-                                                {{ department.name }}</span
-                                            >
-                                            <br />
-                                            <span class="txt-gray">
-                                                Partners:
+                                            <span class="txt-dark">{{
+                                                department.name
+                                            }}</span
+                                            ><br />
+                                            <span class="txt-gray"
+                                                >Partners:
                                                 {{
                                                     department.partners.length
                                                 }}</span
                                             >
                                         </td>
-
                                         <td class="td-members">
                                             <template
                                                 v-if="
@@ -98,99 +111,83 @@
                                                     :alt="member.email"
                                                 />
                                             </template>
-                                            <template v-else> N/A </template>
+                                            <template v-else>N/A</template>
                                         </td>
-
-                                        <td>
-                                            <div
-                                                v-if="
-                                                    department.kpiMetrics &&
-                                                    department.kpiMetrics
-                                                        .length > 0
-                                                "
-                                               >
+                                        <td
+                                            v-if="
+                                                department.calculatedProgress >
+                                                0
+                                            "
+                                           >
+                                            <div>
                                                 {{
-                                                    calculateKpiProgress(
-                                                        department.kpiMetrics
+                                                    department.calculatedProgress.toFixed(
+                                                        2
                                                     )
                                                 }}%
                                                 <div class="progress">
                                                     <div
-                                                        class="progress-bar bg-success"
-                                                        role="progressbar"
-                                                        :style="{
-                                                            width:
-                                                                calculateKpiProgress(
-                                                                    department.kpiMetrics
-                                                                ) + '%',
-                                                        }"
-                                                        :aria-valuenow="
-                                                            calculateKpiProgress(
-                                                                department.kpiMetrics
+                                                        class="progress-bar"
+                                                        :class="
+                                                            getStatusClass(
+                                                                department
                                                             )
                                                         "
+                                                        :style="{
+                                                            width:
+                                                                department.calculatedProgress +
+                                                                '%',
+                                                        }"
                                                         aria-valuemin="0"
                                                         aria-valuemax="100"
                                                     ></div>
                                                 </div>
-                                                <span
-                                                    v-if="
-                                                        calculateKpiProgress(
-                                                            department.kpiMetrics
-                                                        ) < 50
-                                                    "
-                                                    class="text-danger"
-                                                    >off track</span
-                                                >
-                                                <span
-                                                    v-else-if="
-                                                        calculateKpiProgress(
-                                                            department.kpiMetrics
-                                                        ) >= 50 &&
-                                                        calculateKpiProgress(
-                                                            department.kpiMetrics
-                                                        ) < 80
-                                                    "
-                                                    class="text-warning"
-                                                    >at risk</span
-                                                >
-                                                <span
-                                                    v-else
-                                                    class="text-success"
-                                                    >on track</span
-                                                >
-                                            </div>
-                                            <div v-else>
-                                                0%
-                                                <div class="progress">
-                                                    <div
-                                                        class="progress-bar bg-warning"
-                                                        role="progressbar"
-                                                        :style="{ width: '0%' }"
-                                                        :aria-valuenow="0"
-                                                        aria-valuemin="0"
-                                                        aria-valuemax="100"
-                                                    ></div>
+                                                <div class="progress-labels">
+                                                    <span
+                                                        class="status-label off-track-label"
+                                                        v-if="
+                                                            getStatusClass(
+                                                                department
+                                                            ) === 'off-track'
+                                                        "
+                                                        >Off Track</span
+                                                    >
+                                                    <span
+                                                        class="status-label at-risk-label"
+                                                        v-else-if="
+                                                            getStatusClass(
+                                                                department
+                                                            ) === 'at-risk'
+                                                        "
+                                                        >At Risk</span
+                                                    >
+                                                    <span
+                                                        class="status-label on-track-label"
+                                                        v-else-if="
+                                                            getStatusClass(
+                                                                department
+                                                            ) === 'on-track'
+                                                        "
+                                                        >On Track</span
+                                                    >
                                                 </div>
-                                                off track
                                             </div>
                                         </td>
+                                        <td v-else>No Active Kpis</td>
                                         <td>
-                                            <button
-                                                class="btn  view-btn"
-                                            >
-                                             <a
+                                            <button class="btn view-btn">
+                                                <a
                                                     :href="
                                                         '/departments/' +
                                                         department.id
                                                     "
                                                     class="text-light"
-                                                    >
-                                                <i
-                                                    class="mdi mdi-eye-outline text-light"
-                                                ></i>
-                                               View Details</a
                                                 >
+                                                    <i
+                                                        class="mdi mdi-eye-outline text-light"
+                                                    ></i>
+                                                    View Details
+                                                </a>
                                             </button>
                                         </td>
                                     </tr>
@@ -222,19 +219,13 @@
                 </div>
             </div>
         </div>
-
-       
     </div>
 </template>
 
 <script>
-
 import axios from "axios";
 
-
 export default {
-
-
     data() {
         return {
             success: null,
@@ -246,44 +237,117 @@ export default {
             pagination: {},
         };
     },
+
     mounted() {
         this.fetchDepartments();
     },
+
+    computed: {
+        departmentsWithProgress() {
+            return this.departments.map((department) => ({
+                ...department,
+                calculatedProgress: this.calculateKpiProgress(
+                    department.partners
+                ),
+
+                statusClass: this.getStatusClass(department),
+            }));
+        },
+    },
+
+    // watch: {
+    //     // Watch for changes in the 'departments' array
+    //     departments: {
+    //         handler(newDepartments) {
+    //             console.log("Departments changed:", newDepartments);
+    //         },
+    //         deep: true, // Watch changes in nested objects within the array
+    //     },
+
+    //     // Watch for changes in the 'calculatedProgress' property
+    //     "departmentsWithProgress.calculatedProgress": {
+    //         handler(newProgress) {
+    //             console.log("Calculated Progress changed:", newProgress);
+    //         },
+    //         deep: true, // Watch changes in nested objects within the array
+    //     },
+    // },
+
     methods: {
         fetchDepartments() {
             let uri = this.base_url + `api/v1/department-list`;
             axios.get(uri).then((response) => {
                 this.departments = response.data;
-                console.log("Departments are:", this.departments);
+                console.log(
+                    "Departments are:",
+                    JSON.stringify(this.departments)
+                );
             });
         },
-        calculateKpiProgress(kpiMetrics) {
-            if (!kpiMetrics || kpiMetrics.length === 0) {
+
+        calculateKpiProgress(partners) {
+            let totalCurrentValue = 0;
+            let totalTargetValue = 0;
+
+            partners.forEach((partner) => {
+                partner.kpis.forEach((kpi) => {
+                    kpi.kpi_metrics.forEach((kpiMetric) => {
+                        kpiMetric.kpi_metric_members.forEach((member) => {
+                            member.progress.forEach((progress) => {
+                                totalCurrentValue += progress.current_value;
+                                totalTargetValue += progress.target_value;
+                            });
+                        });
+                    });
+                });
+            });
+
+            if (totalTargetValue === 0) {
                 return 0;
             }
-            let totalProgress = kpiMetrics.reduce(
-                (acc, kpiMetric) => acc + kpiMetric.on_track_value,
-                0
+
+            return (totalCurrentValue / totalTargetValue) * 100;
+        },
+
+        getStatusClass(department) {
+            const progressPercentage = parseFloat(
+                department.calculatedProgress
             );
-            let avgProgress = totalProgress / kpiMetrics.length;
-            return Math.round(avgProgress);
+
+            for (const partner of department.partners) {
+                for (const kpi of partner.kpis) {
+                    for (const kpiMetric of kpi.kpi_metrics) {
+                        const onTrackValue = parseFloat(
+                            kpiMetric.on_track_value
+                        );
+                        const atRiskMin = parseFloat(kpiMetric.at_risk_min);
+
+                        if (progressPercentage >= onTrackValue) {
+                            return "on-track";
+                        } else if (progressPercentage >= atRiskMin) {
+                            return "at-risk";
+                        }
+                    }
+                }
+            }
+
+            return "off-track";
         },
     },
 };
 </script>
 
 <style scoped>
-
 .view-btn {
-  cursor: pointer;
-  font-size: 12px; /* Adjust font size */
-  padding: 5px 10px; /* Adjust padding (top/bottom, left/right) */
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Center the content horizontally */
-  border-radius: 8px;
-  height: 35px;
-  background-color: #0072bb;
+    cursor: pointer;
+    font-size: 12px; /* Adjust font size */
+    padding: 5px 10px; /* Adjust padding (top/bottom, left/right) */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the content horizontally */
+    border-radius: 8px;
+    height: 35px;
+    background-color: #0072bb;
 }
 
 .btn-icon {
@@ -293,20 +357,32 @@ export default {
 }
 
 .view-btn a {
-  display: flex;
-  align-items: center;
-
-
-
+    display: flex;
+    align-items: center;
 }
 
 .view-btn i {
-  margin-right: 8px;
+    margin-right: 8px;
 }
 
 h2 {
-
     font-weight: bold;
 }
 
+.progress-bar {
+    width: 10px;
+    border-radius: 5px;
+}
+
+.on-track {
+    background-color: #5cb85c;
+}
+
+.at-risk {
+    background-color: #f0ad4e;
+}
+
+.off-track {
+    background-color: #d9534f;
+}
 </style>

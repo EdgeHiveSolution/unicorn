@@ -17,7 +17,7 @@ use App\Http\Controllers\Util\PasswordGeneratorUtil;
 use App\Mail\PatnerInvitation;
 use App\Models\KpiMetric;
 use Illuminate\Support\Facades\Log;
-
+use DB;
 
 class PartnerApiController extends Controller
 {
@@ -63,6 +63,8 @@ class PartnerApiController extends Controller
           {
             Log::info('Test log message');
             try {
+
+                DB::beginTransaction();
                 // Log the request data for debugging purposes
                 Log::info('Request data:', ['data' => $request->all()]);
         
@@ -116,11 +118,23 @@ class PartnerApiController extends Controller
                 'password' => Hash::make($password),
                 'is_active' => 1,
             ]);
+
+
+
+
+    //   $partner->departments()->attach($members);
    
 
 
             // Loop through the members and associate them with the partner and department
 foreach ($members as $member) {
+
+
+    $partner->departments()->attach($member->department_id, [
+        'role' => $member->role,
+    ]);
+    
+
 
     $existingMember = Member::where('email', $member->email)->first();
             
@@ -142,14 +156,21 @@ foreach ($members as $member) {
     } else {
         // If the member is new, send the register URL and associate with the partner's department
         try {
+
             // Send the registration link to the new member
             Mail::to($member->email)->send(new PatnerInvitation(null, $partner->name, null, 'register', $registrationLink));
-                                                                
-            $partner->departments()->attach($member->department_id, [
-                'role' => $member->role,
-            ]);
+            
+            // $partner->departments()->attach([
+            
+            //     'department_id' =>$member->department_id,
+            //     'role' => $member->role,
+            //     'partner_id' => $partner->id,
+                
+            // ]);
 
-            Log::info('Department:', ['Department'=> $member->department_id]);
+      
+
+            
         } catch (\Exception $e) {
             // Log the error message
             Log::info('Error sending email to new member: ' . $e->getMessage());
@@ -158,7 +179,7 @@ foreach ($members as $member) {
 }
 
 
-
+          DB::commit();
 
             return response()->json([
                 'success' => 'Partner created successfully',
@@ -167,6 +188,7 @@ foreach ($members as $member) {
 
 
         } catch (\Exception $e) {
+            DB::rollBack();
             // Log any exceptions that occur during the process
             Log::error('Error in store method:', ['message' => $e->getMessage()]);
             return response()->json([
