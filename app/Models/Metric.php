@@ -20,7 +20,7 @@ class Metric extends Model
 
 
 
-    public function units(): HasMany
+    public function units()
     {
         return $this->hasMany(Unit::class);
     }

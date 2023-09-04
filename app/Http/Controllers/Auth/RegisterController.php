@@ -13,6 +13,7 @@ use App\Models\Department;
 use App\Models\User;
 use App\Models\Partner;
 use Illuminate\Support\Facades\Session;
+use App\Models\UserRole;
 use Illuminate\Support\Facades\Log;
 
 
@@ -58,6 +59,9 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'user_role_id' => UserRole::where('name', 'Member')->first()->id,
+
+
         ]);
     
         // Create a corresponding member for the user and set the user_id

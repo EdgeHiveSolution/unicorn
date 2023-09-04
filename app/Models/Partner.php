@@ -12,6 +12,7 @@ use App\Models\Kpi;
 use App\Models\Country;
 use App\Models\DepartmentPartner;
 use App\Models\MemberPartner;
+use App\Models\User;
 
 
 
@@ -22,7 +23,7 @@ class Partner extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'address', 'phone', 'email', 'website', 'logo', 'country_id', 'business_type','is_active','password', 'description', 'documents', 'about',
+        'name', 'address', 'phone', 'email', 'website', 'logo', 'country_id', 'business_type','is_active','password', 'description', 'documents', 'about', 'user_id'
 
     ];
 
@@ -72,6 +73,11 @@ class Partner extends Model
     //     return $this->hasMany(KpiMetric::class);
     // }
 
+
+            public function user()
+        {
+            return $this->belongsTo(User::class);
+        }
 
     
 }

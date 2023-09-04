@@ -28,15 +28,16 @@
                         KPIs
                     </p>
                     <div class="">
-                        <div class="btn btn-primary my-2">
+                       
+
                             <a
                                 href=""
-                                class="text-light add-link"
+                                class="text-light add-link btn btn-primary my-2"
                                 data-toggle="modal"
                                 data-target="#submitMetricModal"
-                                ><span class="plus">+</span> Metric</a
-                            >
-                        </div>
+                                ><span class="plus">+</span> Metric</a>
+                            
+                        
                     </div>
 
                     <div class="row">
@@ -56,13 +57,16 @@
                                 </div>
 
                                 <div>
-                                    <button class="btn btn-light p-3">
-                                        <i
-                                            class="mdi mdi-sort-variant text-gray"
-                                        ></i>
-                                        Filters
-                                    </button>
-                                </div>
+                                <button
+                                    style="height: 10px"
+                                    class="btn btn-light p-3 btn-icon"
+                                >
+                                    <i
+                                        class="mdi mdi-sort-variant text-dark"
+                                    ></i>
+                                    Filters
+                                </button>
+                            </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -333,15 +337,15 @@
                         Basic Measurument units for metric types
                     </p>
                     <div class="">
-                        <div class="btn btn-primary my-2">
+                       
                             <a
                                 href=""
-                                class="text-light add-link"
+                                class="text-light add-link btn btn-primary my-2"
                                 data-toggle="modal"
                                 data-target="#submitStandardUnitModal"
                                 ><span class="plus">+</span> Standard Unit</a
                             >
-                        </div>
+                        
                     </div>
 
                     <div class="row">
@@ -361,13 +365,16 @@
                                 </div>
 
                                 <div>
-                                    <button class="btn btn-light p-3">
-                                        <i
-                                            class="mdi mdi-sort-variant text-gray"
-                                        ></i>
-                                        Filters
-                                    </button>
-                                </div>
+                                <button
+                                    style="height: 10px"
+                                    class="btn btn-light p-3 btn-icon"
+                                >
+                                    <i
+                                        class="mdi mdi-sort-variant text-dark"
+                                    ></i>
+                                    Filters
+                                </button>
+                            </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -401,7 +408,7 @@
                                                     <button
                                                         type="button"
                                                         class="btn"
-                                                    >
+                                                        >
                                                         <button
                                                             @click="
                                                                 deleteMetric(
@@ -490,9 +497,9 @@
 
                                         <option value="integer">Integer</option>
                                         <option value="number">Number</option>
-                                        <option value="date_time">
+                                        <!-- <option value="date_time">
                                             Date/Time
-                                        </option>
+                                        </option> -->
                                     </select>
                                 </div>
                                 <span
@@ -649,15 +656,17 @@
                                         />
                                     </div>
                                 </div>
-
-                                <div>
-                                    <button class="btn btn-light p-3">
-                                        <i
-                                            class="mdi mdi-sort-variant text-gray"
-                                        ></i>
-                                        Filters
-                                    </button>
-                                </div>
+ <div>
+                                <button
+                                    style="height: 10px"
+                                    class="btn btn-light p-3 btn-icon"
+                                >
+                                    <i
+                                        class="mdi mdi-sort-variant text-dark"
+                                    ></i>
+                                    Filters
+                                </button>
+                            </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -975,12 +984,24 @@ export default {
                 .then((response) => {
                     this.success = response.data.success;
                     this.fetchMetrics();
-                    alert("Metric created successfully!");
-                    this.newMetric = {
+
+                      Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Metric  created successfully!",
+                    }).then(() => {
+
+                      this.newMetric = {
                         // Reset the newMetric object
                         name: "",
                         unit: "",
                     };
+
+                        window.location.reload();
+                    });
+                 
+                 
+                    
                     $("#submitMetricModal").modal("hide"); // Close the modal
                 })
                 .catch((error) => {
@@ -998,14 +1019,27 @@ export default {
             axios
                 .post(uri, formData)
                 .then((response) => {
-                    this.success = response.data.success;
-                    this.fetchStandardUnits();
-                    alert("Standard unit created successfully!");
-                    this.newStandardUnit = {
+                    
+               this.success = response.data.success;
+                this.fetchStandardUnits();
+                  
+
+                     Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Standard unit created successfully!",
+                    }).then(() => {
+                        this.newStandardUnit = {
                         // Reset the newMetric object
                         name: "",
                         type: "",
                     };
+
+                        window.location.reload();
+                    });
+                 
+                 
+                    
                     $("#submitStandardUnitModal").modal("hide"); // Close the modal
                 })
                 .catch((error) => {
@@ -1061,4 +1095,12 @@ export default {
 .btn-pri {
     padding: 5px 15px !important;
 }
+
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
 </style>

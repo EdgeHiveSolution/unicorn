@@ -27,7 +27,7 @@ class Member extends Model
     ];
 
 
-    protected $with = ['departments' , 'kpiMetricMembers'];
+    protected $with = ['departments' , 'kpiMetricMembers.progress'];
    
 
     public function user()

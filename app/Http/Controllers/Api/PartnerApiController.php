@@ -15,9 +15,13 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Util\PasswordGeneratorUtil;
 use App\Mail\PatnerInvitation;
+use App\Mail\PartnerLoginCredentials;
 use App\Models\KpiMetric;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use App\Models\UserRole;
 use DB;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class PartnerApiController extends Controller
 {
@@ -64,7 +68,7 @@ class PartnerApiController extends Controller
             Log::info('Test log message');
             try {
 
-                DB::beginTransaction();
+                FacadesDB::beginTransaction();
                 // Log the request data for debugging purposes
                 Log::info('Request data:', ['data' => $request->all()]);
         
@@ -73,9 +77,7 @@ class PartnerApiController extends Controller
                 // Log the decoded members data for debugging purposes
                 Log::info('Members are:', ['data' => $members]);
 
-            //dd($request->all());
-
-          //  $members = json_decode($request->members);
+           
     
             Log::info("Members are", ['Display' => $members]);
     
@@ -89,6 +91,7 @@ class PartnerApiController extends Controller
                 'about' => 'required',
                 'documents' => 'nullable',
                 'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
+
             ]);
     
             // Store the logo file in the public/partners folder
@@ -119,22 +122,37 @@ class PartnerApiController extends Controller
                 'is_active' => 1,
             ]);
 
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($password),
+                'user_role_id' => UserRole::where('name', 'Partner')->first()->id,
+            ]);
+            
+
+              $partner->user_id = $user->id;
+              $partner->save();
 
 
+           $loginLink = url('/login'); // Adjust the login URL as needed
 
-    //   $partner->departments()->attach($members);
-   
-
+            // Send login credentials to the partner
+            try {
+                Mail::to($partner->email)->send(new PartnerLoginCredentials($partner, $loginLink, $password));
+            } catch (\Exception $e) {
+                // Log the error message
+                Log::info('Error sending login credentials email to partner: ' . $e->getMessage());
+            }
 
             // Loop through the members and associate them with the partner and department
-foreach ($members as $member) {
+        foreach ($members as $member) {
 
 
     $partner->departments()->attach($member->department_id, [
         'role' => $member->role,
     ]);
     
-
+    
 
     $existingMember = Member::where('email', $member->email)->first();
             
@@ -160,15 +178,7 @@ foreach ($members as $member) {
             // Send the registration link to the new member
             Mail::to($member->email)->send(new PatnerInvitation(null, $partner->name, null, 'register', $registrationLink));
             
-            // $partner->departments()->attach([
-            
-            //     'department_id' =>$member->department_id,
-            //     'role' => $member->role,
-            //     'partner_id' => $partner->id,
-                
-            // ]);
-
-      
+        
 
             
         } catch (\Exception $e) {
@@ -178,8 +188,7 @@ foreach ($members as $member) {
     }
 }
 
-
-          DB::commit();
+          FacadesDB::commit();
 
             return response()->json([
                 'success' => 'Partner created successfully',
@@ -188,7 +197,7 @@ foreach ($members as $member) {
 
 
         } catch (\Exception $e) {
-            DB::rollBack();
+            FacadesDB::rollBack();
             // Log any exceptions that occur during the process
             Log::error('Error in store method:', ['message' => $e->getMessage()]);
             return response()->json([

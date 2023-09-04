@@ -548,6 +548,8 @@ export default {
                 }
             )?.kpi_metric_member;
 
+             console.log("Kpi Metric Member for now is:"+ JSON.stringify(kpiMetricMember));
+
             if (kpiMetricMember) {
                 const kpimetric1 = kpiMetricMember.kpi_metric;
 

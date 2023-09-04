@@ -45,14 +45,25 @@ class MemberApiController extends Controller
     // Get the KpiMetricMembers of the member
     $kpiMetricMembers = $member->kpiMetricMembers;
 
+    
     // Calculate the summation of current_value and target_value based on your conditions
-    $progressSummation = [];
+    // $progressSummation = [];
+    // foreach ($kpiMetricMembers as $kpiMetricMember) {
+    //     $progressSummation[$kpiMetricMember->id] = [
+    //         'current_sum' => $kpiMetricMember->progress->sum('current_value'),
+    //         'target_sum' => KpiMetric::where('id', $kpiMetricMember->kpi_metric_id)->sum('timely_value'),
+    //     ];
+    // }
+
+     $progressSummation = [];
     foreach ($kpiMetricMembers as $kpiMetricMember) {
         $progressSummation[$kpiMetricMember->id] = [
             'current_sum' => $kpiMetricMember->progress->sum('current_value'),
             'target_sum' => KpiMetric::where('id', $kpiMetricMember->kpi_metric_id)->sum('timely_value'),
         ];
     }
+
+
 
     // Get the associated KpiMetrics and KPIs
     $kpiMetrics = [];

@@ -37,6 +37,7 @@ class User extends Authenticatable
         'photo',
         'is_active',
         'password',
+        'user_role_id'
     ];
 
     public function isAdmin()

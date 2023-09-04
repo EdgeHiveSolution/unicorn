@@ -3,7 +3,7 @@
 
 
     <partner-detail-component :partner="{{ json_encode($partner) }}" :members="{{ json_encode($partner->members) }}"
-         :kpis="{{ json_encode($partner->kpis) }}"  :department="{{ json_encode($partner->department) }}"   
+         :kpis="{{ json_encode($partner->kpis) }}"  :department="{{ json_encode($partner->department) }}"   :partner-id="{{ $partner->id }}" 
         >  
 
     </partner-detail-component>

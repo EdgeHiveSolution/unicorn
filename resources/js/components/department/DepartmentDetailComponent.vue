@@ -172,7 +172,7 @@
                                         <!-- Replace the static data with dynamic data using v-for directive -->
                                         <tr
                                             v-for="partner in partnersWithProgress"
-                                        :key="partner.id"
+                                            :key="partner.id"
                                         >
                                             <td>
                                                 <img
@@ -188,7 +188,7 @@
                                                     partner.calculatedProgress >
                                                     0
                                                 "
-                                               >
+                                            >
                                                 <div>
                                                     {{
                                                         partner.calculatedProgress.toFixed(
@@ -414,12 +414,45 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Replace the static data with dynamic data using v-for directive -->
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                <tr
+                                    v-for="(
+                                        kpiMetric, metricIndex
+                                    ) in kpiMetricsWithProgress"
+                                    :key="metricIndex"
+                                >
+                                    <td>
+                                        {{ kpiMetric.title }}
+                                    </td>
+                                    <td>
+                                        {{ calculateCurrentSum(kpiMetric) }}
+                                    </td>
+                                    <td>
+                                        {{ calculateTargetSum(kpiMetric) }}
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {{
+                                                calculateProgressPercentage(
+                                                    kpiMetric
+                                                )
+                                            }}%
+                                            <div class="progress">
+                                                <div
+                                                    class="progress-bar"
+                                                    role="progressbar"
+                                                    :style="{
+                                                        width:
+                                                            calculateProgressPercentage(
+                                                                kpiMetric
+                                                            ) + '%',
+                                                    }"
+                                                    aria-valuemin="0"
+                                                    aria-valuemax="100"
+                                                ></div>
+                                            </div>
+                                        </div>
+                                        {{ calculateProgressStatus(kpiMetric) }}
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -427,7 +460,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- Members tab content -->
         <div v-else-if="activeTab === 'members'">
@@ -511,7 +543,7 @@
                                     </td>
                                     <td>
                                         <span
-                                            v-for="partner in department.partners"
+                                            v-for="partner in partners"
                                             :key="partner.id"
                                         >
                                             {{ partner.name }}
@@ -814,6 +846,32 @@ export default {
                 statusClass: this.getStatusClass(partner),
             }));
         },
+
+        kpiMetricsWithProgress() {
+            const kpiMetricsArray = [];
+
+            this.partners.forEach((partner) => {
+                partner.kpis.forEach((kpi) => {
+                    kpi.kpi_metrics.forEach((kpiMetric) => {
+                        // Create a shallow copy of kpi_metric and add it to the array
+                        kpiMetricsArray.push({ ...kpiMetric });
+                    });
+                });
+            });
+
+            return kpiMetricsArray;
+        },
+
+        // partnersWithKpiProgress() {
+        //     return this.partners.map((partner) => ({
+        //         ...partner,
+        //         calculatedKpiMetricProgress: this.calculateKpiMetricProgress(
+        //             partner.kpis
+        //         ),
+
+        //         statusClass1: this.getStatusClass1(partner),
+        //     }));
+        // },
     },
 
     watch: {
@@ -826,7 +884,7 @@ export default {
         },
 
         // Watch for changes in the 'calculatedProgress' property
-        "partnersWithProgress.calculatedProgress": {
+        "partnersWithKpiProgress.calculateKpiMetricProgress": {
             handler(newProgress) {
                 console.log("Calculated Progress changed:", newProgress);
             },
@@ -835,9 +893,6 @@ export default {
     },
 
     methods: {
-
-
-        
         calculateKpiProgress(kpis) {
             let totalCurrentValue = 0;
             let totalTargetValue = 0;
@@ -860,6 +915,30 @@ export default {
             return (totalCurrentValue / totalTargetValue) * 100;
         },
 
+        // calculateKpiMetricProgress(partners) {
+        //     let totalProgress = 0;
+        //     let totalTargets = 0;
+
+        //     partners.forEach((partner) => {
+        //         partner.kpis.forEach((kpi) => {
+        //             kpi.kpi_metrics.forEach((kpiMetric) => {
+        //                 kpiMetric.kpi_metric_members.forEach((member) => {
+        //                     member.progress.forEach((progress) => {
+        //                         totalProgress += progress.current_value;
+        //                         totalTargets += progress.target_value;
+        //                     });
+        //                 });
+        //             });
+        //         });
+        //     });
+
+        //     if (totalTargets === 0) {
+        //         return 0;
+        //     }
+
+        //     return (totalProgress / totalTargets) * 100;
+        // },
+
         getStatusClass(partner) {
             const progressPercentage = parseFloat(partner.calculatedProgress);
 
@@ -878,6 +957,91 @@ export default {
 
             return "off-track";
         },
+
+        calculateCurrentSum(kpiMetric) {
+            let currentSum = 0;
+            kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+                kpiMetricMember.progress.forEach((progressEntry) => {
+                    currentSum += progressEntry.current_value;
+                });
+            });
+            return currentSum;
+        },
+        calculateTargetSum(kpiMetric) {
+            let targetSum = 0;
+            kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+                targetSum += kpiMetricMember.timely_value;
+            });
+            return targetSum;
+        },
+        calculateProgressPercentage(kpiMetric) {
+            const currentSum = this.calculateCurrentSum(kpiMetric);
+            const targetSum = this.calculateTargetSum(kpiMetric);
+            const percentage = (currentSum / targetSum) * 100;
+            return percentage.toFixed(2);
+        },
+        calculateProgressStatus(kpiMetric) {
+            const progressPercentage = parseFloat(
+                this.calculateProgressPercentage(kpiMetric)
+            );
+
+            if (progressPercentage >= parseFloat(kpiMetric.on_track_value)) {
+                return "On Track";
+            } else if (
+                progressPercentage >= parseFloat(kpiMetric.at_risk_min) &&
+                progressPercentage < parseFloat(kpiMetric.on_track_value)
+            ) {
+                return "At Risk";
+            } else {
+                return "Off Track";
+            }
+        },
+
+        // getStatusClass1(partner) {
+        //     const progressKpiMetricPercentage = parseFloat(
+        //         partner.calculatedKpiMetricProgress
+        //     );
+
+        //     for (const kpi of partner.kpis) {
+        //         for (const kpiMetric of kpi.kpi_metrics) {
+        //             const onTrackValue = parseFloat(kpiMetric.on_track_value);
+        //             const atRiskMin = parseFloat(kpiMetric.at_risk_min);
+
+        //             if (progressKpiMetricPercentage >= onTrackValue) {
+        //                 return "on-track";
+        //             } else if (progressKpiMetricPercentage >= atRiskMin) {
+        //                 return "at-risk";
+        //             }
+        //         }
+        //     }
+
+        //     return "off-track";
+        // },
+
+        // getKpiMetricTitles(partner) {
+        //     const kpiTitles = partner.kpis.flatMap((kpi) =>
+        //         kpi.kpi_metrics.map((metric) => metric.title)
+        //     );
+        //     return kpiTitles || []; // Return an array of titles or an empty array
+        // },
+
+        // getCurrentValuesForKpiMetrics(partner) {
+        //     const currentValues = partner.kpis.flatMap((kpi) =>
+        //         kpi.kpi_metrics.flatMap((metric) =>
+        //             metric.kpi_metric_members.flatMap((member) =>
+        //                 member.progress.map((entry) => entry.current_value)
+        //             )
+        //         )
+        //     );
+        //     return currentValues || []; // Return an array of current values or an empty array
+        // },
+
+        // getTargetValuesForKpiMetrics(partner) {
+        //     const targetValues = partner.kpis.flatMap((kpi) =>
+        //         kpi.kpi_metrics.map((metric) => metric.timely_value)
+        //     );
+        //     return targetValues || []; // Return an array of target values or an empty array
+        // },
     },
 };
 </script>
