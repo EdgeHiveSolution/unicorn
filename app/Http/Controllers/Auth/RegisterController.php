@@ -14,6 +14,8 @@ use App\Models\User;
 use App\Models\Partner;
 use Illuminate\Support\Facades\Session;
 use App\Models\UserRole;
+use App\Http\Middleware\TrustProxies;
+
 use Illuminate\Support\Facades\Log;
 
 

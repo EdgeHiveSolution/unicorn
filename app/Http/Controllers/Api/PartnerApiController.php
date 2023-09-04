@@ -20,8 +20,8 @@ use App\Models\KpiMetric;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\UserRole;
-use DB;
-use Illuminate\Support\Facades\DB as FacadesDB;
+use Illuminate\Support\Facades\DB;
+
 
 class PartnerApiController extends Controller
 {
@@ -32,7 +32,7 @@ class PartnerApiController extends Controller
      */
     public function index()
     {
-        $partners = Partner::with('departments', 'members','kpis.kpiMetrics.kpiMetricMembers.progress')->get();
+        $partners = Partner::with('departments', 'members.kpis','kpis.kpiMetrics.kpiMetricMembers.progress')->get();
 
         Log::info("Partner is:", ['partner'=>$partners]); 
 
@@ -68,7 +68,7 @@ class PartnerApiController extends Controller
             Log::info('Test log message');
             try {
 
-                FacadesDB::beginTransaction();
+                DB::beginTransaction();
                 // Log the request data for debugging purposes
                 Log::info('Request data:', ['data' => $request->all()]);
         
@@ -188,7 +188,7 @@ class PartnerApiController extends Controller
     }
 }
 
-          FacadesDB::commit();
+          DB::commit();
 
             return response()->json([
                 'success' => 'Partner created successfully',
@@ -197,7 +197,7 @@ class PartnerApiController extends Controller
 
 
         } catch (\Exception $e) {
-            FacadesDB::rollBack();
+            DB::rollBack();
             // Log any exceptions that occur during the process
             Log::error('Error in store method:', ['message' => $e->getMessage()]);
             return response()->json([

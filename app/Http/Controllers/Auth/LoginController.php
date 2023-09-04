@@ -9,8 +9,9 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Log;
 use App\Models\UserRole; 
-use App\Models\Member;   
-use Session;
+use App\Models\Member;
+use Illuminate\Support\Facades\Session;
+use App\Http\Middleware\TrustProxies;
 
 
 class LoginController extends Controller

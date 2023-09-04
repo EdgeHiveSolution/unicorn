@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Progress;
 use App\Models\KpiMetric;
 use App\Models\Partner;
+use App\Models\Member;
+use App\Models\KpiMember;
 
 class Kpi extends Model
 {
@@ -43,6 +45,15 @@ class Kpi extends Model
     {
         return $this->hasMany(KpiMetric::class);
     }
+
+
+    public function members()
+{
+    return $this->belongsToMany(Member::class, 'kpi_member')
+        ->using(KpiMember::class)
+        ->withPivot('kpi_id', 'member_id') 
+        ->withTimestamps();
+}
 
 
 

@@ -827,13 +827,45 @@
                                                         }}</span
                                                     >
                                                 </td>
+
                                                 <td>
+                                                    <div class="progress">
+                                                        <div
+                                                            class="progress-bar"
+                                                            role="progressbar"
+                                                            :style="{
+                                                                width:
+                                                                    calculateActiveKpiProgress(
+                                                                        member
+                                                                    )
+                                                                        .percentage +
+                                                                    '%',
+                                                            }"
+                                                            :aria-valuenow="
+                                                                calculateActiveKpiProgress(
+                                                                    member
+                                                                ).percentage
+                                                            "
+                                                            aria-valuemin="0"
+                                                            aria-valuemax="100"
+                                                        ></div>
+                                                    </div>
+                                                    <div class="progress-label">
+                                                        {{
+                                                            calculateActiveKpiProgress(
+                                                                member
+                                                            ).label
+                                                        }}
+                                                    </div>
+                                                </td>
+
+                                                <!-- <td>
                                                     {{
                                                         calculateActiveKpiProgress(
                                                             member.kpi_metric_members
                                                         )
                                                     }}%
-                                                </td>
+                                                 </td> -->
 
                                                 <td>
                                                     <button
@@ -884,10 +916,10 @@
                     <h4>KPIs</h4>
                     <p>Key milestones for {{ partner.name }}</p>
                 </div>
-                <div class="btn btn-primary btn-sm my-2">
+                <div>
                     <a
                         href="#"
-                        class="text-light add-link text-sm"
+                        class="text-light add-link text-sm btn btn-primary btn-sm my-2"
                         data-toggle="modal"
                         data-target="#addKpimodal"
                     >
@@ -988,7 +1020,7 @@
                                                     <td class="">
                                                         <div>
                                                             {{
-                                                                kpimetric.timely_vale
+                                                                kpimetric.timely_value
                                                             }}
                                                             <!-- Display KPI target, assuming target is a property of the KPI -->
                                                         </div>
@@ -1874,14 +1906,69 @@ export default {
             return this.$store.state.loggedUser;
         },
 
-        //   partnersWithProgress() {
-        //     return this.kpis.map((partner) => ({
-        //         ...partner,
-        //         calculatedProgress: this.calculateKpiProgress(partner.kpi_metrics),
+        calculateActiveKpiProgress() {
+            return (member) => {
+                const kpiMetrics = member.kpis.flatMap(
+                    (kpi) => kpi.kpi_metrics
+                );
+                const sumCurrentValues = kpiMetrics.reduce(
+                    (sum, metric) =>
+                        sum +
+                        metric.progress.reduce(
+                            (metricSum, progress) =>
+                                metricSum + progress.current_value,
+                            0
+                        ),
+                    0
+                );
 
-        //         statusClass: this.getStatusClass(partner),
-        //     }));
-        // },
+                const sumTargets = kpiMetrics.reduce(
+                    (sum, metric) =>
+                        sum +
+                        metric.progress.reduce(
+                            (metricSum, progress) =>
+                                metricSum + progress.target_value,
+                            0
+                        ),
+                    0
+                );
+
+                if (sumTargets === 0) {
+                    return { percentage: 0, label: "N/A" };
+                }
+
+                const percentage = (
+                    (sumCurrentValues / sumTargets) *
+                    100
+                ).toFixed(2);
+                let label = "On Track";
+
+                const kpiThresholds = member.kpis
+                    .flatMap((kpi) => kpi.kpi_metrics)
+                    .find(
+                        (metric) =>
+                            percentage >= metric.off_track_min &&
+                            percentage <= metric.off_track_max
+                    );
+
+                if (kpiThresholds) {
+                    label = "Off Track";
+                } else {
+                    const kpiAtRisk = member.kpis
+                        .flatMap((kpi) => kpi.kpi_metrics)
+                        .find(
+                            (metric) =>
+                                percentage >= metric.at_risk_min &&
+                                percentage <= metric.at_risk_max
+                        );
+                    if (kpiAtRisk) {
+                        label = "At Risk";
+                    }
+                }
+
+                return { percentage, label };
+            };
+        },
 
         partnersWithProgress() {
             const partner = this.partner;
@@ -2068,35 +2155,35 @@ export default {
             return "off-track";
         },
 
-        calculateActiveKpiProgress(kpiMetricMembers) {
-            const sumCurrentValues = kpiMetricMembers.reduce(
-                (sum, member) =>
-                    sum +
-                    member.progress.reduce(
-                        (memberSum, progress) =>
-                            memberSum + progress.current_value,
-                        0
-                    ),
-                0
-            );
+        // calculateActiveKpiProgress(kpiMetricMembers) {
+        //     const sumCurrentValues = kpiMetricMembers.reduce(
+        //         (sum, member) =>
+        //             sum +
+        //             member.progress.reduce(
+        //                 (memberSum, progress) =>
+        //                     memberSum + progress.current_value,
+        //                 0
+        //             ),
+        //         0
+        //     );
 
-            const sumTargets = kpiMetricMembers.reduce(
-                (sum, member) =>
-                    sum +
-                    member.progress.reduce(
-                        (memberSum, progress) =>
-                            memberSum + progress.target_value,
-                        0
-                    ),
-                0
-            );
+        //     const sumTargets = kpiMetricMembers.reduce(
+        //         (sum, member) =>
+        //             sum +
+        //             member.progress.reduce(
+        //                 (memberSum, progress) =>
+        //                     memberSum + progress.target_value,
+        //                 0
+        //             ),
+        //         0
+        //     );
 
-            if (sumTargets === 0) {
-                return 0;
-            }
+        //     if (sumTargets === 0) {
+        //         return 0;
+        //     }
 
-            return ((sumCurrentValues / sumTargets) * 100).toFixed(2);
-        },
+        //     return ((sumCurrentValues / sumTargets) * 100).toFixed(2);
+        // },
 
         // getMember(partner) {
         //     const members = partner.members;

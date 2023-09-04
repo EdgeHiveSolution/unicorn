@@ -47,9 +47,6 @@ class Department extends Model
     //         ->withTimestamps();
     // }
 
-    public function kpis(){
-        return $this->hasMany(Kpi::class);
-    }
-
+   
 
 }
