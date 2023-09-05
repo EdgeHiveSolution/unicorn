@@ -263,16 +263,23 @@
                                                     {{ department.name }}
                                                 </span>
                                             </td>
-                                            <td>
-                                                <div
-                                                    @click="
-                                                        goToPerformancePartner
-                                                    "
-                                                    class="btn btn-primary p-2"
-                                                >
-                                                    View details
-                                                </div>
-                                            </td>
+                                             <td>
+                                                    <button
+                                                        class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                                    >
+                                                        <span
+                                                            class="mdi mdi-eye-outline text-light"
+                                                        ></span>
+                                                        <a
+                                                            :href="
+                                                                '/department_partners/' +
+                                                                partner.id
+                                                            "
+                                                            class="text-light"
+                                                            >View Details</a
+                                                        >
+                                                    </button>
+                                                </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -419,7 +426,7 @@
                                         kpiMetric, metricIndex
                                     ) in kpiMetricsWithProgress"
                                     :key="metricIndex"
-                                >
+                                   >            
                                     <td>
                                         {{ kpiMetric.title }}
                                     </td>

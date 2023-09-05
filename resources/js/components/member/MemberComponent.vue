@@ -110,15 +110,17 @@
                                     <div>
                                      <!-- <span>{{ kpiMetricData.kpiMetric.title }}</span> -->
                                         <span>{{ kpiMetricData.kpiMetric.title }}</span>
+                                        
                                     </div>
+                                    <div> <span>{{kpiMetricData.kpiMetric.type}}</span></div>
                                     </td>
                                     <td class="">
                                      <!-- <div>{{ progressData.progress_sum.current_sum }}</div> -->
-                                                    <div>{{ kpiMetricData.progress_sum.current_sum }}</div>
+                                                    <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.current_sum }}</div>
                         </td>
                         <td class="">
                         <!-- <div>{{ progressData.progress_sum.target_sum }}</div> -->
-                        <div>{{ kpiMetricData.progress_sum.target_sum }}</div>
+                        <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.target_sum }} </div>
                         </td>
                         <td>
                         <td class="stats">
@@ -178,23 +180,30 @@ export default {
         };
     },
 
-    computed: {
-        loggedUser() {
-            return this.$store.state.loggedUser;
+        computed: {
+
+            loggedUser() {
+                return this.$store.state.loggedUser;
+            },
+
         },
-    },
 
-    mounted() {
-        this.fetchMemberDetails();
+    async created() {
 
-        console.log(
-            "User Related Data:",
-            JSON.stringify(this.$store.state.loggedUser)
-        );
+    await this.fetchMemberDetails();
+
     },
+    // mounted() {
+    //     this.fetchMemberDetails();
+
+    //     console.log(
+    //         "User Related Data:",
+    //         JSON.stringify(this.$store.state.loggedUser)
+    //     );
+    // },
 
     methods: {
-calculateProgressPercentage(progressSum) {
+   calculateProgressPercentage(progressSum) {
       const currentSum = progressSum.current_sum;
       const targetSum = progressSum.target_sum;
       const percentage = (currentSum / targetSum) * 100;
@@ -242,11 +251,11 @@ calculateProgressPercentage(progressSum) {
         //         });
         // },
 
-        fetchMemberDetails() {
+        async fetchMemberDetails() {
             const memberId = this.$props.memberId;
             const uri =
                 this.base_url + `api/v1/members/${memberId}/kpis-and-metrics`;
-            axios
+          await  axios
                 .get(uri)
                 .then((response) => {
                     console.log("Api Response:", response.data);

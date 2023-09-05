@@ -1,6 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
         <!-- Dashboard -->
+        @if (auth()->check() && auth()->user()->isAdmin() || auth()->user()->user_role_id == 2)
         <li class="nav-item">
             <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/">
                 <span class="menu-icon">
@@ -9,9 +10,24 @@
                 <span class="menu-title txt-light">Dashboard</span>
             </a>
         </li>
-        
+        @endif
+
+        @if (auth()->check() &&  auth()->user()->user_role_id == 3)
         <!-- Partners -->
-        <li  style="margin-top: -10px" class="nav-item">
+        <li style="margin-top: -10px" class="nav-item">
+            <a class="nav-link {{ Request::is('partners') ? 'active' : '' }}" href="/partners">
+                <span class="menu-icon">
+                    <i class="mdi mdi-poll"></i>
+                </span>
+                <span class="menu-title txt-light">Dashboard</span>
+            </a>
+        </li>
+
+        @endif
+
+        @if (auth()->check() && (auth()->user()->isAdmin()  || auth()->user()->user_role_id == 2))
+        <!-- Partners -->
+        <li style="margin-top: -10px" class="nav-item">
             <a class="nav-link {{ Request::is('partners') ? 'active' : '' }}" href="/partners">
                 <span class="menu-icon">
                     <i class="mdi mdi-account-multiple"></i>
@@ -20,9 +36,11 @@
             </a>
         </li>
 
+        @endif
+
         <!-- Departments - Admin Only -->
         @if (auth()->check() && auth()->user()->isAdmin())
-            <li   style="margin-top: -10px" class="nav-item">
+            <li style="margin-top: -10px" class="nav-item">
                 <a class="nav-link {{ Request::is('departments') ? 'active' : '' }}" href="/departments">
                     <span class="menu-icon">
                         <i class="mdi mdi-buffer"></i>
@@ -34,7 +52,7 @@
 
         <!-- Configurations - Admin Only -->
         @if (auth()->check() && auth()->user()->isAdmin())
-            <li  style="margin-top: -10px"  class="nav-item">
+            <li style="margin-top: -10px" class="nav-item">
                 <a class="nav-link {{ Request::is('configurations') ? 'active' : '' }}" href="/configurations">
                     <span class="menu-icon">
                         <i class="mdi mdi-wrench"></i>
@@ -45,8 +63,8 @@
         @endif
 
         <!-- My Profile -->
-        <div class="mt-3">
-        <li  style="margin-top: -10px"  class="nav-item">
+        @if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->user_role_id == 3  || auth()->user()->user_role_id == 2))
+        <li style="margin-top: -10px" class="nav-item">
             <a class="nav-link {{ Request::is('profile/*') ? 'active' : '' }}" href="/profile/{{ Auth::user()->id }}">
                 <span class="menu-icon">
                     <i class="mdi mdi-account"></i>
@@ -54,9 +72,11 @@
                 <span class="menu-title txt-light">My Profile</span>
             </a>
         </li>
+        @endif
 
         <!-- Settings -->
-        <li  style="margin-top: -10px"  class="nav-item">
+        @if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->user_role_id == 3 || auth()->user()->user_role_id == 2))
+        <li style="margin-top: -10px" class="nav-item">
             <a class="nav-link {{ Request::is('settings') ? 'active' : '' }}" href="/settings">
                 <span class="menu-icon">
                     <i class="mdi mdi-settings"></i>
@@ -64,6 +84,7 @@
                 <span class="menu-title txt-light">Settings</span>
             </a>
         </li>
+        @endif
 
         <!-- User Info and Logout -->
         <li class="auth-items">
@@ -89,7 +110,6 @@
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
-             </div>
             </div>
         </li>
     </ul>

@@ -13,6 +13,8 @@ use AppModels\UserRole;
 use App\Models\DepartmentMember;
 use App\Models\KpiMetric;
 use App\Models\KpiMetricMember;
+use App\Models\KpiMember;
+use App\Models\Kpi;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
@@ -27,8 +29,7 @@ class Member extends Model
     ];
 
 
-    protected $with = ['departments' , 'kpiMetricMembers.progress'];
-   
+    protected $with = ['departments' , 'kpis.kpiMetrics.kpiMetricMembers.progress'];   
 
     public function user()
     {
@@ -50,10 +51,7 @@ class Member extends Model
 }
 
     
-    public function kpis(){
-        return $this->hasMany(Kpi::class);
-    }
-
+   
    
 
 
@@ -63,7 +61,7 @@ class Member extends Model
             ->using(MemberPartner::class)
             ->withPivot('department_id', 'role', 'member_id')
             ->withTimestamps();
-    }
+    }       
 
 
             
@@ -73,6 +71,14 @@ class Member extends Model
         }
 
 
+
+                    public function kpis()
+            {
+                return $this->belongsToMany(Kpi::class, 'kpi_member')
+                    ->using(KpiMember::class)
+                    ->withPivot('member_id', 'kpi_id') 
+                    ->withTimestamps();
+            }
 
 
 }

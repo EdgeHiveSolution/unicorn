@@ -251,6 +251,20 @@ class PartnerApiController extends Controller
 }
 
 
+            public function getKpiAndKpiMetricsAndProgressForPartner($partnerId)  {
+
+                $partner = Partner::with([
+                    'kpis' => function ($query) {
+                        $query->with(['kpiMetrics.kpiMetricMembers.progress']);
+                    }
+                ])->findOrFail($partnerId);
+
+                return response()->json($partner);
+            }
+
+
+
+
 
      public function destroy($id)
 {
@@ -272,4 +286,7 @@ class PartnerApiController extends Controller
 
     return response()->json(['message' => 'Partner deleted successfully'], 200);
 }
+
+
+
 }

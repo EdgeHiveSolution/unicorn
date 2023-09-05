@@ -14,7 +14,7 @@ use App\Http\Controllers\Util\ConfigurationController;
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\KpiMetricController;
-
+use App\Http\Controllers\DepartmentPartnerController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -66,4 +66,8 @@ Route::resource('members', MemberController::class);
 
 //Member
 Route::resource('kpimetrics', KpiMetricController::class);
+
+//Department_Partner
+
+Route::resource('department_partners', DepartmentPartnerController::class);
 

@@ -425,20 +425,27 @@ export default {
         // },
     },
 
-    mounted() {
-        this.fetchKpiMetricsDetails();
-        console.log(
-            "User Related Data:",
-            JSON.stringify(this.$store.state.loggedUser)
-        );
+    async created()  {
 
-        console.log(
-            "Kpi Metric Members are:",
-            JSON.stringify(
-                this.$store.state.loggedUser.member.kpi_metric_members
-            )
-        );
+      await this.fetchKpiMetricsDetails();
+    
+
     },
+
+    // mounted() {
+    //     this.fetchKpiMetricsDetails();
+    //     console.log(
+    //         "User Related Data:",
+    //         JSON.stringify(this.$store.state.loggedUser)
+    //     );
+
+    //     console.log(
+    //         "Kpi Metric Members are:",
+    //         JSON.stringify(
+    //             this.$store.state.loggedUser.member.kpi_metric_members
+    //         )
+    //     );
+    // },
 
     methods: {
         calculateProgressPercentage(progressEntry) {
@@ -485,7 +492,7 @@ export default {
             }
         },
 
-        fetchKpiMetricsDetails() {
+       async fetchKpiMetricsDetails() {
             const kpimetricId = this.$props.kpimetricId;
 
             // Get the kpiMetricMemberId based on the matching kpi_metric_id
@@ -507,7 +514,7 @@ export default {
             const uri =
                 this.base_url +
                 `api/v1/kpimetrics/${kpimetricId}/progress/${kpiMetricMemberId}`;
-            axios
+           await  axios
                 .get(uri)
                 .then((response) => {
                     console.log("Api Response:", response.data);
