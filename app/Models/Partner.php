@@ -28,6 +28,7 @@ class Partner extends Model
     ];
 
 
+ // protected $with = ['members', 'kpis.kpiMetrics.kpiMetricMembers.progress'];
   protected $with = ['departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress'];
 
 

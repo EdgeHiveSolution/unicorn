@@ -103,7 +103,7 @@
                                                     department.members.length >
                                                     0
                                                 "
-                                            >
+                                               >
                                                 <img
                                                     v-for="member in department.members"
                                                     :key="member.id"

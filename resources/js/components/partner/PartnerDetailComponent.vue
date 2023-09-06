@@ -1046,7 +1046,7 @@
                                                     <td class="">
                                                         <div>
                                                             {{
-                                                                kpimetric.timely_value
+                                                                kpimetric.target
                                                             }}
                                                             <!-- Display KPI target, assuming target is a property of the KPI -->
                                                         </div>
@@ -1401,12 +1401,12 @@
                                                     name="response_period"
                                                     class="form-select"
                                                     v-model="member.email"
-                                                >
+                                                 >
                                                     <option
                                                         value=""
                                                         disabled
                                                         selected
-                                                    >
+                                                      >
                                                         Enter name or email
                                                         address
                                                     </option>
@@ -1449,6 +1449,7 @@
                                                 v-for="(
                                                     item, index
                                                 ) in selectedItems"
+                                                :key="index"
                                                 class="list-item my-2"
                                             >
                                                 <span>
@@ -1857,6 +1858,7 @@ export default {
             member: {
                 email: "",
                 target: "",
+                id: ""
             },
 
             selectedKpiMetric: "",
@@ -2311,17 +2313,54 @@ export default {
         },
 
         selectMember() {
+            
             const selectedKpiMemberEmail = this.member.email;
             const selectedKpiTarget = this.member.target;
+            //const selectedID = this.members.find;
+
+             let newMember = this.members.find(
+                 (member)=> { 
+                    
+                 // this.member.id = member.id;
+                console.log("Members inside here:",member.email);
+                console.log("Selected Member inside here:",selectedKpiMemberEmail);
+                return (member.email === selectedKpiMemberEmail);
+
+               
+            
+                }
+
+            );
+
+
+
+           
+
+            let selectedID = newMember.id;
+            
+            this.member.id = selectedID;
+            
+          
+          console.log("New MemberiD:", selectedID);
+
+          console.log("New Member Email:",selectedKpiMemberEmail);
+
+            this.member.id = newMember.id;
+
+            console.log("Target for this member is:", this.member.target);
 
             this.selectedItems.push({
                 memberEmail: selectedKpiMemberEmail,
                 memberTarget: selectedKpiTarget,
+                memberID: selectedID
             });
-
+            
+            console.log("Selected ID:",selectedID);
             this.member.email = "";
             this.member.department_id = "";
             this.member.role = "";
+
+
         },
 
         removeMember(index) {
@@ -2415,24 +2454,37 @@ export default {
         },
 
         submitKpiMetric() {
+            console.log("New Members arrays is", JSON.stringify(this.selectedItems));
             const partner = this.partner;
             console.log("Target1 is :", this.formData.target);
             console.log("Target2 is :", this.member.target);
             console.log("Member is:", this.members);
             console.log("Email is:", this.member.email);
             // Create a new FormData object
-            const membersWithTarget = this.members.map((member) => {
+           const membersWithTarget =  { members: this.members.map((member) => {
                 // Clone the member object
                 const modifiedMember = { ...member };
                 // Attach the target property to the cloned member object
-                modifiedMember.target = this.member.target;
+                // modifiedMember.target = this.member.target;
+               // modifiedMember.targets = this.selectedItems;
 
                 return modifiedMember;
-            });
+           }),
+
+           targets: this.selectedItems
+           
+           };
+
+
+
+         //memberWithTarget.targets = this.selectedItems;
+
+
 
             console.log(
                 "Members array is:" + JSON.stringify(membersWithTarget)
             );
+
             const formData = new FormData();
             formData.append("title", this.kpiMetric.title);
             const selectedMetric = this.metrics.find(
