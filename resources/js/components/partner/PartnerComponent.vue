@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="top-header">
-            <h2>Partners</h2>
-            <p>Manage and on-board Tactive partners.</p>
+            <h4>Partners</h4>
+            <p class="subtitle_text">Manage and on-board Tactive partners.</p>
         </div>
 
         <div>
-            <div class="btn btn-primary my-3 module-add">
+            <div class="btn primary_button my-3 module-add">
                 <a class="text-light" href="/partners/create">+ Add Partner</a>
             </div>
         </div>
@@ -39,22 +39,24 @@
                             <button
                                 class="btn btn-light p-1 btn-icon"
                                 style="
-                                    background-color: lightgrey;
-                                    color: #76aefd;
+                                    background-color: #eaf3ff;
+                                    color: #7fb2fe;
                                     height: 30px;
                                     width: 60px;
+                                    font-size: 14px;
+                                    font-weight: 400;
                                 "
                             >
                                 All
                                 <i
                                     class="mdi mdi-close"
-                                    style="font-size: 17px; margin-left: 5px"
+                                    style="font-size: 14px; margin-left: 5px"
                                 ></i>
                             </button>
                             <div style="margin-left: 10px"></div>
 
                             <button
-                                style="height: 10px"
+                                style="height: 10px;font-size: 14px;font-weight:400"
                                 class="btn btn-light p-3 btn-icon"
                                 @click="showFilters = !showFilters"
                             >
@@ -112,28 +114,46 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <button class="btn btn-suc">
+                                               <!-- <button class="btn btn-suc">
                                                     <span class="txt-success"
                                                         >Active</span
                                                     >
-                                                </button>
+                                                </button>-->
+
+                                                 <div class="active_status_container d-flex flex-row justify-content-center">
+                                                    <span class="active_status_text"
+                                                        >Active</span
+                                                    >
+                                                </div>
                                             </td>
                                             <td>
                                                 <span class="txt-dark">{{
                                                     partner.business_type
                                                 }}</span
                                                 ><br />
-                                                <span class="txt-gray">{{
+                                                <span class="table_text txt-gray">{{
                                                     partner.about
                                                 }}</span>
                                             </td>
                                             <td class="td-members">
-                                                <img
+                                                <!--<img
                                                     v-for="member in partner.members"
                                                     :key="member.id"
                                                     :src="member.image"
                                                     alt="image"
-                                                />
+                                                />-->
+                                                <div class="d-flex flex-row">
+                                                <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                ><!--<img
+                                                    
+                                                    alt="image"
+                                                />-->
+                                                <p class="member_image_text">+1</p>
+                                                </div>
+                                                </div>
                                             </td>
                                             <td
                                                 v-if="
@@ -142,11 +162,11 @@
                                                 "
                                             >
                                                 <div>
-                                                    {{
+                                                   <label class="progress_text"> {{
                                                         partner.calculatedProgress.toFixed(
                                                             2
                                                         )
-                                                    }}%
+                                                    }}</label>%
                                                     <div class="progress">
                                                         <div
                                                             class="progress-bar"
@@ -199,7 +219,7 @@
                                                 </div>
                                             </td>
                                             
-                                            <td v-else>No Active Kpis</td>
+                                            <td v-else class="text-muted progress_text">No Active Kpis</td>
                                             <td>
                                                 <button class="btn view-btn">
                                                     <a
@@ -363,7 +383,8 @@ export default {
 }
 
 .on-track {
-    background-color: #5cb85c;
+    /*background-color: #767978;*/
+    background-color: #047a48;
 }
 
 .at-risk {
@@ -373,4 +394,43 @@ export default {
 .off-track {
     background-color: #d9534f;
 }
+
+.on-track-label{
+    font-size: 12px;
+    color: #047a48;
+}
+
+
+.primary_button{
+    background-color: #084bf7;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+th{
+     color: #667085;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #9ea4b1;
+  font-size: 14px;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #9ea4b1;
+  font-size: 14px;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #9ea4b1;
+  font-size: 14px;
+}
+
+
+
+
+
 </style>

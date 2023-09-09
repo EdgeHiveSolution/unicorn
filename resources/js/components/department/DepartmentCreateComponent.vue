@@ -1,5 +1,6 @@
 <template>
     <div>
+    
         <flash-message></flash-message>
         <!-- Alerts -->
         <!-- <div class="alert alert-success" role="alert" v-if="alert_success">
@@ -10,14 +11,16 @@
         </div> -->
 
         <!-- Breadcrumb -->
-        <div v-if="isLoading">
+        <!--<div v-if="isLoading">
             <h1 class="plans_text mt-5 mb-3">Please wait..</h1>
             <b-spinner
                 style="width: 3rem; height: 3rem"
                 variant="info"
                 label=""
             ></b-spinner>
-        </div>
+        </div>-->
+
+          
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
@@ -57,6 +60,8 @@
                 </button>
             </div>
         </div>
+
+      
 
         <!-- Department form -->
         <form
@@ -253,10 +258,22 @@
             </div>
             <div class="dropdown-divider mb-5"></div>
         </form>
+
+         <b-overlay :show="isShow" spinner-variant="info" rounded="sm" no-wrap>
+                    <template #overlay>
+                    <div class="overlay_container text-center">
+                    <b-spinner  font-scale="3" variant="info"></b-spinner>
+                    <p class="text-dark">Verifying Payment.Please wait...</p>
+       
+        </div>
+      </template>
+    </b-overlay>    
     </div>
 </template>
 
 <script>
+/*import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap";*/
 
 export default {
 
@@ -270,6 +287,7 @@ export default {
             alert_error: false,
             alert_success: false,
             isLoading: false,
+            isShow: true,
             base_url: "../",
             member_id: "",
             members: [],
@@ -404,5 +422,23 @@ h2 {
     font-size: 14px; /* Adjust the font size as desired */
     padding: 10px; /* Adjust the padding as desired */
     max-width: 200px; /* Adjust the maximum width as desired */
+}
+
+.overlay {  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 300px;
+  height: 400px;
+  align-self: center;
+  z-index: 1;
+ /* opacity: 0;*/
+  background: rgba(39, 42, 43, 0.8);
+  transition: opacity 200ms ease-in-out;
+  border-radius: 4px;
+  margin-left: auto;
+  /*margin: 0;*/
+  padding: 0;
 }
 </style>

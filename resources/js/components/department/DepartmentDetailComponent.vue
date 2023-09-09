@@ -24,7 +24,7 @@
                             >Performance</a
                         >
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item px-2">
                         <a
                             href="#partner"
                             class="nav-link"
@@ -179,7 +179,7 @@
                                                     :src="partner.image"
                                                     alt="image"
                                                 />
-                                                <span class="pl-2">{{
+                                                <span class="pl-2 active-period txt-gray">{{
                                                     partner.name
                                                 }}</span>
                                             </td>
@@ -248,16 +248,29 @@
                                             </td>
                                             <td v-else>N/A</td>
                                             <td>
-                                                <img
+                                                <!--<img
                                                     v-for="member in partner.members"
                                                     :src="member.photo"
                                                     alt="member.email"
                                                     :key="member.id"
-                                                />
+                                                />-->
+                                                <div class="d-flex flex-row">
+                                                <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                ><!--<img
+                                                    
+                                                    alt="image"
+                                                />-->
+                                                <p class="member_image_text">+1</p>
+                                                </div>
+                                                </div>
                                             </td>
                                             <td>
                                                 <span
-                                                    class="department-tag"
+                                                    
+                                                    class="department-tag active-period txt-gray"
                                                     v-for="department in partner.departments"
                                                 >
                                                     {{ department.name }}
@@ -543,10 +556,18 @@
                                     <td>
                                         {{ member.email }}
                                     </td>
-                                    <td class="status">
-                                        <span>
+                                    <td>
+                                      <!--  <span>
                                             {{ (member.is_active = "Active") }}
-                                        </span>
+                                        </span>-->
+                                        <div class="active_status_container d-flex flex-row justify-content-center">
+                                                    <span class="active_status_text"
+                                                        >{{
+                                                            (member.is_active =
+                                                                "Active")
+                                                        }}</span
+                                                    >
+                                                </div>
                                     </td>
                                     <td>
                                         <span
@@ -1054,10 +1075,23 @@ export default {
 </script>
 <style scoped>
 .encircle {
-    padding: 3px;
-    border-radius: 50%;
+    /*padding: 5px;
+    border-radius: 100%;
     background-color: rgba(128, 128, 128, 0.089);
+    color: rgba(24, 23, 23, 0.911);*/
+  /*position: absolute;*/
+    top: 0px;
     color: rgba(24, 23, 23, 0.911);
+    background-color: rgba(128, 128, 128, 0.089);
+    /*width: 25px;
+    height: 25px;*/
+    border-radius: 50%;
+    padding: 3px 6px;
+    line-height: 25px;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 999;
 }
 
 .btn-icon {
@@ -1108,7 +1142,8 @@ nav-link {
 }
 
 .on-track {
-    background-color: #5cb85c;
+    /*background-color: #767978;*/
+    background-color: #047a48;
 }
 
 .at-risk {
@@ -1118,4 +1153,50 @@ nav-link {
 .off-track {
     background-color: #d9534f;
 }
+
+.on-track-label{
+    font-size: 12px;
+    color: #047a48;
+}
+
+
+.primary_button{
+    background-color: #084bf7;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+th{
+     color: #667085;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #9ea4b1;
+  font-size: 14px;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #9ea4b1;
+  font-size: 14px;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #9ea4b1;
+  font-size: 14px;
+}
+
+/*.on-track {
+    background-color: #5cb85c;
+}
+
+.at-risk {
+    background-color: #f0ad4e;
+}
+
+.off-track {
+    background-color: #d9534f;
+}*/
 </style>

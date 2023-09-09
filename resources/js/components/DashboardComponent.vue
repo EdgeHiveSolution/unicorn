@@ -3,7 +3,7 @@
         <h1 style="font-size: 20px" class="txt-dark">
             Welcome Back, {{ data.loggeduser.name.split(' ')[0] }}
         </h1>
-        <h3 style="font-size: 20px" class="txt-gray">
+        <h3 style="font-size: 20px; font-weight: lighter" class="txt-gray">
             Track and manage the team’s overall performance.
         </h3>
         <h4 style="font-size: 20px; font-weight: semi-bold" class="txt-dark">
@@ -127,12 +127,24 @@
                                             </div>
                                         </td>
                                         <td class="td-members">
-                                            <img
+                                            <!--<img
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 src="member.image"
                                                 alt="image"
-                                            />
+                                            />-->
+                                            <div class="d-flex flex-row">
+                                                <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                ><!--<img
+                                                    
+                                                    alt="image"
+                                                />-->
+                                                <p class="member_image_text">+1</p>
+                                                </div>
+                                                </div>
                                         </td>
                                         <td>
                                             <span
@@ -251,12 +263,25 @@
                                             </div>
                                         </td>
                                         <td class="td-members">
-                                            <img
+                                           <!-- <img
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 src="member.image"
                                                 alt="image"
-                                            />
+                                            />-->
+
+                                            <div class="d-flex flex-row">
+                                                <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                ><!--<img
+                                                    
+                                                    alt="image"
+                                                />-->
+                                                <p class="member_image_text">+1</p>
+                                                </div>
+                                                </div>
                                         </td>
                                         <td>
                                             <span

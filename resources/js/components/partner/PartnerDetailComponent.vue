@@ -805,21 +805,30 @@
                                             <tr
                                                 v-for="member in members"
                                                 :key="member.id"
+                        
                                             >
                                                 <td>
                                                     {{ member.email }}
                                                 </td>
-                                                <td class="status">
-                                                    <span>
+                                                <td>
+                                                   <!-- <span>
                                                         {{
                                                             (member.is_active =
                                                                 "Active")
                                                         }}
-                                                    </span>
+                                                    </span>-->
+                                                    <div class="active_status_container d-flex flex-row justify-content-center">
+                                                    <span class="active_status_text"
+                                                        >{{
+                                                            (member.is_active =
+                                                                "Active")
+                                                        }}</span
+                                                    >
+                                                </div>
                                                 </td>
                                                 <td>
                                                     <span
-                                                        class="department-tag"
+                                                        class="department-tag py-1 my-1"
                                                         v-for="department in member.departments"
                                                         :key="department.id"
                                                         >{{
@@ -894,7 +903,7 @@
                                                  </td> -->
 
                                                 <td>
-                                                    <button
+                                                   <!-- <button
                                                         class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
                                                     >
                                                         <span
@@ -908,7 +917,25 @@
                                                             class="text-light"
                                                             >View</a
                                                         >
-                                                    </button>
+                                                    </button>-->
+                                                   
+                                                    <a :href="'/members/' +
+                                                                member.id"><button
+                                                        class="btn btn-sm px-1 py-1 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                                        
+                                                    >
+                                                        <span
+                                                            class="mdi mdi-eye-outline text-light py-0"
+                                                        ></span>
+                                                        <a
+                                                            :href="
+                                                                '/members/' +
+                                                                member.id
+                                                            "
+                                                            class="text-light" style="font-size: 14px;padding-left: 5px;"
+                                                            >View</a
+                                                        >
+                                                    </button></a>
                                                 </td>
                                             </tr>
                                         </tbody>

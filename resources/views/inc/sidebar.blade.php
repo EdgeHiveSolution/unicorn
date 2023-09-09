@@ -7,7 +7,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-poll"></i>
                 </span>
-                <span class="menu-title txt-light">Dashboard</span>
+                <span class="menu-title txt-light" style="font-size: 16px;">Dashboard</span>
             </a>
         </li>
         @endif
@@ -19,7 +19,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-poll"></i>
                 </span>
-                <span class="menu-title txt-light">Dashboard</span>
+                <span class="menu-title txt-light" style="font-size: 16px;">Dashboard</span>
             </a>
         </li>
 
@@ -32,7 +32,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-account-multiple"></i>
                 </span>
-                <span class="menu-title txt-light">Partners</span>
+                <span class="menu-title txt-light" style="font-size: 16px;">Partners</span>
             </a>
         </li>
 
@@ -45,7 +45,7 @@
                     <span class="menu-icon">
                         <i class="mdi mdi-buffer"></i>
                     </span>
-                    <span class="menu-title txt-light">Departments</span>
+                    <span class="menu-title txt-light" style="font-size: 16px;">Departments</span>
                 </a>
             </li>
         @endif
@@ -57,7 +57,7 @@
                     <span class="menu-icon">
                         <i class="mdi mdi-wrench"></i>
                     </span>
-                    <span class="menu-title txt-light">Configurations</span>
+                    <span class="menu-title txt-light" style="font-size: 16px;">Configurations</span>
                 </a>
             </li>
         @endif
@@ -69,7 +69,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-account"></i>
                 </span>
-                <span class="menu-title txt-light">My Profile</span>
+                <span class="menu-title txt-light" style="font-size: 16px;">My Profile</span>
             </a>
         </li>
         @endif
@@ -81,7 +81,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-settings"></i>
                 </span>
-                <span class="menu-title txt-light">Settings</span>
+                <span class="menu-title txt-light" style="font-size: 16px;">Settings</span>
             </a>
         </li>
         @endif

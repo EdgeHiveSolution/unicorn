@@ -3,7 +3,7 @@ import store from './store.js';
 
 
 import { createApp } from 'vue';
-// import { BootstrapVue } from 'bootstrap-vue';
+ //import  BootstrapVue  from 'bootstrap-vue';
 
 
 const app = createApp({});
@@ -23,7 +23,8 @@ import ProfileEditComponent from './components/profile/ProfileEditComponent.vue'
 import MemberComponent from './components/member/MemberComponent.vue';
 import DepartmentPartnerDetailComponent from './components/department_partner/DepartmentPartnerDetailComponent.vue';
 
-// app.use(BootstrapVue);
+ //app.use(BootstrapVue);
+ //Vue.use(BootstrapVue);
 
 app.component('dashboard-component', DashboardComponent);
 app.component('partner-component', PartnerComponent);

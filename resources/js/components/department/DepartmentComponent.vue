@@ -3,10 +3,10 @@
         <div v-if="success" class="alert alert-success">
             {{ success }}
         </div>
-        <h2>Departments</h2>
+        <h4>Departments</h4>
         <p>Manage and track department performance.</p>
         <div class="">
-            <div class="btn btn-primary my-4">
+            <div class="btn primary_button my-4">
                 <a class="text-light" href="/departments/create"
                     >+ Add Department</a
                 >
@@ -375,7 +375,8 @@ h2 {
 }
 
 .on-track {
-    background-color: #5cb85c;
+    /*background-color: #5cb85c;*/
+    background-color:  #047a48;
 }
 
 .at-risk {
@@ -385,4 +386,29 @@ h2 {
 .off-track {
     background-color: #d9534f;
 }
+
+
+.primary_button{
+    background-color: #084bf7;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #9ea4b1;
+  font-size: 14px;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #9ea4b1;
+  font-size: 14px;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #9ea4b1;
+  font-size: 14px;
+}
+
 </style>
