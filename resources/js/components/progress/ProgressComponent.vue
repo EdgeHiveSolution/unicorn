@@ -68,7 +68,7 @@
                                                     <th>Current</th>
                                                     <th>Target</th>
                                                     <th>Progress</th>
-                                                    <th></th>
+                                                  
 
                                                     <!-- <th>Assigned to</th>
                                                 <th>Departments</th> -->
@@ -169,7 +169,7 @@
                                                         </p>
                                                     </td>
 
-                                                    <td></td>
+                                                   
                                                 </tr>
 
                                                 <tr
@@ -178,7 +178,7 @@
                                                             .progress.length ===
                                                         0
                                                     "
-                                                >
+                                                   >
                                                     <td
                                                         style="
                                                             text-align: center;

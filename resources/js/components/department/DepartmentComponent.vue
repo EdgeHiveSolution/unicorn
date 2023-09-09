@@ -6,11 +6,15 @@
         <h2>Departments</h2>
         <p>Manage and track department performance.</p>
         <div class="">
-            <div class="btn btn-primary my-4">
-                <a class="text-light" href="/departments/create"
+            <div >
+                <a class="text-light btn btn-primary my-4" href="/departments/create"
                     >+ Add Department</a
                 >
             </div>
+<!-- 
+            <div v-for="data in this.departments" :key="data.id">
+                        {{data.partners}}
+            </div> -->
         </div>
 
         <div class="row">
@@ -92,8 +96,8 @@
                                             ><br />
                                             <span class="txt-gray"
                                                 >Partners:
-                                                {{
-                                                    department.partners.length
+                                            
+                                                   {{ uniquePartnerCount(department.partners)
                                                 }}</span
                                             >
                                         </td>
@@ -243,16 +247,26 @@ export default {
     },
 
     computed: {
-        departmentsWithProgress() {
-            return this.departments.map((department) => ({
-                ...department,
-                calculatedProgress: this.calculateKpiProgress(
-                    department.partners
-                ),
+         departmentsWithProgress() {
+    const uniqueDepartments = new Set();
+    this.departments.forEach((department) => {
+      // Create a string based on the properties that should make the department unique
+      const uniqueKey = `${department.name}`; // Replace with your criteria
+      uniqueDepartments.add(uniqueKey);
+    });
 
-                statusClass: this.getStatusClass(department),
-            }));
-        },
+    // Convert the Set back to an array of unique departments
+    const uniqueDepartmentsArray = Array.from(uniqueDepartments).map((uniqueKey) => {
+      const department = this.departments.find((dept) => dept.name === uniqueKey); // Find the department with the unique key
+      return {
+        ...department,
+        calculatedProgress: this.calculateKpiProgress(department.partners),
+        statusClass: this.getStatusClass(department),
+      };
+    });
+
+    return uniqueDepartmentsArray;
+  },
     },
 
     // watch: {
@@ -280,10 +294,20 @@ export default {
                 this.departments = response.data;
                 console.log(
                     "Departments are:",
-                    JSON.stringify(this.departments)
+                    JSON.stringify(this.departments, null, 2)
                 );
             });
         },
+
+
+        uniquePartnerCount(partners) {
+        const uniqueNames = new Set();
+        partners.forEach((partner) => {
+            // Assuming partner names are unique, add them to the Set
+            uniqueNames.add(partner.name); // Replace 'name' with the actual property name of partner names
+        });
+        return uniqueNames.size;
+    },
 
         calculateKpiProgress(partners) {
             let totalCurrentValue = 0;
