@@ -235,14 +235,13 @@
                                             <th>Progress</th>
                                             <th>Assigned To</th>
                                             <th>Departments</th>
-                                           
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr
                                             v-for="kpiMetric in kpi.kpi_metrics"
                                             :key="kpiMetric.id"
-                                         >
+                                        >
                                             <td>
                                                 {{ kpiMetric.title }}
                                             </td>
@@ -301,7 +300,7 @@
                                             <td>
                                                 <span
                                                     class="depart-tag"
-                                                    v-for="department in  uniqueDepartments"
+                                                    v-for="department in uniqueDepartments"
                                                     :key="department.id"
                                                 >
                                                     {{ department.name }}
@@ -1888,7 +1887,6 @@ export default {
                             display: true,
                             text: "Duration (Months)", // Label for the x-axis
                         },
-                        
                     },
                 },
 
@@ -2101,10 +2099,8 @@ export default {
         // },
 
         chartWithReviewPeriods() {
-            // Extract data and review period from the API response
-            const reviewPeriods = this.progressData.map(
-                (item) => item.review_period_range
-            );
+            // Extract data and progress percentages from the API response
+            const months = this.progressData.map((item) => item.month);
             const progressPercentages = this.progressData.map(
                 (item) => item.progress_percentage
             );
@@ -2116,58 +2112,40 @@ export default {
             let accumulatedProgress = 0;
 
             // Loop through the progress data and calculate data points
-            for (let i = 0; i < reviewPeriods.length; i++) {
-                const reviewPeriod = reviewPeriods[i];
+            for (let i = 0; i < months.length; i++) {
+                const month = months[i];
                 const progressPercentage = progressPercentages[i];
 
-                // Calculate the data point for this review period
+                // Calculate the data point for this month
                 accumulatedProgress += progressPercentage;
                 dataPoints.push({
-                    x: reviewPeriod, // Use the review period as the x-axis label
+                    x: month, // Use the month as the x-axis label
                     y: accumulatedProgress, // Accumulated progress percentage
                 });
             }
 
-            // Create annotations for review periods
+            // Create annotations for review periods (if needed)
             const annotations = [];
-            for (let i = 0; i < reviewPeriods.length; i++) {
-                const reviewPeriod = reviewPeriods[i];
-                const xCoordinate = reviewPeriod; // You can customize this based on your chart's x-axis configuration
-                annotations.push({
-                    type: "line",
-                    mode: "vertical",
-                    scaleID: "x", // Specify the x-axis
-                    value: xCoordinate,
-                    borderColor: "red", // Customize the line color
-                    borderWidth: 2, // Customize the line width
-                    label: {
-                        content: reviewPeriod,
-                        enabled: true, // Show the review period label
-                    },
-                });
-            }
 
-            // Update the annotations in chartOptions
+            // Update the annotations in chartOptions (if needed)
             this.chartOptions.plugins.annotation.annotations = annotations;
 
             return dataPoints;
         },
 
-
-
-         uniqueDepartments() {
+        uniqueDepartments() {
             const uniqueDepartments = [];
-           
-               this.partner.departments.forEach((department) => {
-                    // Check if the department is not already in the uniqueDepartments array
-                    const existingDepartment = uniqueDepartments.find(
-                        (d) => d.id === department.id
-                    );
-                    if (!existingDepartment) {
-                        uniqueDepartments.push(department);
-                    }
-                });
-           
+
+            this.partner.departments.forEach((department) => {
+                // Check if the department is not already in the uniqueDepartments array
+                const existingDepartment = uniqueDepartments.find(
+                    (d) => d.id === department.id
+                );
+                if (!existingDepartment) {
+                    uniqueDepartments.push(department);
+                }
+            });
+
             return uniqueDepartments;
         },
     },
@@ -2207,97 +2185,95 @@ export default {
         //console.log("Kpi Metric Members:", JSON.stringify(this.partner.kpi_metrics));
     },
 
-    mounted() {
-        // Calculate the starting date (8 months ago)
-        const today = new Date();
-        const startingDate = new Date(
-            today.getFullYear(),
-            today.getMonth() - 8,
-            1
-        ); // Subtracts 8 months
+mounted() {
 
-        // Create an array of months for the x-axis labels (from January to September)
-        const months = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sept",
-            "Oct",
-            "Nov",
-            "Dec",
-        ];
+   const partnerId = this.partnerId;
 
-        // Set the labels directly
-        this.chartData.labels = months;
+    const today = new Date();
 
-        // Fetch data from your API endpoint for the last 8 months
-        let uri =
-            this.base_url +
-            `api/v1/kpi-progress?start_date=${startingDate.toISOString()}&end_date=${today.toISOString()}`;
-        axios
-            .get(uri)
-            .then((response) => {
-                console.log("Chart Data is:", response.data);
-                this.progressData = response.data.overall_progress;
+    // Fetch data from your API endpoint for the last 8 months
+    let uri =
+        this.base_url +
+               // `api/v1/kpi-progress?start_date=${startingDate.toISOString()}&end_date=${today.toISOString()}&partner_id=${partnerId}`;
 
-                console.log(
-                    "Updated Chart Data:" + JSON.stringify(this.progressData)
-                );
+        `api/v1/kpi-progress/${partnerId}?start_date=${today.toISOString()}&end_date=${today.toISOString()}`;
+    axios
+        .get(uri)
+        .then((response) => {
+            console.log("Chart Data is:", response.data);
+            this.progressData = response.data.overall_progress;
 
-                // Extract data, review periods, and progress percentages from the API response
-                const reviewPeriods = this.progressData.map(
-                    (item) => item.review_period_range
-                );
-                const progressPercentages = this.progressData.map(
-                    (item) => item.progress_percentage
-                );
+            console.log(
+                "Updated Chart Data:" + JSON.stringify(this.progressData)
+            );
 
-                // Create an array to store the data points for the line chart
-                const dataPoints = [];
+            // Extract data and progress percentages from the API response
+            const months = this.progressData.map((item) => item.month);
+            const progressPercentages = this.progressData.map(
+                (item) => item.progress_percentage
+            );
 
-                // Initialize a variable to keep track of the progress
-                let accumulatedProgress = 0;
+            // Create an array of month labels for all 12 months
+            const allMonths = Array.from({ length: 12 }, (_, i) => i + 1); // 1 to 12
 
-                // Loop through the progress data and calculate data points
-                for (let i = 0; i < reviewPeriods.length; i++) {
-                    const reviewPeriod = reviewPeriods[i];
-                    const progressPercentage = progressPercentages[i];
+            // Create an array to store the data points for the line chart
+            const dataPoints = [];
+            let accumulatedProgress = 0;
 
-                    // Calculate the data point for this review period
-                    accumulatedProgress += progressPercentage;
+            // Loop through all months and populate data based on API response
+            allMonths.forEach((month) => {
+                const monthIndex = months.indexOf(month);
+                if (monthIndex !== -1) {
+                    // If data is available for this month, use it
+                    accumulatedProgress += progressPercentages[monthIndex];
                     dataPoints.push(accumulatedProgress);
+                } else {
+                    // If no data available for this month, use zero or null
+                    dataPoints.push(null); // Use null for no data
                 }
-
-                // Create a new Chart instance
-                const chartCanvas = this.$refs.chart;
-                const ctx = chartCanvas.getContext("2d");
-
-                // Create the chart
-                const myChart = new Chart(ctx, {
-                    type: "line", // Specify the chart type (e.g., line, bar, etc.)
-                    data: {
-                        labels: months, // Use the fixed months array for x-axis labels
-                        datasets: [
-                            {
-                                label: "Remaining",
-                                data: dataPoints, // Use the calculated progress data
-                                borderColor: "blue",
-                                fill: false,
-                            },
-                        ],
-                    },
-                    options: this.chartOptions, // Provide your chart options
-                });
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
             });
-    },
+
+            // Create a new Chart instance
+            const chartCanvas = this.$refs.chart;
+            const ctx = chartCanvas.getContext("2d");
+
+            // Create the chart with dynamic x-axis labels
+            const myChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: allMonths.map((month) => {
+                        const monthIndex = month - 1;
+                        return [
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr",
+                            "May",
+                            "Jun",
+                            "Jul",
+                            "Aug",
+                            "Sep",
+                            "Oct",
+                            "Nov",
+                            "Dec",
+                        ][monthIndex];
+                    }),
+                    datasets: [
+                        {
+                            label: "Remaining",
+                            data: dataPoints,
+                            borderColor: "blue",
+                            fill: false,
+                        },
+                    ],
+                },
+                options: this.chartOptions,
+            });
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
+},
 
     methods: {
         calculateCurrentSum(kpiMetric) {
@@ -2312,8 +2288,11 @@ export default {
         calculateTargetSum(kpiMetric) {
             let targetSum = 0;
             kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
-                targetSum += kpiMetricMember.timely_value;
+             kpiMetricMember.progress.forEach((progressEntry1) => {
+
+                targetSum += progressEntry1.target_value;
             });
+         });
             return targetSum;
         },
         calculateProgressPercentage(kpiMetric) {

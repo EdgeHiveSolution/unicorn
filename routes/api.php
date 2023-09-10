@@ -80,7 +80,10 @@ Route::get('v1/role-list',[RoleApiController::class, 'index']);
 
 Route::get('v1/user', [UserController::class, 'getUserWithRelatedData']);
 
-Route::get('v1/kpi-progress', [KpiProgressApiController::class, 'getOverallProgress']);
+Route::get('v1/kpi-progress/{partnerId}', [KpiProgressApiController::class, 'getOverallProgress']);
+
+
+// Route::get('v1/kpi-progress', [KpiProgressApiController::class, 'getOverallProgress']);
 
 
 

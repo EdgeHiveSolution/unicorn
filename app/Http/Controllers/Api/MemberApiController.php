@@ -59,6 +59,7 @@ class MemberApiController extends Controller
     foreach ($kpiMetricMembers as $kpiMetricMember) {
         $progressSummation[$kpiMetricMember->id] = [
             'current_sum' => $kpiMetricMember->progress->sum('current_value'),
+            //'target_sum' => $kpiMetricMember->progress->sum('target_value'),
             'target_sum' => KpiMetric::where('id', $kpiMetricMember->kpi_metric_id)->sum('timely_value'),
         ];
     }
