@@ -50,6 +50,18 @@
                                     </p>
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-end mt-4">
+                                <div>
+                                    {{
+                                        specificKPIProgress.progressPercentage
+                                    }}%
+                                </div>
+                                <div>
+                                    
+                                        {{ specificKPIProgress.progressStatus }}
+                                
+                                </div>
+                            </div>
                             <div
                                 class="card-header d-flex justify-content-between my-3"
                             >
@@ -225,6 +237,51 @@ export default {
             return this.$store.state.loggedUser;
         },
 
+        specificKPIProgress() {
+            const specificKPI = this.partner;
+
+            // Debugging: Log the structure of specificKPI
+            console.log("specificKPI", specificKPI);
+
+            let totalCurrentValue = 0;
+            let totalTargetValue = 0;
+
+            specificKPI.kpis.forEach((kpi) => {
+                kpi.kpi_metrics.forEach((kpiMetric) => {
+                    kpiMetric.kpi_metric_members.forEach((member) => {
+                        member.progress.forEach((progress) => {
+                            totalCurrentValue += progress.current_value;
+                            totalTargetValue += progress.target_value;
+                        });
+                    });
+                });
+            });
+
+            // Calculate progress percentage
+            let progressPercentage = 0;
+            if (totalTargetValue !== 0) {
+                progressPercentage = (
+                    (totalCurrentValue / totalTargetValue) *
+                    100
+                ).toFixed(2);
+            }
+
+            // Determine the progress status based on progressPercentage
+            let progressStatus = "";
+            if (progressPercentage <= 50) {
+                progressStatus = "Off Track";
+            } else if (progressPercentage <= 80) {
+                progressStatus = "At Risk";
+            } else {
+                progressStatus = "On Track";
+            }
+
+            // Return an object with progressPercentage and progressStatus
+            return {
+                progressPercentage,
+                progressStatus,
+            };
+        },
         // kpiMetricsWithProgress() {
         //     const kpisArray = [];
 
@@ -282,7 +339,9 @@ export default {
         calculateTargetSum(kpiMetric) {
             let targetSum = 0;
             kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
-                targetSum += kpiMetricMember.timely_value;
+                kpiMetricMember.progress.forEach((progressEntry) => {
+                    targetSum += progressEntry.target_value;
+                });
             });
             return targetSum;
         },
