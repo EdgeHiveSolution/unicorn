@@ -176,8 +176,8 @@
                                         >
                                             <td>
                                                 <img
-                                                    :src="partner.image"
-                                                    alt="image"
+                                                    :src="partner.logo"
+                                                    alt="logo"
                                                 />
                                                 <span class="pl-2">{{
                                                     partner.name
@@ -905,7 +905,7 @@ export default {
                     groupedPartners[id] = {
                         id: partner.id,
                         name: partner.name,
-                        image: partner.image,
+                        logo: partner.logo,
                         calculatedProgress: this.calculateKpiProgress(
                             partner.kpis
                         ),

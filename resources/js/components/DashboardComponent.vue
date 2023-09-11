@@ -418,42 +418,50 @@ export default {
             return uniqueDepartments;
         },
 
+   partnersWithProgress() {
+            return this.partners.map((partner) => ({
+                ...partner,
+                calculatedProgress: this.calculateKpiProgress(partner.kpis),
 
-          partnersWithProgress() {
-            // Create an empty object to store unique partners
-            const uniquePartners = {};
-
-            // Iterate through partners and calculate progress
-            this.partners.forEach((partner) => {
-                const calculatedProgress = this.calculateKpiProgress(
-                    partner.kpis
-                );
-                const statusClass = this.getStatusClass(partner);
-
-                // Check if the partner name is not already in the uniquePartners object
-                if (!uniquePartners[partner.name]) {
-                    // If not, create an entry for the partner
-                    uniquePartners[partner.name] = {
-                        id: partner.id, // Include the id property
-                        name: partner.name,
-                        image: partner.image,
-                        calculatedProgress,
-                        statusClass,
-                        members: partner.members,
-                        departments: partner.departments,
-                    };
-                } else {
-                    // If the partner name is already in uniquePartners, update progress and status
-                    const existingPartner = uniquePartners[partner.name];
-                    existingPartner.calculatedProgress += calculatedProgress;
-                    existingPartner.statusClass =
-                        this.getStatusClass(existingPartner);
-                }
-            });
-
-            // Convert the uniquePartners object values (unique partners) back to an array
-            return Object.values(uniquePartners);
+                statusClass: this.getStatusClass(partner),
+            }));
         },
+        //   partnersWithProgress() {
+        //      console.log("partnersWithProgress method called.");
+        //     // Create an empty object to store unique partners
+        //     const uniquePartners = {};
+
+        //     // Iterate through partners and calculate progress
+        //     this.partners.forEach((partner) => {
+        //         const calculatedProgress = this.calculateKpiProgress(
+        //             partner.kpis
+        //         );
+        //         const statusClass = this.getStatusClass(partner);
+
+        //         // Check if the partner name is not already in the uniquePartners object
+        //         if (!uniquePartners[partner.name]) {
+        //             // If not, create an entry for the partner
+        //             uniquePartners[partner.name] = {
+        //                 id: partner.id, // Include the id property
+        //                 name: partner.name,
+        //                 image: partner.image,
+        //                 calculatedProgress,
+        //                 statusClass,
+        //                 members: partner.members,
+        //                 departments: partner.departments,
+        //             };
+        //         } else {
+        //             // If the partner name is already in uniquePartners, update progress and status
+        //             const existingPartner = uniquePartners[partner.name];
+        //             existingPartner.calculatedProgress += calculatedProgress;
+        //             existingPartner.statusClass =
+        //                 this.getStatusClass(existingPartner);
+        //         }
+        //     });
+
+        //     // Convert the uniquePartners object values (unique partners) back to an array
+        //     return Object.values(uniquePartners);
+        // },
 
     },
     methods: {
@@ -498,7 +506,7 @@ export default {
                 kpi.kpi_metrics.forEach((kpiMetric) => {
                     kpiMetric.kpi_metric_members.forEach((member) => {
                         member.progress.forEach((progress) => {
-                            totalCurrentValue += progress.current_value;
+                             totalCurrentValue += progress.current_value;
                              totalTargetValue += progress.target_value;
                             
                         });
@@ -513,30 +521,35 @@ export default {
             return (totalCurrentValue / totalTargetValue) * 100;
         },
 
-        getStatusClass(partner) {
-            const progressPercentage = parseFloat(partner.calculatedProgress);
+ getStatusClass(partner) {
+    const progressPercentage = parseFloat(partner.calculatedProgress);
 
-            if (Array.isArray(partner.kpis)) {
-                for (const kpi of partner.kpis) {
-                    if (Array.isArray(kpi.kpi_metrics)) {
-                        for (const kpiMetric of kpi.kpi_metrics) {
-                            const onTrackValue = parseFloat(
-                                kpiMetric.on_track_value
-                            );
-                            const atRiskMin = parseFloat(kpiMetric.at_risk_min);
+    if (isNaN(progressPercentage)) {
+        return "N/A"; // Handle the case where progress is not available
+    }
 
-                            if (progressPercentage >= onTrackValue) {
-                                return "on-track";
-                            } else if (progressPercentage >= atRiskMin) {
-                                return "at-risk";
-                            }
-                        }
+    console.log("Progress Percentage is:",progressPercentage);
+
+    if (Array.isArray(partner.kpis)) {
+        for (const kpi of partner.kpis) {
+            if (Array.isArray(kpi.kpi_metrics)) {
+                for (const kpiMetric of kpi.kpi_metrics) {
+                    const onTrackValue = parseFloat(kpiMetric.on_track_value);
+                    const atRiskMin = parseFloat(kpiMetric.at_risk_min);
+
+                    if (progressPercentage >= onTrackValue) {
+                        return "on-track";
+                    } else if (progressPercentage >= atRiskMin) {
+                        return "at-risk";
                     }
                 }
             }
+        }
+    }
 
-            return "off-track";
-        },
+    return "off-track";
+},
+
 
     },
 };

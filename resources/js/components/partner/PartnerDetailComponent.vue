@@ -2187,6 +2187,8 @@ export default {
 
 mounted() {
 
+    
+
    const partnerId = this.partnerId;
 
     const today = new Date();
