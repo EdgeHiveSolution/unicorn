@@ -188,7 +188,7 @@
                                                     partner.calculatedProgress >
                                                     0
                                                 "
-                                               >
+                                            >
                                                 <div>
                                                     {{
                                                         partner.calculatedProgress.toFixed(
@@ -423,26 +423,22 @@
                             </thead>
                             <tbody>
                                 <tr
-                                    v-for="(
-                                        kpiMetric, metricIndex
-                                    ) in kpiMetricsWithProgress"
-                                    :key="metricIndex"
-                                >
+                                    v-for="kpiMetric in kpiMetricsWithProgress"
+                                    :key="kpiMetric.id"
+                                  >
                                     <td>
                                         {{ kpiMetric.title }}
                                     </td>
                                     <td>
-                                        {{ calculateCurrentSum(kpiMetric) }}
+                                        {{ kpiMetric.currentSum}}
                                     </td>
                                     <td>
-                                        {{ calculateTargetSum(kpiMetric) }}
+                                        {{ kpiMetric.targetSum }}
                                     </td>
                                     <td>
                                         <div>
                                             {{
-                                                calculateProgressPercentage(
-                                                    kpiMetric
-                                                )
+                                                kpiMetric.progressPercentage
                                             }}%
                                             <div class="progress">
                                                 <div
@@ -450,16 +446,14 @@
                                                     role="progressbar"
                                                     :style="{
                                                         width:
-                                                            calculateProgressPercentage(
-                                                                kpiMetric
-                                                            ) + '%',
+                                                            kpiMetric.progressPercentage + '%',
                                                     }"
                                                     aria-valuemin="0"
                                                     aria-valuemax="100"
                                                 ></div>
                                             </div>
                                         </div>
-                                        {{ calculateProgressStatus(kpiMetric) }}
+                                        {{ kpiMetric.progressStatus }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -892,56 +886,81 @@ export default {
             return uniqueDepartments;
         },
 
+        // partnersWithProgress() {
+        //     return this.partners.map((partner) => ({
+        //         ...partner,
+        //         calculatedProgress: this.calculateKpiProgress(partner.kpis),
+
+        //         statusClass: this.getStatusClass(partner),
+        //     }));
+        // },
+
         partnersWithProgress() {
-            // Create an empty object to store unique partners
-            const uniquePartners = {};
+            const groupedPartners = {};
 
-            // Iterate through partners and calculate progress
             this.partners.forEach((partner) => {
-                const calculatedProgress = this.calculateKpiProgress(
-                    partner.kpis
-                );
-                const statusClass = this.getStatusClass(partner);
+                const id = partner.id;
 
-                // Check if the partner name is not already in the uniquePartners object
-                if (!uniquePartners[partner.name]) {
-                    // If not, create an entry for the partner
-                    uniquePartners[partner.name] = {
-                        id: partner.id, // Include the id property
+                if (!groupedPartners[id]) {
+                    groupedPartners[id] = {
+                        id: partner.id,
                         name: partner.name,
                         image: partner.image,
-                        calculatedProgress,
-                        statusClass,
+                        calculatedProgress: this.calculateKpiProgress(
+                            partner.kpis
+                        ),
+                        statusClass: this.getStatusClass(partner),
                         members: partner.members,
                         departments: partner.departments,
                     };
-                } else {
-                    // If the partner name is already in uniquePartners, update progress and status
-                    const existingPartner = uniquePartners[partner.name];
-                    existingPartner.calculatedProgress += calculatedProgress;
-                    existingPartner.statusClass =
-                        this.getStatusClass(existingPartner);
                 }
             });
 
-            // Convert the uniquePartners object values (unique partners) back to an array
-            return Object.values(uniquePartners);
+            return Object.values(groupedPartners);
         },
 
-        kpiMetricsWithProgress() {
-            const kpiMetricsArray = [];
+       kpiMetricsWithProgress() {
+    const uniqueKpiMetrics = {};
 
-            this.partners.forEach((partner) => {
-                partner.kpis.forEach((kpi) => {
-                    kpi.kpi_metrics.forEach((kpiMetric) => {
-                        // Create a shallow copy of kpi_metric and add it to the array
-                        kpiMetricsArray.push({ ...kpiMetric });
-                    });
-                });
+    this.partners.forEach((partner) => {
+        partner.kpis.forEach((kpi) => {
+            kpi.kpi_metrics.forEach((kpiMetric) => {
+                // Use a unique identifier for each KPI metric, e.g., id
+                const identifier = kpiMetric.id;
+
+                if (!uniqueKpiMetrics[identifier]) {
+                    uniqueKpiMetrics[identifier] = {
+                        // Add properties of the KPI metric
+                        id: kpiMetric.id,
+                        title: kpiMetric.title,
+                        // Include other properties you need
+                        currentSum: this.calculateCurrentSum(kpiMetric), // Example: Adding calculated current sum
+                        targetSum: this.calculateTargetSum(kpiMetric),   // Example: Adding calculated target sum
+                        progressPercentage: this.calculateProgressPercentage(kpiMetric), 
+                        progressStatus: this.calculateProgressStatus(kpiMetric)
+                    };
+                }
             });
+        });
+    });
 
-            return kpiMetricsArray;
-        },
+    return Object.values(uniqueKpiMetrics);
+},
+
+        // kpiMetricsWithProgress() {
+        //     const kpiMetricsArray = [];
+
+        //     this.partners.forEach((partner) => {
+        //         partner.kpis.forEach((kpi) => {
+        //             kpi.kpi_metrics.forEach((kpiMetric) => {
+        //                 // Create a shallow copy of kpi_metric and add it to the array
+        //                 kpiMetricsArray.push({ ...kpiMetric });
+        //             });
+        //         });
+        //     });
+
+        //     return kpiMetricsArray;
+        // },
 
         // partnersWithKpiProgress() {
         //     return this.partners.map((partner) => ({
@@ -978,17 +997,22 @@ export default {
             let totalCurrentValue = 0;
             let totalTargetValue = 0;
 
+            //  console.log("Total Current value is:",totalCurrentValue);
+            // console.log("Total Target value is:",totalTargetValue);
+
             kpis.forEach((kpi) => {
                 kpi.kpi_metrics.forEach((kpiMetric) => {
-                    totalTargetValue += kpiMetric.timely_value;
                     kpiMetric.kpi_metric_members.forEach((member) => {
                         member.progress.forEach((progress) => {
                             totalCurrentValue += progress.current_value;
-                            
+                            totalTargetValue += progress.target_value;
                         });
                     });
                 });
             });
+
+            console.log("Total Current value is:", totalCurrentValue);
+            console.log("Total Target value is:", totalTargetValue);
 
             if (totalTargetValue === 0) {
                 return 0;
@@ -1048,20 +1072,57 @@ export default {
 
         calculateCurrentSum(kpiMetric) {
             let currentSum = 0;
-            kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
-                kpiMetricMember.progress.forEach((progressEntry) => {
-                    currentSum += progressEntry.current_value;
+
+            if (kpiMetric && kpiMetric.kpi_metric_members) {
+                kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+                    if (kpiMetricMember && kpiMetricMember.progress) {
+                        kpiMetricMember.progress.forEach((progressEntry) => {
+                            // Accumulate the current_value for each progress entry
+                            currentSum += progressEntry.current_value;
+                        });
+                    }
                 });
-            });
+            }
+
             return currentSum;
         },
+
+        // calculateCurrentSum(kpiMetric) {
+        //     let currentSum = 0;
+        //     kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+        //         kpiMetricMember.progress.forEach((progressEntry) => {
+        //             currentSum += progressEntry.current_value;
+        //         });
+        //     });
+        //     return currentSum;
+        // },
+
         calculateTargetSum(kpiMetric) {
             let targetSum = 0;
-            kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
-                targetSum += kpiMetricMember.timely_value;
-            });
+
+            if (kpiMetric && kpiMetric.kpi_metric_members) {
+                kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+                    if (kpiMetricMember && kpiMetricMember.progress) {
+                        kpiMetricMember.progress.forEach((progressEntry) => {
+                            // Accumulate the target_value for each progress entry
+                            targetSum += progressEntry.target_value;
+                        });
+                    }
+                });
+            }
+
             return targetSum;
         },
+
+        // calculateTargetSum(kpiMetric) {
+        //     let targetSum = 0;
+        //     kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+        //         kpiMetricMember.progress.forEach((progressEntry) => {
+        //             targetSum += progressEntry.target_value;
+        //         });
+        //     });
+        //     return targetSum;
+        // },
         calculateProgressPercentage(kpiMetric) {
             const currentSum = this.calculateCurrentSum(kpiMetric);
             const targetSum = this.calculateTargetSum(kpiMetric);
