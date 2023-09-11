@@ -91,7 +91,7 @@
                                             <td>
                                                 <div
                                                     class="d-flex align-items-center"
-                                                >
+                                                 >
                                                     <img
                                                         :src="partner.logo"
                                                         alt="logo"
@@ -357,10 +357,10 @@ export default {
 
             kpis.forEach((kpi) => {
                 kpi.kpi_metrics.forEach((kpiMetric) => {
-                     totalTargetValue += kpiMetric.timely_value;
                     kpiMetric.kpi_metric_members.forEach((member) => {
                         member.progress.forEach((progress) => {
                             totalCurrentValue += progress.current_value;
+                            totalTargetValue += progress.target_value;
                            
                         });
                     });

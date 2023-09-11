@@ -10,32 +10,56 @@ class KpiProgressApiController extends Controller
 {
 
 
-    public function getOverallProgress(Request $request)
 
-   {
-    $progressData = DB::table('kpis')
-        ->join('kpi_metrics', 'kpis.id', '=', 'kpi_metrics.kpi_id')
-        ->join('kpi_metric_members', 'kpi_metrics.id', '=', 'kpi_metric_members.kpi_metric_id')
-        ->join('progress', 'kpi_metric_members.id', '=', 'progress.kpi_metric_member_id')
-        ->select(
-            'kpis.id as kpi_id',
-            'kpis.title as title',
-            'kpis.review_period_range as review_period_range',
-            DB::raw('SUM(progress.current_value) as current_value'),
-            DB::raw('SUM(kpi_metric_members.target) as target')
-        )
-        ->groupBy('kpi_id', 'title', 'review_period_range')
-        ->get();
+    public function getOverallProgress(Request $request, $partnerId)
+    {
+        // Modify the query to include joins and aggregate data
+        $progressData = DB::table('kpis')
+            ->join('kpi_metrics', 'kpis.id', '=', 'kpi_metrics.kpi_id')
+            ->join('kpi_metric_members', 'kpi_metrics.id', '=', 'kpi_metric_members.kpi_metric_id')
+            ->join('progress', 'kpi_metric_members.id', '=', 'progress.kpi_metric_member_id')
+            ->where('kpis.partner_id', $partnerId) // Filter progress for a specific partner
+            ->select(
+                DB::raw('EXTRACT(MONTH FROM progress.created_at) as month'),
+                DB::raw('SUM(progress.current_value) as current_value'),
+                DB::raw('SUM(kpi_metric_members.target) as target_value')
+            )
+            ->groupBy('month')
+            ->get();
 
-    // Calculate progress percentage for each KPI
-    $progressData->transform(function ($kpi) {
-        $progressPercentage = ($kpi->current_value / $kpi->target) * 100;
-        $kpi->progress_percentage = $progressPercentage;
-        return $kpi;
-    });
+        // Calculate progress percentage for each month
+        $progressData->transform(function ($monthData) {
+            $progressPercentage = ($monthData->current_value / $monthData->target_value) * 100;
+            $monthData->progress_percentage = $progressPercentage;
+            return $monthData;
+        });
 
-    return response()->json(['overall_progress' => $progressData]);
-}
+        return response()->json(['overall_progress' => $progressData]);
+    }
+//     public function getOverallProgress(Request $request)
+// {
+//     // Modify the query to include joins and aggregate data
+//     $progressData = DB::table('kpis')
+//         ->join('kpi_metrics', 'kpis.id', '=', 'kpi_metrics.kpi_id')
+//         ->join('kpi_metric_members', 'kpi_metrics.id', '=', 'kpi_metric_members.kpi_metric_id')
+//         ->join('progress', 'kpi_metric_members.id', '=', 'progress.kpi_metric_member_id')
+//         ->select(
+//             DB::raw('EXTRACT(MONTH FROM progress.created_at) as month'),
+//             DB::raw('SUM(progress.current_value) as current_value'),
+//             DB::raw('SUM(kpi_metric_members.target) as target_value')
+//         )
+//         ->groupBy('month')
+//         ->get();
+
+//     // Calculate progress percentage for each month
+//     $progressData->transform(function ($monthData) {
+//         $progressPercentage = ($monthData->current_value / $monthData->target_value) * 100;
+//         $monthData->progress_percentage = $progressPercentage;
+//         return $monthData;
+//     });
+
+//     return response()->json(['overall_progress' => $progressData]);
+// }
 
 
 }
