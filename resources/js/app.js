@@ -3,6 +3,7 @@ import store from './store.js';
 
 
 import { createApp } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
  //import  BootstrapVue  from 'bootstrap-vue';
 
 
@@ -41,6 +42,7 @@ app.component('member-component', MemberComponent);
 app.component('department-partner-detail-component', DepartmentPartnerDetailComponent);
 
 
+app.component('font-awesome-icon', FontAwesomeIcon);
 app.use(store); 
 app.mount('#app');
 

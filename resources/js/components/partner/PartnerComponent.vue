@@ -142,17 +142,62 @@
                                                     :src="member.image"
                                                     alt="image"
                                                 />-->
-                                                <div class="d-flex flex-row">
+                                               <!-- <div class="d-flex flex-row">
                                                 <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
-                                                ><!--<img
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>
+                                                </div>-->
+
+                                                <div class="d-flex flex-row">
+                                               <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                               
+                                               <template v-for="(member,index) in partner.members"
+                                               :key="index"
+                                               >
+
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 2"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
+
+                                                 <div class="member_image_plus"
+                                                 v-else
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+{{index - 1}}</p>
+                                                </div>
+
+                                                <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                                </template>
+
+                                                <!--<img
                                                     
                                                     alt="image"
                                                 />-->
-                                                <p class="member_image_text">+1</p>
-                                                </div>
                                                 </div>
                                             </td>
                                             <td
@@ -256,8 +301,20 @@
 
 <script>
 import axios from "axios";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+
+
+library.add(
+    faUser
+);
 
 export default {
+
+    components: {
+        FontAwesomeIcon,
+    },
     data() {
         return {
             success: "",

@@ -14,6 +14,7 @@ use App\Mail\PatnerInvitation;
 use Illuminate\Support\Facades\Log;
 use App\Models\Partner;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Response;
 
 
 
@@ -30,9 +31,23 @@ class DepartmentApiController extends Controller
 
     public function index()
     {
-        $departments = Department::with('members', 'partners')->get()->toArray();
-       Log::info('Departments fetched from database:', ['departments' => $departments]);
-        return $departments;
+        // $queries = \DB::getQueryLog();
+        // Log::info('SQL Queries:', ['queries' => $queries]);
+
+        try {
+            \DB::enableQueryLog();
+            $departments = Department::with('members', 'partners')->get()->toArray();
+            Log::info('Departments fetched from database:', ['departments' => $departments]);
+            $queries = \DB::getQueryLog();
+           Log::info('SQL Queries:', ['queries' => $queries]);
+            
+            return response()->json($departments, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the database query
+            Log::error('Error fetching departments:', ['error' => $e->getMessage()]);
+            
+            return response()->json(['error' => 'Failed to fetch departments'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
 

@@ -59,8 +59,8 @@ class KpiMetricApiController extends Controller
         'at_risk_min' => 'required',
         'at_risk_max' => 'required',
         //'members' => 'required|array', // Add validation for members array
-        'members.*.id' => 'required|exists:members,id', // Validate each member ID
-        'members.*.target' => 'required|numeric',
+        'members.targets.*.memberID' => 'required|exists:members,id', // Validate each member ID
+        'members.targets.*.memberTarget' => 'required|numeric',
         
     ]);
 
@@ -101,12 +101,12 @@ class KpiMetricApiController extends Controller
 
         Log::info("Days difference is:", ['Day difference'=> $daysDifference]);
         
-        $totalTarget = 0;
-        $totalTimelyValue = 0;
+        $totalTarget = 0; // Initialize total target sum
+        $totalTimelyValue = 0; // Initialize total timely value sum
     
         // Loop through members and calculate total target and timely value
-        foreach ($members as $member) {
-            $individualTarget = $member['target'];
+        foreach ($members['targets'] as $member) {
+            $individualTarget = $member['memberTarget']; // Get the individual target provided by the user
     
             // Calculate the timely value based on the response period and individual target
             if ($request->response_period === 'weekly') {
@@ -118,15 +118,16 @@ class KpiMetricApiController extends Controller
             } else {
                 $timelyValue = 0; // Set a default value if response period is not recognized
             }
-    
+
+            
+
             // Sum up the target values for all members
             $totalTarget += $individualTarget;
             // Sum up the timely values for all members
             $totalTimelyValue += $timelyValue;
         }
-        
     
-        // Create KpiMetric
+        // Create KpiMetric with total target and timely value
         $kpiMetric = KpiMetric::create([
             'title' => $request->title,
             'type' => $request->type,
@@ -140,35 +141,44 @@ class KpiMetricApiController extends Controller
             'at_risk_min' => $request->at_risk_min,
             'at_risk_max' => $request->at_risk_max,
         ]);
-
-
     
-    // Loop through members and create KpiMetricMember entries
-    foreach ($members as $member) {
-        $individualTarget = $member['target']; // Get the individual target provided by the user
-        
-        // Calculate the timely value based on the response period and individual target
-        if ($request->response_period === 'weekly') {
-            $timelyValue = $individualTarget / ($daysDifference / 7);
-        } elseif ($request->response_period === 'monthly') {
-            $timelyValue = $individualTarget / ($daysDifference / 30);
-        } elseif ($request->response_period === 'quarterly') {
-            $timelyValue = $individualTarget / ($daysDifference / 90);
-        } else {
-            $timelyValue = 0; // Set a default value if response period is not recognized
-        }
-        
+        $kpiMetricMembers = [];
+
+        // Loop through members and create KpiMetricMember entries
+        foreach ($members['targets'] as $member) {
+            $individualTarget = $member['memberTarget']; // Get the individual target provided by the user
+    
+            // Calculate the timely value based on the response period and individual target
+            if ($request->response_period === 'weekly') {
+                $timelyValue = $individualTarget / ($daysDifference / 7);
+            } elseif ($request->response_period === 'monthly') {
+                $timelyValue = $individualTarget / ($daysDifference / 30);
+            } elseif ($request->response_period === 'quarterly') {
+                $timelyValue = $individualTarget / ($daysDifference / 90);
+            } else {
+                $timelyValue = 0; // Set a default value if response period is not recognized
+            }
+
+
+                    // Log individual values for this member
+            Log::info('Individual Target and Timely Value', [
+                'Member ID' => $member['memberID'],
+                'Individual Target' => $individualTarget,
+                'Timely Value' => $timelyValue,
+            ]);
+
        
-        $kpiMetricMembers = KpiMetricMember::create([
-            'kpi_metric_id' => $kpiMetric->id,
-            'member_id' => $member['id'],
-            'target' => $individualTarget,
-            'timely_value' => $timelyValue,
-        ]);
+    
+            $kpiMetricMember = KpiMetricMember::create([
+                'kpi_metric_id' => $kpiMetric->id,
+                'member_id' => $member['memberID'],
+                'target' => $individualTarget,
+                'timely_value' => $timelyValue,
+            ]);
 
+            $kpiMetricMembers[] = $kpiMetricMember; // Collect the created KPI metric members
 
-
-    }
+        }
 
 
     $kpi = Kpi::findOrFail($request->kpi_id);

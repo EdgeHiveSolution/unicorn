@@ -208,10 +208,15 @@
                             <option
                                 v-for="member in memberEmails"
                                 :value="member"
+                                class="email_container"
                             >
                                 {{ member }}
                             </option>
                         </datalist>
+                       
+                        <div>
+
+                        </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-10">
@@ -259,7 +264,7 @@
             <div class="dropdown-divider mb-5"></div>
         </form>
 
-         <b-overlay :show="isShow" spinner-variant="info" rounded="sm" no-wrap>
+        <!-- <b-overlay :show="isShow" spinner-variant="info" rounded="sm" no-wrap>
                     <template #overlay>
                     <div class="overlay_container text-center">
                     <b-spinner  font-scale="3" variant="info"></b-spinner>
@@ -267,18 +272,25 @@
        
         </div>
       </template>
-    </b-overlay>    
+    </b-overlay>  -->  
     </div>
 </template>
 
 <script>
 /*import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";*/
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+
+library.add(
+    faTrashCan
+);
 
 export default {
-
-   
-
+     components: {
+        FontAwesomeIcon,
+    },
     data() {
         return {
             name: "",
@@ -441,4 +453,5 @@ h2 {
   /*margin: 0;*/
   padding: 0;
 }
+
 </style>

@@ -92,11 +92,26 @@
                 </div>
                 <div class="my-3">
                     <h4>Progress Burndown</h4>
-                    <p>This show the progress to complete the KPIs</p>
+                    <p>This show the progress to complete KPIs</p>
                 </div>
                 <div class="card">
-                    <div class="progress-chart card">char here</div>
+                    <div class="">
+                        <p>Overall Kpi Progress</p>
+                        <p>Review Period:</p>
+                    </div>
+
+                    <div class="d-flex justify-content-end"></div>
+
+                    <hr />
+
+                    <div
+                        id="chart-container"
+                        style="width: 100%; height: 500px"
+                    >
+                        <canvas ref="chart"></canvas>
+                    </div>
                 </div>
+
                 <div class="my-5">
                     <h4>Metrics across portfolio</h4>
 
@@ -220,14 +235,14 @@
                                             <th>Progress</th>
                                             <th>Assigned To</th>
                                             <th>Departments</th>
-                                            <th></th>
+                                           
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr
                                             v-for="kpiMetric in kpi.kpi_metrics"
                                             :key="kpiMetric.id"
-                                        >
+                                         >
                                             <td>
                                                 {{ kpiMetric.title }}
                                             </td>
@@ -285,16 +300,11 @@
                                             </td>
                                             <td>
                                                 <span
-                                                    v-for="member in members"
-                                                    :key="member.id"
+                                                    class="depart-tag"
+                                                    v-for="department in  uniqueDepartments"
+                                                    :key="department.id"
                                                 >
-                                                    <span
-                                                        class="depart-tag"
-                                                        v-for="department in member.departments"
-                                                        :key="department.id"
-                                                    >
-                                                        {{ department.name }}
-                                                    </span>
+                                                    {{ department.name }}
                                                 </span>
                                             </td>
                                         </tr>
@@ -356,7 +366,7 @@
                                 for="name"
                                 class="col-md-3 col-form-label text-md-start"
                                 >{{ "Name" }}</label
-                             >
+                            >
 
                             <div class="col-md-5 offset-md-0 text-center">
                                 <input
@@ -619,7 +629,8 @@
                                                 <i class="mdi mdi-account"></i>
                                             </option>
                                             <option
-                                                v-for="department in this.partner.departments"
+                                                v-for="department in this
+                                                    .partner.departments"
                                                 :value="department.name"
                                             >
                                                 {{ department.name }}
@@ -1073,7 +1084,7 @@
                                                     <td class="">
                                                         <div>
                                                             {{
-                                                                kpimetric.timely_value
+                                                                kpimetric.target
                                                             }}
                                                             <!-- Display KPI target, assuming target is a property of the KPI -->
                                                         </div>
@@ -1471,11 +1482,13 @@
                                             </div>
                                         </div>
 
-                                        <ul>
+                                        
+                                        <!--<ul>
                                             <li
                                                 v-for="(
                                                     item, index
                                                 ) in selectedItems"
+                                                :key="index"
                                                 class="list-item my-2"
                                             >
                                                 <span>
@@ -1495,7 +1508,56 @@
                                                     "
                                                 ></i>
                                             </li>
-                                        </ul>
+                                        </ul>-->
+
+                                         <template v-for="(item, index) in selectedItems"
+                                :key="index"
+                                >
+                                <div class="d-flex flex-row">
+                                <div class="container col-sm-10 bg-white email_container  my-2 rounded p-2 d-flex flex-row justify-content-between">
+                                <div class="d-flex flex-row ">
+                                    
+                                     <span>
+                               <!-- <i class="mdi mdi-email-outline"></i>-->
+                               <font-awesome-icon
+                                icon="fa-regular, fa-user"
+                                style="color: #979da9"
+                                size="sm"
+                                class="mx-auto my-auto"
+                            />
+                                {{ item.memberEmail }}
+                                <span class="btn-suc">
+                                   <!-- {{
+                                        item.departmentId
+                                            ? getDepartmentName(
+                                                  item.departmentId
+                                              )
+                                            : ""
+                                    }}-->
+                                    sales
+                                </span>
+                        
+                            </span>
+                                    </div>    
+
+                                     <label class="text-muted">{{item.memberTarget}}</label>
+                                </div>
+                                
+                                <div class="delete_email container col-sm-1 my-2 p-0 bg-white rounded d-flex flex-column align-items-center"
+                                 @click="removeFromList(index)">
+                                    <font-awesome-icon
+                                icon="fa-solid, fa-trash-can"
+                                style="color: #979da9"
+                                size="lg"
+                                class="mx-auto my-auto"
+                            />
+                              <!--    <i
+                                class="mdi mdi-delete delete-icon"
+                                @click="removeFromList(index)"
+                            ></i>-->
+                                </div>
+                                </div>
+                                </template>
                                     </div>
                                 </div>
 
@@ -1836,6 +1898,16 @@
 <script>
 import store from "../../store";
 import { format } from "date-fns";
+import { Chart } from "chart.js/auto";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+
+library.add(
+    faTrashCan,
+    faUser
+);
 
 export default {
     props: {
@@ -1868,9 +1940,55 @@ export default {
             required: true,
         },
     },
+     components: {
+        FontAwesomeIcon,
+    },
 
     data() {
         return {
+            chartData: {
+                labels: [],
+                datasets: [
+                    {
+                        label: "KPI Completion",
+                        data: [],
+                        borderColor: "blue",
+                        fill: false,
+                    },
+                ],
+            },
+            chartOptions: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100, // Set the maximum value for the Y-axis
+                        title: {
+                            display: true,
+                            text: "KPI Completion (%)",
+                        },
+                    },
+
+                    x: {
+                        // Specify the x-axis configuration
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Duration (Months)", // Label for the x-axis
+                        },
+                        
+                    },
+                },
+
+                plugins: {
+                    annotation: {
+                        annotations: [], // Annotations for review periods will be added here
+                    },
+                },
+            },
+
+            chartLoaded: false,
             countries: [],
             metrics: [],
             members: this.partner.members,
@@ -1884,8 +2002,10 @@ export default {
             member: {
                 email: "",
                 target: "",
+                id: "",
             },
 
+            progressData: [],
             selectedKpiMetric: "",
 
             selectedItems: [],
@@ -1959,6 +2079,15 @@ export default {
             return this.$store.state.loggedUser;
         },
 
+        // getpercentage() {
+
+        //     return this.progressData.map((percentage) => ({
+        //         ...percentage
+
+        //     }));
+
+        // },
+
         calculateActiveKpiProgress() {
             return (member) => {
                 const kpiMetrics = member.kpis
@@ -2030,8 +2159,7 @@ export default {
             ];
         },
 
-
-         remainingCharacters() {
+        remainingCharacters() {
             return this.maxCharacters - this.formData.about.length;
         },
         isOverMax() {
@@ -2060,6 +2188,77 @@ export default {
         //     }
         //     return [];
         // },
+
+        chartWithReviewPeriods() {
+            // Extract data and review period from the API response
+            const reviewPeriods = this.progressData.map(
+                (item) => item.review_period_range
+            );
+            const progressPercentages = this.progressData.map(
+                (item) => item.progress_percentage
+            );
+
+            // Create an array to store the data points for the line chart
+            const dataPoints = [];
+
+            // Initialize a variable to keep track of the progress
+            let accumulatedProgress = 0;
+
+            // Loop through the progress data and calculate data points
+            for (let i = 0; i < reviewPeriods.length; i++) {
+                const reviewPeriod = reviewPeriods[i];
+                const progressPercentage = progressPercentages[i];
+
+                // Calculate the data point for this review period
+                accumulatedProgress += progressPercentage;
+                dataPoints.push({
+                    x: reviewPeriod, // Use the review period as the x-axis label
+                    y: accumulatedProgress, // Accumulated progress percentage
+                });
+            }
+
+            // Create annotations for review periods
+            const annotations = [];
+            for (let i = 0; i < reviewPeriods.length; i++) {
+                const reviewPeriod = reviewPeriods[i];
+                const xCoordinate = reviewPeriod; // You can customize this based on your chart's x-axis configuration
+                annotations.push({
+                    type: "line",
+                    mode: "vertical",
+                    scaleID: "x", // Specify the x-axis
+                    value: xCoordinate,
+                    borderColor: "red", // Customize the line color
+                    borderWidth: 2, // Customize the line width
+                    label: {
+                        content: reviewPeriod,
+                        enabled: true, // Show the review period label
+                    },
+                });
+            }
+
+            // Update the annotations in chartOptions
+            this.chartOptions.plugins.annotation.annotations = annotations;
+
+            return dataPoints;
+        },
+
+
+
+         uniqueDepartments() {
+            const uniqueDepartments = [];
+           
+               this.partner.departments.forEach((department) => {
+                    // Check if the department is not already in the uniqueDepartments array
+                    const existingDepartment = uniqueDepartments.find(
+                        (d) => d.id === department.id
+                    );
+                    if (!existingDepartment) {
+                        uniqueDepartments.push(department);
+                    }
+                });
+           
+            return uniqueDepartments;
+        },
     },
 
     // watch: {
@@ -2097,31 +2296,97 @@ export default {
         //console.log("Kpi Metric Members:", JSON.stringify(this.partner.kpi_metrics));
     },
 
-    //   async mounted() {
+    mounted() {
+        // Calculate the starting date (8 months ago)
+        const today = new Date();
+        const startingDate = new Date(
+            today.getFullYear(),
+            today.getMonth() - 8,
+            1
+        ); // Subtracts 8 months
 
-    //        await this.fetchMetrics();
-    //        await  this.fetchCountries();
+        // Create an array of months for the x-axis labels (from January to September)
+        const months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sept",
+            "Oct",
+            "Nov",
+            "Dec",
+        ];
 
-    //         this.formattedDate = format(
-    //             new Date(this.partner.created_at),
-    //             "'Date Joined: ' do MMMM yyyy"
-    //         );
-    //         console.log("Metrics are:", JSON.stringify(this.metrics));
-    //         console.log("Partners prop:", this.partner);
-    //         console.log("Kpi Metrics are:", JSON.stringify(this.partner.kpis));
-    //         console.log("New Kpis are :", JSON.stringify(this.kpis));
-    //         console.log(
-    //             "User Related Data:",
-    //             JSON.stringify(this.$store.state.loggedUser)
-    //         );
+        // Set the labels directly
+        this.chartData.labels = months;
 
-    //         console.log("Members are:", JSON.stringify(this.members));
-    //         console.log("Departments are:", JSON.stringify(this.department));
+        // Fetch data from your API endpoint for the last 8 months
+        let uri =
+            this.base_url +
+            `api/v1/kpi-progress?start_date=${startingDate.toISOString()}&end_date=${today.toISOString()}`;
+        axios
+            .get(uri)
+            .then((response) => {
+                console.log("Chart Data is:", response.data);
+                this.progressData = response.data.overall_progress;
 
-    //         // console.log("userProgressItems:", this.userProgressItems);
+                console.log(
+                    "Updated Chart Data:" + JSON.stringify(this.progressData)
+                );
 
-    //         //console.log("Kpi Metric Members:", JSON.stringify(this.partner.kpi_metrics));
-    //     },
+                // Extract data, review periods, and progress percentages from the API response
+                const reviewPeriods = this.progressData.map(
+                    (item) => item.review_period_range
+                );
+                const progressPercentages = this.progressData.map(
+                    (item) => item.progress_percentage
+                );
+
+                // Create an array to store the data points for the line chart
+                const dataPoints = [];
+
+                // Initialize a variable to keep track of the progress
+                let accumulatedProgress = 0;
+
+                // Loop through the progress data and calculate data points
+                for (let i = 0; i < reviewPeriods.length; i++) {
+                    const reviewPeriod = reviewPeriods[i];
+                    const progressPercentage = progressPercentages[i];
+
+                    // Calculate the data point for this review period
+                    accumulatedProgress += progressPercentage;
+                    dataPoints.push(accumulatedProgress);
+                }
+
+                // Create a new Chart instance
+                const chartCanvas = this.$refs.chart;
+                const ctx = chartCanvas.getContext("2d");
+
+                // Create the chart
+                const myChart = new Chart(ctx, {
+                    type: "line", // Specify the chart type (e.g., line, bar, etc.)
+                    data: {
+                        labels: months, // Use the fixed months array for x-axis labels
+                        datasets: [
+                            {
+                                label: "Remaining",
+                                data: dataPoints, // Use the calculated progress data
+                                borderColor: "blue",
+                                fill: false,
+                            },
+                        ],
+                    },
+                    options: this.chartOptions, // Provide your chart options
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
+    },
 
     methods: {
         calculateCurrentSum(kpiMetric) {
@@ -2340,12 +2605,37 @@ export default {
         selectMember() {
             const selectedKpiMemberEmail = this.member.email;
             const selectedKpiTarget = this.member.target;
+            //const selectedID = this.members.find;
+
+            let newMember = this.members.find((member) => {
+                // this.member.id = member.id;
+                console.log("Members inside here:", member.email);
+                console.log(
+                    "Selected Member inside here:",
+                    selectedKpiMemberEmail
+                );
+                return member.email === selectedKpiMemberEmail;
+            });
+
+            let selectedID = newMember.id;
+
+            this.member.id = selectedID;
+
+            console.log("New MemberiD:", selectedID);
+
+            console.log("New Member Email:", selectedKpiMemberEmail);
+
+            this.member.id = newMember.id;
+
+            console.log("Target for this member is:", this.member.target);
 
             this.selectedItems.push({
                 memberEmail: selectedKpiMemberEmail,
                 memberTarget: selectedKpiTarget,
+                memberID: selectedID,
             });
 
+            console.log("Selected ID:", selectedID);
             this.member.email = "";
             this.member.department_id = "";
             this.member.role = "";
@@ -2442,24 +2732,36 @@ export default {
         },
 
         submitKpiMetric() {
+            console.log(
+                "New Members arrays is",
+                JSON.stringify(this.selectedItems)
+            );
             const partner = this.partner;
             console.log("Target1 is :", this.formData.target);
             console.log("Target2 is :", this.member.target);
             console.log("Member is:", this.members);
             console.log("Email is:", this.member.email);
             // Create a new FormData object
-            const membersWithTarget = this.members.map((member) => {
-                // Clone the member object
-                const modifiedMember = { ...member };
-                // Attach the target property to the cloned member object
-                modifiedMember.target = this.member.target;
+            const membersWithTarget = {
+                members: this.members.map((member) => {
+                    // Clone the member object
+                    const modifiedMember = { ...member };
+                    // Attach the target property to the cloned member object
+                    // modifiedMember.target = this.member.target;
+                    // modifiedMember.targets = this.selectedItems;
 
-                return modifiedMember;
-            });
+                    return modifiedMember;
+                }),
+
+                targets: this.selectedItems,
+            };
+
+            //memberWithTarget.targets = this.selectedItems;
 
             console.log(
                 "Members array is:" + JSON.stringify(membersWithTarget)
             );
+
             const formData = new FormData();
             formData.append("title", this.kpiMetric.title);
             const selectedMetric = this.metrics.find(
@@ -2770,7 +3072,6 @@ option {
     color: black;
 }
 
-
 /* CSS class for "On Track" progress */
 .progress-bar-on-track {
     background-color: green;
@@ -2786,4 +3087,54 @@ option {
     background-color: red;
 }
 
+.no-data-message {
+    text-align: center;
+    font-size: 16px;
+    color: #777;
+    margin-top: 20px;
+}
+
+.on-track-label{
+    font-size: 12px;
+    color: #047a48;
+}
+
+
+.off-track-label {
+    color: #d9534f;
+    font-size: 12px;
+}
+
+.at-risk-label {
+    color: #f0ad4e;
+    font-size: 12px;
+}
+
+
+.email_container{
+    /*border :1px solid #979da9;*/
+    border: 1px solid #e0e3e8;
+}
+
+.delete_email{
+    border: 1px solid #e0e3e8;
+    align-items: center;
+    
+}
+
+.primary_button{
+    background-color: #084bf7;
+    font-size: 14px;
+    font-weight: 300;
+    color: white;
+}
+
+.btn-suc {
+    /*background-color: #ccccccc5;*/
+    background-color: #f3f4f7;
+    padding: 5px 10px;
+    font-size: 12px;
+    margin-right: 5px;
+    border-radius: 8px;
+}
 </style>

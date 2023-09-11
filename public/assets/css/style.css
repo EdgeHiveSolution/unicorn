@@ -187,7 +187,7 @@ tr:nth-child(odd) td {
 }
 
 .btn-action{
-    padding: 15px 30px;
+    padding: 5px 15px;
     margin-right:20px;
 }
 
@@ -314,18 +314,20 @@ input{
 
 
 .member_image{
-    width: 30px;
+    width: 35px;
     margin-left: -10px;
-    height: 30px;
+    height: 35px;
     border-radius: 50%;
-    background-color: #d3d3d3;
-    border-color: white;
+    background-color: #f3f4f7;
+    border-color: 1px solid #979da9;
+    /*background-color: #d3d3d3;*/
+    /*border-color: 1px solid white;*/
 }
 
 .member_image_plus{
-    width: 30px;
+    width: 35px;
     margin-left: -10px;
-    height: 30px;
+    height: 35px;
     border-radius: 50%;
     background-color: #fff7df;
     border: white 1px solid;

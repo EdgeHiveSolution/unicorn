@@ -23,7 +23,7 @@
                 Cancel
             </button>
             <button
-                class="btn btn-primary px-3 py-2 btn-action"
+                class="btn primary_button px-3 py-2 btn-action"
                 form="form-submit"
                 type="submit"
             >
@@ -437,7 +437,7 @@
                             </button>
                         </div>
                     </div>
-
+                    <!--
                     <ul>
                         <li
                             v-for="(item, index) in selectedItems"
@@ -462,7 +462,47 @@
                                 @click="removeFromList(index)"
                             ></i>
                         </li>
-                    </ul>
+                    </ul>-->
+
+                     <template v-for="(item, index) in selectedItems"
+                                :key="index"
+                                >
+                                <div class="d-flex flex-row">
+                                <div class="container col-sm-10 bg-white email_container  my-2 rounded p-2 d-flex flex-row justify-content-between">
+                                <div class="d-flex flex-row ">
+                                    
+                                     <span>
+                                <i class="mdi mdi-email-outline"></i>
+                                {{ item.memberEmail }}
+                                <span class="btn-suc">
+                                    {{
+                                        item.departmentId
+                                            ? getDepartmentName(
+                                                  item.departmentId
+                                              )
+                                            : ""
+                                    }}
+                                </span>
+                                <span class="btn-suc">{{ item.roleName }}</span>
+                            </span>
+                                    </div>     
+                                </div>
+                                
+                                <div class="delete_email container col-sm-1 my-2 p-0 bg-white rounded d-flex flex-column align-items-center"
+                                 @click="removeFromList(index)">
+                                    <font-awesome-icon
+                                icon="fa-solid, fa-trash-can"
+                                style="color: #979da9"
+                                size="lg"
+                                class="mx-auto my-auto"
+                            />
+                              <!--    <i
+                                class="mdi mdi-delete delete-icon"
+                                @click="removeFromList(index)"
+                            ></i>-->
+                                </div>
+                                </div>
+                                </template>
 
                     <span
                         v-if="errors.documents"
@@ -481,7 +521,7 @@
                     <button class="btn btn-light border-dark btn-action">
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-primary btn-action">
+                    <button type="submit" class="btn primary_button btn-action">
                         Add
                     </button>
                 </div>
@@ -493,7 +533,17 @@
 </template>
 
 <script>
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+
+library.add(
+    faTrashCan
+);
 export default {
+    components: {
+        FontAwesomeIcon,
+    },
     data() {
         return {
             logoPreview: "",
@@ -711,7 +761,12 @@ export default {
 }
 
 .btn-suc {
-    background-color: #ccccccc5;
+    /*background-color: #ccccccc5;*/
+    background-color: #f3f4f7;
+    padding: 5px 10px;
+    font-size: 12px;
+    margin-right: 5px;
+    border-radius: 8px;
 }
 
 .input-container {
@@ -732,5 +787,23 @@ export default {
 
 .form-control {
     padding-left: 30px;
+}
+
+.email_container{
+    /*border :1px solid #979da9;*/
+    border: 1px solid #e0e3e8;
+}
+
+.delete_email{
+    border: 1px solid #e0e3e8;
+    align-items: center;
+    
+}
+
+.primary_button{
+    background-color: #084bf7;
+    font-size: 14px;
+    font-weight: 300;
+    color: white;
 }
 </style>

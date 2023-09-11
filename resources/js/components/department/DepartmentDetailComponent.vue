@@ -32,7 +32,7 @@
                             :class="{ active: activeTab === 'partner' }"
                             >Partners
                             <span class="encircle">{{
-                                partners.length
+                                partnersWithProgress.length
                             }}</span></a
                         >
                     </li>
@@ -173,6 +173,7 @@
                                         <tr
                                             v-for="partner in partnersWithProgress"
                                             :key="partner.id"
+                                            
                                         >
                                             <td>
                                                 <img
@@ -188,13 +189,13 @@
                                                     partner.calculatedProgress >
                                                     0
                                                 "
-                                            >
+                                               >
                                                 <div>
-                                                    {{
+                                                    <label class="progress_text">{{
                                                         partner.calculatedProgress.toFixed(
                                                             2
                                                         )
-                                                    }}%
+                                                    }}</label>%
                                                     <div class="progress">
                                                         <div
                                                             class="progress-bar"
@@ -268,31 +269,34 @@
                                                 </div>
                                             </td>
                                             <td>
+                                                <!--v-for="department in partner.departments"
+                                                    class="department-tag"-->
                                                 <span
                                                     
                                                     class="department-tag active-period txt-gray"
-                                                    v-for="department in partner.departments"
+                                                    v-for="department in uniqueDepartments"
+                                                    :key="department.id"
                                                 >
                                                     {{ department.name }}
                                                 </span>
                                             </td>
-                                             <td>
-                                                    <button
-                                                        class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                            <td>
+                                                <button
+                                                    class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                                >
+                                                    <span
+                                                        class="mdi mdi-eye-outline text-light"
+                                                    ></span>
+                                                    <a
+                                                        :href="
+                                                            '/department_partners/' +
+                                                            partner.id
+                                                        "
+                                                        class="text-light"
+                                                        >View Details</a
                                                     >
-                                                        <span
-                                                            class="mdi mdi-eye-outline text-light"
-                                                        ></span>
-                                                        <a
-                                                            :href="
-                                                                '/department_partners/' +
-                                                                partner.id
-                                                            "
-                                                            class="text-light"
-                                                            >View Details</a
-                                                        >
-                                                    </button>
-                                                </td>
+                                                </button>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -439,7 +443,7 @@
                                         kpiMetric, metricIndex
                                     ) in kpiMetricsWithProgress"
                                     :key="metricIndex"
-                                   >            
+                                >
                                     <td>
                                         {{ kpiMetric.title }}
                                     </td>
@@ -471,7 +475,18 @@
                                                 ></div>
                                             </div>
                                         </div>
-                                        {{ calculateProgressStatus(kpiMetric) }}
+                                        {{calculateProgressStatus(kpiMetric)}}
+                                       <!-- <span class="status-label off-track-label" 
+                                        v-if="calculateProgressStatus(kpiMetric) === 'Off Track'">
+                                        Off Track</span>
+
+                                        <span class="status-label at-risk-label" 
+                                        v-if="calculateProgressStatus(kpiMetric) === 'At Risk'">
+                                        At Risk</span>
+
+                                        <span class="status-label on-track-label" 
+                                        v-if="calculateProgressStatus(kpiMetric) === 'On Track'">
+                                        On Track</span>-->
                                     </td>
                                 </tr>
                             </tbody>
@@ -571,7 +586,7 @@
                                     </td>
                                     <td>
                                         <span
-                                            v-for="partner in partners"
+                                            v-for="partner in partnersWithProgress"
                                             :key="partner.id"
                                         >
                                             {{ partner.name }}
@@ -838,6 +853,7 @@ export default {
     },
     data() {
         return {
+            newPartners: [],
             department: {
                 name: this.department.name,
             },
@@ -858,6 +874,25 @@ export default {
     },
 
     mounted() {
+        // Assuming this.partners contains your data
+        const data = this.partners;
+
+        // Create a new array containing distinct partner names
+        const newPartners = [];
+        const partnerNamesSet = new Set(); // Use a Set to store distinct names
+
+        data.forEach((item) => {
+            const partnerName = item.name;
+            if (!partnerNamesSet.has(partnerName)) {
+                partnerNamesSet.add(partnerName);
+                newPartners.push(partnerName);
+            }
+        });
+
+        // Assign the newPartners array to the component's data property
+        this.newPartners = newPartners;
+
+        console.log("New Partners are:", this.newPartners);
         console.log("Members are", this.members);
         console.log("Departments are", this.department);
         console.log("Partners are", this.partners);
@@ -865,14 +900,67 @@ export default {
         // Log the contents of the "members" prop to the console
     },
 
-    computed: {
-        partnersWithProgress() {
-            return this.partners.map((partner) => ({
-                ...partner,
-                calculatedProgress: this.calculateKpiProgress(partner.kpis),
+    // computed: {
+    //     // partnersWithProgress() {
+    //     //     return this.partners.map((partner) => ({
+    //     //         ...partner,
+    //     //         calculatedProgress: this.calculateKpiProgress(partner.kpis),
 
-                statusClass: this.getStatusClass(partner),
-            }));
+    //     //         statusClass: this.getStatusClass(partner),
+    //     //     }));
+    //     // },
+
+    computed: {
+        uniqueDepartments() {
+            const uniqueDepartments = [];
+            this.partners.forEach((partner) => {
+                partner.departments.forEach((department) => {
+                    // Check if the department is not already in the uniqueDepartments array
+                    const existingDepartment = uniqueDepartments.find(
+                        (d) => d.id === department.id
+                    );
+                    if (!existingDepartment) {
+                        uniqueDepartments.push(department);
+                    }
+                });
+            });
+            return uniqueDepartments;
+        },
+
+        partnersWithProgress() {
+            // Create an empty object to store unique partners
+            const uniquePartners = {};
+
+            // Iterate through partners and calculate progress
+            this.partners.forEach((partner) => {
+                const calculatedProgress = this.calculateKpiProgress(
+                    partner.kpis
+                );
+                const statusClass = this.getStatusClass(partner);
+
+                // Check if the partner name is not already in the uniquePartners object
+                if (!uniquePartners[partner.name]) {
+                    // If not, create an entry for the partner
+                    uniquePartners[partner.name] = {
+                        id: partner.id, // Include the id property
+                        name: partner.name,
+                        image: partner.image,
+                        calculatedProgress,
+                        statusClass,
+                        members: partner.members,
+                        departments: partner.departments,
+                    };
+                } else {
+                    // If the partner name is already in uniquePartners, update progress and status
+                    const existingPartner = uniquePartners[partner.name];
+                    existingPartner.calculatedProgress += calculatedProgress;
+                    existingPartner.statusClass =
+                        this.getStatusClass(existingPartner);
+                }
+            });
+
+            // Convert the uniquePartners object values (unique partners) back to an array
+            return Object.values(uniquePartners);
         },
 
         kpiMetricsWithProgress() {
@@ -927,10 +1015,11 @@ export default {
 
             kpis.forEach((kpi) => {
                 kpi.kpi_metrics.forEach((kpiMetric) => {
+                    totalTargetValue += kpiMetric.timely_value;
                     kpiMetric.kpi_metric_members.forEach((member) => {
                         member.progress.forEach((progress) => {
                             totalCurrentValue += progress.current_value;
-                            totalTargetValue += progress.target_value;
+                            
                         });
                     });
                 });
@@ -970,15 +1059,21 @@ export default {
         getStatusClass(partner) {
             const progressPercentage = parseFloat(partner.calculatedProgress);
 
-            for (const kpi of partner.kpis) {
-                for (const kpiMetric of kpi.kpi_metrics) {
-                    const onTrackValue = parseFloat(kpiMetric.on_track_value);
-                    const atRiskMin = parseFloat(kpiMetric.at_risk_min);
+            if (Array.isArray(partner.kpis)) {
+                for (const kpi of partner.kpis) {
+                    if (Array.isArray(kpi.kpi_metrics)) {
+                        for (const kpiMetric of kpi.kpi_metrics) {
+                            const onTrackValue = parseFloat(
+                                kpiMetric.on_track_value
+                            );
+                            const atRiskMin = parseFloat(kpiMetric.at_risk_min);
 
-                    if (progressPercentage >= onTrackValue) {
-                        return "on-track";
-                    } else if (progressPercentage >= atRiskMin) {
-                        return "at-risk";
+                            if (progressPercentage >= onTrackValue) {
+                                return "on-track";
+                            } else if (progressPercentage >= atRiskMin) {
+                                return "at-risk";
+                            }
+                        }
                     }
                 }
             }
@@ -1186,6 +1281,22 @@ th{
 ::-ms-input-placeholder { /* Microsoft Edge */
   color: #9ea4b1;
   font-size: 14px;
+}
+
+.on-track-label{
+    font-size: 12px;
+    color: #047a48;
+}
+
+
+.off-track-label {
+    color: #d9534f;
+    font-size: 12px;
+}
+
+.at-risk-label {
+    color: #f0ad4e;
+    font-size: 12px;
 }
 
 /*.on-track {

@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\KpiMetricApiController;
 use App\Http\Controllers\Api\DepartmentApiController;
 use App\Http\Controllers\Api\ProgressApiController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\KpiProgressApiController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -78,5 +79,8 @@ Route::get('v1/country-list',[CountryApiController::class, 'index']);
 Route::get('v1/role-list',[RoleApiController::class, 'index']);
 
 Route::get('v1/user', [UserController::class, 'getUserWithRelatedData']);
+
+Route::get('v1/kpi-progress', [KpiProgressApiController::class, 'getOverallProgress']);
+
 
 
