@@ -1,5 +1,15 @@
 <template>
     <div class="module-nav">
+       <!-- <div v-if="!isLoading" class="overlay d-flex flex-row justify-content-center px-auto">
+          <div class="container  col-sm-4 rounded bg-white mx-5 p-3">
+           <div class="d-flex flex-row justify-content-center px-0">
+            <h1 class="add_dep_text text-info">Please wait..</h1>
+           
+            <div class="spinner-border text-info mt-1 mx-2">
+            </div>
+      </div>
+      </div>
+      </div>-->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
@@ -18,7 +28,15 @@
                 <p>Enter the photo and basic details of the partner here</p>
             </div>
         </div>
-        <div class="text-end">
+        
+        <div v-if="isLoading" class="d-flex flex-row justify-content-end px-0">
+            <h1 class="add_dep_text text-info">Please wait..</h1>
+           
+            <div class="spinner-border text-info mt-1 mx-2">
+            </div>
+      </div>
+
+        <div v-else class="text-end">
             <button class="btn btn-light border-dark px-3 py-2 btn-action">
                 Cancel
             </button>
@@ -516,7 +534,13 @@
 
             <hr />
 
-            <div class="align-right mb-5">
+            <div v-if="isLoading" class="d-flex flex-row justify-content-end px-0">
+            <h1 class="add_dep_text text-info">Please wait..</h1>
+           
+            <div class="spinner-border text-info mt-1 mx-2">
+            </div>
+            </div>
+            <div v-else class="align-right mb-5">
                 <div class="text-right mt-3 mb-5">
                     <button class="btn btn-light border-dark btn-action">
                         Cancel
@@ -553,6 +577,7 @@ export default {
                 about: null,
             },
             base_url: "../",
+            isLoading: false,
             countries: [],
             departments: [],
             roles: [],
@@ -679,6 +704,7 @@ export default {
         },
 
         formSubmit() {
+            this.isLoading=true;
             const formData = new FormData();
 
             formData.append("name", this.formData.name);
@@ -709,6 +735,7 @@ export default {
             axios
                 .post(uri, formData)
                 .then((response) => {
+                     this.isLoading = false;
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
@@ -718,6 +745,7 @@ export default {
                     });
                 })
                 .catch((error) => {
+                     this.isLoading = false;
                     console.error(error);
                 });
         },
@@ -805,5 +833,31 @@ export default {
     font-size: 14px;
     font-weight: 300;
     color: white;
+}
+
+.overlay {  
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 80%;
+  height: 100%;
+  align-self: center;
+  z-index: 1;
+ /* opacity: 0;*/
+  background: rgba(39, 42, 43, 0.4);
+  transition: opacity 200ms ease-in-out;
+  border-radius: 4px;
+  margin-left: -50px;
+  /*margin-left: auto;*/
+  /*margin: 0;*/
+  padding: 0;
+}
+
+.add_dep_text{
+   /* color: teal;*/
+    font-size: 20px;
+     
 }
 </style>

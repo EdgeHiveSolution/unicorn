@@ -289,13 +289,51 @@
                                             </td>
 
                                             <td class="td-members">
-                                                <img
+                                                 <div class="d-flex flex-row">
+                                               <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                               
+                                               <template v-for="(member,index) in this.partner.members"
+                                               :key="index"
+                                               >
+                                                
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 2"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                        
+                                                </div>
+
+                                                 <div class="member_image_plus"
+                                                 v-else
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+{{index - 1}}</p>
+                                                </div>
+
+                                        
+                                                </template>
+
+                                                
+                                                </div>
+                                                <!--<img
                                                     v-for="member in this
                                                         .partner.members"
                                                     :key="member.id"
                                                     src="assets/images/faces/face1.jpg"
                                                     alt="image"
-                                                />
+                                                />-->
                                             </td>
                                             <td>
                                                 <span
@@ -895,7 +933,25 @@
                                                             aria-valuemax="100"
                                                         ></div>
                                                     </div>
-                                                    <div class="progress-label">
+                                                    <div class="progress-label"
+                                                    :class="{'at-risk-label' : 
+                                                    calculateActiveKpiProgress(
+                                                                        member
+                                                                    ).label ===
+                                                                    'At Risk',
+                                                    'on-track-label' :
+                                                    calculateActiveKpiProgress(
+                                                                        member
+                                                                    ).label ===
+                                                                    'On Track',
+                                                   'off-track-label' :
+                                                    calculateActiveKpiProgress(
+                                                                        member
+                                                                    ).label ===
+                                                                    'Off Track'                                
+
+                                                    }"
+                                                    >
                                                         {{
                                                             calculateActiveKpiProgress(
                                                                 member
@@ -3058,7 +3114,7 @@ option {
 
 /* CSS class for "At Risk" progress */
 .progress-bar-at-risk {
-    background-color: yellow;
+    background-color: #f0ad4e;
 }
 
 /* CSS class for "Off Track" progress */
@@ -3115,5 +3171,34 @@ option {
     font-size: 12px;
     margin-right: 5px;
     border-radius: 8px;
+}
+
+.member_image{
+    width: 35px;
+    margin-left: -10px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #f3f4f7;
+    border-color: 1px solid #979da9;
+    /*background-color: #d3d3d3;*/
+    /*border-color: 1px solid white;*/
+}
+
+.member_image_plus{
+    width: 35px;
+    margin-left: -10px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #fff7df;
+    border: white 1px solid;
+    display: flex;
+    flex-direction: column;
+}
+
+.member_image_text{
+    color:#f8b925;
+    font-size: 11px;
+    margin: auto;
+    
 }
 </style>

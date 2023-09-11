@@ -20,6 +20,20 @@
             ></b-spinner>
         </div>-->
 
+      <div v-if="isLoading" class="overlay d-flex flex-row justify-content-center px-auto">
+          <div class="container  col-sm-4 rounded bg-white mx-5 p-3">
+           <div class="d-flex flex-row justify-content-center px-0">
+            <h1 class="add_dep_text text-info">Please wait..</h1>
+            <!--<b-spinner
+                style="width: 3rem; height: 3rem"
+                variant="info"
+                label=""
+            ></b-spinner>-->
+            <div class="spinner-border text-info mt-1 mx-2">
+            </div>
+      </div>
+      </div>
+      </div>
           
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -244,6 +258,9 @@
             </div>
 
             <hr />
+
+           
+        
             <div class="text-right mt-3 mb-5 text-end">
                 <div class="btn-icon">
                     <button
@@ -389,6 +406,7 @@ export default {
                     });
                 })
                 .catch((error) => {
+                     this.isLoading = false;
                     this.alert_error = true;
                     console.log(error);
                 })
@@ -438,20 +456,28 @@ h2 {
 
 .overlay {  
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   position: absolute;
-  width: 300px;
-  height: 400px;
+  width: 80%;
+  height: 100%;
   align-self: center;
   z-index: 1;
  /* opacity: 0;*/
-  background: rgba(39, 42, 43, 0.8);
+  background: rgba(39, 42, 43, 0.4);
   transition: opacity 200ms ease-in-out;
   border-radius: 4px;
-  margin-left: auto;
+  margin-left: -50px;
+  /*margin-left: auto;*/
   /*margin: 0;*/
   padding: 0;
+}
+
+.add_dep_text{
+   /* color: teal;*/
+    font-size: 20px;
+     
 }
 
 </style>
