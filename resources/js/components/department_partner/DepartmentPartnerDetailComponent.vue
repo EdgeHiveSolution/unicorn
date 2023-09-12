@@ -50,7 +50,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-end mt-4">
+                            <!-- <div class="d-flex justify-content-end mt-4">
                                 <div>
                                     {{
                                         specificKPIProgress.progressPercentage
@@ -61,7 +61,7 @@
                                         {{ specificKPIProgress.progressStatus }}
                                 
                                 </div>
-                            </div>
+                            </div> -->
                             <div
                                 class="card-header d-flex justify-content-between my-3"
                             >
