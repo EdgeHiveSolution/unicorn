@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Models\KpiMetricMember;
+use App\Models\Metric;
 
 class KpiMetricApiController extends Controller
 {
@@ -51,6 +52,7 @@ class KpiMetricApiController extends Controller
     $this->validate($request, [
         'title' => 'required',
         'type' => 'required',
+        'metric_id' => 'required',
         'response_period' => 'required',
         'kpi_id' => 'required',
         'on_track_value' => 'required',
@@ -133,6 +135,7 @@ class KpiMetricApiController extends Controller
             'type' => $request->type,
             'response_period' => $request->response_period,
             'kpi_id' => $request->kpi_id,
+            'metric_id' =>$request->metric_id,
             'target' => $totalTarget, 
             'timely_value' => $totalTimelyValue, 
             'on_track_value' => $request->on_track_value,
@@ -296,6 +299,29 @@ class KpiMetricApiController extends Controller
     // }
 
 
+    
+public function getKpiMetricsByMetricId(Request $request, $metricId)
+{
+    try {
+        // Find the Metric by its ID
+        $metric = Metric::findOrFail($metricId);
+
+        // Load the KpiMetrics relationship and its nested relationships
+        $metric->load('kpiMetric.kpi.kpiMetrics.kpiMetricMembers.progress');
+
+        // Load relationships related to the Partner model
+        $metric->kpiMetric->kpi->partner->load(['departments', 'members']);
+
+        // Return the Metric along with its KpiMetrics and related data, including Partners
+        return response()->json([
+            'metric' => $metric,
+        ], 200);
+    } catch (\Exception $e) {
+        // Handle any exceptions that occur during the process
+        Log::error('Error fetching KpiMetrics:', ['error' => $e->getMessage()]);
+        return response()->json(['error' => 'Failed to fetch KpiMetrics'], 500);
+    }
+}
 
     /**
      * Display the specified resource.

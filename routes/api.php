@@ -69,6 +69,8 @@ Route::post('v1/kpiMetric-create',[KpiMetricApiController::class, 'store']);
 Route::patch('v1/kpiMetric-update',[KpiMetricApiController::class, 'update']);
 Route::delete('v1/kpiMetric-delete',[KpiMetricApiController::class, 'destroy']);
 
+Route::get('v1/kpi-metrics/{metricId}', [KpiMetricApiController::class, 'getKpiMetricsByMetricId']);
+
 Route::get('v1/admin-list',[AdminApiController::class, 'index']);
 Route::post('v1/admin-create',[AdminApiController::class, 'store']);
 Route::patch('v1/admin-update',[AdminApiController::class, 'update']);

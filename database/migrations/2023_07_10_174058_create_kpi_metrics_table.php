@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('kpi_metrics', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('metric_id')->nullable();
             $table->string('title');
             $table->string('type');
             $table->string('target');
@@ -27,6 +28,10 @@ return new class extends Migration
             $table->string('at_risk_max');
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('metric_id')->references('id')->on('metrics');
+
+
+
         });
     }
 

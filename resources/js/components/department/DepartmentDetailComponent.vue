@@ -351,7 +351,7 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>KPI Metric</th>
+                                            <th>Metric</th>
                                             <th>Current Value</th>
                                             <th>Target</th>
                                             <th>Progress</th>
@@ -360,17 +360,48 @@
                                     </thead>
                                     <tbody>
                                         <!-- Replace the static data with dynamic data using v-for directive -->
-                                        <tr>
+                                        <tr
+                                            v-for="metric in metricWithProgress"
+                                            :key="metric.id"
+                                        >
                                             <td>
-                                                <span class="txt-gray">
-                                                    Partners:
-                                                </span>
+                                                <div>
+                                                    {{ metric.name }}
+                                                </div>
+                                                <div>
+                                                    <span class="txt-gray">
+                                                        Partners:
+                                                    </span>
+                                                </div>
                                             </td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>
+                                                {{ metric.totalCurrentValue }}
+                                            </td>
+                                            <td>{{metric.totalTargetValue}}</td>
+                                           
 
-                                            <td></td>
+                                            <td>
+                                                        {{
+                                                            metric.calculatedProgress.toFixed(
+                                                                2
+                                                            )
+                                                        }}%
+
+                                                        <div class="progress">
+                                                            <div
+                                                                class="progress-bar"
+                                                                :style="{
+                                                                    width:
+                                                                        metric.calculatedProgress +
+                                                                        '%',
+                                                                }"
+                                                                aria-valuemin="0"
+                                                                aria-valuemax="100"
+                                                            ></div>
+                                                        </div>
+                                                    </td>
+
+                                                    <td></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -528,23 +559,21 @@
 
                                     <td v-else>No Active Kpis</td>
                                     <td>
-                                       
-                                             <button
-                                                    class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
-                                                >
-                                                    <span
-                                                        class="mdi mdi-eye-outline text-light"
-                                                    ></span>
-                                                    <a
-                                                        :href="
-                                                            '/department_partners/' +
-                                                            partner.id
-                                                        "
-                                                        class="text-light"
-                                                        >View</a
-                                                    >
-                                                </button>
-                                        
+                                        <button
+                                            class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                        >
+                                            <span
+                                                class="mdi mdi-eye-outline text-light"
+                                            ></span>
+                                            <a
+                                                :href="
+                                                    '/department_partners/' +
+                                                    partner.id
+                                                "
+                                                class="text-light"
+                                                >View</a
+                                            >
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -951,6 +980,8 @@ export default {
     data() {
         return {
             newPartners: [],
+            kpiMetricsDetails: [],
+            base_url: "../",
             department: {
                 name: this.department.name,
             },
@@ -968,6 +999,15 @@ export default {
                 about: this.department.about,
             },
         };
+    },
+
+    async created() {
+        await this.fetchKpiMetrics();
+
+        console.log(
+            "KpiMetrics Detail:",
+            JSON.stringify(this.kpiMetricsDetails)
+        );
     },
 
     mounted() {
@@ -1022,6 +1062,44 @@ export default {
                 });
             });
             return uniqueDepartments;
+        },
+
+        metricWithProgress() {
+            const groupedMetrics = {};
+            
+
+            this.kpiMetricsDetails.forEach((metric) => {
+                const id = metric.metric.id;
+
+                if (!groupedMetrics[id]) {
+                    groupedMetrics[id] = {
+                        id: metric.metric.id,
+                        name: metric.metric.name,
+
+                        calculatedProgress: this.calculateMetricProgress(
+                            metric.metric.kpi_metric.kpi.kpi_metrics
+                        ),
+
+                        totalCurrentValue:
+                            this.calculateTotalCurrentValueforMetric(
+                                metric.metric.kpi_metric.kpi.kpi_metrics
+                            ),
+
+                        totalTargetValue:
+                            this.calculateTotalTargetValueforMetric(
+                                metric.metric.kpi_metric.kpi.kpi_metrics
+                            ),
+
+                        // metricTopDrivers: this.getTopDrivers (metric.metric.kpi_metric.kpi.kpi_metrics)
+
+                        // statusClass: this.getStatusClass(metric),
+                        partner: metric.metric.kpi_metric.partner,
+                        // departments: partner.departments,
+                    };
+                }
+            });
+
+            return Object.values(groupedMetrics);
         },
 
         // partnersWithProgress() {
@@ -1257,6 +1335,82 @@ export default {
             return targetSum;
         },
 
+        calculateMetricProgress(kpi_metrics) {
+            let totalCurrentValue = 0;
+            let totalTargetValue = 0;
+
+            //  console.log("Total Current value is:",totalCurrentValue);
+            // console.log("Total Target value is:",totalTargetValue);
+
+            kpi_metrics.forEach((kpiMetric) => {
+                kpiMetric.kpi_metric_members.forEach((member) => {
+                    member.progress.forEach((progress) => {
+                        totalCurrentValue += progress.current_value;
+                        totalTargetValue += progress.target_value;
+                    });
+                });
+            });
+
+            console.log("Total Current value is:", totalCurrentValue);
+            console.log("Total Target value is:", totalTargetValue);
+
+            if (totalTargetValue === 0) {
+                return 0;
+            }
+
+            return (totalCurrentValue / totalTargetValue) * 100;
+        },
+
+        calculateTotalCurrentValueforMetric(metricCurrentTotal) {
+            let totalCurrentValue = 0;
+
+            metricCurrentTotal.forEach((kpiMetric) => {
+                kpiMetric.kpi_metric_members.forEach((member) => {
+                    member.progress.forEach((progress) => {
+                        totalCurrentValue += progress.current_value;
+                    });
+                });
+            });
+            return totalCurrentValue;
+        },
+
+
+        calculateTotalTargetValueforMetric(metricTargetTotal) {
+
+             let totalTargetValue = 0;
+
+            metricTargetTotal.forEach((kpiMetric) => {
+                kpiMetric.kpi_metric_members.forEach((member) => {
+                    member.progress.forEach((progress) => {
+                        totalTargetValue += progress.target_value;
+                    });
+                });
+            });
+            return totalTargetValue;
+        },
+
+        // getTopDrivers(topdriver) {
+        //     let topDriver = null;
+        //     let highestValue = -Infinity;
+
+        //     topdriver.forEach((kpiMetric) => {
+        //         kpiMetric.kpi_metric_members.forEach((member) => {
+        //             member.progress.forEach((progress) => {
+        //                 if (progress.current_value > highestValue) {
+        //                     highestValue = progress.current_value;
+        //                     topDriver = member;
+        //                 }
+        //             });
+        //         });
+        //     });
+
+        //     if (topDriver !== null) {
+        //         return topDriver.member.name; // Assuming member has a "name" property
+        //     } else {
+        //         return "N/A"; // No members found
+        //     }
+        // },
+
         // calculateTargetSum(kpiMetric) {
         //     let targetSum = 0;
         //     kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
@@ -1286,6 +1440,43 @@ export default {
                 return "At Risk";
             } else {
                 return "Off Track";
+            }
+        },
+
+        async fetchKpiMetrics() {
+            try {
+                const kpiMetricsDetails = [];
+
+                // Iterate through each KPI of the partner
+                for (const partner of this.partners) {
+                    // Iterate through each kpi_metric of the KPI
+                    for (const kpi of partner.kpis) {
+                        for (const kpiMetric of kpi.kpi_metrics) {
+                            const metricId = kpiMetric.metric_id;
+
+                            const uri =
+                                this.base_url +
+                                `api/v1/kpi-metrics/${metricId}`;
+
+                            // Make an API request for each KPI Metric
+                            const response = await axios.get(uri);
+
+                            // Handle the response data as needed
+                            console.log(
+                                "API Response for KPI Metric:",
+                                response.data
+                            );
+
+                            // Push the KPI Metric data into the array
+                            kpiMetricsDetails.push(response.data);
+                        }
+                    }
+                }
+
+                // Store or process the KPI Metrics data as needed
+                this.kpiMetricsDetails = kpiMetricsDetails;
+            } catch (error) {
+                console.error("Error fetching KPI Metrics:", error);
             }
         },
 
