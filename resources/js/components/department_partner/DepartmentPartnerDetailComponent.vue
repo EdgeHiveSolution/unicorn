@@ -1,14 +1,21 @@
 <template>
     <div>
-        <div class="d-flex align-items-center">
+        <div class="d-flex flex-row">
+            <div class="profile_image d-flex flex-column align-items-center mx-2"
+                                            
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="lg"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
             <div class="data-info">
                 <div>
                     <h4>{{ partner.name }}</h4>
                 </div>
-
-                <!-- <div>
-                    <h4>{{ name }}</h4>
-                </div> -->
 
                 <div>
                     <p>
@@ -50,7 +57,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-end mt-4">
+                            <!-- <div class="d-flex justify-content-end mt-4">
                                 <div>
                                     {{
                                         specificKPIProgress.progressPercentage
@@ -61,7 +68,7 @@
                                         {{ specificKPIProgress.progressStatus }}
                                 
                                 </div>
-                            </div>
+                            </div> -->
                             <div
                                 class="card-header d-flex justify-content-between my-3"
                             >
@@ -107,12 +114,12 @@
                                                 <td>
                                                     <div>
                                                         <!-- <span>{{ kpiMetricData.kpiMetric.title }}</span> -->
-                                                        <span>{{
+                                                        <span class="txt-dark">{{
                                                             kpiMetric.title
                                                         }}</span>
                                                     </div>
                                                     <div>
-                                                        <span>{{
+                                                        <span class="txt-gray-detail">{{
                                                             kpiMetric.type
                                                         }}</span>
                                                     </div>
@@ -120,56 +127,69 @@
 
                                                 <td class="">
                                                     <div>
-                                                        <span
+                                                        <span class="txt-gray-detail"
                                                             v-if="
                                                                 kpiMetric.type ===
                                                                 currency
                                                             "
                                                             >KES</span
                                                         >
-                                                        {{
+                                                        <label class="txt-gray-detail">{{
                                                             calculateCurrentSum(
                                                                 kpiMetric
                                                             )
-                                                        }}
+                                                        }}</label>
                                                     </div>
                                                 </td>
 
                                                 <td class="">
                                                     <div>
-                                                        <span
+                                                        <span class="txt-gray-detail"
                                                             v-if="
                                                                 kpiMetric.type ===
                                                                 currency
                                                             "
                                                             >KES</span
                                                         >
-                                                        {{
+                                                        <label class="txt-gray-detail">{{
                                                             calculateTargetSum(
                                                                 kpiMetric
                                                             )
-                                                        }}
+                                                        }}</label>
                                                     </div>
                                                 </td>
 
+                                       <!--  calculateProgressPercentage( kpiMetric)
+                                                                            .label ===
+                                                                        'On Track',-->
                                                 <td>
                                                     <div>
-                                                        {{
+                                                        <label class="txt-gray-detail">{{
                                                             calculateProgressPercentage(
                                                                 kpiMetric
                                                             )
-                                                        }}%
+                                                        }}%</label>
                                                         <div class="progress">
                                                             <div
                                                                 class="progress-bar"
                                                                 role="progressbar"
+                                                               
                                                                 :class="{
-                                                                    'progress-bar-on-track':
-                                                                        calculateProgressPercentage(
+                                                                    'progress-bar-on-track on-track-label':
+                                                                        calculateProgressStatus(
                                                                             kpiMetric
-                                                                        )
-                                                                            .label ===
+                                                                        ) ===
                                                                         'On Track',
+                                                                      'progress-bar-at-risk':
+                                                                      calculateProgressStatus(
+                                                                          kpiMetric
+                                                                      ) === 'At Risk', 
+                                                                      'progress-bar-off-track off-track-label':
+                                                                       calculateProgressStatus(
+                                                                            kpiMetric
+                                                                        ) ===
+                                                                        'Off Track', 
+                                                                    
                                                                 }"
                                                                 :style="{
                                                                     width:
@@ -182,11 +202,29 @@
                                                             ></div>
                                                         </div>
                                                     </div>
-                                                    {{
+                                                    <label 
+                                                    :class="{
+                                                         'on-track-label':
+                                                                        calculateProgressStatus(
+                                                                            kpiMetric
+                                                                        ) ===
+                                                                        'On Track',
+                                                         'at-risk-label':
+                                                               calculateProgressStatus(
+                                                                   kpiMetric
+                                                               )==='At Risk',         
+                                                                      'off-track-label':
+                                                                       calculateProgressStatus(
+                                                                            kpiMetric
+                                                                        ) ===
+                                                                        'Off Track', 
+                                                    }">{{
                                                         calculateProgressStatus(
                                                             kpiMetric
                                                         )
                                                     }}
+                                                    
+                                                    </label>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -488,4 +526,60 @@ img {
     padding: 8px;
     border-radius: 15px;
 }
+
+.txt-gray-detail{
+    color: rgba(102,112,133,1);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.profile_image{
+    width: 50px;
+    margin-left: -10px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #f3f4f7;
+    border-color: 1px solid #979da9;
+    /*background-color: #d3d3d3;*/
+    /*border-color: 1px solid white;*/
+}
+
+
+.at-risk {
+    background-color: #f0ad4e;
+}
+
+.off-track {
+    background-color: #d9534f;
+}
+
+.on-track-label{
+    font-size: 12px;
+    color: #047a48;
+}
+
+.at-risk-label{
+    font-size: 12px;
+    color: #f0ad4e;
+}
+
+.off-track-label{
+    font-size: 12px;
+    color: #d9534f;
+}
+
+.progress-bar-on-track {
+    background-color: green;
+}
+
+/* CSS class for "At Risk" progress */
+.progress-bar-at-risk {
+    background-color: #f0ad4e;
+}
+
+/* CSS class for "Off Track" progress */
+.progress-bar-off-track {
+    background-color:  #d9534f;
+}
+
 </style>

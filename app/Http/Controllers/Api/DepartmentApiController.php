@@ -50,6 +50,34 @@ class DepartmentApiController extends Controller
         }
     }
 
+//     public function index()
+// {
+//     try {
+//         \DB::enableQueryLog();
+//         $departments = Department::with('members', 'partners')->get()->toArray();
+
+//         $formattedPartners = collect($departments)->map(function ($department) {
+//             $formattedPartners = $department['partners']->map(function ($partner) {
+//                 $partner['formatted_created_at'] = Carbon::parse($partner['created_at'])->isoFormat('DD MMMM YYYY');
+//                 return $partner;
+//             });
+//             $department['partners'] = $formattedPartners->toArray(); // Convert back to array
+//             return $department;
+//         });
+
+//         Log::info('Departments fetched from the database:', ['departments' => $departments]);
+//         $queries = \DB::getQueryLog();
+//         Log::info('SQL Queries:', ['queries' => $queries]);
+
+//         return response()->json($departments, Response::HTTP_OK); // Return the original $departments
+//     } catch (\Exception $e) {
+//         // Handle any exceptions that occur during the database query
+//         Log::error('Error fetching departments:', ['error' => $e->getMessage()]);
+        
+//         return response()->json(['error' => 'Failed to fetch departments'], Response::HTTP_INTERNAL_SERVER_ERROR);
+//     }
+// }
+
 
 
     /**

@@ -177,8 +177,8 @@
                                         >
                                             <td>
                                                 <img
-                                                    :src="partner.image"
-                                                    alt="image"
+                                                    :src="partner.logo"
+                                                    alt="logo"
                                                 />
                                                 <span class="pl-2 active-period txt-gray">{{
                                                     partner.name
@@ -475,6 +475,194 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>Partner</th>
+                                    <th>Status</th>
+                                    <th>About</th>
+                                    <th>Members</th>
+                                    <th>Active KPIs</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="partner in partnersWithProgress"
+                                    :key="partner.id"
+                                >
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img
+                                                :src="partner.logo"
+                                                alt="logo"
+                                            />
+                                            <span class="pl-2 active-period txt-gray">{{
+                                                partner.name
+                                            }}</span>
+                                        </div>
+
+                                        <div class="d-flex align-items-center">
+                                            <span class="active-period txt-gray"
+                                                >Date Joined:
+                                                {{
+                                                    partner.formatted_created_at
+                                                }}</span
+                                            >
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!--<button class="btn btn-suc">
+                                            <span class="txt-success"
+                                                >Active</span
+                                            >
+                                        </button>-->
+                                        <div class="active_status_container mt-2 d-flex flex-row justify-content-center">
+                                                    <span class="active_status_text"
+                                                        >Active</span
+                                                    >
+                                                </div>
+                                    </td>
+                                    <td>
+                                        <span class="txt-dark">{{
+                                            partner.business_type
+                                        }}</span
+                                        ><br />
+                                        <span class="active-period txt-gray">{{
+                                            partner.about
+                                        }}</span>
+                                    </td>
+                                    <td class="td-members">
+                                         <div class="d-flex flex-row">
+                                               <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                               
+                                               <template v-for="(member,index) in partner.members"
+                                               :key="index"
+                                               >
+                                                
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 2"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                        
+                                                </div>
+
+                                                 <div class="member_image_plus"
+                                                 v-else
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+{{index - 1}}</p>
+                                                </div>
+
+                                        
+                                                </template>
+
+                                                
+                                                </div>
+                                        <!--<img
+                                            v-for="member in partner.members"
+                                            :key="member.id"
+                                            :src="member.image"
+                                            alt="image"
+                                        />-->
+                                    </td>
+                                    <td v-if="partner.calculatedProgress > 0">
+                                        <div>
+                                            <!--{{
+                                                partner.calculatedProgress.toFixed(
+                                                    2
+                                                )
+                                            }}%-->
+
+                                             <label class="progress_text"> {{
+                                                        partner.calculatedProgress.toFixed(
+                                                            2
+                                                        )
+                                                    }}</label>%
+                                            <div class="progress">
+                                                <div
+                                                    class="progress-bar"
+                                                    :class="
+                                                        getStatusClass(partner)
+                                                    "
+                                                    :style="{
+                                                        width:
+                                                            partner.calculatedProgress +
+                                                            '%',
+                                                    }"
+                                                    aria-valuemin="0"
+                                                    aria-valuemax="100"
+                                                ></div>
+                                            </div>
+                                            <div class="progress-labels">
+                                                <span
+                                                    class="status-label off-track-label"
+                                                    v-if="
+                                                        getStatusClass(
+                                                            partner
+                                                        ) === 'off-track'
+                                                    "
+                                                    >Off Track</span
+                                                >
+                                                <span
+                                                    class="status-label at-risk-label"
+                                                    v-else-if="
+                                                        getStatusClass(
+                                                            partner
+                                                        ) === 'at-risk'
+                                                    "
+                                                    >At Risk</span
+                                                >
+                                                <span
+                                                    class="status-label on-track-label"
+                                                    v-else-if="
+                                                        getStatusClass(
+                                                            partner
+                                                        ) === 'on-track'
+                                                    "
+                                                    >On Track</span
+                                                >
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td v-else>No Active Kpis</td>
+                                    <td>
+                                       
+                                             <a :href="'/department_partners/' +
+                                                            partner.id "><button
+                                                    class="btn btn-sm px-1 py-2  btn-pri d-flex flex-row justify-content-center align-items-center"
+                                                >
+                                                    <span
+                                                        class="mdi mdi-eye-outline text-light"
+                                                    ></span>
+                                                    <a
+                                                        :href="
+                                                            '/department_partners/' +
+                                                            partner.id
+                                                        "
+                                                        class="text-light"
+                                                        >View</a
+                                                    >
+                                                </button></a>
+                                        
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                         <table class="table">
+                            <thead>
+                                <tr>
                                     <th>KPI Metric</th>
                                     <th>Current</th>
                                     <th>Target</th>
@@ -487,19 +675,20 @@
                                     :key="kpiMetric.id"
                                   >
                                     <td>
-                                        {{ kpiMetric.title }}
+                                       <label class="active-period txt-gray">{{ kpiMetric.title }}</label>
                                     </td>
                                     <td>
-                                        {{ kpiMetric.currentSum}}
+                                        <label class="active-period txt-gray">{{ kpiMetric.currentSum}}</label>
                                     </td>
                                     <td>
-                                        {{ kpiMetric.targetSum }}
+                                        <label class="active-period txt-gray">{{ kpiMetric.targetSum }}</label>
                                     </td>
                                     <td>
+                                        <div class=" container-fluid">
                                         <div>
-                                            {{
+                                            <label class="progress_text">{{
                                                 kpiMetric.progressPercentage
-                                            }}%
+                                            }}</label>%
                                             <div class="progress">
                                                 <div
                                                     class="progress-bar"
@@ -525,11 +714,12 @@
                                         <span class="status-label on-track-label" 
                                         v-if="calculateProgressStatus(kpiMetric) === 'On Track'">
                                         On Track</span>-->
-                                        {{ kpiMetric.progressStatus }}
+                                        <label class="active-period txt-gray">{{ kpiMetric.progressStatus }}</label>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> 
                     </div>
                 </div>
             </div>
@@ -624,12 +814,59 @@
                                                 </div>
                                     </td>
                                     <td>
-                                        <span
+                                        <!--<span
                                             v-for="partner in partnersWithProgress"
                                             :key="partner.id"
                                         >
                                             {{ partner.name }}
-                                        </span>
+                                        </span>-->
+                                         <div class="d-flex flex-row">
+                                               <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                               
+                                               <template v-for="(member,index) in partnersWithProgress"
+                                               :key="index"
+                                               >
+
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 2"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
+
+                                                 <div class="member_image_plus"
+                                                 v-else
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+{{index - 1}}</p>
+                                                </div>
+
+                                                <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                                </template>
+
+                                                <!--<img
+                                                    
+                                                    alt="image"
+                                                />-->
+                                                </div>
                                     </td>
                                     <td></td>
                                 </tr>
@@ -985,7 +1222,10 @@ export default {
                     groupedPartners[id] = {
                         id: partner.id,
                         name: partner.name,
-                        image: partner.image,
+                        logo: partner.logo,
+                        formatted_created_at: partner.formatted_created_at,
+                        about: partner.about,
+                        business_type: partner.business_type,
                         calculatedProgress: this.calculateKpiProgress(
                             partner.kpis
                         ),
@@ -999,33 +1239,35 @@ export default {
             return Object.values(groupedPartners);
         },
 
-       kpiMetricsWithProgress() {
-    const uniqueKpiMetrics = {};
+        kpiMetricsWithProgress() {
+            const uniqueKpiMetrics = {};
 
-    this.partners.forEach((partner) => {
-        partner.kpis.forEach((kpi) => {
-            kpi.kpi_metrics.forEach((kpiMetric) => {
-                // Use a unique identifier for each KPI metric, e.g., id
-                const identifier = kpiMetric.id;
+            this.partners.forEach((partner) => {
+                partner.kpis.forEach((kpi) => {
+                    kpi.kpi_metrics.forEach((kpiMetric) => {
+                        // Use a unique identifier for each KPI metric, e.g., id
+                        const identifier = kpiMetric.id;
 
-                if (!uniqueKpiMetrics[identifier]) {
-                    uniqueKpiMetrics[identifier] = {
-                        // Add properties of the KPI metric
-                        id: kpiMetric.id,
-                        title: kpiMetric.title,
-                        // Include other properties you need
-                        currentSum: this.calculateCurrentSum(kpiMetric), // Example: Adding calculated current sum
-                        targetSum: this.calculateTargetSum(kpiMetric),   // Example: Adding calculated target sum
-                        progressPercentage: this.calculateProgressPercentage(kpiMetric), 
-                        progressStatus: this.calculateProgressStatus(kpiMetric)
-                    };
-                }
+                        if (!uniqueKpiMetrics[identifier]) {
+                            uniqueKpiMetrics[identifier] = {
+                                // Add properties of the KPI metric
+                                id: kpiMetric.id,
+                                title: kpiMetric.title,
+                                // Include other properties you need
+                                currentSum: this.calculateCurrentSum(kpiMetric), // Example: Adding calculated current sum
+                                targetSum: this.calculateTargetSum(kpiMetric), // Example: Adding calculated target sum
+                                progressPercentage:
+                                    this.calculateProgressPercentage(kpiMetric),
+                                progressStatus:
+                                    this.calculateProgressStatus(kpiMetric),
+                            };
+                        }
+                    });
+                });
             });
-        });
-    });
 
-    return Object.values(uniqueKpiMetrics);
-},
+            return Object.values(uniqueKpiMetrics);
+        },
 
         // kpiMetricsWithProgress() {
         //     const kpiMetricsArray = [];
@@ -1403,6 +1645,19 @@ th{
 .at-risk-label {
     color: #f0ad4e;
     font-size: 12px;
+}
+
+
+.btn-pri{
+    /*background-color: #0072bb;*/
+    background-color: #0072bb;
+    font-size: 10px !important;
+    height: 32px;
+    /*width: 80px;*/
+    color: #eaf3ff;
+    margin-top: 8px;
+    border-radius: 8px;
+    
 }
 
 /*.on-track {

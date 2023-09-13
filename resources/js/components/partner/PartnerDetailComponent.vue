@@ -192,7 +192,7 @@
                     <h4>KPI Breakdown</h4>
                     <p>A breakdown of each KPI performance</p>
 
-                    <div class="card" v-for="kpi in this.partner.kpis">
+                    <div class="card" v-for="kpi in this.partner.kpis" :key="kpi.id">
                         <div class="m-4 mb-0">
                             <h4>{{ kpi.title }}</h4>
                             <p>{{ kpi.review_period_range }}</p>
@@ -246,18 +246,18 @@
                                                 {{ kpiMetric.title }}
                                             </td>
                                             <td>
-                                                {{
+                                                <label class="active-period txt-gray">{{
                                                     calculateCurrentSum(
                                                         kpiMetric
                                                     )
-                                                }}
+                                                }}</label>
                                             </td>
                                             <td>
-                                                {{
+                                               <label class="active-period txt-gray"> {{
                                                     calculateTargetSum(
                                                         kpiMetric
                                                     )
-                                                }}
+                                                }}</label>
                                             </td>
                                             <td>
                                                 <div>
@@ -269,6 +269,20 @@
                                                     <div class="progress">
                                                         <div
                                                             class="progress-bar"
+                                                            :class="{
+                                                                'progress-bar-on-track on-track-label':
+                                                                calculateProgressStatus(
+                                                        kpiMetric
+                                                    )== 'On Track',
+                                                    'progress-bar-at-risk at-risk-label' :
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    )=='At Risk',
+                                                    'progress-bar-off-track off-track-label' :
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    ) =='Off Track'
+                                                            }"
                                                             role="progressbar"
                                                             :style="{
                                                                 width:
@@ -281,11 +295,26 @@
                                                         ></div>
                                                     </div>
                                                 </div>
-                                                {{
+                                                <span
+                                                :class="{
+                                                    'on-track-label':
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    )== 'On Track',
+                                                    'at-risk-label' :
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    )=='At Risk',
+                                                    'off-track-label' :
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    ) =='Off Track'
+                                                            }"
+                                                >{{
                                                     calculateProgressStatus(
                                                         kpiMetric
                                                     )
-                                                }}
+                                                }}</span>
                                             </td>
 
                                             <td class="td-members">
@@ -2331,6 +2360,8 @@ export default {
     },
 
 mounted() {
+
+    
 
    const partnerId = this.partnerId;
 
