@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row justify-content-center align-items-center vh-100">
             <div class="col-md-8 col-lg-4">
-                <h2>Sign in to your account</h2>
+                <h4>Sign in to your account</h4>
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 

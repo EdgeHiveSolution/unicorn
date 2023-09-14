@@ -119,7 +119,7 @@
                                                         }}</span>
                                                     </div>
                                                     <div>
-                                                        <span class="txt-gray-detail">{{
+                                                        <span class="txt-grey-detail">{{
                                                             kpiMetric.type
                                                         }}</span>
                                                     </div>
@@ -127,14 +127,14 @@
 
                                                 <td class="">
                                                     <div>
-                                                        <span class="txt-gray-detail"
+                                                        <span class="txt-dark-detail"
                                                             v-if="
                                                                 kpiMetric.type ===
                                                                 currency
                                                             "
                                                             >KES</span
                                                         >
-                                                        <label class="txt-gray-detail">{{
+                                                        <label class="txt-dark-detail">{{
                                                             calculateCurrentSum(
                                                                 kpiMetric
                                                             )
@@ -144,17 +144,17 @@
 
                                                 <td class="">
                                                     <div>
-                                                        <span class="txt-gray-detail"
+                                                        <span class="txt-dark-detail"
                                                             v-if="
                                                                 kpiMetric.type ===
                                                                 currency
                                                             "
                                                             >KES</span
                                                         >
-                                                        <label class="txt-gray-detail">{{
+                                                        <label class="txt-dark-detail">{{
                                                             calculateTargetSum(
                                                                 kpiMetric
-                                                            )
+                                                            ).toFixed(2)
                                                         }}</label>
                                                     </div>
                                                 </td>
@@ -554,17 +554,17 @@ img {
 }
 
 .on-track-label{
-    font-size: 12px;
+    font-size: 14px;
     color: #047a48;
 }
 
 .at-risk-label{
-    font-size: 12px;
+    font-size: 14px;
     color: #f0ad4e;
 }
 
 .off-track-label{
-    font-size: 12px;
+    font-size: 14px;
     color: #d9534f;
 }
 
@@ -580,6 +580,11 @@ img {
 /* CSS class for "Off Track" progress */
 .progress-bar-off-track {
     background-color:  #d9534f;
+}
+
+.txt-dark-detail{
+   font-size: 14px;
+
 }
 
 </style>

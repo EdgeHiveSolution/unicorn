@@ -274,14 +274,18 @@
                                                 <label class="active-period txt-gray">{{
                                                     calculateCurrentSum(
                                                         kpiMetric
-                                                    )
+                                                    ).toFixed(
+                                                                2
+                                                            )
                                                 }}</label>
                                             </td>
                                             <td>
                                                <label class="active-period txt-gray"> {{
                                                     calculateTargetSum(
                                                         kpiMetric
-                                                    )
+                                                    ).toFixed(
+                                                                2
+                                                            )
                                                 }}</label>
                                             </td>
                                             <td>
@@ -919,7 +923,7 @@
                                                                 "Active")
                                                         }}
                                                     </span>-->
-                                                    <div class="active_status_container d-flex flex-row justify-content-center">
+                                                    <div class="active_status_container  d-flex flex-row justify-content-center">
                                                     <span class="active_status_text"
                                                         >{{
                                                             (member.is_active =
@@ -929,14 +933,16 @@
                                                 </div>
                                                 </td>
                                                 <td>
-                                                    <span
+                                                     <span
                                                         class="department-tag py-1 my-1"
                                                         v-for="department in member.departments"
                                                         :key="department.id"
                                                         >{{
                                                             department.name
-                                                        }}</span
-                                                    >
+                                                        }}</span>
+                                                </td>
+                                                <td>
+                                                   
                                                 <!-- </td>
                                                  
                                                  {{calculateActiveKpiProgress(member)}}
@@ -1059,6 +1065,7 @@
                                                         >
                                                     </button></a>
                                                 </td>
+                                               
                                             </tr>
                                         </tbody>
                                     </table>
@@ -2182,6 +2189,9 @@ export default {
             showInputs: false,
             review_start_date: null,
             review_end_date: null,
+            myChart: null,
+            allMonths: null,
+            dataPoints: null
         };
     },
 
@@ -2425,10 +2435,98 @@ export default {
         // console.log("userProgressItems:", this.userProgressItems);
 
         console.log("Specific Kpi Metrics:", JSON.stringify(this.kpimetrics));
+
+        const partnerId = this.partnerId;
+
+        const today = new Date();
+
+        // Fetch data from your API endpoint for the last 8 months
+        let uri =
+            this.base_url +
+            // `api/v1/kpi-progress?start_date=${startingDate.toISOString()}&end_date=${today.toISOString()}&partner_id=${partnerId}`;
+
+            `api/v1/kpi-progress/${partnerId}?start_date=${today.toISOString()}&end_date=${today.toISOString()}`;
+        await axios
+            .get(uri)
+            .then((response) => {
+                console.log("Chart Data is:", response.data);
+                this.progressData = response.data.overall_progress;
+
+                console.log(
+                    "Updated Chart Data:" + JSON.stringify(this.progressData)
+                );
+
+                // Extract data and progress percentages from the API response
+                const months = this.progressData.map((item) => item.month);
+                const progressPercentages = this.progressData.map(
+                    (item) => item.progress_percentage
+                );
+
+                // Create an array of month labels for all 12 months
+                const allMonths = Array.from({ length: 12 }, (_, i) => i + 1); // 1 to 12
+
+                // Create an array to store the data points for the line chart
+                const dataPoints = [];
+                let accumulatedProgress = 0;
+
+                // Loop through all months and populate data based on API response
+                allMonths.forEach((month) => {
+                    const monthIndex = months.indexOf(month);
+                    if (monthIndex !== -1) {
+                        // If data is available for this month, use it
+                        accumulatedProgress += progressPercentages[monthIndex];
+                        dataPoints.push(accumulatedProgress);
+                    } else {
+                        // If no data available for this month, use zero or null
+                        dataPoints.push(null); // Use null for no data
+                    }
+                });
+
+                // Create a new Chart instance
+                const chartCanvas = this.$refs.chart;
+                const ctx = chartCanvas.getContext("2d");
+
+                // Create the chart with dynamic x-axis labels
+               
+                const myChart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: allMonths.map((month) => {
+                            const monthIndex = month - 1;
+                            return [
+                                "Jan",
+                                "Feb",
+                                "Mar",
+                                "Apr",
+                                "May",
+                                "Jun",
+                                "Jul",
+                                "Aug",
+                                "Sep",
+                                "Oct",
+                                "Nov",
+                                "Dec",
+                            ][monthIndex];
+                        }),
+                        datasets: [
+                            {
+                                label: "Remaining",
+                                data: dataPoints,
+                                borderColor: "blue",
+                                fill: false,
+                            },
+                        ],
+                    },
+                    options: this.chartOptions,
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
     },
 
     mounted() {
-        const partnerId = this.partnerId;
+        /*const partnerId = this.partnerId;
 
         const today = new Date();
 
@@ -2479,6 +2577,7 @@ export default {
                 const ctx = chartCanvas.getContext("2d");
 
                 // Create the chart with dynamic x-axis labels
+               
                 const myChart = new Chart(ctx, {
                     type: "line",
                     data: {
@@ -2513,7 +2612,7 @@ export default {
             })
             .catch((error) => {
                 console.error("Error fetching data:", error);
-            });
+            });*/
     },
 
     methods: {
@@ -3392,5 +3491,18 @@ option {
     font-size: 11px;
     margin: auto;
     
+}
+
+
+.btn-pri{
+    /*background-color: #0072bb;*/
+    background-color: #0072bb;
+    font-size: 9px !important;
+    border-radius: 8px;
+    height: 32px;
+    width: 100px;
+    color: #eaf3ff;
+  
+
 }
 </style>

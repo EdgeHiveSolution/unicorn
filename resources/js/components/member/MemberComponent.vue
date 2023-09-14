@@ -133,7 +133,7 @@
                         <!-- <div>{{ progressData.progress_sum.target_sum }}</div> -->
                         <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.target_sum }} </div>
                         </td>
-                        <td>
+                        <!--<td>-->
                         <td class="stats">
                             <p class="progress_text text-muted">
                             {{ calculateProgressPercentage( kpiMetricData.progress_sum) }}%
@@ -152,7 +152,7 @@
                             {{ calculateProgressStatus( kpiMetricData.progress_sum, kpiMetricData.kpiMetric) }}
                             </p>
                         </td>
-        </td>
+       <!-- </td>-->
       </tr>
     </tbody>
   </table>

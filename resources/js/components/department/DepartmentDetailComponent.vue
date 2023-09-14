@@ -63,7 +63,7 @@
 
         <div class="dropdown-divider"></div>
         <div v-if="activeTab === 'performance'">
-            <h3>Performance Overview</h3>
+            <h4>Performance Overview</h4>
 
             <div class="row">
                 <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
@@ -127,7 +127,7 @@
             </div>
 
             <div class="row">
-                <div class="col-12 grid-margin">
+                <div class="col-12 grid-margin bg-white" style="border: none;">
                     <div class="card">
                         <div
                             class="card-header d-flex justify-content-between my-3"
@@ -199,11 +199,7 @@
                                                     <div class="progress">
                                                         <div
                                                             class="progress-bar"
-                                                            :class="
-                                                                getStatusClass(
-                                                                    partner
-                                                                )
-                                                            "
+                                                            
                                                             :style="{
                                                                 width:
                                                                     partner.calculatedProgress +
@@ -213,7 +209,7 @@
                                                             aria-valuemax="100"
                                                         ></div>
                                                     </div>
-                                                    <div
+                                                   <!-- <div
                                                         class="progress-labels"
                                                     >
                                                         <span
@@ -244,7 +240,7 @@
                                                             "
                                                             >On Track</span
                                                         >
-                                                    </div>
+                                                    </div>-->
                                                 </div>
                                             </td>
                                             <td v-else>N/A</td>
@@ -315,14 +311,14 @@
                                             <td>
                                                 <!--v-for="department in partner.departments"
                                                     class="department-tag"-->
-                                                <span
+                                               <div class="mt-2"> <span
                                                     
-                                                    class="department-tag active-period txt-gray"
+                                                    class="department-tag active-period txt-gray my-auto"
                                                     v-for="department in uniqueDepartments"
                                                     :key="department.id"
                                                 >
                                                     {{ department.name }}
-                                                </span>
+                                                </span></div>
                                             </td>
                                             <td>
                                                 <button
@@ -350,8 +346,9 @@
 
                     <br />
 
-                    <div class="card">
-                        <h3>Department Metrics</h3>
+                    <h4>Department Metrics</h4>
+                    <div class="card mt-3">
+                       
                         <div
                             class="card-header d-flex justify-content-between my-3"
                         >
@@ -435,17 +432,17 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                {{ metric.totalCurrentValue }}
+                                                <div class="mt-2"><label class="txt-dark-detail">{{ metric.totalCurrentValue.toFixed(2) }}</label></div>
                                             </td>
-                                            <td>{{metric.totalTargetValue}}</td>
+                                            <td><div class="mt-2"><label class="txt-dark-detail">{{metric.totalTargetValue.toFixed(2)}}</label></div></td>
                                            
 
                                             <td>
-                                                        {{
+                                                        <label class="txt-dark-detail">{{
                                                             metric.calculatedProgress.toFixed(
                                                                 2
                                                             )
-                                                        }}%
+                                                        }}</label>%
 
                                                         <div class="progress">
                                                             <div
@@ -691,7 +688,7 @@
                             </tbody>
                         </table>
 
-                         <table class="table">
+                         <!--<table class="table">
                             <thead>
                                 <tr>
                                     <th>KPI Metric</th>
@@ -733,8 +730,17 @@
                                                 ></div>
                                             </div>
                                         </div>
-                                        <!--make sure{{calculateProgressStatus(kpiMetric)}}-->
-                                       <!-- <span class="status-label off-track-label" 
+                                     
+                                        <label class="active-period txt-gray">{{ kpiMetric.progressStatus }}</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table> -->
+
+                        <!--
+                          make sure{{calculateProgressStatus(kpiMetric)}}
+                                        <span class="status-label off-track-label" 
                                         v-if="calculateProgressStatus(kpiMetric) === 'Off Track'">
                                         Off Track</span>
 
@@ -744,13 +750,9 @@
 
                                         <span class="status-label on-track-label" 
                                         v-if="calculateProgressStatus(kpiMetric) === 'On Track'">
-                                        On Track</span>-->
-                                        <label class="active-period txt-gray">{{ kpiMetric.progressStatus }}</label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table> 
+                                        On Track</span>
+
+                        -->
                     </div>
                 </div>
             </div>
@@ -1851,6 +1853,10 @@ th{
     margin-top: 8px;
     border-radius: 8px;
     
+}
+
+.txt-dark-detail{
+    font-size: 14px;
 }
 
 /*.on-track {
