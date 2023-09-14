@@ -31,7 +31,7 @@
       </div>
       </div>-->
 
-      <div v-if="loading" class="loading">
+      <div v-if="isLoading" class="loading">
           
       </div>
           

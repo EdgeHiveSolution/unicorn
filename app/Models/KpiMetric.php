@@ -8,6 +8,7 @@ use App\Models\Progress;
 use App\Models\KpiMetricMember;
 use App\Models\Kpi;
 use App\Models\Member;
+use App\Models\Metric;
 
 class KpiMetric extends Model
 {
@@ -16,6 +17,7 @@ class KpiMetric extends Model
     protected $fillable =[
         'title',
         'type',
+        'metric_id',
         'response_period',
         'kpi_id',
         'target',
@@ -36,6 +38,11 @@ class KpiMetric extends Model
     }
 
 
+    public function metric()
+
+    {
+        return $this->belongsTo(Metric::class);
+    }
     
 
    
@@ -48,15 +55,11 @@ class KpiMetric extends Model
 
 
 
+
     
     public function kpiMetricMembers()
-{
+  {
     return $this->hasMany(KpiMetricMember::class);
-}
-
-
-
-
- 
+  }
 
 }

@@ -29,14 +29,14 @@
             </div>
         </div>
         
-        <div v-if="isLoading" class="d-flex flex-row justify-content-end px-0">
+        <!--<div v-if="isLoading" class="d-flex flex-row justify-content-end px-0">
             <h1 class="add_dep_text text-info">Please wait..</h1>
            
             <div class="spinner-border text-info mt-1 mx-2">
             </div>
-      </div>
+      </div>-->
 
-        <div v-else class="text-end">
+        <div  class="text-end">
             <button class="btn btn-light border-dark px-3 py-2 btn-action">
                 Cancel
             </button>
@@ -541,7 +541,7 @@
             </div>
             </div>-->
 
-            <div v-if="loading" class="loading">
+            <div v-if="isLoading" class="loading">
                 
             </div>
             <div v-else class="align-right mb-5">
