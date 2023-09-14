@@ -321,7 +321,10 @@
                                                 </span></div>
                                             </td>
                                             <td>
-                                                <button
+                                                <a :href="
+                                                            '/department_partners/' +
+                                                            partner.id
+                                                        "><button
                                                     class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
                                                 >
                                                     <span
@@ -335,7 +338,7 @@
                                                         class="text-light"
                                                         >View Details</a
                                                     >
-                                                </button>
+                                                </button></a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -435,6 +438,9 @@
                                                 <div class="mt-2"><label class="txt-dark-detail">{{ metric.totalCurrentValue.toFixed(2) }}</label></div>
                                             </td>
                                             <td><div class="mt-2"><label class="txt-dark-detail">{{metric.totalTargetValue.toFixed(2)}}</label></div></td>
+                                            <!--    {{ metric.totalCurrentValue.toFixed(0) }}
+                                            </td>-->
+                                           <!-- <td>{{metric.totalTargetValue.toFixed(2)}}</td>-->
                                            
 
                                             <td>
@@ -619,6 +625,16 @@
                                             <div class="progress">
                                                 <div
                                                     class="progress-bar"
+                                                    :style="{
+                                                        width:
+                                                            partner.calculatedProgress +
+                                                            '%',
+                                                    }"
+                                                    aria-valuemin="0"
+                                                    aria-valuemax="100"
+                                                ></div>
+                                               <!-- <div
+                                                    class="progress-bar"
                                                     :class="
                                                         getStatusClass(partner)
                                                     "
@@ -629,9 +645,9 @@
                                                     }"
                                                     aria-valuemin="0"
                                                     aria-valuemax="100"
-                                                ></div>
+                                                ></div>-->
                                             </div>
-                                            <div class="progress-labels">
+                                            <!--<div class="progress-labels">
                                                 <span
                                                     class="status-label off-track-label"
                                                     v-if="
@@ -659,7 +675,7 @@
                                                     "
                                                     >On Track</span
                                                 >
-                                            </div>
+                                            </div>-->
                                         </div>
                                     </td>
 
@@ -825,6 +841,7 @@
                                     <th>Status</th>
                                     <th>Partners</th>
                                     <th>Partners At Risk/Off Track</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -901,7 +918,26 @@
                                                 />-->
                                                 </div>
                                     </td>
+
                                     <td></td>
+                                    
+                                                <td>
+                                                    <button
+                                                        class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                                    >
+                                                        <span
+                                                            class="mdi mdi-eye-outline text-light"
+                                                        ></span>
+                                                        <a
+                                                            :href="
+                                                                '/department_members/' +
+                                                                member.id
+                                                            "
+                                                            class="text-light"
+                                                            >View</a
+                                                        >
+                                                    </button>
+                                                </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1171,9 +1207,9 @@ export default {
 
             partnerCount: 6,
             memberCount: 6,
-            offTrackCount: 3,
-            atRiskCount: 1,
-            onTrackCount: 6,
+            offTrackCount: 0,
+            atRiskCount: 0,
+            onTrackCount: 0,
             activeTab: "performance",
 
             department: {

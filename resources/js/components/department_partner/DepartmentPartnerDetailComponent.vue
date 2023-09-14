@@ -44,19 +44,45 @@
                         <div class="card mb-5">
                             <div class="d-flex justify-content-between p-4">
                                 <div>
-                                    <h4>
-                                        {{ kpi.title }}
-                                    </h4>
-                                    <p>
-                                        <b>
-                                            Review period:{{
-                                                kpi.review_period_range
-                                            }}
-                                        </b>
-                                        <span class="txt-gray"> </span>
+                                    <h4>{{ kpi.title }}</h4>
+                                    <p class="text-muted">
+                                        <b
+                                            >Review period:
+                                            {{ kpi.review_period_range }}</b
+                                        >
+                                        <span class="txt-gray"></span>
                                     </p>
                                 </div>
+
+                                <div>
+                                    <h5
+                                        style="font-weight: bold"
+                                        class="txt-dark"
+                                    >
+                                        {{ getAggregatePercentage(kpi) }}%
+                                    </h5>
+                                    <div>
+                                        <span
+                                           :class="{
+                                            'on-track-header':
+                                            status==='On Track',
+
+                                            'at-risk-header':
+                                            status==='At Risk',
+                                            'off-track-header':
+                                            status==='Off Track'
+                                           }"
+                                            v-for="status in getAggregateStatus(
+                                                kpi
+                                            )"
+                                            :key="status"
+                                        >
+                                            {{ status }} 
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
+
                             <!-- <div class="d-flex justify-content-end mt-4">
                                 <div>
                                     {{
@@ -156,6 +182,7 @@
                                                                 kpiMetric
                                                             ).toFixed(2)
                                                         }}</label>
+                                                    
                                                     </div>
                                                 </td>
 
@@ -275,51 +302,72 @@ export default {
             return this.$store.state.loggedUser;
         },
 
-        specificKPIProgress() {
-            const specificKPI = this.partner;
+        // specificKPIProgress() {
+        //     const specificKPI = this.partner;
 
-            // Debugging: Log the structure of specificKPI
-            console.log("specificKPI", specificKPI);
+        //     // Debugging: Log the structure of specificKPI
+        //     console.log("specificKPI", specificKPI);
 
-            let totalCurrentValue = 0;
-            let totalTargetValue = 0;
+        //     let totalCurrentValue = 0;
+        //     let totalTargetValue = 0;
 
-            specificKPI.kpis.forEach((kpi) => {
-                kpi.kpi_metrics.forEach((kpiMetric) => {
-                    kpiMetric.kpi_metric_members.forEach((member) => {
-                        member.progress.forEach((progress) => {
-                            totalCurrentValue += progress.current_value;
-                            totalTargetValue += progress.target_value;
-                        });
-                    });
-                });
-            });
+        //     specificKPI.kpis.forEach((kpi) => {
+        //         kpi.kpi_metrics.forEach((kpiMetric) => {
+        //             kpiMetric.kpi_metric_members.forEach((member) => {
+        //                 member.progress.forEach((progress) => {
+        //                     totalCurrentValue += progress.current_value;
+        //                     totalTargetValue += progress.target_value;
+        //                 });
+        //             });
+        //         });
+        //     });
 
-            // Calculate progress percentage
-            let progressPercentage = 0;
-            if (totalTargetValue !== 0) {
-                progressPercentage = (
-                    (totalCurrentValue / totalTargetValue) *
-                    100
-                ).toFixed(2);
-            }
+        //     // Calculate progress percentage
+        //     let progressPercentage = 0;
+        //     if (totalTargetValue !== 0) {
+        //         progressPercentage = (
+        //             (totalCurrentValue / totalTargetValue) *
+        //             100
+        //         ).toFixed(2);
+        //     }
 
-            // Determine the progress status based on progressPercentage
-            let progressStatus = "";
-            if (progressPercentage <= 50) {
-                progressStatus = "Off Track";
-            } else if (progressPercentage <= 80) {
-                progressStatus = "At Risk";
-            } else {
-                progressStatus = "On Track";
-            }
+        //     // Determine the progress status based on progressPercentage
+        //     let progressStatus = "";
+        //     if (progressPercentage <= 50) {
+        //         progressStatus = "Off Track";
+        //     } else if (progressPercentage <= 80) {
+        //         progressStatus = "At Risk";
+        //     } else {
+        //         progressStatus = "On Track";
+        //     }
 
-            // Return an object with progressPercentage and progressStatus
-            return {
-                progressPercentage,
-                progressStatus,
-            };
-        },
+        //     // Return an object with progressPercentage and progressStatus
+        //     return {
+        //         progressPercentage,
+        //         progressStatus,
+        //     };
+        // },
+
+        // aggregatePercentage() {
+        //     // Calculate the aggregatePercentage here based on the values in the table
+        //     // You can iterate through the KPI metrics and calculate the aggregatePercentage
+        //     // Formula: (Sum of Current Values / Sum of Target Values) * 100
+        //     let currentSum = 0;
+        //     let targetSum = 0;
+
+        //     for (const kpi of this.partner.kpis) {
+        //         for (const kpiMetric of kpi.kpi_metrics) {
+        //             currentSum += parseFloat(kpiMetric.current);
+        //             targetSum += parseFloat(kpiMetric.target);
+        //         }
+        //     }
+
+        //     if (targetSum === 0) {
+        //         return 0; // Handle division by zero if needed
+        //     }
+
+        //     return ((currentSum / targetSum) * 100).toFixed(2);
+        // },
         // kpiMetricsWithProgress() {
         //     const kpisArray = [];
 
@@ -390,6 +438,7 @@ export default {
             const percentage = (currentSum / targetSum) * 100;
             return percentage.toFixed(2);
         },
+
         calculateProgressStatus(kpiMetric) {
             const progressPercentage = parseFloat(
                 this.calculateProgressPercentage(kpiMetric)
@@ -406,6 +455,64 @@ export default {
                 return "Off Track";
             }
         },
+
+        getAggregatePercentage(kpi) {
+            const totalCurrent = kpi.kpi_metrics.reduce((acc, kpiMetric) => {
+                return acc + this.calculateCurrentSum(kpiMetric);
+            }, 0);
+
+            const totalTarget = kpi.kpi_metrics.reduce((acc, kpiMetric) => {
+                return acc + this.calculateTargetSum(kpiMetric);
+            }, 0);
+
+            return ((totalCurrent / totalTarget) * 100).toFixed(2);
+        },
+
+        getAggregateStatus(kpi) {
+            const aggregatePercentage = this.getAggregatePercentage(kpi);
+
+            const aggregateStatuses = kpi.kpi_metrics.map((kpiMetric) => {
+                const onTrackValue = parseFloat(kpiMetric.on_track_value);
+                const offTrackMin = parseFloat(kpiMetric.off_track_min);
+                const offTrackMax = parseFloat(kpiMetric.off_track_max);
+                const atRiskMin = parseFloat(kpiMetric.at_risk_min);
+                const atRiskMax = parseFloat(kpiMetric.at_risk_max);
+
+                if (aggregatePercentage >= onTrackValue) {
+                    return "On Track";
+                } else if (aggregatePercentage <= atRiskMax) {
+                    return "At Risk";
+                } else if (
+                    aggregatePercentage >= offTrackMin &&
+                    aggregatePercentage <= offTrackMax
+                ) {
+                    return "Off Track";
+                } else {
+                    return "N/A"; // Handle cases outside the defined thresholds
+                }
+            });
+
+            // You can return the aggregate statuses for all kpiMetrics as an array here
+            return aggregateStatuses;
+        },
+
+        // getAggregateStatus(percentage, kpi) {
+        //     const onTrackValue = parseFloat(kpiMetric.on_track_value);
+        //     const offTrackMin = parseFloat(kpiMetric.off_track_min);
+        //     const offTrackMax = parseFloat(kpiMetric.off_track_max);
+        //     const atRiskMin = parseFloat(kpiMetric.at_risk_min);
+        //     const atRiskMax = parseFloat(kpiMetric.at_risk_max);
+
+        //     if (percentage >= onTrackValue) {
+        //         return "On Track";
+        //     } else if (percentage <= atRiskMax) {
+        //         return "At Risk";
+        //     } else if (percentage >= offTrackMin && percentage <= offTrackMax) {
+        //         return "Off Track";
+        //     } else {
+        //         return "N/A"; // Handle cases outside the defined thresholds
+        //     }
+        // },
     },
 };
 </script>
@@ -565,6 +672,21 @@ img {
 
 .off-track-label{
     font-size: 14px;
+    color: #d9534f;
+}
+
+.on-track-header{
+    font-size: 18px;
+    color: #047a48;
+}
+
+.at-risk-header{
+    font-size: 18px;
+    color: #f0ad4e;
+}
+
+.off-track-header{
+    font-size: 18px;
     color: #d9534f;
 }
 

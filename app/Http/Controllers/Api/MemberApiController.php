@@ -40,7 +40,7 @@ class MemberApiController extends Controller
 
     public function getKpisAndMetricsForMember($memberId)
 {
-    $member = Member::with(['departments'])->findOrFail($memberId);
+    $member = Member::with(['departments','partners'])->findOrFail($memberId);
 
     // Get the KpiMetricMembers of the member
     $kpiMetricMembers = $member->kpiMetricMembers;
@@ -60,8 +60,8 @@ class MemberApiController extends Controller
         ];
 
         $kpiMetrics[] = [
-            'kpiMetric' => $kpiMetric,
-            'progress' => $progress,
+            'kpiMetric' =>  $kpiMetric,
+            'progress' =>   $progress,
             'progress_sum' => $progressSummation[$kpiMetricMember->id],
         ];
 
