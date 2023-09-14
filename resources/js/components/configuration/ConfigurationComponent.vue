@@ -186,9 +186,9 @@
                                         <option value="">
                                             Select or create standard unit
                                         </option>
-                                        <option value="select">
+                                        <!--<option value="select">
                                             Create standard unit
-                                        </option>
+                                        </option>-->
 
                                      <option v-for="unit in units" :key="unit.id" :value="unit.name">{{ unit.name }}</option>
 
