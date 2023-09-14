@@ -151,7 +151,7 @@
                                         <table class="table">
                                             <thead>
                                                 <tr>
-                                                    <th>KPI Metric</th>
+                                                    <th>Metric</th>
                                                     <th>Value</th>
                                                     <th>Top drivers</th>
                                                     <th>Progress</th>
@@ -160,23 +160,48 @@
                                             </thead>
                                             <tbody>
                                                 <tr
-                                                    v-for="metric in metrics"
+                                                    v-for="metric in metricWithProgress"
                                                     :key="metric.id"
                                                 >
                                                     <td>
-                                                        {{ metric.name }}
+                                                        <div>
+                                                            {{ metric.name }}
+                                                        </div>
+                                                        <div>
+                                                            <span
+                                                                class="txt-gray"
+                                                                >Partners:
+                                                            </span>
+                                                        </div>
                                                     </td>
                                                     <td class="stats">
-                                                        {{ metric.name }}
+                                                        {{
+                                                            metric.totalCurrentValue
+                                                        }}
                                                     </td>
-                                                    <td class="td-members">
-                                                        {{ metric.name }}
+                                                    <td class="td-members"></td>
+                                                    <td>
+                                                        {{
+                                                            metric.calculatedProgress.toFixed(
+                                                                2
+                                                            )
+                                                        }}%
+
+                                                        <div class="progress">
+                                                            <div
+                                                                class="progress-bar"
+                                                                :style="{
+                                                                    width:
+                                                                        metric.calculatedProgress +
+                                                                        '%',
+                                                                }"
+                                                                aria-valuemin="0"
+                                                                aria-valuemax="100"
+                                                            ></div>
+                                                        </div>
                                                     </td>
                                                     <td>
-                                                        {{ metric.name }}
-                                                    </td>
-                                                    <td>
-                                                        {{ metric.name }}
+                                                        {{ }}
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -192,7 +217,7 @@
                     <h4>KPI Breakdown</h4>
                     <p>A breakdown of each KPI performance</p>
 
-                    <div class="card" v-for="kpi in this.partner.kpis">
+                    <div class="card" v-for="kpi in this.partner.kpis" :key="kpi.id">
                         <div class="m-4 mb-0">
                             <h4>{{ kpi.title }}</h4>
                             <p>{{ kpi.review_period_range }}</p>
@@ -246,18 +271,22 @@
                                                 {{ kpiMetric.title }}
                                             </td>
                                             <td>
-                                                {{
+                                                <label class="active-period txt-gray">{{
                                                     calculateCurrentSum(
                                                         kpiMetric
-                                                    )
-                                                }}
+                                                    ).toFixed(
+                                                                2
+                                                            )
+                                                }}</label>
                                             </td>
                                             <td>
-                                                {{
+                                               <label class="active-period txt-gray"> {{
                                                     calculateTargetSum(
                                                         kpiMetric
-                                                    )
-                                                }}
+                                                    ).toFixed(
+                                                                2
+                                                            )
+                                                }}</label>
                                             </td>
                                             <td>
                                                 <div>
@@ -269,6 +298,20 @@
                                                     <div class="progress">
                                                         <div
                                                             class="progress-bar"
+                                                            :class="{
+                                                                'progress-bar-on-track on-track-label':
+                                                                calculateProgressStatus(
+                                                        kpiMetric
+                                                    )== 'On Track',
+                                                    'progress-bar-at-risk at-risk-label' :
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    )=='At Risk',
+                                                    'progress-bar-off-track off-track-label' :
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    ) =='Off Track'
+                                                            }"
                                                             role="progressbar"
                                                             :style="{
                                                                 width:
@@ -281,11 +324,26 @@
                                                         ></div>
                                                     </div>
                                                 </div>
-                                                {{
+                                                <span
+                                                :class="{
+                                                    'on-track-label':
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    )== 'On Track',
+                                                    'at-risk-label' :
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    )=='At Risk',
+                                                    'off-track-label' :
+                                                    calculateProgressStatus(
+                                                        kpiMetric
+                                                    ) =='Off Track'
+                                                            }"
+                                                >{{
                                                     calculateProgressStatus(
                                                         kpiMetric
                                                     )
-                                                }}
+                                                }}</span>
                                             </td>
 
                                             <td class="td-members">
@@ -865,7 +923,7 @@
                                                                 "Active")
                                                         }}
                                                     </span>-->
-                                                    <div class="active_status_container d-flex flex-row justify-content-center">
+                                                    <div class="active_status_container  d-flex flex-row justify-content-center">
                                                     <span class="active_status_text"
                                                         >{{
                                                             (member.is_active =
@@ -875,17 +933,21 @@
                                                 </div>
                                                 </td>
                                                 <td>
-                                                    <span
+                                                     <span
                                                         class="department-tag py-1 my-1"
                                                         v-for="department in member.departments"
                                                         :key="department.id"
                                                         >{{
                                                             department.name
-                                                        }}</span
-                                                    >
+                                                        }}</span>
                                                 </td>
-
                                                 <td>
+                                                   
+                                                <!-- </td>
+                                                 
+                                                 {{calculateActiveKpiProgress(member)}}
+
+                                                <td> -->
                                                     <div
                                                         class="progress-percentage"
                                                     >
@@ -1003,6 +1065,7 @@
                                                         >
                                                     </button></a>
                                                 </td>
+                                               
                                             </tr>
                                         </tbody>
                                     </table>
@@ -2052,6 +2115,7 @@ export default {
             selectedKpi: null,
             timelyValue: null,
             selectedType: "",
+            kpiMetricsDetails: [],
 
             member: {
                 email: "",
@@ -2125,6 +2189,9 @@ export default {
             showInputs: false,
             review_start_date: null,
             review_end_date: null,
+            myChart: null,
+            allMonths: null,
+            dataPoints: null
         };
     },
 
@@ -2148,6 +2215,8 @@ export default {
                     .flatMap((kpi) => kpi.kpi_metrics)
                     .flatMap((metric) => metric.kpi_metric_members) // Navigate to kpi_metric_members
                     .flatMap((member) => member.progress); // Navigate to progress
+
+                    console.log("Kpi Metrics on Members:",JSON.stringify(kpiMetrics));
 
                 const sumCurrentValues = kpiMetrics.reduce((sum, progress) => {
                     return sum + progress.current_value;
@@ -2211,6 +2280,38 @@ export default {
                     statusClass,
                 },
             ];
+        },
+
+        metricWithProgress() {
+            const groupedMetrics = {};
+
+            this.kpiMetricsDetails.forEach((metric) => {
+                const id = metric.metric.id;
+
+                if (!groupedMetrics[id]) {
+                    groupedMetrics[id] = {
+                        id: metric.metric.id,
+                        name: metric.metric.name,
+
+                        calculatedProgress: this.calculateMetricProgress(
+                            metric.metric.kpi_metric.kpi.kpi_metrics
+                        ),
+
+                        totalCurrentValue:
+                            this.calculateTotalCurrentValueforMetric(
+                                metric.metric.kpi_metric.kpi.kpi_metrics
+                            ),
+
+                        // metricTopDrivers: this.getTopDrivers (metric.metric.kpi_metric.kpi.kpi_metrics)
+
+                        // statusClass: this.getStatusClass(metric),
+                        partner: metric.metric.kpi_metric.partner,
+                        // departments: partner.departments,
+                    };
+                }
+            });
+
+            return Object.values(groupedMetrics);
         },
 
         remainingCharacters() {
@@ -2307,11 +2408,17 @@ export default {
 
     async created() {
         await this.fetchMetrics();
+        await this.fetchKpiMetrics();
         await this.fetchCountries();
 
         this.formattedDate = format(
             new Date(this.partner.created_at),
             "'Date Joined: ' do MMMM yyyy"
+        );
+
+        console.log(
+            "KpiMetrics fetch according to metric_id:",
+            JSON.stringify(this.kpiMetricsDetails)
         );
         console.log("Metrics are:", JSON.stringify(this.metrics));
         console.log("Partners prop:", this.partner);
@@ -2327,98 +2434,186 @@ export default {
 
         // console.log("userProgressItems:", this.userProgressItems);
 
-        //console.log("Kpi Metric Members:", JSON.stringify(this.partner.kpi_metrics));
+        console.log("Specific Kpi Metrics:", JSON.stringify(this.kpimetrics));
+
+        const partnerId = this.partnerId;
+
+        const today = new Date();
+
+        // Fetch data from your API endpoint for the last 8 months
+        let uri =
+            this.base_url +
+            // `api/v1/kpi-progress?start_date=${startingDate.toISOString()}&end_date=${today.toISOString()}&partner_id=${partnerId}`;
+
+            `api/v1/kpi-progress/${partnerId}?start_date=${today.toISOString()}&end_date=${today.toISOString()}`;
+        await axios
+            .get(uri)
+            .then((response) => {
+                console.log("Chart Data is:", response.data);
+                this.progressData = response.data.overall_progress;
+
+                console.log(
+                    "Updated Chart Data:" + JSON.stringify(this.progressData)
+                );
+
+                // Extract data and progress percentages from the API response
+                const months = this.progressData.map((item) => item.month);
+                const progressPercentages = this.progressData.map(
+                    (item) => item.progress_percentage
+                );
+
+                // Create an array of month labels for all 12 months
+                const allMonths = Array.from({ length: 12 }, (_, i) => i + 1); // 1 to 12
+
+                // Create an array to store the data points for the line chart
+                const dataPoints = [];
+                let accumulatedProgress = 0;
+
+                // Loop through all months and populate data based on API response
+                allMonths.forEach((month) => {
+                    const monthIndex = months.indexOf(month);
+                    if (monthIndex !== -1) {
+                        // If data is available for this month, use it
+                        accumulatedProgress += progressPercentages[monthIndex];
+                        dataPoints.push(accumulatedProgress);
+                    } else {
+                        // If no data available for this month, use zero or null
+                        dataPoints.push(null); // Use null for no data
+                    }
+                });
+
+                // Create a new Chart instance
+                const chartCanvas = this.$refs.chart;
+                const ctx = chartCanvas.getContext("2d");
+
+                // Create the chart with dynamic x-axis labels
+               
+                const myChart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: allMonths.map((month) => {
+                            const monthIndex = month - 1;
+                            return [
+                                "Jan",
+                                "Feb",
+                                "Mar",
+                                "Apr",
+                                "May",
+                                "Jun",
+                                "Jul",
+                                "Aug",
+                                "Sep",
+                                "Oct",
+                                "Nov",
+                                "Dec",
+                            ][monthIndex];
+                        }),
+                        datasets: [
+                            {
+                                label: "Remaining",
+                                data: dataPoints,
+                                borderColor: "blue",
+                                fill: false,
+                            },
+                        ],
+                    },
+                    options: this.chartOptions,
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
     },
 
-mounted() {
+    mounted() {
+        /*const partnerId = this.partnerId;
 
-   const partnerId = this.partnerId;
+        const today = new Date();
 
-    const today = new Date();
+        // Fetch data from your API endpoint for the last 8 months
+        let uri =
+            this.base_url +
+            // `api/v1/kpi-progress?start_date=${startingDate.toISOString()}&end_date=${today.toISOString()}&partner_id=${partnerId}`;
 
-    // Fetch data from your API endpoint for the last 8 months
-    let uri =
-        this.base_url +
-               // `api/v1/kpi-progress?start_date=${startingDate.toISOString()}&end_date=${today.toISOString()}&partner_id=${partnerId}`;
+            `api/v1/kpi-progress/${partnerId}?start_date=${today.toISOString()}&end_date=${today.toISOString()}`;
+        axios
+            .get(uri)
+            .then((response) => {
+                console.log("Chart Data is:", response.data);
+                this.progressData = response.data.overall_progress;
 
-        `api/v1/kpi-progress/${partnerId}?start_date=${today.toISOString()}&end_date=${today.toISOString()}`;
-    axios
-        .get(uri)
-        .then((response) => {
-            console.log("Chart Data is:", response.data);
-            this.progressData = response.data.overall_progress;
+                console.log(
+                    "Updated Chart Data:" + JSON.stringify(this.progressData)
+                );
 
-            console.log(
-                "Updated Chart Data:" + JSON.stringify(this.progressData)
-            );
+                // Extract data and progress percentages from the API response
+                const months = this.progressData.map((item) => item.month);
+                const progressPercentages = this.progressData.map(
+                    (item) => item.progress_percentage
+                );
 
-            // Extract data and progress percentages from the API response
-            const months = this.progressData.map((item) => item.month);
-            const progressPercentages = this.progressData.map(
-                (item) => item.progress_percentage
-            );
+                // Create an array of month labels for all 12 months
+                const allMonths = Array.from({ length: 12 }, (_, i) => i + 1); // 1 to 12
 
-            // Create an array of month labels for all 12 months
-            const allMonths = Array.from({ length: 12 }, (_, i) => i + 1); // 1 to 12
+                // Create an array to store the data points for the line chart
+                const dataPoints = [];
+                let accumulatedProgress = 0;
 
-            // Create an array to store the data points for the line chart
-            const dataPoints = [];
-            let accumulatedProgress = 0;
+                // Loop through all months and populate data based on API response
+                allMonths.forEach((month) => {
+                    const monthIndex = months.indexOf(month);
+                    if (monthIndex !== -1) {
+                        // If data is available for this month, use it
+                        accumulatedProgress += progressPercentages[monthIndex];
+                        dataPoints.push(accumulatedProgress);
+                    } else {
+                        // If no data available for this month, use zero or null
+                        dataPoints.push(null); // Use null for no data
+                    }
+                });
 
-            // Loop through all months and populate data based on API response
-            allMonths.forEach((month) => {
-                const monthIndex = months.indexOf(month);
-                if (monthIndex !== -1) {
-                    // If data is available for this month, use it
-                    accumulatedProgress += progressPercentages[monthIndex];
-                    dataPoints.push(accumulatedProgress);
-                } else {
-                    // If no data available for this month, use zero or null
-                    dataPoints.push(null); // Use null for no data
-                }
-            });
+                // Create a new Chart instance
+                const chartCanvas = this.$refs.chart;
+                const ctx = chartCanvas.getContext("2d");
 
-            // Create a new Chart instance
-            const chartCanvas = this.$refs.chart;
-            const ctx = chartCanvas.getContext("2d");
-
-            // Create the chart with dynamic x-axis labels
-            const myChart = new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: allMonths.map((month) => {
-                        const monthIndex = month - 1;
-                        return [
-                            "Jan",
-                            "Feb",
-                            "Mar",
-                            "Apr",
-                            "May",
-                            "Jun",
-                            "Jul",
-                            "Aug",
-                            "Sep",
-                            "Oct",
-                            "Nov",
-                            "Dec",
-                        ][monthIndex];
-                    }),
-                    datasets: [
-                        {
-                            label: "Remaining",
-                            data: dataPoints,
-                            borderColor: "blue",
-                            fill: false,
-                        },
-                    ],
-                },
-                options: this.chartOptions,
-            });
-        })
-        .catch((error) => {
-            console.error("Error fetching data:", error);
-        });
-},
+                // Create the chart with dynamic x-axis labels
+               
+                const myChart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: allMonths.map((month) => {
+                            const monthIndex = month - 1;
+                            return [
+                                "Jan",
+                                "Feb",
+                                "Mar",
+                                "Apr",
+                                "May",
+                                "Jun",
+                                "Jul",
+                                "Aug",
+                                "Sep",
+                                "Oct",
+                                "Nov",
+                                "Dec",
+                            ][monthIndex];
+                        }),
+                        datasets: [
+                            {
+                                label: "Remaining",
+                                data: dataPoints,
+                                borderColor: "blue",
+                                fill: false,
+                            },
+                        ],
+                    },
+                    options: this.chartOptions,
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });*/
+    },
 
     methods: {
         calculateCurrentSum(kpiMetric) {
@@ -2433,11 +2628,10 @@ mounted() {
         calculateTargetSum(kpiMetric) {
             let targetSum = 0;
             kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
-             kpiMetricMember.progress.forEach((progressEntry1) => {
-
-                targetSum += progressEntry1.target_value;
+                kpiMetricMember.progress.forEach((progressEntry1) => {
+                    targetSum += progressEntry1.target_value;
+                });
             });
-         });
             return targetSum;
         },
         calculateProgressPercentage(kpiMetric) {
@@ -2503,6 +2697,68 @@ mounted() {
 
             return "off-track";
         },
+
+        calculateMetricProgress(kpi_metrics) {
+            let totalCurrentValue = 0;
+            let totalTargetValue = 0;
+
+            //  console.log("Total Current value is:",totalCurrentValue);
+            // console.log("Total Target value is:",totalTargetValue);
+
+            kpi_metrics.forEach((kpiMetric) => {
+                kpiMetric.kpi_metric_members.forEach((member) => {
+                    member.progress.forEach((progress) => {
+                        totalCurrentValue += progress.current_value;
+                        totalTargetValue += progress.target_value;
+                    });
+                });
+            });
+
+            console.log("Total Current value is:", totalCurrentValue);
+            console.log("Total Target value is:", totalTargetValue);
+
+            if (totalTargetValue === 0) {
+                return 0;
+            }
+
+            return (totalCurrentValue / totalTargetValue) * 100;
+        },
+
+        calculateTotalCurrentValueforMetric(metricCurrentTotal) {
+            let totalCurrentValue = 0;
+
+            metricCurrentTotal.forEach((kpiMetric) => {
+                kpiMetric.kpi_metric_members.forEach((member) => {
+                    member.progress.forEach((progress) => {
+                        totalCurrentValue += progress.current_value;
+                    });
+                });
+            });
+            return totalCurrentValue;
+        },
+
+        // getTopDrivers(topdriver) {
+        //     let topDriver = null;
+        //     let highestValue = -Infinity;
+
+        //     topdriver.forEach((kpiMetric) => {
+        //         kpiMetric.kpi_metric_members.forEach((member) => {
+        //             member.progress.forEach((progress) => {
+        //                 if (progress.current_value > highestValue) {
+        //                     highestValue = progress.current_value;
+        //                     topDriver = member;
+        //                 }
+        //             });
+        //         });
+        //     });
+
+        //     if (topDriver !== null) {
+        //         return topDriver.member.name; // Assuming member has a "name" property
+        //     } else {
+        //         return "N/A"; // No members found
+        //     }
+        // },
+
 
         // calculateActiveKpiProgress(kpiMetricMembers) {
         //     const sumCurrentValues = kpiMetricMembers.reduce(
@@ -2604,6 +2860,40 @@ mounted() {
                 this.metrics = response.data;
             });
         },
+
+        async fetchKpiMetrics() {
+            try {
+                const kpiMetricsDetails = [];
+
+                // Iterate through each KPI of the partner
+                for (const kpi of this.partner.kpis) {
+                    // Iterate through each kpi_metric of the KPI
+                    for (const kpiMetric of kpi.kpi_metrics) {
+                        const metricId = kpiMetric.metric_id;
+                        const uri =
+                            this.base_url + `api/v1/kpi-metrics/${metricId}`;
+
+                        // Make an API request for each KPI Metric
+                        const response = await axios.get(uri);
+
+                        // Handle the response data as needed
+                        console.log(
+                            "API Response for KPI Metric:",
+                            response.data
+                        );
+
+                        // Push the KPI Metric data into the array
+                        kpiMetricsDetails.push(response.data);
+                    }
+                }
+
+                // Store or process the KPI Metrics data as needed
+                this.kpiMetricsDetails = kpiMetricsDetails;
+            } catch (error) {
+                console.error("Error fetching KPI Metrics:", error);
+            }
+        },
+
         toggleDateInputs(kpiId) {
             this.showInputs[kpiId] = !this.showInputs[kpiId];
         },
@@ -2807,6 +3097,7 @@ mounted() {
             if (selectedMetric) {
                 // Append the selected metric's name to the form data
                 formData.append("type", selectedMetric.name);
+                formData.append("metric_id", selectedMetric.id);
             }
             // formData.append("target", this.member.target);
             formData.append("response_period", this.kpiMetric.responsePeriod);
@@ -3200,5 +3491,18 @@ option {
     font-size: 11px;
     margin: auto;
     
+}
+
+
+.btn-pri{
+    /*background-color: #0072bb;*/
+    background-color: #0072bb;
+    font-size: 9px !important;
+    border-radius: 8px;
+    height: 32px;
+    width: 100px;
+    color: #eaf3ff;
+  
+
 }
 </style>

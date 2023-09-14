@@ -761,4 +761,5 @@ export default {
 
     /* Add any other styles you want to reset on hover */
 }
+
 </style>

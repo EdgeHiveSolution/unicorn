@@ -63,7 +63,7 @@
 
         <div class="dropdown-divider"></div>
         <div v-if="activeTab === 'performance'">
-            <h3>Performance Overview</h3>
+            <h4>Performance Overview</h4>
 
             <div class="row">
                 <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
@@ -127,7 +127,7 @@
             </div>
 
             <div class="row">
-                <div class="col-12 grid-margin">
+                <div class="col-12 grid-margin bg-white" style="border: none;">
                     <div class="card">
                         <div
                             class="card-header d-flex justify-content-between my-3"
@@ -177,8 +177,8 @@
                                         >
                                             <td>
                                                 <img
-                                                    :src="partner.image"
-                                                    alt="image"
+                                                    :src="partner.logo"
+                                                    alt="logo"
                                                 />
                                                 <span class="pl-2 active-period txt-gray">{{
                                                     partner.name
@@ -199,11 +199,7 @@
                                                     <div class="progress">
                                                         <div
                                                             class="progress-bar"
-                                                            :class="
-                                                                getStatusClass(
-                                                                    partner
-                                                                )
-                                                            "
+                                                            
                                                             :style="{
                                                                 width:
                                                                     partner.calculatedProgress +
@@ -213,7 +209,7 @@
                                                             aria-valuemax="100"
                                                         ></div>
                                                     </div>
-                                                    <div
+                                                   <!-- <div
                                                         class="progress-labels"
                                                     >
                                                         <span
@@ -244,7 +240,7 @@
                                                             "
                                                             >On Track</span
                                                         >
-                                                    </div>
+                                                    </div>-->
                                                 </div>
                                             </td>
                                             <td v-else>N/A</td>
@@ -315,14 +311,14 @@
                                             <td>
                                                 <!--v-for="department in partner.departments"
                                                     class="department-tag"-->
-                                                <span
+                                               <div class="mt-2"> <span
                                                     
-                                                    class="department-tag active-period txt-gray"
+                                                    class="department-tag active-period txt-gray my-auto"
                                                     v-for="department in uniqueDepartments"
                                                     :key="department.id"
                                                 >
                                                     {{ department.name }}
-                                                </span>
+                                                </span></div>
                                             </td>
                                             <td>
                                                 <button
@@ -350,8 +346,9 @@
 
                     <br />
 
-                    <div class="card">
-                        <h3>Department Metrics</h3>
+                    <h4>Department Metrics</h4>
+                    <div class="card mt-3">
+                       
                         <div
                             class="card-header d-flex justify-content-between my-3"
                         >
@@ -411,7 +408,7 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>KPI Metric</th>
+                                            <th>Metric</th>
                                             <th>Current Value</th>
                                             <th>Target</th>
                                             <th>Progress</th>
@@ -420,17 +417,48 @@
                                     </thead>
                                     <tbody>
                                         <!-- Replace the static data with dynamic data using v-for directive -->
-                                        <tr>
+                                        <tr
+                                            v-for="metric in metricWithProgress"
+                                            :key="metric.id"
+                                        >
                                             <td>
-                                                <span class="txt-gray">
-                                                    Partners:
-                                                </span>
+                                                <div>
+                                                    {{ metric.name }}
+                                                </div>
+                                                <div>
+                                                    <span class="txt-gray">
+                                                        Partners:
+                                                    </span>
+                                                </div>
                                             </td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>
+                                                <div class="mt-2"><label class="txt-dark-detail">{{ metric.totalCurrentValue.toFixed(2) }}</label></div>
+                                            </td>
+                                            <td><div class="mt-2"><label class="txt-dark-detail">{{metric.totalTargetValue.toFixed(2)}}</label></div></td>
+                                           
 
-                                            <td></td>
+                                            <td>
+                                                        <label class="txt-dark-detail">{{
+                                                            metric.calculatedProgress.toFixed(
+                                                                2
+                                                            )
+                                                        }}</label>%
+
+                                                        <div class="progress">
+                                                            <div
+                                                                class="progress-bar"
+                                                                :style="{
+                                                                    width:
+                                                                        metric.calculatedProgress +
+                                                                        '%',
+                                                                }"
+                                                                aria-valuemin="0"
+                                                                aria-valuemax="100"
+                                                            ></div>
+                                                        </div>
+                                                    </td>
+
+                                                    <td></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -475,6 +503,194 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>Partner</th>
+                                    <th>Status</th>
+                                    <th>About</th>
+                                    <th>Members</th>
+                                    <th>Active KPIs</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="partner in partnersWithProgress"
+                                    :key="partner.id"
+                                >
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img
+                                                :src="partner.logo"
+                                                alt="logo"
+                                            />
+                                            <span class="pl-2 active-period txt-gray">{{
+                                                partner.name
+                                            }}</span>
+                                        </div>
+
+                                        <div class="d-flex align-items-center">
+                                            <span class="active-period txt-gray"
+                                                >Date Joined:
+                                                {{
+                                                    partner.formatted_created_at
+                                                }}</span
+                                            >
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!--<button class="btn btn-suc">
+                                            <span class="txt-success"
+                                                >Active</span
+                                            >
+                                        </button>-->
+                                        <div class="active_status_container mt-2 d-flex flex-row justify-content-center">
+                                                    <span class="active_status_text"
+                                                        >Active</span
+                                                    >
+                                                </div>
+                                    </td>
+                                    <td>
+                                        <span class="txt-dark">{{
+                                            partner.business_type
+                                        }}</span
+                                        ><br />
+                                        <span class="active-period txt-gray">{{
+                                            partner.about
+                                        }}</span>
+                                    </td>
+                                    <td class="td-members">
+                                         <div class="d-flex flex-row">
+                                               <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                               
+                                               <template v-for="(member,index) in partner.members"
+                                               :key="index"
+                                               >
+                                                
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 2"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                        
+                                                </div>
+
+                                                 <div class="member_image_plus"
+                                                 v-else
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+{{index - 1}}</p>
+                                                </div>
+
+                                        
+                                                </template>
+
+                                                
+                                                </div>
+                                        <!--<img
+                                            v-for="member in partner.members"
+                                            :key="member.id"
+                                            :src="member.image"
+                                            alt="image"
+                                        />-->
+                                    </td>
+                                    <td v-if="partner.calculatedProgress > 0">
+                                        <div>
+                                            <!--{{
+                                                partner.calculatedProgress.toFixed(
+                                                    2
+                                                )
+                                            }}%-->
+
+                                             <label class="progress_text"> {{
+                                                        partner.calculatedProgress.toFixed(
+                                                            2
+                                                        )
+                                                    }}</label>%
+                                            <div class="progress">
+                                                <div
+                                                    class="progress-bar"
+                                                    :class="
+                                                        getStatusClass(partner)
+                                                    "
+                                                    :style="{
+                                                        width:
+                                                            partner.calculatedProgress +
+                                                            '%',
+                                                    }"
+                                                    aria-valuemin="0"
+                                                    aria-valuemax="100"
+                                                ></div>
+                                            </div>
+                                            <div class="progress-labels">
+                                                <span
+                                                    class="status-label off-track-label"
+                                                    v-if="
+                                                        getStatusClass(
+                                                            partner
+                                                        ) === 'off-track'
+                                                    "
+                                                    >Off Track</span
+                                                >
+                                                <span
+                                                    class="status-label at-risk-label"
+                                                    v-else-if="
+                                                        getStatusClass(
+                                                            partner
+                                                        ) === 'at-risk'
+                                                    "
+                                                    >At Risk</span
+                                                >
+                                                <span
+                                                    class="status-label on-track-label"
+                                                    v-else-if="
+                                                        getStatusClass(
+                                                            partner
+                                                        ) === 'on-track'
+                                                    "
+                                                    >On Track</span
+                                                >
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td v-else>No Active Kpis</td>
+                                    <td>
+                                       
+                                             <a :href="'/department_partners/' +
+                                                            partner.id "><button
+                                                    class="btn btn-sm px-1 py-2  btn-pri d-flex flex-row justify-content-center align-items-center"
+                                                >
+                                                    <span
+                                                        class="mdi mdi-eye-outline text-light"
+                                                    ></span>
+                                                    <a
+                                                        :href="
+                                                            '/department_partners/' +
+                                                            partner.id
+                                                        "
+                                                        class="text-light"
+                                                        >View</a
+                                                    >
+                                                </button></a>
+                                        
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                         <!--<table class="table">
+                            <thead>
+                                <tr>
                                     <th>KPI Metric</th>
                                     <th>Current</th>
                                     <th>Target</th>
@@ -487,19 +703,20 @@
                                     :key="kpiMetric.id"
                                   >
                                     <td>
-                                        {{ kpiMetric.title }}
+                                       <label class="active-period txt-gray">{{ kpiMetric.title }}</label>
                                     </td>
                                     <td>
-                                        {{ kpiMetric.currentSum}}
+                                        <label class="active-period txt-gray">{{ kpiMetric.currentSum}}</label>
                                     </td>
                                     <td>
-                                        {{ kpiMetric.targetSum }}
+                                        <label class="active-period txt-gray">{{ kpiMetric.targetSum }}</label>
                                     </td>
                                     <td>
+                                        <div class=" container-fluid">
                                         <div>
-                                            {{
+                                            <label class="progress_text">{{
                                                 kpiMetric.progressPercentage
-                                            }}%
+                                            }}</label>%
                                             <div class="progress">
                                                 <div
                                                     class="progress-bar"
@@ -513,8 +730,17 @@
                                                 ></div>
                                             </div>
                                         </div>
-                                        <!--make sure{{calculateProgressStatus(kpiMetric)}}-->
-                                       <!-- <span class="status-label off-track-label" 
+                                     
+                                        <label class="active-period txt-gray">{{ kpiMetric.progressStatus }}</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table> -->
+
+                        <!--
+                          make sure{{calculateProgressStatus(kpiMetric)}}
+                                        <span class="status-label off-track-label" 
                                         v-if="calculateProgressStatus(kpiMetric) === 'Off Track'">
                                         Off Track</span>
 
@@ -524,12 +750,9 @@
 
                                         <span class="status-label on-track-label" 
                                         v-if="calculateProgressStatus(kpiMetric) === 'On Track'">
-                                        On Track</span>-->
-                                        {{ kpiMetric.progressStatus }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        On Track</span>
+
+                        -->
                     </div>
                 </div>
             </div>
@@ -624,12 +847,59 @@
                                                 </div>
                                     </td>
                                     <td>
-                                        <span
+                                        <!--<span
                                             v-for="partner in partnersWithProgress"
                                             :key="partner.id"
                                         >
                                             {{ partner.name }}
-                                        </span>
+                                        </span>-->
+                                         <div class="d-flex flex-row">
+                                               <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                               
+                                               <template v-for="(member,index) in partnersWithProgress"
+                                               :key="index"
+                                               >
+
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 2"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
+
+                                                 <div class="member_image_plus"
+                                                 v-else
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+{{index - 1}}</p>
+                                                </div>
+
+                                                <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                                </template>
+
+                                                <!--<img
+                                                    
+                                                    alt="image"
+                                                />-->
+                                                </div>
                                     </td>
                                     <td></td>
                                 </tr>
@@ -893,6 +1163,8 @@ export default {
     data() {
         return {
             newPartners: [],
+            kpiMetricsDetails: [],
+            base_url: "../",
             department: {
                 name: this.department.name,
             },
@@ -910,6 +1182,15 @@ export default {
                 about: this.department.about,
             },
         };
+    },
+
+    async created() {
+        await this.fetchKpiMetrics();
+
+        console.log(
+            "KpiMetrics Detail:",
+            JSON.stringify(this.kpiMetricsDetails)
+        );
     },
 
     mounted() {
@@ -966,6 +1247,44 @@ export default {
             return uniqueDepartments;
         },
 
+        metricWithProgress() {
+            const groupedMetrics = {};
+            
+
+            this.kpiMetricsDetails.forEach((metric) => {
+                const id = metric.metric.id;
+
+                if (!groupedMetrics[id]) {
+                    groupedMetrics[id] = {
+                        id: metric.metric.id,
+                        name: metric.metric.name,
+
+                        calculatedProgress: this.calculateMetricProgress(
+                            metric.metric.kpi_metric.kpi.kpi_metrics
+                        ),
+
+                        totalCurrentValue:
+                            this.calculateTotalCurrentValueforMetric(
+                                metric.metric.kpi_metric.kpi.kpi_metrics
+                            ),
+
+                        totalTargetValue:
+                            this.calculateTotalTargetValueforMetric(
+                                metric.metric.kpi_metric.kpi.kpi_metrics
+                            ),
+
+                        // metricTopDrivers: this.getTopDrivers (metric.metric.kpi_metric.kpi.kpi_metrics)
+
+                        // statusClass: this.getStatusClass(metric),
+                        partner: metric.metric.kpi_metric.partner,
+                        // departments: partner.departments,
+                    };
+                }
+            });
+
+            return Object.values(groupedMetrics);
+        },
+
         // partnersWithProgress() {
         //     return this.partners.map((partner) => ({
         //         ...partner,
@@ -985,7 +1304,10 @@ export default {
                     groupedPartners[id] = {
                         id: partner.id,
                         name: partner.name,
-                        image: partner.image,
+                        logo: partner.logo,
+                        formatted_created_at: partner.formatted_created_at,
+                        about: partner.about,
+                        business_type: partner.business_type,
                         calculatedProgress: this.calculateKpiProgress(
                             partner.kpis
                         ),
@@ -999,33 +1321,35 @@ export default {
             return Object.values(groupedPartners);
         },
 
-       kpiMetricsWithProgress() {
-    const uniqueKpiMetrics = {};
+        kpiMetricsWithProgress() {
+            const uniqueKpiMetrics = {};
 
-    this.partners.forEach((partner) => {
-        partner.kpis.forEach((kpi) => {
-            kpi.kpi_metrics.forEach((kpiMetric) => {
-                // Use a unique identifier for each KPI metric, e.g., id
-                const identifier = kpiMetric.id;
+            this.partners.forEach((partner) => {
+                partner.kpis.forEach((kpi) => {
+                    kpi.kpi_metrics.forEach((kpiMetric) => {
+                        // Use a unique identifier for each KPI metric, e.g., id
+                        const identifier = kpiMetric.id;
 
-                if (!uniqueKpiMetrics[identifier]) {
-                    uniqueKpiMetrics[identifier] = {
-                        // Add properties of the KPI metric
-                        id: kpiMetric.id,
-                        title: kpiMetric.title,
-                        // Include other properties you need
-                        currentSum: this.calculateCurrentSum(kpiMetric), // Example: Adding calculated current sum
-                        targetSum: this.calculateTargetSum(kpiMetric),   // Example: Adding calculated target sum
-                        progressPercentage: this.calculateProgressPercentage(kpiMetric), 
-                        progressStatus: this.calculateProgressStatus(kpiMetric)
-                    };
-                }
+                        if (!uniqueKpiMetrics[identifier]) {
+                            uniqueKpiMetrics[identifier] = {
+                                // Add properties of the KPI metric
+                                id: kpiMetric.id,
+                                title: kpiMetric.title,
+                                // Include other properties you need
+                                currentSum: this.calculateCurrentSum(kpiMetric), // Example: Adding calculated current sum
+                                targetSum: this.calculateTargetSum(kpiMetric), // Example: Adding calculated target sum
+                                progressPercentage:
+                                    this.calculateProgressPercentage(kpiMetric),
+                                progressStatus:
+                                    this.calculateProgressStatus(kpiMetric),
+                            };
+                        }
+                    });
+                });
             });
-        });
-    });
 
-    return Object.values(uniqueKpiMetrics);
-},
+            return Object.values(uniqueKpiMetrics);
+        },
 
         // kpiMetricsWithProgress() {
         //     const kpiMetricsArray = [];
@@ -1194,6 +1518,82 @@ export default {
             return targetSum;
         },
 
+        calculateMetricProgress(kpi_metrics) {
+            let totalCurrentValue = 0;
+            let totalTargetValue = 0;
+
+            //  console.log("Total Current value is:",totalCurrentValue);
+            // console.log("Total Target value is:",totalTargetValue);
+
+            kpi_metrics.forEach((kpiMetric) => {
+                kpiMetric.kpi_metric_members.forEach((member) => {
+                    member.progress.forEach((progress) => {
+                        totalCurrentValue += progress.current_value;
+                        totalTargetValue += progress.target_value;
+                    });
+                });
+            });
+
+            console.log("Total Current value is:", totalCurrentValue);
+            console.log("Total Target value is:", totalTargetValue);
+
+            if (totalTargetValue === 0) {
+                return 0;
+            }
+
+            return (totalCurrentValue / totalTargetValue) * 100;
+        },
+
+        calculateTotalCurrentValueforMetric(metricCurrentTotal) {
+            let totalCurrentValue = 0;
+
+            metricCurrentTotal.forEach((kpiMetric) => {
+                kpiMetric.kpi_metric_members.forEach((member) => {
+                    member.progress.forEach((progress) => {
+                        totalCurrentValue += progress.current_value;
+                    });
+                });
+            });
+            return totalCurrentValue;
+        },
+
+
+        calculateTotalTargetValueforMetric(metricTargetTotal) {
+
+             let totalTargetValue = 0;
+
+            metricTargetTotal.forEach((kpiMetric) => {
+                kpiMetric.kpi_metric_members.forEach((member) => {
+                    member.progress.forEach((progress) => {
+                        totalTargetValue += progress.target_value;
+                    });
+                });
+            });
+            return totalTargetValue;
+        },
+
+        // getTopDrivers(topdriver) {
+        //     let topDriver = null;
+        //     let highestValue = -Infinity;
+
+        //     topdriver.forEach((kpiMetric) => {
+        //         kpiMetric.kpi_metric_members.forEach((member) => {
+        //             member.progress.forEach((progress) => {
+        //                 if (progress.current_value > highestValue) {
+        //                     highestValue = progress.current_value;
+        //                     topDriver = member;
+        //                 }
+        //             });
+        //         });
+        //     });
+
+        //     if (topDriver !== null) {
+        //         return topDriver.member.name; // Assuming member has a "name" property
+        //     } else {
+        //         return "N/A"; // No members found
+        //     }
+        // },
+
         // calculateTargetSum(kpiMetric) {
         //     let targetSum = 0;
         //     kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
@@ -1223,6 +1623,43 @@ export default {
                 return "At Risk";
             } else {
                 return "Off Track";
+            }
+        },
+
+        async fetchKpiMetrics() {
+            try {
+                const kpiMetricsDetails = [];
+
+                // Iterate through each KPI of the partner
+                for (const partner of this.partners) {
+                    // Iterate through each kpi_metric of the KPI
+                    for (const kpi of partner.kpis) {
+                        for (const kpiMetric of kpi.kpi_metrics) {
+                            const metricId = kpiMetric.metric_id;
+
+                            const uri =
+                                this.base_url +
+                                `api/v1/kpi-metrics/${metricId}`;
+
+                            // Make an API request for each KPI Metric
+                            const response = await axios.get(uri);
+
+                            // Handle the response data as needed
+                            console.log(
+                                "API Response for KPI Metric:",
+                                response.data
+                            );
+
+                            // Push the KPI Metric data into the array
+                            kpiMetricsDetails.push(response.data);
+                        }
+                    }
+                }
+
+                // Store or process the KPI Metrics data as needed
+                this.kpiMetricsDetails = kpiMetricsDetails;
+            } catch (error) {
+                console.error("Error fetching KPI Metrics:", error);
             }
         },
 
@@ -1403,6 +1840,23 @@ th{
 .at-risk-label {
     color: #f0ad4e;
     font-size: 12px;
+}
+
+
+.btn-pri{
+    /*background-color: #0072bb;*/
+    background-color: #0072bb;
+    font-size: 10px !important;
+    height: 32px;
+    /*width: 80px;*/
+    color: #eaf3ff;
+    margin-top: 8px;
+    border-radius: 8px;
+    
+}
+
+.txt-dark-detail{
+    font-size: 14px;
 }
 
 /*.on-track {

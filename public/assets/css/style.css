@@ -335,6 +335,18 @@ input{
     flex-direction: column;
 }
 
+.profile_image{
+    width: 35px;
+    margin-left: -10px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #f3f4f7;
+    border-color: 1px solid #979da9;
+    /*background-color: #d3d3d3;*/
+    /*border-color: 1px solid white;*/
+}
+
+
 .member_image_text{
     color:#f8b925;
     font-size: 11px;

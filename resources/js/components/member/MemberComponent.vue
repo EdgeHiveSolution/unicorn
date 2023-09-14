@@ -1,6 +1,15 @@
 <template>
     <div>
-        <div class="d-flex align-items-center">
+        <div class="d-flex flex-row">
+            <div class="profile_image d-flex flex-column align-items-center mx-2">
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="lg"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
             <div class="data-info">
                 <div v-if="member.member && member.member.name">
                     <h4>{{ member.member.name }}</h4>
@@ -109,20 +118,22 @@
                                     <td>
                                     <div>
                                      <!-- <span>{{ kpiMetricData.kpiMetric.title }}</span> -->
-                                        <span>{{ kpiMetricData.kpiMetric.title }}</span>
+                                        <label class="active-period txt-gray"><span>{{ kpiMetricData.kpiMetric.title }}</span></label>
                                         
                                     </div>
                                     <div> <span>{{kpiMetricData.kpiMetric.type}}</span></div>
                                     </td>
                                     <td class="">
                                      <!-- <div>{{ progressData.progress_sum.current_sum }}</div> -->
-                                                    <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.current_sum }}</div>
+                                                    <div><span v-if="kpiMetricData.kpiMetric.type === currency"
+                                                    class="active-period txt-gray"
+                                                    >KES</span> {{ kpiMetricData.progress_sum.current_sum }}</div>
                         </td>
                         <td class="">
                         <!-- <div>{{ progressData.progress_sum.target_sum }}</div> -->
                         <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.target_sum }} </div>
                         </td>
-                        <td>
+                        <!--<td>-->
                         <td class="stats">
                             <p class="progress_text text-muted">
                             {{ calculateProgressPercentage( kpiMetricData.progress_sum) }}%
@@ -141,7 +152,7 @@
                             {{ calculateProgressStatus( kpiMetricData.progress_sum, kpiMetricData.kpiMetric) }}
                             </p>
                         </td>
-        </td>
+       <!-- </td>-->
       </tr>
     </tbody>
   </table>
@@ -385,4 +396,21 @@ img {
     padding: 8px;
     border-radius: 15px;
 }
+
+.profile_image{
+    width: 50px;
+    margin-left: -10px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #f3f4f7;
+    border-color: 1px solid #979da9;
+    /*background-color: #d3d3d3;*/
+    /*border-color: 1px solid white;*/
+}
+
+.txt-gray{
+    /*color: #b1b6c0;*/
+    color: rgba(102,112,133,1);
+}
+
 </style>

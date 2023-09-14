@@ -457,6 +457,16 @@ export default {
     color: #047a48;
 }
 
+.at-risk-label{
+    font-size: 12px;
+    color: #f0ad4e;
+}
+
+.off-track-label{
+    font-size: 12px;
+    color: #d9534f;
+}
+
 
 .primary_button{
     background-color: #084bf7;
