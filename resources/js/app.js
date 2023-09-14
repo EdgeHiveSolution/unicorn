@@ -22,6 +22,8 @@ import DepartmentDetailComponent from './components/department/DepartmentDetailC
 import ProfileEditComponent from './components/profile/ProfileEditComponent.vue';
 import MemberComponent from './components/member/MemberComponent.vue';
 import DepartmentPartnerDetailComponent from './components/department_partner/DepartmentPartnerDetailComponent.vue';
+import DepartmentMemberComponent from './components/department_member/DepartmentMemberComponent.vue';
+
 
 // app.use(BootstrapVue);
 
@@ -38,6 +40,8 @@ app.component('department-create-component', DepartmentCreateComponent);
 app.component('department-detail-component', DepartmentDetailComponent);
 app.component('member-component', MemberComponent);
 app.component('department-partner-detail-component', DepartmentPartnerDetailComponent);
+app.component('department-member-component', DepartmentMemberComponent);
+
 
 
 app.use(store); 

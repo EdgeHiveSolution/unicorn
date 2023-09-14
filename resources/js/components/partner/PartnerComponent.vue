@@ -253,6 +253,7 @@ export default {
     },
 
     computed: {
+
         partnersWithProgress() {
             return this.partners.map((partner) => ({
                 ...partner,
@@ -264,6 +265,7 @@ export default {
     },
 
     methods: {
+
         fetchPartners() {
             let uri = this.base_url + `api/v1/partner-list`;
             axios.get(uri).then((response) => {
@@ -273,6 +275,7 @@ export default {
                 console.log("New Partners:", JSON.stringify(this.partners));
             });
         },
+        
 
         calculateKpiProgress(kpis) {
             let totalCurrentValue = 0;

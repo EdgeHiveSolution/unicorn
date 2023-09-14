@@ -375,9 +375,9 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                {{ metric.totalCurrentValue }}
+                                                {{ metric.totalCurrentValue.toFixed(0) }}
                                             </td>
-                                            <td>{{metric.totalTargetValue}}</td>
+                                            <td>{{metric.totalTargetValue.toFixed(2)}}</td>
                                            
 
                                             <td>
@@ -697,6 +697,7 @@
                                     <th>Status</th>
                                     <th>Partners</th>
                                     <th>Partners At Risk/Off Track</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -718,7 +719,26 @@
                                             {{ partner.name }}
                                         </span>
                                     </td>
+
                                     <td></td>
+                                    
+                                                <td>
+                                                    <button
+                                                        class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                                    >
+                                                        <span
+                                                            class="mdi mdi-eye-outline text-light"
+                                                        ></span>
+                                                        <a
+                                                            :href="
+                                                                '/department_members/' +
+                                                                member.id
+                                                            "
+                                                            class="text-light"
+                                                            >View</a
+                                                        >
+                                                    </button>
+                                                </td>
                                 </tr>
                             </tbody>
                         </table>

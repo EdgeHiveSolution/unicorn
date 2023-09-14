@@ -22,9 +22,18 @@ class KpiProgressApiController extends Controller
             ->select(
                 DB::raw('EXTRACT(MONTH FROM progress.created_at) as month'),
                 DB::raw('SUM(progress.current_value) as current_value'),
-                DB::raw('SUM(kpi_metric_members.target) as target_value')
+                DB::raw('SUM(kpi_metrics.timely_value) as target_value'),
+                DB::raw('MAX(kpi_metrics.on_track_value) as on_track_value'),
+                DB::raw('MIN(kpi_metrics.off_track_min) as off_track_min'),
+                DB::raw('MAX(kpi_metrics.off_track_max) as off_track_max'),
+                DB::raw('MIN(kpi_metrics.at_risk_min) as at_risk_min'),
+                DB::raw('MAX(kpi_metrics.at_risk_max) as at_risk_max'),
+                DB::raw('DAY(progress.created_at) as day'),
+                DB::raw('MONTH(progress.created_at) as month_created'),
+                DB::raw('YEAR(progress.created_at) as year_created')
+
             )
-            ->groupBy('month')
+            ->groupBy('month', 'day', 'month_created', 'year_created')
             ->get();
 
         // Calculate progress percentage for each month

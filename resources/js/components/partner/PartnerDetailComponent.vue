@@ -79,16 +79,29 @@
                     <div class="d-flex justify-content-between">
                         <div class="p-progress mr-3">
                             <h5>Progress</h5>
-                            <p>{{ "48%" }}</p>
+                            <p v-if="kpiPartnerProgress">
+                                {{
+                                    kpiPartnerProgress.progress_percentage.toFixed(
+                                        2
+                                    )
+                                }}%
+                            </p>
+                            <p v-else>N/A</p>
                         </div>
                         <div>
                             <div class="status">
-                                <h6>{{ "Offtrack" }}</h6>
+                                <h6 v-if="kpiPartnerProgress">
+                                    {{ kpiPartnerProgress.status }}
+                                </h6>
+                                <h6 v-else>N/A</h6>
                             </div>
                         </div>
                     </div>
 
-                    <p>Completion as at: {{ "18 August 2023" }}</p>
+                    <p v-if="kpiPartnerProgress">
+                        Completion as at: {{ kpiPartnerProgress.formattedDate }}
+                    </p>
+                    <p v-else>N/A</p>
                 </div>
                 <div class="my-3">
                     <h4>Progress Burndown</h4>
@@ -100,7 +113,25 @@
                         <p>Review Period:</p>
                     </div>
 
-                    <div class="d-flex justify-content-end"></div>
+                    <div class="d-flex justify-content-end">
+                        <p style="font-weight: bold" v-if="kpiPartnerProgress">
+                            {{
+                                kpiPartnerProgress.progress_percentage.toFixed(
+                                    2
+                                )
+                            }}%
+                        </p>
+                        <p v-else>N/A</p>
+                    </div>
+                    <div
+                        style="margin-top: -10px"
+                        class="d-flex justify-content-end status"
+                    >
+                        <h6 v-if="kpiPartnerProgress">
+                            {{ kpiPartnerProgress.status }}
+                        </h6>
+                        <p v-else>N/A</p>
+                    </div>
 
                     <hr />
 
@@ -130,7 +161,7 @@
                                                 style="height: 10px"
                                                 class="input-field"
                                                 type="text"
-                                                placeholder="Search KPI metrics"
+                                                placeholder="Search  metrics"
                                             />
                                         </div>
                                     </div>
@@ -200,9 +231,7 @@
                                                             ></div>
                                                         </div>
                                                     </td>
-                                                    <td>
-                                                        {{ }}
-                                                    </td>
+                                                    <td>{{}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -274,14 +303,14 @@
                                                 {{
                                                     calculateCurrentSum(
                                                         kpiMetric
-                                                    )
+                                                    ).toFixed(2)
                                                 }}
                                             </td>
                                             <td>
                                                 {{
                                                     calculateTargetSum(
                                                         kpiMetric
-                                                    )
+                                                    ).toFixed(2)
                                                 }}
                                             </td>
                                             <td>
@@ -861,11 +890,9 @@
                                                             department.name
                                                         }}</span
                                                     >
-                                                <!-- </td>
-                                                 
-                                                 {{calculateActiveKpiProgress(member)}}
+                                                </td>
 
-                                                <td> -->
+                                                <td>
                                                     <div
                                                         class="progress-percentage"
                                                     >
@@ -1032,7 +1059,9 @@
                                                 style="height: 25px"
                                                 class="input-field"
                                                 type="text"
-                                                placeholder="Search for metrics"
+                                                placeholder="Search for Kpi Metrics"
+                                                v-model="searchQuery"
+                                               
                                             />
                                         </div>
                                     </div>
@@ -1883,6 +1912,16 @@ export default {
 
     data() {
         return {
+            loggedUser: {
+                user_role_id: null,
+            },
+
+            kpiPartnerProgress: {
+                progress_percentage: null,
+                status: null,
+                formattedDate: "",
+                // Other properties with default values
+            },
             chartData: {
                 labels: [],
                 datasets: [
@@ -1935,6 +1974,9 @@ export default {
             timelyValue: null,
             selectedType: "",
             kpiMetricsDetails: [],
+
+            searchQuery: "", // Initialize the search query
+            originalKpiMetrics: [],
 
             member: {
                 email: "",
@@ -2016,6 +2058,86 @@ export default {
             return this.$store.state.loggedUser;
         },
 
+        monthNames() {
+            return [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+            ];
+        },
+
+        kpiPartnerProgress() {
+            // Check if progressData is empty
+            if (this.progressData.length === 0) {
+                return null;
+            }
+
+            let firstProgress = null;
+
+            // Loop through the progressData to find the first non-null element
+            for (const progress of this.progressData) {
+                if (progress.month !== null) {
+                    firstProgress = progress;
+                    break; // Exit the loop after finding the first non-null element
+                }
+            }
+
+            // If no non-null element is found, return null
+            if (!firstProgress) {
+                return null;
+            }
+
+            // Calculate the status based on progress_percentage and additional fields
+            let status = null;
+
+            if (
+                firstProgress.progress_percentage >=
+                firstProgress.on_track_value
+            ) {
+                status = "On Track";
+            } else if (
+                firstProgress.progress_percentage >=
+                    firstProgress.off_track_min &&
+                firstProgress.progress_percentage <= firstProgress.off_track_max
+            ) {
+                status = "Off Track";
+            } else if (
+                firstProgress.progress_percentage >=
+                    firstProgress.at_risk_min &&
+                firstProgress.progress_percentage <= firstProgress.at_risk_max
+            ) {
+                status = "At Risk";
+            } else {
+                status = "NA"; // You can define what to do if it doesn't fall into any category
+            }
+
+            // Calculate the formatted date
+            const formattedDate = `${firstProgress.day} ${
+                this.monthNames[firstProgress.month_created - 1]
+            } ${firstProgress.year_created}`;
+
+            // Create a new object with the extracted data, status, and formattedDate
+            const kpiProgress = {
+                month: firstProgress.month,
+                current_value: firstProgress.current_value,
+                target_value: firstProgress.target_value,
+                progress_percentage: firstProgress.progress_percentage,
+                status: status,
+                formattedDate: formattedDate,
+            };
+
+            return kpiProgress;
+        },
+
         // getpercentage() {
 
         //     return this.progressData.map((percentage) => ({
@@ -2032,7 +2154,10 @@ export default {
                     .flatMap((metric) => metric.kpi_metric_members) // Navigate to kpi_metric_members
                     .flatMap((member) => member.progress); // Navigate to progress
 
-                    console.log("Kpi Metrics on Members:",JSON.stringify(kpiMetrics));
+                console.log(
+                    "Kpi Metrics on Members:",
+                    JSON.stringify(kpiMetrics)
+                );
 
                 const sumCurrentValues = kpiMetrics.reduce((sum, progress) => {
                     return sum + progress.current_value;
@@ -2276,8 +2401,8 @@ export default {
 
                 // Extract data and progress percentages from the API response
                 const months = this.progressData.map((item) => item.month);
-                const progressPercentages = this.progressData.map(
-                    (item) => item.progress_percentage
+                const progressPercentages = this.progressData.map((item) =>
+                    item.progress_percentage.toFixed(2)
                 );
 
                 // Create an array of month labels for all 12 months
@@ -2304,7 +2429,7 @@ export default {
                 const chartCanvas = this.$refs.chart;
                 const ctx = chartCanvas.getContext("2d");
 
-                // Create the chart with dynamic x-axis labels
+                // Create the chart with dynamic x-axis labels and tooltips
                 const myChart = new Chart(ctx, {
                     type: "line",
                     data: {
@@ -2327,14 +2452,51 @@ export default {
                         }),
                         datasets: [
                             {
-                                label: "Remaining",
+                                label: "Completed",
                                 data: dataPoints,
                                 borderColor: "blue",
                                 fill: false,
                             },
                         ],
                     },
-                    options: this.chartOptions,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: "KPI Completion (%)",
+                                },
+                            },
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Duration in (Months)",
+                                },
+                            },
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const label =
+                                            context.dataset.label || "";
+                                        if (label) {
+                                            return `${context.parsed.y}% ${label}`;
+                                            return;
+                                            //     const labelWithColor = `<span style="color: red;">${context.parsed.y}% ${label}</span>`;
+                                            //   labelWithColor;
+                                        }
+                                        return "";
+                                    },
+                                },
+                            },
+                        },
+                    },
                 });
             })
             .catch((error) => {
@@ -2464,6 +2626,27 @@ export default {
             return totalCurrentValue;
         },
 
+        // searchKpiMetrics(kpi) {
+        //     const searchQuery = this.searchQuery.toLowerCase().trim();
+        //     console.log("Search Query:", searchQuery);
+
+        //     if (searchQuery === "") {
+        //         // If the search query is empty, reset the KPI metrics to the original values
+        //         kpi.kpi_metrics = [...this.originalKpiMetrics];
+        //     } else {
+        //         // Filter the KPI metrics based on the search query
+        //         kpi.kpi_metrics = this.originalKpiMetrics.filter(
+        //             (kpiMetric) => {
+        //                 const title = kpiMetric.title.toLowerCase();
+        //                 console.log("KPI Metric Title:", title);
+        //                 return title.includes(searchQuery);
+        //             }
+        //         );
+        //     }
+
+        //     console.log("Filtered KPI Metrics:", kpi.kpi_metrics);
+        // },
+
         // getTopDrivers(topdriver) {
         //     let topDriver = null;
         //     let highestValue = -Infinity;
@@ -2485,7 +2668,6 @@ export default {
         //         return "N/A"; // No members found
         //     }
         // },
-
 
         // calculateActiveKpiProgress(kpiMetricMembers) {
         //     const sumCurrentValues = kpiMetricMembers.reduce(

@@ -147,7 +147,7 @@
                                                         {{
                                                             calculateTargetSum(
                                                                 kpiMetric
-                                                            )
+                                                            ).toFixed(2)
                                                         }}
                                                     </div>
                                                 </td>

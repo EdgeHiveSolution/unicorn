@@ -18,9 +18,9 @@ class PartnerController extends Controller
      *
      *
      */
-    public function index()
+    public function index(Member $member)
     {
-        $partners = Partner::latest()->cursorPaginate(5);
+        $partners = $member->partners()->latest()->cursorPaginate(5);
 
         $data = [
             'partners' => $partners,
@@ -54,7 +54,8 @@ class PartnerController extends Controller
      * onse
      */
     public function show(Partner $partner)
-{
+
+    {
     $partner->load([
         'members',
         'kpis',
