@@ -48,24 +48,31 @@
                         class="col-12 px-0"
                         v-for="kpiMetricData in member.kpiMetrics"
                         :key="kpiMetricData.kpiMetric.id"
-                    >
+                        >
                         <div class="card mb-5">
                             <div class="d-flex justify-content-between p-4">
-                                <div>
-                                    <h4>
-                                        {{ kpiMetricData.kpiMetric.kpi.title }}
-                                    </h4>
-                                    <p>
-                                        <b>
-                                            Review period:{{
-                                                kpiMetricData.kpiMetric.kpi
-                                                    .review_period_range
-                                            }}
-                                        </b>
-                                        <span class="txt-gray"> </span>
-                                    </p>
-                                </div>
-                            </div>
+                        <div>
+                            <h4>{{ kpiMetricData.kpiMetric.kpi.title }}</h4>
+                            <p>
+                            <b>
+                                Review period:{{
+                                kpiMetricData.kpiMetric.kpi.review_period_range
+                                }}
+                            </b>
+                            <span class="txt-gray"> </span>
+                            </p>
+                        </div>
+
+  <div>
+    <div>
+      <span style="font-weight: bold" class="txt-dark">{{ aggregatePercentage }}%</span>
+    </div>
+    <div>
+      {{ getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric) }}
+    </div>
+  </div>
+</div>
+
                             <div
                                 class="card-header d-flex justify-content-between my-3"
                             >
@@ -94,9 +101,9 @@
                             </div>
                             <div class="card-body mb-5">
                                 <div class="table-responsive">
-                                   <table class="table">
-                                <thead>
-                                <tr>
+                              <table class="table">
+                                  <thead>
+                                    <tr>
                                     <th>KPI Metric</th>
                                     <th>Current</th>
                                     <th>Target</th>
@@ -117,10 +124,12 @@
                                     <td class="">
                                      <!-- <div>{{ progressData.progress_sum.current_sum }}</div> -->
                                                     <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.current_sum }}</div>
-                        </td>
+                            </td>
                         <td class="">
                         <!-- <div>{{ progressData.progress_sum.target_sum }}</div> -->
                         <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.target_sum }} </div>
+
+                        
                         </td>
                         <td>
                         <td class="stats">
@@ -186,7 +195,26 @@ export default {
                 return this.$store.state.loggedUser;
             },
 
-        },
+  aggregatePercentage() {
+    const totalCurrentSum = this.member.kpiMetrics.reduce(
+      (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.current_sum,
+      0
+    );
+
+    const totalTargetSum = this.member.kpiMetrics.reduce(
+      (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.target_sum,
+      0
+    );
+
+    if (totalTargetSum === 0) {
+      return 0; // To prevent division by zero
+    }
+
+    return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+  },
+
+},
+
 
     async created() {
 
@@ -237,6 +265,25 @@ export default {
         return "bg-danger"; // Off track
       }
     },
+
+
+    getAggregateStatus(aggregatePercentage, kpiMetric) {
+    const onTrackValue = parseFloat(kpiMetric.on_track_value);
+    const offTrackMin = parseFloat(kpiMetric.off_track_min);
+    const offTrackMax = parseFloat(kpiMetric.off_track_max);
+    const atRiskMin = parseFloat(kpiMetric.at_risk_min);
+    const atRiskMax = parseFloat(kpiMetric.at_risk_max);
+
+    if (aggregatePercentage >= onTrackValue) {
+      return 'On Track';
+    } else if (aggregatePercentage >= atRiskMin && aggregatePercentage <= atRiskMax) {
+      return 'At Risk';
+    } else if (aggregatePercentage >= offTrackMin && aggregatePercentage <= offTrackMax) {
+      return 'Off Track';
+    } else {
+      return 'N/A'; // You can add additional handling if needed
+    }
+  },
   
         // fetchMemberDetails() {
         //     const uri = this.base_url + `api/v1/members/${this.memberId}`;

@@ -22,7 +22,7 @@ class KpiProgressApiController extends Controller
             ->select(
                 DB::raw('EXTRACT(MONTH FROM progress.created_at) as month'),
                 DB::raw('SUM(progress.current_value) as current_value'),
-                DB::raw('SUM(kpi_metrics.timely_value) as target_value'),
+                DB::raw('SUM(kpi_metrics.target) as target_value'),
                 DB::raw('MAX(kpi_metrics.on_track_value) as on_track_value'),
                 DB::raw('MIN(kpi_metrics.off_track_min) as off_track_min'),
                 DB::raw('MAX(kpi_metrics.off_track_max) as off_track_max'),

@@ -113,7 +113,7 @@
                         <p>Review Period:</p>
                     </div>
 
-                    <div class="d-flex justify-content-end">
+                    <div style="margin-top: -30px" class="d-flex justify-content-end">
                         <p style="font-weight: bold" v-if="kpiPartnerProgress">
                             {{
                                 kpiPartnerProgress.progress_percentage.toFixed(
@@ -126,7 +126,7 @@
                     <div
                         style="margin-top: -10px"
                         class="d-flex justify-content-end status"
-                    >
+                        >
                         <h6 v-if="kpiPartnerProgress">
                             {{ kpiPartnerProgress.status }}
                         </h6>
@@ -1632,7 +1632,7 @@
                 <div
                     class="modal-dialog modal-dialog-centered modal-lg"
                     role="document"
-                >
+                   >
                     <div class="modal-content p-5">
                         <p><i class="mdi mdi-image-filter-none h1"></i></p>
                         <h3>Add New KPI</h3>
@@ -1641,7 +1641,7 @@
                             class="row g-3"
                             @submit.prevent="submitKpi"
                             method="POST"
-                        >
+                          >
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label
