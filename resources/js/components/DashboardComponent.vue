@@ -17,7 +17,7 @@
                     {{ offTrack }}
                 </h6>
                 <h4 class="mb-2 txt-dark">PARTNERS</h4>
-                <span class="mdi mdi-arrow-up txt-danger icon-item"> 40%</span>
+                <span class="mdi mdi-arrow-up txt-danger icon-item"> 0</span>
                 <small> vs last month</small>
             </div>
 
@@ -27,9 +27,7 @@
                     {{ atRisk }}
                 </h6>
                 <h4 class="mb- txt-dark">PARTNERS</h4>
-                <span class="mdi mdi-arrow-down txt-warning icon-item">
-                    -100%</span
-                >
+                <span class="mdi mdi-arrow-down txt-warning icon-item"> 0</span>
                 <small> vs last month</small>
             </div>
 
@@ -39,9 +37,7 @@
                     {{ onTrack }}
                 </h6>
                 <h4 class="mb-2 txt-dark">PARTNERS</h4>
-                <span class="mdi mdi-arrow-up txt-success icon-item">
-                    +50%</span
-                >
+                <span class="mdi mdi-arrow-up txt-success icon-item"> 0</span>
                 <span class="ml-2"></span>
                 <small> vs last month</small>
             </div>
@@ -83,13 +79,13 @@
                                         <th>Progress</th>
                                         <th>Members</th>
                                         <th>Departments</th>
-                                        <th>Action</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr
                                         v-for="partner in partnersWithProgress"
-                                            :key="partner.id"
+                                        :key="partner.id"
                                     >
                                         <td>
                                             <div
@@ -109,85 +105,74 @@
                                                 <span
                                                     class="active-period txt-gray"
                                                     >Active Period:
-                                                    {{ "8 months ago" }}</span
+                                                    {{
+                                                        calculateActivePeriod(
+                                                            partner.created_at
+                                                        )
+                                                    }}</span
                                                 >
                                             </div>
                                         </td>
-                                       <td
-                                                v-if="
-                                                    partner.calculatedProgress >
-                                                    0
-                                                "
-                                               >
-                                                <div>
-                                                    <label class="progress_text">{{
-                                                        partner.calculatedProgress.toFixed(
-                                                            2
-                                                        )
-                                                    }}</label>%
-                                                    <!--<div class="progress">
-                                                        <div
-                                                            class="progress-bar"
-                                                            :class="
-                                                                getStatusClass(
-                                                                    partner
-                                                                )
-                                                            "
-                                                            :style="{
-                                                                width:
-                                                                    partner.calculatedProgress +
-                                                                    '%',
-                                                            }"
-                                                            aria-valuemin="0"
-                                                            aria-valuemax="100"
-                                                        ></div>-->
-                                                        <div class="progress">
-                                                        <div
-                                                            class="progress-bar"
-                                                            :style="{
-                                                                width:
-                                                                    partner.calculatedProgress +
-                                                                    '%',
-                                                            }"
-                                                            aria-valuemin="0"
-                                                            aria-valuemax="100"
-                                                        ></div>
-                                                    </div>
-                                                    <!--<div
-                                                        class="progress-labels"
-                                                    >
-                                                        <span
-                                                            class="status-label off-track-label"
-                                                            v-if="
-                                                                getStatusClass(
-                                                                    partner
-                                                                ) ===
-                                                                'off-track'
-                                                            "
-                                                            >Off Track</span
-                                                        >
-                                                        <span
-                                                            class="status-label at-risk-label"
-                                                            v-else-if="
-                                                                getStatusClass(
-                                                                    partner
-                                                                ) === 'at-risk'
-                                                            "
-                                                            >At Risk</span
-                                                        >
-                                                        <span
-                                                            class="status-label on-track-label"
-                                                            v-else-if="
-                                                                getStatusClass(
-                                                                    partner
-                                                                ) === 'on-track'
-                                                            "
-                                                            >On Track</span
-                                                        >
-                                                    </div>-->
+                                        <td
+                                            v-if="
+                                                partner.calculatedProgress > 0
+                                            "
+                                        >
+                                            <div>
+                                                {{
+                                                    partner.calculatedProgress.toFixed(
+                                                        2
+                                                    )
+                                                }}%
+                                                <div class="progress">
+                                                    <div
+                                                        class="progress-bar"
+                                                        :class="
+                                                            getStatusClass(
+                                                                partner
+                                                            )
+                                                        "
+                                                        :style="{
+                                                            width:
+                                                                partner.calculatedProgress +
+                                                                '%',
+                                                        }"
+                                                        aria-valuemin="0"
+                                                        aria-valuemax="100"
+                                                    ></div>
                                                 </div>
-                                            </td>
-                                            <td v-else>N/A</td>
+                                                <div class="progress-labels">
+                                                    <span
+                                                        class="status-label off-track-label"
+                                                        v-if="
+                                                            getStatusClass(
+                                                                partner
+                                                            ) === 'off-track'
+                                                        "
+                                                        >Off Track</span
+                                                    >
+                                                    <span
+                                                        class="status-label at-risk-label"
+                                                        v-else-if="
+                                                            getStatusClass(
+                                                                partner
+                                                            ) === 'at-risk'
+                                                        "
+                                                        >At Risk</span
+                                                    >
+                                                    <span
+                                                        class="status-label on-track-label"
+                                                        v-else-if="
+                                                            getStatusClass(
+                                                                partner
+                                                            ) === 'on-track'
+                                                        "
+                                                        >On Track</span
+                                                    >
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td v-else>N/A</td>
                                         <td class="td-members">
                                             <!--<img
                                                 v-for="member in partner.members"
@@ -314,16 +299,16 @@
                                         <th>Progress</th>
                                         <th>Members</th>
                                         <th>Departments</th>
-                                        <th>Action</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!--<tr
-                                        v-for="partner in Newpartners"
+                                    <tr
+                                        v-for="partner in newpartnersWithProgress"
                                         :key="partner.id"
-                                    >-->
-                                    <tr v-for="partner in partnersWithProgress"
-                                            :key="partner.id">
+                                    >
+                                    <!--<tr v-for="partner in partnersWithProgress"
+                                            :key="partner.id">-->
                                         <td>
                                             <div
                                                 class="d-flex align-items-center"
@@ -342,30 +327,74 @@
                                                 <span
                                                     class="active-period txt-gray"
                                                     >Active Period:
-                                                    {{ "8 months ago" }}</span
+                                                    {{
+                                                        calculateActivePeriod(
+                                                            partner.created_at
+                                                        )
+                                                    }}</span
                                                 >
                                             </div>
                                         </td>
-                                        <td class="stats">
-                                            <label class="progress_text">{{
-                                                        partner.calculatedProgress.toFixed(
-                                                            2
-                                                        )
-                                                    }}</label>%
-                                           <!-- <p class="progress_text text-muted">
-                                                {{ "48%" }}
-                                            </p>-->
-                                            <div class="progress">
-                                                <div
-                                                    class="progress-bar bg-primary"
-                                                    role="progressbar"
-                                                    :style="{ width: '48%' }"
-                                                    aria-valuenow="5"
-                                                    aria-valuemin="0"
-                                                    aria-valuemax="100"
-                                                ></div>
+                                        <td
+                                            v-if="
+                                                partner.calculatedProgress > 0
+                                            "
+                                        >
+                                            <div>
+                                                <label class="progress_text">{{
+                                                    partner.calculatedProgress.toFixed(
+                                                        2
+                                                    )
+                                                }}</label>%
+                                                <div class="progress">
+                                                    <div
+                                                        class="progress-bar"
+                                                        :class="
+                                                            getStatusClass(
+                                                                partner
+                                                            )
+                                                        "
+                                                        :style="{
+                                                            width:
+                                                                partner.calculatedProgress +
+                                                                '%',
+                                                        }"
+                                                        aria-valuemin="0"
+                                                        aria-valuemax="100"
+                                                    ></div>
+                                                </div>
+                                                <div class="progress-labels">
+                                                    <span
+                                                        class="status-label off-track-label"
+                                                        v-if="
+                                                            getStatusClass(
+                                                                partner
+                                                            ) === 'off-track'
+                                                        "
+                                                        >Off Track</span
+                                                    >
+                                                    <span
+                                                        class="status-label at-risk-label"
+                                                        v-else-if="
+                                                            getStatusClass(
+                                                                partner
+                                                            ) === 'at-risk'
+                                                        "
+                                                        >At Risk</span
+                                                    >
+                                                    <span
+                                                        class="status-label on-track-label"
+                                                        v-else-if="
+                                                            getStatusClass(
+                                                                partner
+                                                            ) === 'on-track'
+                                                        "
+                                                        >On Track</span
+                                                    >
+                                                </div>
                                             </div>
                                         </td>
+                                        <td v-else>N/A</td>
                                         <td class="td-members">
                                            <!-- <img
                                                 v-for="member in partner.members"
@@ -425,19 +454,18 @@
                                             >
                                         </td>
                                         <td>
-                                            <button
-                                                class="btn btn-pri d-flex align-items-center"
-                                            >
-                                                <i
-                                                    class="mdi mdi-eye-outline text-light mx-2"
-                                                ></i>
+                                            <button class="btn view-btn">
                                                 <a
                                                     :href="
                                                         '/partners/' +
                                                         partner.id
                                                     "
                                                     class="text-light"
-                                                    >View Details</a
+                                                >
+                                                    <i
+                                                        class="mdi mdi-eye-outline text-light mx-2"
+                                                    ></i>
+                                                    View Details</a
                                                 >
                                             </button>
                                         </td>
@@ -503,12 +531,10 @@ export default {
     },
 
     async created() {
+        await this.fetchPartners();
+        await this.fetchNewPartners();
 
-       await this.fetchPartners();
-       await  this.fetchNewPartners();
-
-       
-        console.log("New Partners are:",JSON.stringify(this.partners));
+        console.log("New Partners are:", JSON.stringify(this.partners));
     },
 
     mounted() {
@@ -516,11 +542,25 @@ export default {
 
         this.$store.dispatch("updateLoggedUser", this.data.loggeduser);
         // this.fetchUserWithRelatedData();
-        
-
     },
     computed: {
         ...mapState(["loggedUser"]),
+
+        offTrack() {
+            return this.partnersWithProgress.filter(
+                (partner) => this.getStatusClass(partner) === "off-track"
+            ).length;
+        },
+        atRisk() {
+            return this.partnersWithProgress.filter(
+                (partner) => this.getStatusClass(partner) === "at-risk"
+            ).length;
+        },
+        onTrack() {
+            return this.partnersWithProgress.filter(
+                (partner) => this.getStatusClass(partner) === "on-track"
+            ).length;
+        },
 
         uniqueDepartments() {
             const uniqueDepartments = [];
@@ -538,6 +578,19 @@ export default {
             return uniqueDepartments;
         },
 
+         partnersWithProgress() {
+            return this.partners.map((partner) => ({
+                ...partner,
+                calculatedProgress: this.calculateKpiProgress(partner.kpis),
+
+                statusClass: this.getStatusClass(partner),
+            }));
+        },
+
+        /*partnersWithProgress() {
+            return this.partners.map((partner) => ({
+                ...partner,
+                calculatedProgress: this.calculateKpiProgress(partner.kpis),
 
           partnersWithProgress() {
             // Create an empty object to store unique partners
@@ -573,13 +626,68 @@ export default {
 
             // Convert the uniquePartners object values (unique partners) back to an array
             return Object.values(uniquePartners);
+        },*/
+
+        newpartnersWithProgress() {
+            return this.Newpartners.map((partner) => ({
+                ...partner,
+                calculatedProgress: this.calculateKpiProgress(partner.kpis),
+
+                statusClass: this.getStatusClass(partner),
+            }));
         },
 
-    },
+        activePeriods() {
+            const currentDate = new Date();
+            return this.partnersWithProgress.map((partner) => {
+                const creationDate = new Date(partner.created_at);
+                const monthsAgo =
+                    currentDate.getMonth() -
+                    creationDate.getMonth() +
+                    12 *
+                        (currentDate.getFullYear() -
+                            creationDate.getFullYear());
+                return `${monthsAgo} months ago`;
+            });
+        },
+        //   partnersWithProgress() {
+        //      console.log("partnersWithProgress method called.");
+        //     // Create an empty object to store unique partners
+        //     const uniquePartners = {};
+
+        //     // Iterate through partners and calculate progress
+        //     this.partners.forEach((partner) => {
+        //         const calculatedProgress = this.calculateKpiProgress(
+        //             partner.kpis
+        //         );
+        //         const statusClass = this.getStatusClass(partner);
+
+        //         // Check if the partner name is not already in the uniquePartners object
+        //         if (!uniquePartners[partner.name]) {
+        //             // If not, create an entry for the partner
+        //             uniquePartners[partner.name] = {
+        //                 id: partner.id, // Include the id property
+        //                 name: partner.name,
+        //                 image: partner.image,
+        //                 calculatedProgress,
+        //                 statusClass,
+        //                 members: partner.members,
+        //                 departments: partner.departments,
+        //             };
+        //         } else {
+        //             // If the partner name is already in uniquePartners, update progress and status
+        //             const existingPartner = uniquePartners[partner.name];
+        //             existingPartner.calculatedProgress += calculatedProgress;
+        //             existingPartner.statusClass =
+        //                 this.getStatusClass(existingPartner);
+        //         }
+        //     });
+
+        //     // Convert the uniquePartners object values (unique partners) back to an array
+        //     return Object.values(uniquePartners);
+        // }
+            },
     methods: {
-
-           
-
         async fetchUserWithRelatedData() {
             let uri = this.base_url + `api/v1/user`;
             try {
@@ -597,20 +705,18 @@ export default {
 
         async fetchPartners() {
             let uri = this.base_url + `api/v1/partner-list`;
-          await  axios.get(uri).then((response) => {
+            await axios.get(uri).then((response) => {
                 this.partners = response.data;
             });
         },
         async fetchNewPartners() {
             let uri = this.base_url + `api/v1/partner-new`;
-          await  axios.get(uri).then((response) => {
+            await axios.get(uri).then((response) => {
                 this.Newpartners = response.data;
             });
         },
 
-
-
-         calculateKpiProgress(kpis) {
+        calculateKpiProgress(kpis) {
             let totalCurrentValue = 0;
             let totalTargetValue = 0;
 
@@ -619,8 +725,7 @@ export default {
                     kpiMetric.kpi_metric_members.forEach((member) => {
                         member.progress.forEach((progress) => {
                             totalCurrentValue += progress.current_value;
-                             totalTargetValue += progress.target_value;
-                            
+                            totalTargetValue += progress.target_value;
                         });
                     });
                 });
@@ -633,8 +738,38 @@ export default {
             return (totalCurrentValue / totalTargetValue) * 100;
         },
 
+        calculateActivePeriod(creationDate) {
+            const currentDate = new Date();
+            const timeDifference = currentDate - new Date(creationDate);
+
+            // Calculate seconds, minutes, hours, days, and months
+            const seconds = Math.floor(timeDifference / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const months = Math.floor(days / 30.44);
+
+            if (months > 0) {
+                return `${months} month${months > 1 ? "s" : ""} ago`;
+            } else if (days > 0) {
+                return `${days} day${days > 1 ? "s" : ""} ago`;
+            } else if (hours > 0) {
+                return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+            } else if (minutes > 0) {
+                return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+            } else {
+                return `${seconds} second${seconds > 1 ? "s" : ""} ago`;
+            }
+        },
+
         getStatusClass(partner) {
             const progressPercentage = parseFloat(partner.calculatedProgress);
+
+            if (isNaN(progressPercentage)) {
+                return "N/A"; // Handle the case where progress is not available
+            }
+
+            console.log("Progress Percentage is:", progressPercentage);
 
             if (Array.isArray(partner.kpis)) {
                 for (const kpi of partner.kpis) {
@@ -657,11 +792,7 @@ export default {
 
             return "off-track";
         },
-
-        
-
-    },
-};
+    }}
 </script>
 
 <style scoped>
@@ -700,7 +831,6 @@ export default {
 /*.progress_text {
     color: #000;
 }*/
-
 
 .on-track {
     background-color: #5cb85c;
