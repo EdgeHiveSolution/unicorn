@@ -1143,7 +1143,7 @@
                 </div>
 
                 <div class="row">
-                    <div v-if="loggedUser.user_role_id === 4">
+                    <div v-if="loggedUser.user_role_id === 34">
                         <div
                             class="col-12 px-0"
                             v-for="kpi in kpis"
