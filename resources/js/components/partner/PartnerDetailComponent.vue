@@ -79,16 +79,29 @@
                     <div class="d-flex justify-content-between">
                         <div class="p-progress mr-3">
                             <h5>Progress</h5>
-                            <p>{{ "48%" }}</p>
+                            <p v-if="kpiPartnerProgress">
+                                {{
+                                    kpiPartnerProgress.progress_percentage.toFixed(
+                                        2
+                                    )
+                                }}%
+                            </p>
+                            <p v-else>N/A</p>
                         </div>
                         <div>
                             <div class="status">
-                                <h6>{{ "Offtrack" }}</h6>
+                                <h6 v-if="kpiPartnerProgress">
+                                    {{ kpiPartnerProgress.status }}
+                                </h6>
+                                <h6 v-else>N/A</h6>
                             </div>
                         </div>
                     </div>
 
-                    <p>Completion as at: {{ "18 August 2023" }}</p>
+                    <p v-if="kpiPartnerProgress">
+                        Completion as at: {{ kpiPartnerProgress.formattedDate }}
+                    </p>
+                    <p v-else>N/A</p>
                 </div>
                 <div class="my-3">
                     <h4>Progress Burndown</h4>
@@ -100,7 +113,25 @@
                         <p>Review Period:</p>
                     </div>
 
-                    <div class="d-flex justify-content-end"></div>
+                    <div style="margin-top: -30px" class="d-flex justify-content-end mx-2">
+                        <p style="font-weight: bold" v-if="kpiPartnerProgress">
+                            {{
+                                kpiPartnerProgress.progress_percentage.toFixed(
+                                    2
+                                )
+                            }}%
+                        </p>
+                        <p v-else></p>
+                    </div>
+                    <div
+                        style="margin-top: -10px"
+                        class="d-flex justify-content-end status mx-2"
+                        >
+                        <h6 v-if="kpiPartnerProgress">
+                            {{ kpiPartnerProgress.status }}
+                        </h6>
+                        <p v-else></p>
+                    </div>
 
                     <hr />
 
@@ -130,7 +161,7 @@
                                                 style="height: 10px"
                                                 class="input-field"
                                                 type="text"
-                                                placeholder="Search KPI metrics"
+                                                placeholder="Search  metrics"
                                             />
                                         </div>
                                     </div>
@@ -200,9 +231,7 @@
                                                             ></div>
                                                         </div>
                                                     </td>
-                                                    <td>
-                                                        {{ }}
-                                                    </td>
+                                                    <td>{{}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -278,6 +307,7 @@
                                                                 2
                                                             )
                                                 }}</label>
+                                                    
                                             </td>
                                             <td>
                                                <label class="active-period txt-gray"> {{
@@ -727,6 +757,7 @@
                                                 v-for="department in this
                                                     .partner.departments"
                                                 :value="department.name"
+                                                :key="department.id"
                                             >
                                                 {{ department.name }}
                                             </option>
@@ -768,6 +799,7 @@
                                     <li
                                         v-for="(item, index) in selectedItems"
                                         class="list-item"
+                                        :key="index"
                                     >
                                         <span>
                                             <i
@@ -933,21 +965,22 @@
                                                 </div>
                                                 </td>
                                                 <td>
-                                                     <span
-                                                        class="department-tag py-1 my-1"
+                                                     <div class="mt-1"><span
+                                                        class="department-tag py-1"
                                                         v-for="department in member.departments"
                                                         :key="department.id"
                                                         >{{
                                                             department.name
-                                                        }}</span>
+                                                        }}</span></div>
                                                 </td>
+                                                <td></td>
                                                 <td>
                                                    
                                                 <!-- </td>
                                                  
                                                  {{calculateActiveKpiProgress(member)}}
 
-                                                <td> -->
+                                                <td>
                                                     <div
                                                         class="progress-percentage"
                                                     >
@@ -1022,16 +1055,16 @@
                                                     </div>
                                                 </td>
 
-                                                <!-- <td>
+                                                 <td>
                                                     {{
                                                         calculateActiveKpiProgress(
                                                             member.kpi_metric_members
                                                         )
                                                     }}%
-                                                 </td> -->
+                                                 </td> 
 
                                                 <td>
-                                                   <!-- <button
+                                                    <button
                                                         class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
                                                     >
                                                         <span
@@ -1151,7 +1184,9 @@
                                                 style="height: 25px"
                                                 class="input-field"
                                                 type="text"
-                                                placeholder="Search for metrics"
+                                                placeholder="Search for Kpi Metrics"
+                                                v-model="searchQuery"
+                                               
                                             />
                                         </div>
                                     </div>
@@ -1772,7 +1807,7 @@
                 <div
                     class="modal-dialog modal-dialog-centered modal-lg"
                     role="document"
-                >
+                   >
                     <div class="modal-content p-5">
                         <p><i class="mdi mdi-image-filter-none h1"></i></p>
                         <h3>Add New KPI</h3>
@@ -1781,7 +1816,7 @@
                             class="row g-3"
                             @submit.prevent="submitKpi"
                             method="POST"
-                        >
+                          >
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label
@@ -2064,6 +2099,16 @@ export default {
 
     data() {
         return {
+            loggedUser: {
+                user_role_id: null,
+            },
+
+            kpiPartnerProgress: {
+                progress_percentage: null,
+                status: null,
+                formattedDate: "",
+                // Other properties with default values
+            },
             chartData: {
                 labels: [],
                 datasets: [
@@ -2116,6 +2161,9 @@ export default {
             timelyValue: null,
             selectedType: "",
             kpiMetricsDetails: [],
+
+            searchQuery: "", // Initialize the search query
+            originalKpiMetrics: [],
 
             member: {
                 email: "",
@@ -2200,6 +2248,86 @@ export default {
             return this.$store.state.loggedUser;
         },
 
+        monthNames() {
+            return [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+            ];
+        },
+
+        kpiPartnerProgress() {
+            // Check if progressData is empty
+            if (this.progressData.length === 0) {
+                return null;
+            }
+
+            let firstProgress = null;
+
+            // Loop through the progressData to find the first non-null element
+            for (const progress of this.progressData) {
+                if (progress.month !== null) {
+                    firstProgress = progress;
+                    break; // Exit the loop after finding the first non-null element
+                }
+            }
+
+            // If no non-null element is found, return null
+            if (!firstProgress) {
+                return null;
+            }
+
+            // Calculate the status based on progress_percentage and additional fields
+            let status = null;
+
+            if (
+                firstProgress.progress_percentage >=
+                firstProgress.on_track_value
+            ) {
+                status = "On Track";
+            } else if (
+                firstProgress.progress_percentage >=
+                    firstProgress.off_track_min &&
+                firstProgress.progress_percentage <= firstProgress.off_track_max
+            ) {
+                status = "Off Track";
+            } else if (
+                firstProgress.progress_percentage >=
+                    firstProgress.at_risk_min &&
+                firstProgress.progress_percentage <= firstProgress.at_risk_max
+            ) {
+                status = "At Risk";
+            } else {
+                status = "NA"; // You can define what to do if it doesn't fall into any category
+            }
+
+            // Calculate the formatted date
+            const formattedDate = `${firstProgress.day} ${
+                this.monthNames[firstProgress.month_created - 1]
+            } ${firstProgress.year_created}`;
+
+            // Create a new object with the extracted data, status, and formattedDate
+            const kpiProgress = {
+                month: firstProgress.month,
+                current_value: firstProgress.current_value,
+                target_value: firstProgress.target_value,
+                progress_percentage: firstProgress.progress_percentage,
+                status: status,
+                formattedDate: formattedDate,
+            };
+
+            return kpiProgress;
+        },
+
         // getpercentage() {
 
         //     return this.progressData.map((percentage) => ({
@@ -2216,7 +2344,10 @@ export default {
                     .flatMap((metric) => metric.kpi_metric_members) // Navigate to kpi_metric_members
                     .flatMap((member) => member.progress); // Navigate to progress
 
-                    console.log("Kpi Metrics on Members:",JSON.stringify(kpiMetrics));
+                console.log(
+                    "Kpi Metrics on Members:",
+                    JSON.stringify(kpiMetrics)
+                );
 
                 const sumCurrentValues = kpiMetrics.reduce((sum, progress) => {
                     return sum + progress.current_value;
@@ -2548,8 +2679,8 @@ export default {
 
                 // Extract data and progress percentages from the API response
                 const months = this.progressData.map((item) => item.month);
-                const progressPercentages = this.progressData.map(
-                    (item) => item.progress_percentage
+                const progressPercentages = this.progressData.map((item) =>
+                    item.progress_percentage.toFixed(2)
                 );
 
                 // Create an array of month labels for all 12 months
@@ -2600,14 +2731,51 @@ export default {
                         }),
                         datasets: [
                             {
-                                label: "Remaining",
+                                label: "Completed",
                                 data: dataPoints,
                                 borderColor: "blue",
                                 fill: false,
                             },
                         ],
                     },
-                    options: this.chartOptions,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: "KPI Completion (%)",
+                                },
+                            },
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Duration in (Months)",
+                                },
+                            },
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const label =
+                                            context.dataset.label || "";
+                                        if (label) {
+                                            return `${context.parsed.y}% ${label}`;
+                                            return;
+                                            //     const labelWithColor = `<span style="color: red;">${context.parsed.y}% ${label}</span>`;
+                                            //   labelWithColor;
+                                        }
+                                        return "";
+                                    },
+                                },
+                            },
+                        },
+                    },
                 });
             })
             .catch((error) => {
@@ -2737,6 +2905,27 @@ export default {
             return totalCurrentValue;
         },
 
+        // searchKpiMetrics(kpi) {
+        //     const searchQuery = this.searchQuery.toLowerCase().trim();
+        //     console.log("Search Query:", searchQuery);
+
+        //     if (searchQuery === "") {
+        //         // If the search query is empty, reset the KPI metrics to the original values
+        //         kpi.kpi_metrics = [...this.originalKpiMetrics];
+        //     } else {
+        //         // Filter the KPI metrics based on the search query
+        //         kpi.kpi_metrics = this.originalKpiMetrics.filter(
+        //             (kpiMetric) => {
+        //                 const title = kpiMetric.title.toLowerCase();
+        //                 console.log("KPI Metric Title:", title);
+        //                 return title.includes(searchQuery);
+        //             }
+        //         );
+        //     }
+
+        //     console.log("Filtered KPI Metrics:", kpi.kpi_metrics);
+        // },
+
         // getTopDrivers(topdriver) {
         //     let topDriver = null;
         //     let highestValue = -Infinity;
@@ -2758,7 +2947,6 @@ export default {
         //         return "N/A"; // No members found
         //     }
         // },
-
 
         // calculateActiveKpiProgress(kpiMetricMembers) {
         //     const sumCurrentValues = kpiMetricMembers.reduce(
@@ -3332,11 +3520,31 @@ img {
     font-weight: bold;
 }
 
-.encircle {
+/*.encircle {
     padding: 3px;
     border-radius: 50%;
     background-color: rgba(128, 128, 128, 0.089);
     color: rgba(24, 23, 23, 0.911);
+}*/
+
+.encircle {
+    /*padding: 5px;
+    border-radius: 100%;
+    background-color: rgba(128, 128, 128, 0.089);
+    color: rgba(24, 23, 23, 0.911);*/
+  /*position: absolute;*/
+    top: 0px;
+    color: rgba(24, 23, 23, 0.911);
+    background-color: rgba(128, 128, 128, 0.089);
+    /*width: 25px;
+    height: 25px;*/
+    border-radius: 50%;
+    padding: 3px 6px;
+    line-height: 25px;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 999;
 }
 
 .nav-link {

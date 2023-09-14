@@ -1,15 +1,6 @@
 <template>
     <div>
-        <div class="d-flex flex-row">
-            <div class="profile_image d-flex flex-column align-items-center mx-2">
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="lg"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                                <!--<p class="member_image_text">+1</p>-->
-                                                </div>
+        <div class="d-flex align-items-center">
             <div class="data-info">
                 <div v-if="member.member && member.member.name">
                     <h4>{{ member.member.name }}</h4>
@@ -41,14 +32,39 @@
                             v-if="
                                 index !== member.member.departments.length - 1
                             "
-                            >,</span
+                            ></span
                         >
                     </span>
                 </h5>
             </div>
         </div>
 
-        <div class="body-items">
+        
+        <div  v-for="partner in getPartner" :key="partner.id">
+          <div class="d-flex flex justify-content-between">
+           <div class="data-info">
+                <div>
+                    <h4>{{ partner.name }}</h4>
+                </div>
+                <div>
+                    <p>
+                        Status:
+                        <span class="text-success">
+                            {{
+                                partner.is_active ? "Active" : "Inactive"
+                            }}</span
+                        >
+                    </p>
+                </div>
+            </div>
+              <div>
+              <a style="font-size: 18px" class="btn btn-sm  btn-light" href="">View Partner</a>
+              </div>
+
+            </div>
+        
+
+         <div class="body-items">
             <div id="kpis">
                 <!-- KPIs content -->
 
@@ -57,34 +73,36 @@
                         class="col-12 px-0"
                         v-for="kpiMetricData in member.kpiMetrics"
                         :key="kpiMetricData.kpiMetric.id"
-                        >
+                       >
                         <div class="card mb-5">
                             <div class="d-flex justify-content-between p-4">
-                        <div>
-                            <h4>{{ kpiMetricData.kpiMetric.kpi.title }}</h4>
-                            <p>
-                            <b>
-                                Review period:{{
-                                kpiMetricData.kpiMetric.kpi.review_period_range
-                                }}
-                            </b>
-                            <span class="txt-gray"> </span>
-                            </p>
-                        </div>
+                                <div>
+                                    <h4>
+                                        {{ kpiMetricData.kpiMetric.kpi.title }}
+                                    </h4>
+                                    <p>
+                                        <b>
+                                            Review period:{{
+                                                kpiMetricData.kpiMetric.kpi
+                                                    .review_period_range
+                                            }}
+                                        </b>
+                                        <span class="txt-gray"> </span>
+                                    </p>
+                                </div>
 
-  <div>
-    <div>
-      <span style="font-weight: bold" class="txt-dark">{{ aggregatePercentage }}%</span>
-    </div>
-    <div>
-      {{ getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric) }}
-    </div>
-  </div>
-</div>
-
+                                 <div>
+                                    <div>
+                                    <span style="font-weight: bold" class="txt-dark">{{ aggregatePercentage }}%</span>
+                                    </div>
+                                    <div>
+                                    {{ getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric) }}
+                                    </div>
+                                </div>
+                            </div>
                             <div
                                 class="card-header d-flex justify-content-between my-3"
-                            >
+                                >
                                 <div>
                                     <div class="input-container">
                                         <i class="mdi mdi-magnify mdi-icon"></i>
@@ -110,65 +128,57 @@
                             </div>
                             <div class="card-body mb-5">
                                 <div class="table-responsive">
-                              <table class="table">
-                                  <thead>
-                                    <tr>
-                                    <th>KPI Metric</th>
-                                    <th>Current</th>
-                                    <th>Target</th>
-                                    <th>Progress</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <!-- <tr v-for="progressData in kpiMetricData" :key="progressData.id"> -->
-                                   <tr>
-                                    <td>
-                                    <div>
-                                     <!-- <span>{{ kpiMetricData.kpiMetric.title }}</span> -->
-                                        <label class="active-period txt-gray"><span>{{ kpiMetricData.kpiMetric.title }}</span></label>
-                                        
-                                    </div>
-                                    <div> <span>{{kpiMetricData.kpiMetric.type}}</span></div>
-                                    </td>
-                                    <td class="">
-                                     <!-- <div>{{ progressData.progress_sum.current_sum }}</div> -->
-                                                    <!--<div><span v-if="kpiMetricData.kpiMetric.type === currency"
-                                                    class="active-period txt-gray"
-                                                    >KES</span> {{ kpiMetricData.progress_sum.current_sum }}</div>
-                        </td>-->
-                                                    <div><span v-if="kpiMetricData.kpiMetric.type === currency"
-                                                     class="active-period txt-gray"
-                                                    >KES</span> {{ kpiMetricData.progress_sum.current_sum }}</div>
-                            </td>
-                        <td class="">
-                        <!-- <div>{{ progressData.progress_sum.target_sum }}</div> -->
-                        <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.target_sum }} </div>
-
-                        
-                        </td>
-                        <!--<td>-->
-                        <td class="stats">
-                            <p class="progress_text text-muted">
-                            {{ calculateProgressPercentage( kpiMetricData.progress_sum) }}%
-                            </p>
-                            <div class="progress">
-                            <div
-                                :class="getProgressBarClass( kpiMetricData.progress_sum, kpiMetricData.kpiMetric)"
-                                role="progressbar"
-                                :style="{ width: calculateProgressPercentage( kpiMetricData.progress_sum) + '%' }"
-                                aria-valuenow="5"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                            ></div>
-                            </div>
-                            <p class="progress-status">
-                            {{ calculateProgressStatus( kpiMetricData.progress_sum, kpiMetricData.kpiMetric) }}
-                            </p>
-                        </td>
-       <!-- </td>-->
-      </tr>
-    </tbody>
-  </table>
+                                   <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>KPI Metric</th>
+                                                <th>Current</th>
+                                                <th>Target</th>
+                                                <th>Progress</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <!-- <tr v-for="progressData in kpiMetricData" :key="progressData.id"> -->
+                                            <tr>
+                                                <td>
+                                                <div>
+                                                <!-- <span>{{ kpiMetricData.kpiMetric.title }}</span> -->
+                                                    <span>{{ kpiMetricData.kpiMetric.title }}</span>
+                                                    
+                                                </div>
+                                                <div> <span>{{kpiMetricData.kpiMetric.type}}</span></div>
+                                                </td>
+                                                <td class="">
+                                                <!-- <div>{{ progressData.progress_sum.current_sum }}</div> -->
+                                                                                                    <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.current_sum }}</div>
+                                                            </td>
+                                                            <td class="">
+                                                            <!-- <div>{{ progressData.progress_sum.target_sum }}</div> -->
+                                                            <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.target_sum }} </div>
+                                                            </td>
+                                                            <td>
+                                                            <td class="stats">
+                                                                <p class="progress_text text-muted">
+                                                                {{ calculateProgressPercentage( kpiMetricData.progress_sum) }}%
+                                                                </p>
+                                                                <div class="progress">
+                                                                <div
+                                                                    :class="getProgressBarClass( kpiMetricData.progress_sum, kpiMetricData.kpiMetric)"
+                                                                    role="progressbar"
+                                                                    :style="{ width: calculateProgressPercentage( kpiMetricData.progress_sum) + '%' }"
+                                                                    aria-valuenow="5"
+                                                                    aria-valuemin="0"
+                                                                    aria-valuemax="100"
+                                                                ></div>
+                                                                </div>
+                                                                <p class="progress-status">
+                                                                {{ calculateProgressStatus( kpiMetricData.progress_sum, kpiMetricData.kpiMetric) }}
+                                                                </p>
+                                                            </td>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                   </table>
                                     <pagination
                                         :total="totalPages"
                                         :current="currentPage"
@@ -181,6 +191,7 @@
                 </div>
             </div>
         </div>
+     </div>
     </div>
 </template>
 
@@ -209,8 +220,51 @@ export default {
             loggedUser() {
                 return this.$store.state.loggedUser;
             },
+                                
+                 getPartner() {
+                    const member = this.member;
 
-  aggregatePercentage() {
+                    if (!member || !member.member || !member.member.partners) {
+                        return [];
+                    }
+
+                    const partners = member.member.partners.map((partner) => {
+                        // Transform each partner here if needed
+                        return {
+                        // Define the properties you want to include in the transformed partner object
+                        name: partner.name,
+                        is_active: partner.is_active,
+                        // Add more properties as needed
+                        };
+                    });
+
+                    return partners;
+                    },
+
+
+
+              partnersWithProgress() {
+            const partner = this.partner;
+
+            if (!partner) {
+                return []; // Return an empty array if partner is not available
+            }
+
+            const calculatedProgress = this.calculateKpiProgress(partner.kpis);
+            const statusClass = this.getStatusClass(partner);
+
+            return [
+                {
+                    ...partner,
+                    calculatedProgress,
+                    statusClass,
+                },
+            ];
+        },
+
+
+
+    aggregatePercentage() {
     const totalCurrentSum = this.member.kpiMetrics.reduce(
       (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.current_sum,
       0
@@ -228,8 +282,7 @@ export default {
     return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
   },
 
-},
-
+        },
 
     async created() {
 
@@ -280,25 +333,6 @@ export default {
         return "bg-danger"; // Off track
       }
     },
-
-
-    getAggregateStatus(aggregatePercentage, kpiMetric) {
-    const onTrackValue = parseFloat(kpiMetric.on_track_value);
-    const offTrackMin = parseFloat(kpiMetric.off_track_min);
-    const offTrackMax = parseFloat(kpiMetric.off_track_max);
-    const atRiskMin = parseFloat(kpiMetric.at_risk_min);
-    const atRiskMax = parseFloat(kpiMetric.at_risk_max);
-
-    if (aggregatePercentage >= onTrackValue) {
-      return 'On Track';
-    } else if (aggregatePercentage >= atRiskMin && aggregatePercentage <= atRiskMax) {
-      return 'At Risk';
-    } else if (aggregatePercentage >= offTrackMin && aggregatePercentage <= offTrackMax) {
-      return 'Off Track';
-    } else {
-      return 'N/A'; // You can add additional handling if needed
-    }
-  },
   
         // fetchMemberDetails() {
         //     const uri = this.base_url + `api/v1/members/${this.memberId}`;
@@ -327,9 +361,32 @@ export default {
                     console.error("Error fetching member details:", error);
                 });
         },
+
+
+        getAggregateStatus(aggregatePercentage, kpiMetric) {
+    const onTrackValue = parseFloat(kpiMetric.on_track_value);
+    const offTrackMin = parseFloat(kpiMetric.off_track_min);
+    const offTrackMax = parseFloat(kpiMetric.off_track_max);
+    const atRiskMin = parseFloat(kpiMetric.at_risk_min);
+    const atRiskMax = parseFloat(kpiMetric.at_risk_max);
+
+    if (aggregatePercentage >= onTrackValue) {
+      return 'On Track';
+    } else if (aggregatePercentage >= atRiskMin && aggregatePercentage <= atRiskMax) {
+      return 'At Risk';
+    } else if (aggregatePercentage >= offTrackMin && aggregatePercentage <= offTrackMax) {
+      return 'Off Track';
+    } else {
+      return 'N/A'; // You can add additional handling if needed
+    }
+    },
     },
 };
+
+
 </script>
+
+
 
 <style scoped>
 a {
@@ -447,21 +504,4 @@ img {
     padding: 8px;
     border-radius: 15px;
 }
-
-.profile_image{
-    width: 50px;
-    margin-left: -10px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #f3f4f7;
-    border-color: 1px solid #979da9;
-    /*background-color: #d3d3d3;*/
-    /*border-color: 1px solid white;*/
-}
-
-.txt-gray{
-    /*color: #b1b6c0;*/
-    color: rgba(102,112,133,1);
-}
-
 </style>

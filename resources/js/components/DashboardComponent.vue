@@ -125,7 +125,7 @@
                                                             2
                                                         )
                                                     }}</label>%
-                                                    <div class="progress">
+                                                    <!--<div class="progress">
                                                         <div
                                                             class="progress-bar"
                                                             :class="
@@ -140,9 +140,20 @@
                                                             }"
                                                             aria-valuemin="0"
                                                             aria-valuemax="100"
+                                                        ></div>-->
+                                                        <div class="progress">
+                                                        <div
+                                                            class="progress-bar"
+                                                            :style="{
+                                                                width:
+                                                                    partner.calculatedProgress +
+                                                                    '%',
+                                                            }"
+                                                            aria-valuemin="0"
+                                                            aria-valuemax="100"
                                                         ></div>
                                                     </div>
-                                                    <div
+                                                    <!--<div
                                                         class="progress-labels"
                                                     >
                                                         <span
@@ -173,7 +184,7 @@
                                                             "
                                                             >On Track</span
                                                         >
-                                                    </div>
+                                                    </div>-->
                                                 </div>
                                             </td>
                                             <td v-else>N/A</td>
@@ -273,9 +284,7 @@
         <div class="my-5">
             <div class="col-12 px-0">
                 <h3 class="text-dark">New partners</h3>
-                <!--partnersWithProgress-->
-               <!-- <div class="card" v-if="Newpartners.length > 0">-->
-                    <div class="card" v-if="partnersWithProgress.length > 0">
+                <div class="card" v-if="partnersWithProgress.length > 0">
                     <div
                         class="card-header d-flex justify-content-between my-3"
                     >
@@ -309,14 +318,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   <!-- <tr
+                                    <!--<tr
                                         v-for="partner in Newpartners"
                                         :key="partner.id"
                                     >-->
-                                    <tr
-                                    v-for="partner in partnersWithProgress"
-                                    :key="partner.id"
-                                    >
+                                    <tr v-for="partner in partnersWithProgress"
+                                            :key="partner.id">
                                         <td>
                                             <div
                                                 class="d-flex align-items-center"
@@ -339,74 +346,15 @@
                                                 >
                                             </div>
                                         </td>
-                                         <td
-                                                v-if="
-                                                    partner.calculatedProgress >
-                                                    0
-                                                "
-                                               >
-                                                <div>
-                                                    <label class="progress_text">{{
+                                        <td class="stats">
+                                            <label class="progress_text">{{
                                                         partner.calculatedProgress.toFixed(
                                                             2
                                                         )
                                                     }}</label>%
-                                                    <div class="progress">
-                                                        <div
-                                                            class="progress-bar"
-                                                            :class="
-                                                                getStatusClass(
-                                                                    partner
-                                                                )
-                                                            "
-                                                            :style="{
-                                                                width:
-                                                                    partner.calculatedProgress +
-                                                                    '%',
-                                                            }"
-                                                            aria-valuemin="0"
-                                                            aria-valuemax="100"
-                                                        ></div>
-                                                    </div>
-                                                    <div
-                                                        class="progress-labels"
-                                                    >
-                                                        <span
-                                                            class="status-label off-track-label"
-                                                            v-if="
-                                                                getStatusClass(
-                                                                    partner
-                                                                ) ===
-                                                                'off-track'
-                                                            "
-                                                            >Off Track</span
-                                                        >
-                                                        <span
-                                                            class="status-label at-risk-label"
-                                                            v-else-if="
-                                                                getStatusClass(
-                                                                    partner
-                                                                ) === 'at-risk'
-                                                            "
-                                                            >At Risk</span
-                                                        >
-                                                        <span
-                                                            class="status-label on-track-label"
-                                                            v-else-if="
-                                                                getStatusClass(
-                                                                    partner
-                                                                ) === 'on-track'
-                                                            "
-                                                            >On Track</span
-                                                        >
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td v-else>N/A</td>
-                                       <!-- <td class="stats">
-                                            <p class="progress_text text-muted">
+                                           <!-- <p class="progress_text text-muted">
                                                 {{ "48%" }}
-                                            </p>
+                                            </p>-->
                                             <div class="progress">
                                                 <div
                                                     class="progress-bar bg-primary"
@@ -417,7 +365,7 @@
                                                     aria-valuemax="100"
                                                 ></div>
                                             </div>
-                                        </td>-->
+                                        </td>
                                         <td class="td-members">
                                            <!-- <img
                                                 v-for="member in partner.members"
@@ -543,10 +491,10 @@ export default {
     },
     data() {
         return {
-            offTrack: 3,
+            offTrack: 0,
             base_url: "../",
-            atRisk: 1,
-            onTrack: 6,
+            atRisk: 0,
+            onTrack: 0,
             partners: [],
             Newpartners: [],
             currentPage: 1,
@@ -590,50 +538,42 @@ export default {
             return uniqueDepartments;
         },
 
-   partnersWithProgress() {
-            return this.partners.map((partner) => ({
-                ...partner,
-                calculatedProgress: this.calculateKpiProgress(partner.kpis),
 
-                statusClass: this.getStatusClass(partner),
-            }));
+          partnersWithProgress() {
+            // Create an empty object to store unique partners
+            const uniquePartners = {};
+
+            // Iterate through partners and calculate progress
+            this.partners.forEach((partner) => {
+                const calculatedProgress = this.calculateKpiProgress(
+                    partner.kpis
+                );
+                const statusClass = this.getStatusClass(partner);
+
+                // Check if the partner name is not already in the uniquePartners object
+                if (!uniquePartners[partner.name]) {
+                    // If not, create an entry for the partner
+                    uniquePartners[partner.name] = {
+                        id: partner.id, // Include the id property
+                        name: partner.name,
+                        image: partner.image,
+                        calculatedProgress,
+                        statusClass,
+                        members: partner.members,
+                        departments: partner.departments,
+                    };
+                } else {
+                    // If the partner name is already in uniquePartners, update progress and status
+                    const existingPartner = uniquePartners[partner.name];
+                    existingPartner.calculatedProgress += calculatedProgress;
+                    existingPartner.statusClass =
+                        this.getStatusClass(existingPartner);
+                }
+            });
+
+            // Convert the uniquePartners object values (unique partners) back to an array
+            return Object.values(uniquePartners);
         },
-        //   partnersWithProgress() {
-        //      console.log("partnersWithProgress method called.");
-        //     // Create an empty object to store unique partners
-        //     const uniquePartners = {};
-
-        //     // Iterate through partners and calculate progress
-        //     this.partners.forEach((partner) => {
-        //         const calculatedProgress = this.calculateKpiProgress(
-        //             partner.kpis
-        //         );
-        //         const statusClass = this.getStatusClass(partner);
-
-        //         // Check if the partner name is not already in the uniquePartners object
-        //         if (!uniquePartners[partner.name]) {
-        //             // If not, create an entry for the partner
-        //             uniquePartners[partner.name] = {
-        //                 id: partner.id, // Include the id property
-        //                 name: partner.name,
-        //                 image: partner.image,
-        //                 calculatedProgress,
-        //                 statusClass,
-        //                 members: partner.members,
-        //                 departments: partner.departments,
-        //             };
-        //         } else {
-        //             // If the partner name is already in uniquePartners, update progress and status
-        //             const existingPartner = uniquePartners[partner.name];
-        //             existingPartner.calculatedProgress += calculatedProgress;
-        //             existingPartner.statusClass =
-        //                 this.getStatusClass(existingPartner);
-        //         }
-        //     });
-
-        //     // Convert the uniquePartners object values (unique partners) back to an array
-        //     return Object.values(uniquePartners);
-        // },
 
     },
     methods: {
@@ -678,7 +618,7 @@ export default {
                 kpi.kpi_metrics.forEach((kpiMetric) => {
                     kpiMetric.kpi_metric_members.forEach((member) => {
                         member.progress.forEach((progress) => {
-                             totalCurrentValue += progress.current_value;
+                            totalCurrentValue += progress.current_value;
                              totalTargetValue += progress.target_value;
                             
                         });
@@ -693,35 +633,30 @@ export default {
             return (totalCurrentValue / totalTargetValue) * 100;
         },
 
- getStatusClass(partner) {
-    const progressPercentage = parseFloat(partner.calculatedProgress);
+        getStatusClass(partner) {
+            const progressPercentage = parseFloat(partner.calculatedProgress);
 
-    if (isNaN(progressPercentage)) {
-        return "N/A"; // Handle the case where progress is not available
-    }
+            if (Array.isArray(partner.kpis)) {
+                for (const kpi of partner.kpis) {
+                    if (Array.isArray(kpi.kpi_metrics)) {
+                        for (const kpiMetric of kpi.kpi_metrics) {
+                            const onTrackValue = parseFloat(
+                                kpiMetric.on_track_value
+                            );
+                            const atRiskMin = parseFloat(kpiMetric.at_risk_min);
 
-    console.log("Progress Percentage is:",progressPercentage);
-
-    if (Array.isArray(partner.kpis)) {
-        for (const kpi of partner.kpis) {
-            if (Array.isArray(kpi.kpi_metrics)) {
-                for (const kpiMetric of kpi.kpi_metrics) {
-                    const onTrackValue = parseFloat(kpiMetric.on_track_value);
-                    const atRiskMin = parseFloat(kpiMetric.at_risk_min);
-
-                    if (progressPercentage >= onTrackValue) {
-                        return "on-track";
-                    } else if (progressPercentage >= atRiskMin) {
-                        return "at-risk";
+                            if (progressPercentage >= onTrackValue) {
+                                return "on-track";
+                            } else if (progressPercentage >= atRiskMin) {
+                                return "at-risk";
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
 
-    return "off-track";
-},
-
+            return "off-track";
+        },
 
         
 
@@ -768,7 +703,7 @@ export default {
 
 
 .on-track {
-    background-color: #047a48;
+    background-color: #5cb85c;
 }
 
 .at-risk {
