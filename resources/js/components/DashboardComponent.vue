@@ -17,7 +17,7 @@
                     {{ offTrack }}
                 </h6>
                 <h4 class="mb-2 txt-dark">PARTNERS</h4>
-                <span class="mdi mdi-arrow-up txt-danger icon-item"> 40%</span>
+                <span class="mdi mdi-arrow-up txt-danger icon-item"> 0%</span>
                 <small> vs last month</small>
             </div>
 
@@ -28,7 +28,7 @@
                 </h6>
                 <h4 class="mb- txt-dark">PARTNERS</h4>
                 <span class="mdi mdi-arrow-down txt-warning icon-item">
-                    -100%</span
+                    0%</span
                 >
                 <small> vs last month</small>
             </div>
@@ -40,7 +40,7 @@
                 </h6>
                 <h4 class="mb-2 txt-dark">PARTNERS</h4>
                 <span class="mdi mdi-arrow-up txt-success icon-item">
-                    +50%</span
+                    0%</span
                 >
                 <span class="ml-2"></span>
                 <small> vs last month</small>
