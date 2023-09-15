@@ -186,7 +186,7 @@
                                        <!-- <option value="">
                                             Select or create standard unit
                                         </option>
-                                        <!--<option value="select">
+                                        <option value="select">
                                             Create standard unit
                                         </option>-->
 
