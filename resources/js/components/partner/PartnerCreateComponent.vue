@@ -384,7 +384,7 @@
 
                 <div class="col-md-9 offset-md-0 text-center">
                     <div class="row">
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                             <input
                                 class="form-control py-2 pr-5"
                                 autocomplete="member_email"
@@ -394,6 +394,19 @@
                                 name="member_email"
                                 v-model="member.email"
                             />
+                        </div> -->
+                        <div class="col-md-4">
+                            <select
+                                class="form-control py-2 pr-5"
+                                name="member_email"
+                                v-model="member.email"
+                            >
+                                <option value="">Select Member</option>
+
+                                <option v-for="member in this.members" :value="member.email">
+                                   {{member.email}}
+                                </option>
+                            </select>
                         </div>
                         <div class="col-md-3">
                             <select
@@ -441,6 +454,7 @@
                     <ul>
                         <li
                             v-for="(item, index) in selectedItems"
+                            :key="index"
                             class="list-item"
                         >
                             <span>
@@ -506,6 +520,7 @@ export default {
             countries: [],
             departments: [],
             roles: [],
+            members: [],
             formData: {
                 name: "",
                 email: "",
@@ -530,7 +545,7 @@ export default {
     },
     mounted() {
         this.fetchDepartments();
-        //this.fetchMembers();
+        this.fetchMembers();
         this.fetchCountries();
     },
     computed: {
@@ -560,6 +575,15 @@ export default {
             let uri = this.base_url + `api/v1/department-list`;
             axios.get(uri).then((response) => {
                 this.departments = response.data;
+            });
+        },
+
+        fetchMembers() {
+            let uri = this.base_url + `api/v1/member-list`;
+            axios.get(uri).then((response) => {
+                this.members = response.data;
+
+                console.log("Members to be added are:", JSON.stringify(this.members));
             });
         },
 
@@ -643,16 +667,16 @@ export default {
             formData.append("documents", this.formData.documents);
 
             // Convert the members data to a JSON string and append it to the form data
-            const members = this.selectedItems.map((item) => {
-                return {
-                    email: item.memberEmail,
-                    department_id: item.departmentId,
-                    role: item.roleName,
-                };
-            });
-        
-        console.log("Our Departments/Members:",  JSON.stringify(members));
-            formData.append("members", JSON.stringify(members));
+            // const members = this.selectedItems.map((item) => {
+            //     return {
+            //         email: item.memberEmail,
+            //         department_id: item.departmentId,
+            //         role: item.roleName,
+            //     };
+            // });
+
+            console.log("Our Members in form Data:", JSON.stringify(this.formData.members));
+            formData.append("members", JSON.stringify(this.formData.members));
 
             const uri = this.base_url + "api/v1/partner-create";
 

@@ -23,7 +23,7 @@
                                 href="#progress"
                                 class="nav-link"
                                 :class="{ 'active-link': currentPage === 1 }"
-                                @click="currentPage = 1"
+                                @click="handleLinkClick"
                                 >Progress</a
                             >
                         </li>
@@ -113,7 +113,10 @@
                         <p>Review Period:</p>
                     </div>
 
-                    <div style="margin-top: -30px" class="d-flex justify-content-end">
+                    <div
+                        style="margin-top: -30px"
+                        class="d-flex justify-content-end"
+                    >
                         <p style="font-weight: bold" v-if="kpiPartnerProgress">
                             {{
                                 kpiPartnerProgress.progress_percentage.toFixed(
@@ -126,7 +129,7 @@
                     <div
                         style="margin-top: -10px"
                         class="d-flex justify-content-end status"
-                        >
+                    >
                         <h6 v-if="kpiPartnerProgress">
                             {{ kpiPartnerProgress.status }}
                         </h6>
@@ -1061,7 +1064,6 @@
                                                 type="text"
                                                 placeholder="Search for Kpi Metrics"
                                                 v-model="searchQuery"
-                                               
                                             />
                                         </div>
                                     </div>
@@ -1632,7 +1634,7 @@
                 <div
                     class="modal-dialog modal-dialog-centered modal-lg"
                     role="document"
-                   >
+                >
                     <div class="modal-content p-5">
                         <p><i class="mdi mdi-image-filter-none h1"></i></p>
                         <h3>Add New KPI</h3>
@@ -1641,7 +1643,7 @@
                             class="row g-3"
                             @submit.prevent="submitKpi"
                             method="POST"
-                          >
+                        >
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label
@@ -2502,9 +2504,16 @@ export default {
             .catch((error) => {
                 console.error("Error fetching data:", error);
             });
+
+        //console.log("Kpi Metric Details are:",JSON.stringify(this.kpiMetricsDetails));
     },
 
     methods: {
+        handleLinkClick() {
+            this.currentPage = 1; // Set currentPage to 1
+            window.location.reload(); // Reload the current page
+        },
+
         calculateCurrentSum(kpiMetric) {
             let currentSum = 0;
             kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
