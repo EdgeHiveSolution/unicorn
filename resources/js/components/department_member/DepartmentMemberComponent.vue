@@ -71,10 +71,10 @@
                 <div class="row">
                     <div
                         class="col-12 px-0"
-                        v-for="kpiMetricData in member.kpiMetrics"
-                        :key="kpiMetricData.kpiMetric.id"
-                       >
-                        <div class="card mb-5">
+                          v-for="kpiMetricData in member.kpiMetrics"
+                          :key="kpiMetricData.kpiMetric.id"
+                          >
+                         <div class="card mb-5">
                             <div class="d-flex justify-content-between p-4">
                                 <div>
                                     <h4>
@@ -91,14 +91,14 @@
                                     </p>
                                 </div>
 
-                                 <div>
-                                    <div>
-                                    <span style="font-weight: bold" class="txt-dark">{{ aggregatePercentage }}%</span>
-                                    </div>
-                                    <div>
-                                    {{ getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric) }}
-                                    </div>
-                                </div>
+                                 <div v-if="kpiMetricData && kpiMetricData.kpiMetric && kpiMetricData.progress_sum">
+  <div>
+    <span style="font-weight: bold" class="txt-dark">{{ getAggregatePercentage(kpiMetricData) }}%</span>
+  </div>
+  <div>
+    {{ getAggregateStatus(getAggregatePercentage(kpiMetricData), kpiMetricData) }}
+  </div>
+</div>
                             </div>
                             <div
                                 class="card-header d-flex justify-content-between my-3"
@@ -264,23 +264,37 @@ export default {
 
 
 
-    aggregatePercentage() {
-    const totalCurrentSum = this.member.kpiMetrics.reduce(
-      (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.current_sum,
-      0
-    );
+ getAggregatePercentage() {
+    return (kpiMetricData) => {
+      const totalCurrentSum = kpiMetricData.progress_sum.current_sum;
+      const totalTargetSum = kpiMetricData.progress_sum.target_sum;
 
-    const totalTargetSum = this.member.kpiMetrics.reduce(
-      (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.target_sum,
-      0
-    );
+      if (totalTargetSum === 0) {
+        return 0; // To prevent division by zero
+      }
 
-    if (totalTargetSum === 0) {
-      return 0; // To prevent division by zero
-    }
-
-    return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+      return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+    };
   },
+
+    // aggregatePercentage() {
+    // const totalCurrentSum = this.member.kpiMetrics.reduce(
+    //   (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.current_sum,
+    //   0
+    // );
+
+    // const totalTargetSum = this.member.kpiMetrics.reduce(
+    //   (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.target_sum,
+    //   0
+    // );
+
+    // if (totalTargetSum === 0) {
+    //   return 0; // To prevent division by zero
+    // }
+
+    // return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+    // },
+
 
         },
 
@@ -363,12 +377,12 @@ export default {
         },
 
 
-        getAggregateStatus(aggregatePercentage, kpiMetric) {
-    const onTrackValue = parseFloat(kpiMetric.on_track_value);
-    const offTrackMin = parseFloat(kpiMetric.off_track_min);
-    const offTrackMax = parseFloat(kpiMetric.off_track_max);
-    const atRiskMin = parseFloat(kpiMetric.at_risk_min);
-    const atRiskMax = parseFloat(kpiMetric.at_risk_max);
+       getAggregateStatus(aggregatePercentage, kpiMetricData) {
+    const onTrackValue = parseFloat(kpiMetricData.kpiMetric.on_track_value);
+    const offTrackMin = parseFloat(kpiMetricData.kpiMetric.off_track_min);
+    const offTrackMax = parseFloat(kpiMetricData.kpiMetric.off_track_max);
+    const atRiskMin = parseFloat(kpiMetricData.kpiMetric.at_risk_min);
+    const atRiskMax = parseFloat(kpiMetricData.kpiMetric.at_risk_max);
 
     if (aggregatePercentage >= onTrackValue) {
       return 'On Track';
@@ -379,7 +393,7 @@ export default {
     } else {
       return 'N/A'; // You can add additional handling if needed
     }
-    },
+  },
     },
 };
 

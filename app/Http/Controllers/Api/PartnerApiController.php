@@ -58,7 +58,7 @@ public function index(Request $request)
     } else if ($userRoleId == 3) {
         // User is a partner
         $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
-            ->where('id', $userId)
+            ->where('user_id', $userId)
             ->get();
     } else {
         // User role is neither 2 (member) nor 3 (partner), return all partners
@@ -99,7 +99,7 @@ public function index(Request $request)
     // }
 
     public function latest(Request $request)
-    
+
     {
 
         $userId = $request->input('user_id');

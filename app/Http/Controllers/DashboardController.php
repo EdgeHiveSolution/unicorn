@@ -31,7 +31,7 @@ class DashboardController extends Controller
      */
 
      public function index()
-     
+
      {
          $loggeduser = Session::get('user');
          Log::info('Session User', ['user' => $loggeduser]);
@@ -61,6 +61,8 @@ class DashboardController extends Controller
          
          return view('dashboard.index', ['data' => $data]);
      }
+
+     
      
      
     // public function index()
