@@ -127,13 +127,13 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="txt-dark">{{
+                                                <div class="container-overflow_wrapper"><span class="txt-dark">{{
                                                     partner.business_type
                                                 }}</span
                                                 ><br />
                                                 <span class="table_text txt-gray">{{
                                                     partner.about
-                                                }}</span>
+                                                }}</span></div>
                                             </td>
                                             <td class="td-members">
                                                 <!--<img

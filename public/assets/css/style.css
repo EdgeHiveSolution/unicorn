@@ -352,6 +352,12 @@ input{
     font-size: 11px;
     margin: auto;
     
+
+}
+
+.purple_container{
+    background-color:rgba(234,243,255,1);
+    border-radius: 24px;
 }
 
 .active_status_text{
@@ -359,6 +365,15 @@ input{
     padding: 6px;
     align-self: center;
     font-size: 12px;
+}
+
+.container-overflow_wrapper{
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 300px;
+    height: 60px;
 }
 
 .input-container {

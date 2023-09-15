@@ -19,11 +19,18 @@
                 <nav class="navbar navbar-expand-lg navbar">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a
+                            <!--<a
                                 href="#progress"
                                 class="nav-link"
                                 :class="{ 'active-link': currentPage === 1 }"
                                 @click="currentPage = 1"
+                                >Progress</a>-->
+
+                                <a
+                                href="#progress"
+                                class="nav-link"
+                                :class="{ 'active-link': currentPage === 1 }"
+                                @click="handleLinkClick"
                                 >Progress</a
                             >
                         </li>
@@ -2606,6 +2613,7 @@ export default {
                     if (monthIndex !== -1) {
                         // If data is available for this month, use it
                         accumulatedProgress += progressPercentages[monthIndex];
+                        console.log("accumulated progress: ",accumulatedProgress);
                         dataPoints.push(accumulatedProgress);
                     } else {
                         // If no data available for this month, use zero or null
@@ -3360,6 +3368,11 @@ export default {
         sendInfo(kpimetric, kpiMember) {
             this.selectedKpiMetric = kpimetric;
             this.selectedKpiMember = kpiMember;
+        },
+
+        handleLinkClick() {
+        this.currentPage = 1; 
+        window.location.reload(); 
         },
 
         submitProgress(kpimetric1, kpi1) {

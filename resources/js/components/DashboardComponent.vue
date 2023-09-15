@@ -833,7 +833,7 @@ export default {
 }*/
 
 .on-track {
-    background-color: #5cb85c;
+    background-color: #047a48;
 }
 
 .at-risk {

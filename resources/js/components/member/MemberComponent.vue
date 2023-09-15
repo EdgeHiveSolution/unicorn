@@ -28,7 +28,25 @@
         </div>
         <div class="module-nav"></div>
 
-        <div class="top-header">
+      <div class="top-header">
+            <div v-if="member.member && member.member.departments" class="d-flex flex-row my-2">
+                <h5 class=" mx-2">
+                    Departments:
+                </h5>
+                    <template  v-for="(department, index) in member.member.departments"
+                        :key="index">
+                        <div class="department-tag mx-2 mb-1">
+                        {{ department.name }}
+                        <!--<span
+                            v-if="
+                                index !== member.member.departments.length - 1
+                            "
+                            ></span>-->
+                    </div></template>
+                
+            </div>
+        </div>
+      <!--  <div class="top-header">
             <div v-if="member.member && member.member.departments">
                 <h5>
                     Departments:
@@ -46,7 +64,7 @@
                     </span>
                 </h5>
             </div>
-        </div>
+        </div>-->
 
         <div class="body-items">
             <div id="kpis">
@@ -62,7 +80,7 @@
                             <div class="d-flex justify-content-between p-4">
                         <div>
                             <h4>{{ kpiMetricData.kpiMetric.kpi.title }}</h4>
-                            <p>
+                            <p class="txt-gray">
                             <b>
                                 Review period:{{
                                 kpiMetricData.kpiMetric.kpi.review_period_range
@@ -74,10 +92,18 @@
 
   <div>
     <div>
-      <span style="font-weight: bold" class="txt-dark">{{ aggregatePercentage }}%</span>
+      <h4  class="txt-dark">{{ aggregatePercentage }}%</h4>
     </div>
     <div>
-      {{ getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric) }}
+      <span :class="{
+          'on-track-label':
+          getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric)==='On Track',
+          'at-risk-label':
+          getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric)==='At Risk',
+          'off-track-label':
+          getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric)==='Off Track'
+      }">
+          {{ getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric) }}</span>
     </div>
   </div>
 </div>
@@ -462,6 +488,35 @@ img {
 .txt-gray{
     /*color: #b1b6c0;*/
     color: rgba(102,112,133,1);
+}
+
+.on-track-label{
+    font-size: 18px;
+    color: #047a48;
+    font-weight: 700;
+}
+
+
+.off-track-label {
+    color: #d9534f;
+    font-size: 18px;
+     font-weight: 700;
+    
+}
+
+.at-risk-label {
+    color: #f0ad4e;
+    font-size: 18px;
+     font-weight: 700;
+}
+
+.department-tag{
+  border-radius: 10px;
+  padding: 3px 7px;
+ background: #eceff3;
+ font-size: .4 rem;
+ /*margin-right: 5px;*/
+ /*margin: 0 !important;*/
 }
 
 </style>
