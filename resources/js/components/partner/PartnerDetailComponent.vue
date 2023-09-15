@@ -125,22 +125,40 @@
                         style="margin-top: -30px"
                         class="d-flex justify-content-end mx-2"
                     >
-                        <p style="font-weight: bold" v-if="kpiPartnerProgress">
+                        <span v-if="kpiPartnerProgress"
+                        
+                        :class="{
+                         'on-track-header':
+                            kpiPartnerProgress.status==='On Track',
+                         'at-risk-header':
+                          kpiPartnerProgress.status==='At Risk',
+                         'off-track-header':
+                         kpiPartnerProgress.status=== 'Off Track'    
+                        }"
+                        >
                             {{
                                 kpiPartnerProgress.progress_percentage.toFixed(
                                     2
                                 )
                             }}%
-                        </p>
+                        </span>
                         <p v-else></p>
                     </div>
                     <div
                         style="margin-top: -10px"
-                        class="d-flex justify-content-end status mx-2"
+                        class="d-flex justify-content-end  mx-2 mt-2"
                         >
-                        <h6 v-if="kpiPartnerProgress">
+                        <span v-if="kpiPartnerProgress" 
+                        :class="
+                        {'on-track-header':
+                            kpiPartnerProgress.status==='On Track',
+                         'at-risk-header':
+                          kpiPartnerProgress.status==='At Risk',
+                         'off-track-header':
+                         kpiPartnerProgress.status=== 'Off Track'}"
+                        >
                             {{ kpiPartnerProgress.status }}
-                        </h6>
+                        </span>
                         <p v-else></p>
                     </div>
 
@@ -3663,6 +3681,27 @@ option {
 .at-risk-label {
     color: #f0ad4e;
     font-size: 12px;
+}
+
+
+.on-track-header{
+    font-size: 18px;
+    color: #047a48;
+    font-weight: 800 !important;
+}
+
+
+.off-track-header {
+    /*color: #d9534f;*/
+    color: #a5292a;
+    font-size: 18px;
+    font-weight: 800 !important;
+}
+
+.at-risk-header {
+    color: #f0ad4e;
+    font-size: 18px;
+    font-weight: 800 !important;
 }
 
 
