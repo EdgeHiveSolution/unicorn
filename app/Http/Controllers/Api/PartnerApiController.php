@@ -99,7 +99,7 @@ public function index(Request $request)
     // }
 
     public function latest(Request $request)
-    
+
     {
 
         $userId = $request->input('user_id');
