@@ -19,11 +19,18 @@
                 <nav class="navbar navbar-expand-lg navbar">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a
+                            <!--<a
                                 href="#progress"
                                 class="nav-link"
                                 :class="{ 'active-link': currentPage === 1 }"
                                 @click="currentPage = 1"
+                                >Progress</a>-->
+
+                                <a
+                                href="#progress"
+                                class="nav-link"
+                                :class="{ 'active-link': currentPage === 1 }"
+                                @click="handleLinkClick"
                                 >Progress</a
                             >
                         </li>
@@ -113,23 +120,45 @@
                         <p>Review Period:</p>
                     </div>
 
-                    <div style="margin-top: -30px" class="d-flex justify-content-end mx-2">
-                        <p style="font-weight: bold" v-if="kpiPartnerProgress">
+                    <!--<div style="margin-top: -30px" class="d-flex justify-content-end mx-2">-->
+                    <div
+                        style="margin-top: -30px"
+                        class="d-flex justify-content-end mx-2"
+                    >
+                        <span v-if="kpiPartnerProgress"
+                        
+                        :class="{
+                         'on-track-header':
+                            kpiPartnerProgress.status==='On Track',
+                         'at-risk-header':
+                          kpiPartnerProgress.status==='At Risk',
+                         'off-track-header':
+                         kpiPartnerProgress.status=== 'Off Track'    
+                        }"
+                        >
                             {{
                                 kpiPartnerProgress.progress_percentage.toFixed(
                                     2
                                 )
                             }}%
-                        </p>
+                        </span>
                         <p v-else></p>
                     </div>
                     <div
                         style="margin-top: -10px"
-                        class="d-flex justify-content-end status mx-2"
+                        class="d-flex justify-content-end  mx-2 mt-2"
                         >
-                        <h6 v-if="kpiPartnerProgress">
+                        <span v-if="kpiPartnerProgress" 
+                        :class="
+                        {'on-track-header':
+                            kpiPartnerProgress.status==='On Track',
+                         'at-risk-header':
+                          kpiPartnerProgress.status==='At Risk',
+                         'off-track-header':
+                         kpiPartnerProgress.status=== 'Off Track'}"
+                        >
                             {{ kpiPartnerProgress.status }}
-                        </h6>
+                        </span>
                         <p v-else></p>
                     </div>
 
@@ -1131,7 +1160,7 @@
                     <h4>KPIs</h4>
                     <p>Key milestones for {{ partner.name }}</p>
                 </div>
-                <div>
+                <div v-if="loggedUser.user_role_id === 4">
                     <a
                         href="#"
                         class="text-light add-link text-sm btn btn-primary btn-sm my-2"
@@ -1162,7 +1191,7 @@
                                             >
                                         </p>
                                     </div>
-                                    <div>
+                                    <div v-if="loggedUser.user_role_id === 4">
                                         <button
                                             @click="openAddKpiMetricModal(kpi)"
                                             data-toggle="modal"
@@ -1186,7 +1215,6 @@
                                                 type="text"
                                                 placeholder="Search for Kpi Metrics"
                                                 v-model="searchQuery"
-                                               
                                             />
                                         </div>
                                     </div>
@@ -1323,7 +1351,7 @@
                                             >
                                         </p>
                                     </div>
-                                    <div>
+                                    <div v-if="loggedUser.user_role_id === 4">
                                         <button
                                             @click="openAddKpiMetricModal(kpi)"
                                             data-toggle="modal"
@@ -1807,7 +1835,7 @@
                 <div
                     class="modal-dialog modal-dialog-centered modal-lg"
                     role="document"
-                   >
+                >
                     <div class="modal-content p-5">
                         <p><i class="mdi mdi-image-filter-none h1"></i></p>
                         <h3>Add New KPI</h3>
@@ -1816,7 +1844,7 @@
                             class="row g-3"
                             @submit.prevent="submitKpi"
                             method="POST"
-                          >
+                        >
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label
@@ -2606,6 +2634,7 @@ export default {
                     if (monthIndex !== -1) {
                         // If data is available for this month, use it
                         accumulatedProgress += progressPercentages[monthIndex];
+                        console.log("accumulated progress: ",accumulatedProgress);
                         dataPoints.push(accumulatedProgress);
                     } else {
                         // If no data available for this month, use zero or null
@@ -2784,6 +2813,11 @@ export default {
     },
 
     methods: {
+        handleLinkClick() {
+            this.currentPage = 1; // Set currentPage to 1
+            window.location.reload(); // Reload the current page
+        },
+
         calculateCurrentSum(kpiMetric) {
             let currentSum = 0;
             kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
@@ -3362,6 +3396,11 @@ export default {
             this.selectedKpiMember = kpiMember;
         },
 
+        handleLinkClick() {
+        this.currentPage = 1; 
+        window.location.reload(); 
+        },
+
         submitProgress(kpimetric1, kpi1) {
             const partner = this.partner;
             console.log("User Data:", JSON.stringify(store.state.loggedUser));
@@ -3642,6 +3681,27 @@ option {
 .at-risk-label {
     color: #f0ad4e;
     font-size: 12px;
+}
+
+
+.on-track-header{
+    font-size: 18px;
+    color: #047a48;
+    font-weight: 800 !important;
+}
+
+
+.off-track-header {
+    /*color: #d9534f;*/
+    color: #a5292a;
+    font-size: 18px;
+    font-weight: 800 !important;
+}
+
+.at-risk-header {
+    color: #f0ad4e;
+    font-size: 18px;
+    font-weight: 800 !important;
 }
 
 

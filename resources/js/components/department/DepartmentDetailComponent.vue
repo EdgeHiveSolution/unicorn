@@ -555,13 +555,13 @@
                                                 </div>
                                     </td>
                                     <td>
-                                        <span class="txt-dark">{{
+                                       <div class="container-overflow_wrapper"> <span class="txt-dark">{{
                                             partner.business_type
                                         }}</span
                                         ><br />
                                         <span class="active-period txt-gray">{{
                                             partner.about
-                                        }}</span>
+                                        }}</span></div>
                                     </td>
                                     <td class="td-members">
                                          <div class="d-flex flex-row">
@@ -922,7 +922,11 @@
                                     <td></td>
                                     
                                                 <td>
-                                                    <button
+                                                    <a  :href="
+                                                                '/department_members/' +
+                                                                member.id
+                                                            ">
+                                                        <button
                                                         class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
                                                     >
                                                         <span
@@ -936,7 +940,7 @@
                                                             class="text-light"
                                                             >View</a
                                                         >
-                                                    </button>
+                                                    </button></a>
                                                 </td>
                                 </tr>
                             </tbody>

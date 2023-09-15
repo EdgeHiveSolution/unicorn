@@ -183,7 +183,7 @@
                                         class="form-select"
                                         v-model="newMetric.unit"
                                     >
-                                        <option value="">
+                                       <!-- <option value="">
                                             Select or create standard unit
                                         </option>
                                         <!--<option value="select">

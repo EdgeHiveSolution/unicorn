@@ -1,6 +1,16 @@
 <template>
     <div>
-        <div class="d-flex align-items-center">
+
+         <div class="d-flex flex-row">
+            <div class="profile_image d-flex flex-column align-items-center mx-2">
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="lg"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
             <div class="data-info">
                 <div v-if="member.member && member.member.name">
                     <h4>{{ member.member.name }}</h4>
@@ -17,30 +27,46 @@
                 </div>
             </div>
         </div>
+       <!-- <div class="d-flex align-items-center">
+            <div class="data-info">
+                <div v-if="member.member && member.member.name">
+                    <h4>{{ member.member.name }}</h4>
+                </div>
+                <div v-if="member.member && member.member.is_active">
+                    <p>
+                        Status:
+                        <span class="text-success">
+                            {{
+                                member.member.is_active ? "Active" : "Inactive"
+                            }}</span
+                        >
+                    </p>
+                </div>
+            </div>
+        </div>-->
         <div class="module-nav"></div>
 
         <div class="top-header">
-            <div v-if="member.member && member.member.departments">
-                <h5>
+            <div v-if="member.member && member.member.departments" class="d-flex flex-row my-2">
+                <h5 class=" mx-2">
                     Departments:
-                    <span
-                        v-for="(department, index) in member.member.departments"
-                        :key="index"
-                    >
+                </h5>
+                    <template  v-for="(department, index) in member.member.departments"
+                        :key="index">
+                        <div class="department-tag mx-2 mb-1">
                         {{ department.name }}
-                        <span
+                        <!--<span
                             v-if="
                                 index !== member.member.departments.length - 1
                             "
-                            ></span
-                        >
-                    </span>
-                </h5>
+                            ></span>-->
+                    </div></template>
+                
             </div>
         </div>
 
         
-        <div  v-for="partner in getPartner" :key="partner.id">
+        <div  v-for="partner in getPartner" :key="partner.id" class="container-fluid purple_container p-4 my-4">
           <div class="d-flex flex justify-content-between">
            <div class="data-info">
                 <div>
@@ -58,29 +84,29 @@
                 </div>
             </div>
               <div>
-              <a style="font-size: 18px" class="btn btn-sm  btn-light" href="">View Partner</a>
+              <a class="btn btn-sm view_partner  btn-light" href="">View Partner</a>
               </div>
 
             </div>
         
 
-         <div class="body-items">
+         <div class="body-items m-2 ">
             <div id="kpis">
                 <!-- KPIs content -->
 
                 <div class="row">
                     <div
                         class="col-12 px-0"
-                        v-for="kpiMetricData in member.kpiMetrics"
-                        :key="kpiMetricData.kpiMetric.id"
-                       >
-                        <div class="card mb-5">
+                          v-for="kpiMetricData in member.kpiMetrics"
+                          :key="kpiMetricData.kpiMetric.id"
+                          >
+                         <div class="card mb-5">
                             <div class="d-flex justify-content-between p-4">
                                 <div>
                                     <h4>
                                         {{ kpiMetricData.kpiMetric.kpi.title }}
                                     </h4>
-                                    <p>
+                                    <p class="txt-gray">
                                         <b>
                                             Review period:{{
                                                 kpiMetricData.kpiMetric.kpi
@@ -91,14 +117,32 @@
                                     </p>
                                 </div>
 
-                                 <div>
+                                 <!--<div>
                                     <div>
-                                    <span style="font-weight: bold" class="txt-dark">{{ aggregatePercentage }}%</span>
+                                    <h4 style="font-weight: 800 !important">{{ aggregatePercentage }}%</h4>
                                     </div>
                                     <div>
-                                    {{ getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric) }}
+                                    <span :class="{
+                                        'on-track-label':
+                                        getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric)==='On Track',
+                                        'at-risk-label':
+                                        getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric)==='At Risk',
+                                        'off-track-label':
+                                        getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric)==='Off Track'
+
+                                    }">{{ getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric) }}</span>
                                     </div>
-                                </div>
+                                </div>-->
+                                 <div v-if="kpiMetricData && kpiMetricData.kpiMetric && kpiMetricData.progress_sum">
+  <div>
+    <span style="font-weight: bold" class="txt-dark"
+    
+    >{{ getAggregatePercentage(kpiMetricData) }}%</span>
+  </div>
+  <div>
+    {{ getAggregateStatus(getAggregatePercentage(kpiMetricData), kpiMetricData) }}
+  </div>
+</div>
                             </div>
                             <div
                                 class="card-header d-flex justify-content-between my-3"
@@ -156,7 +200,7 @@
                                                             <!-- <div>{{ progressData.progress_sum.target_sum }}</div> -->
                                                             <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.target_sum }} </div>
                                                             </td>
-                                                            <td>
+                                                            <!--<td>-->
                                                             <td class="stats">
                                                                 <p class="progress_text text-muted">
                                                                 {{ calculateProgressPercentage( kpiMetricData.progress_sum) }}%
@@ -175,7 +219,7 @@
                                                                 {{ calculateProgressStatus( kpiMetricData.progress_sum, kpiMetricData.kpiMetric) }}
                                                                 </p>
                                                             </td>
-                                            </td>
+                                           <!-- </td>-->
                                         </tr>
                                         </tbody>
                                    </table>
@@ -264,23 +308,37 @@ export default {
 
 
 
-    aggregatePercentage() {
-    const totalCurrentSum = this.member.kpiMetrics.reduce(
-      (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.current_sum,
-      0
-    );
+ getAggregatePercentage() {
+    return (kpiMetricData) => {
+      const totalCurrentSum = kpiMetricData.progress_sum.current_sum;
+      const totalTargetSum = kpiMetricData.progress_sum.target_sum;
 
-    const totalTargetSum = this.member.kpiMetrics.reduce(
-      (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.target_sum,
-      0
-    );
+      if (totalTargetSum === 0) {
+        return 0; // To prevent division by zero
+      }
 
-    if (totalTargetSum === 0) {
-      return 0; // To prevent division by zero
-    }
-
-    return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+      return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+    };
   },
+
+    // aggregatePercentage() {
+    // const totalCurrentSum = this.member.kpiMetrics.reduce(
+    //   (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.current_sum,
+    //   0
+    // );
+
+    // const totalTargetSum = this.member.kpiMetrics.reduce(
+    //   (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.target_sum,
+    //   0
+    // );
+
+    // if (totalTargetSum === 0) {
+    //   return 0; // To prevent division by zero
+    // }
+
+    // return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+    // },
+
 
         },
 
@@ -363,12 +421,12 @@ export default {
         },
 
 
-        getAggregateStatus(aggregatePercentage, kpiMetric) {
-    const onTrackValue = parseFloat(kpiMetric.on_track_value);
-    const offTrackMin = parseFloat(kpiMetric.off_track_min);
-    const offTrackMax = parseFloat(kpiMetric.off_track_max);
-    const atRiskMin = parseFloat(kpiMetric.at_risk_min);
-    const atRiskMax = parseFloat(kpiMetric.at_risk_max);
+       getAggregateStatus(aggregatePercentage, kpiMetricData) {
+    const onTrackValue = parseFloat(kpiMetricData.kpiMetric.on_track_value);
+    const offTrackMin = parseFloat(kpiMetricData.kpiMetric.off_track_min);
+    const offTrackMax = parseFloat(kpiMetricData.kpiMetric.off_track_max);
+    const atRiskMin = parseFloat(kpiMetricData.kpiMetric.at_risk_min);
+    const atRiskMax = parseFloat(kpiMetricData.kpiMetric.at_risk_max);
 
     if (aggregatePercentage >= onTrackValue) {
       return 'On Track';
@@ -379,7 +437,7 @@ export default {
     } else {
       return 'N/A'; // You can add additional handling if needed
     }
-    },
+  },
     },
 };
 
@@ -504,4 +562,40 @@ img {
     padding: 8px;
     border-radius: 15px;
 }
+
+.view_partner{
+    border: 1px solid #d9dee6;
+    font-size: 14px;
+}
+
+
+.on-track-label{
+    font-size: 18px;
+    color: #047a48;
+    font-weight: 700;
+}
+
+
+.off-track-label {
+    color: #d9534f;
+    font-size: 18px;
+     font-weight: 700;
+    
+}
+
+.at-risk-label {
+    color: #f0ad4e;
+    font-size: 18px;
+     font-weight: 700;
+}
+
+.department-tag{
+  border-radius: 10px;
+  padding: 3px 7px;
+ background: #eceff3;
+ font-size: .4 rem;
+ /*margin-right: 5px;*/
+ /*margin: 0 !important;*/
+}
+
 </style>

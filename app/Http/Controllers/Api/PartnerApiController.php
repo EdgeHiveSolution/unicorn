@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Member;
 use App\Models\Partner;
 use App\Mail\PartnerAdded;
 use App\Models\Department;
-use Illuminate\Http\Request;
 use App\Models\PartnerDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -19,47 +19,127 @@ use App\Mail\PartnerLoginCredentials;
 use App\Models\KpiMetric;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Models\MemberPartner;
 use App\Models\UserRole;
 use DB;
+use Session;
 use Illuminate\Support\Facades\DB as FacadesDB;
 
 class PartnerApiController extends Controller
+
 {
+
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
+
+    
     /**
      * Display a listing of the resource.
      *
      *
      */
-    public function index()
-    {
-        $partners = Partner::with('departments', 'members','kpis.kpiMetrics.kpiMetricMembers.progress')->get();
 
-        Log::info("Partner is:", ['partner'=>$partners]); 
+public function index(Request $request)
 
-        $formattedPartners = $partners->map(function ($partner) {
-            $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
-            return $partner;
-        });
+{
+    $userId = $request->input('user_id');
+    $userRoleId = $request->input('user_role_id');
 
-        Log::info("Partners are :", ['partners'=>$formattedPartners]); 
-        return $formattedPartners;
+    if ($userRoleId == 14) {
+        
+        $memberId = Member::where('user_id', $userId)->value('id');
+        $partnerIds = MemberPartner::where('member_id', $memberId)->pluck('partner_id');
 
-       
+        $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
+            ->whereIn('id', $partnerIds)
+            ->get();
+    } else if ($userRoleId == 24) {
+        // User is a partner
+        $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
+            ->where('user_id', $userId)
+            ->get();
+    } else {
+        // User role is neither 2 (member) nor 3 (partner), return all partners
+        $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
+            ->get();
     }
 
-    public function latest()
+    $formattedPartners = $partners->map(function ($partner) {
+        $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
+        return $partner;
+    });
+
+    Log::info("Partners are :", ['partners' => $formattedPartners]);
+    return $formattedPartners;
+
+}
+
+
+
+
+
+    // public function index()
+
+    // {
+    //     $partners = Partner::with('departments', 'members','kpis.kpiMetrics.kpiMetricMembers.progress')->get();
+
+    //     Log::info("Partner is:", ['partner'=>$partners]); 
+
+    //     $formattedPartners = $partners->map(function ($partner) {
+    //         $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
+    //         return $partner;
+    //     });
+
+    //     Log::info("Partners are :", ['partners'=>$formattedPartners]); 
+    //     return $formattedPartners;
+
+       
+    // }
+
+    public function latest(Request $request)
+
     {
+
+        $userId = $request->input('user_id');
+        $userRoleId = $request->input('user_role_id');
+
+        if ($userRoleId == 2) {
+
+            $memberId = Member::where('user_id', $userId)->value('id');
+            $partnerIds = MemberPartner::where('member_id', $memberId)->pluck('partner_id');
+
+
         $partners = Partner::with('departments', 'members', 'kpis')
+           ->whereIn('id', $partnerIds)
             ->latest('created_at')
             ->take(3)
             ->get();
 
+        } else if ($userRoleId == 3) {
+
+             // User is a partner
+        $partners = Partner::with('departments', 'members', 'kpis')
+        ->where('id', $userId)
+        ->get();
+
+         } else {
+            // User role is neither 2 (member) nor 3 (partner), return all partners
+            $partners = Partner::with('departments', 'members', 'kpis')
+                ->get();
+        }
+    
+
+
         $formattedPartners = $partners->map(function ($partner) {
             $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
             return $partner;
         });
 
         return $formattedPartners;
+
+
     }
      
 

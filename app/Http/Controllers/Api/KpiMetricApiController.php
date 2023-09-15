@@ -112,11 +112,11 @@ class KpiMetricApiController extends Controller
     
             // Calculate the timely value based on the response period and individual target
             if ($request->response_period === 'weekly') {
-                $timelyValue = $individualTarget / ($daysDifference / 7);
+                $timelyValue = $individualTarget / round($daysDifference / 7);
             } elseif ($request->response_period === 'monthly') {
-                $timelyValue = $individualTarget / ($daysDifference / 30);
+                $timelyValue = $individualTarget / round($daysDifference / 30);
             } elseif ($request->response_period === 'quarterly') {
-                $timelyValue = $individualTarget / ($daysDifference / 90);
+                $timelyValue = $individualTarget / round($daysDifference / 90);
             } else {
                 $timelyValue = 0; // Set a default value if response period is not recognized
             }
@@ -153,11 +153,11 @@ class KpiMetricApiController extends Controller
     
             // Calculate the timely value based on the response period and individual target
             if ($request->response_period === 'weekly') {
-                $timelyValue = $individualTarget / ($daysDifference / 7);
+                $timelyValue = $individualTarget / round($daysDifference / 7);
             } elseif ($request->response_period === 'monthly') {
-                $timelyValue = $individualTarget / ($daysDifference / 30);
+                $timelyValue = $individualTarget / round($daysDifference / 30);
             } elseif ($request->response_period === 'quarterly') {
-                $timelyValue = $individualTarget / ($daysDifference / 90);
+                $timelyValue = $individualTarget / round($daysDifference / 90);
             } else {
                 $timelyValue = 0; // Set a default value if response period is not recognized
             }
