@@ -183,20 +183,20 @@
                                         class="form-select"
                                         v-model="newMetric.unit"
                                     >
-                                        <option value="">
+                                       <!-- <option value="">
                                             Select or create standard unit
                                         </option>
                                         <option value="select">
                                             Create standard unit
-                                        </option>
+                                        </option>-->
 
                                      <option v-for="unit in units" :key="unit.id" :value="unit.name">{{ unit.name }}</option>
 
-                                        <option value="count">Count</option>
+                                        <!--<option value="count">Count</option>
                                         <option value="currency">
                                             Currency
                                         </option>
-                                        <option value="time">Time</option>
+                                        <option value="time">Time</option>-->
                                     </select>
                                 </div>
                                 <span

@@ -541,6 +541,7 @@ export default {
         console.log("Data is" + JSON.stringify(this.data));
 
         this.$store.dispatch("updateLoggedUser", this.data.loggeduser);
+
         // this.fetchUserWithRelatedData();
     },
     computed: {
@@ -699,18 +700,35 @@ export default {
                 console.error("Error fetching user data:", error);
             }
         },
+
         handlePageChange(page) {
             this.currentPage = page;
         },
 
         async fetchPartners() {
-            let uri = this.base_url + `api/v1/partner-list`;
+            console.log("Logged User", JSON.stringify(this.data.loggeduser));
+
+            let uri =
+                this.base_url +
+                `api/v1/partner-list?user_id=${this.data.loggeduser.id}&user_role_id=${this.data.loggeduser.user_role_id}`;
             await axios.get(uri).then((response) => {
                 this.partners = response.data;
             });
         },
+
+        // async fetchPartners() {
+        //     console.log("Logged Users" , JSON.stringify(this.data.loggeduser));
+
+        //     // const loggedUser
+
+        //     let uri = this.base_url + `api/v1/partner-list`;
+        //     await axios.get(uri).then((response) => {
+        //         this.partners = response.data;
+        //     });
+        // },
+
         async fetchNewPartners() {
-            let uri = this.base_url + `api/v1/partner-new`;
+            let uri = this.base_url + `api/v1/partner-new?user_id=${this.data.loggeduser.id}&user_role_id=${this.data.loggeduser.user_role_id}`;
             await axios.get(uri).then((response) => {
                 this.Newpartners = response.data;
             });

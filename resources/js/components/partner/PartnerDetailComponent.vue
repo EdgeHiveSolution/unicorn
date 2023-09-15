@@ -120,7 +120,11 @@
                         <p>Review Period:</p>
                     </div>
 
-                    <div style="margin-top: -30px" class="d-flex justify-content-end mx-2">
+                    <!--<div style="margin-top: -30px" class="d-flex justify-content-end mx-2">-->
+                    <div
+                        style="margin-top: -30px"
+                        class="d-flex justify-content-end mx-2"
+                    >
                         <p style="font-weight: bold" v-if="kpiPartnerProgress">
                             {{
                                 kpiPartnerProgress.progress_percentage.toFixed(
@@ -1138,7 +1142,7 @@
                     <h4>KPIs</h4>
                     <p>Key milestones for {{ partner.name }}</p>
                 </div>
-                <div>
+                <div v-if="loggedUser.user_role_id === 1">
                     <a
                         href="#"
                         class="text-light add-link text-sm btn btn-primary btn-sm my-2"
@@ -1169,7 +1173,7 @@
                                             >
                                         </p>
                                     </div>
-                                    <div>
+                                    <div v-if="loggedUser.user_role_id === 1">
                                         <button
                                             @click="openAddKpiMetricModal(kpi)"
                                             data-toggle="modal"
@@ -1193,7 +1197,6 @@
                                                 type="text"
                                                 placeholder="Search for Kpi Metrics"
                                                 v-model="searchQuery"
-                                               
                                             />
                                         </div>
                                     </div>
@@ -1330,7 +1333,7 @@
                                             >
                                         </p>
                                     </div>
-                                    <div>
+                                    <div v-if="loggedUser.user_role_id === 1">
                                         <button
                                             @click="openAddKpiMetricModal(kpi)"
                                             data-toggle="modal"
@@ -1814,7 +1817,7 @@
                 <div
                     class="modal-dialog modal-dialog-centered modal-lg"
                     role="document"
-                   >
+                >
                     <div class="modal-content p-5">
                         <p><i class="mdi mdi-image-filter-none h1"></i></p>
                         <h3>Add New KPI</h3>
@@ -1823,7 +1826,7 @@
                             class="row g-3"
                             @submit.prevent="submitKpi"
                             method="POST"
-                          >
+                        >
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label
@@ -2792,6 +2795,11 @@ export default {
     },
 
     methods: {
+        handleLinkClick() {
+            this.currentPage = 1; // Set currentPage to 1
+            window.location.reload(); // Reload the current page
+        },
+
         calculateCurrentSum(kpiMetric) {
             let currentSum = 0;
             kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {

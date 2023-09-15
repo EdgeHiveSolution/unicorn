@@ -344,13 +344,19 @@ export default {
     methods: {
 
         fetchPartners() {
-            let uri = this.base_url + `api/v1/partner-list`;
+            
+
+            const loggeduser = this.$store.state.loggedUser;
+
+            console.log("Logged User Now:"+JSON.stringify(loggeduser));
+            let uri = this.base_url + `api/v1/partner-list?user_id=${loggeduser.id}&user_role_id=${loggeduser.user_role_id}`;
             axios.get(uri).then((response) => {
                 console.log("API Response:", response.data);
                 this.partners = response.data;
 
                 console.log("New Partners:", JSON.stringify(this.partners));
             });
+
         },
         
 
