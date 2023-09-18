@@ -73,13 +73,13 @@
                             <h6
                                 class="text-primary font-weight-normal lead text-dark"
                             >
-                                {{ offTrackCount }}
+                                {{ offTrack }}
                             </h6>
                             <h5 class="mb-2 text-dark">PARTNERS</h5>
                             <span
                                 class="mdi mdi-arrow-up text-danger icon-item"
                             >
-                                40%</span
+                                0</span
                             >
                             <small>vs last month</small>
                         </div>
@@ -92,13 +92,13 @@
                             <h6
                                 class="text-primary font-weight-normal lead text-dark"
                             >
-                                {{ atRiskCount }}
+                                {{ atRisk }}
                             </h6>
                             <h5 class="mb- text-dark">PARTNERS</h5>
                             <span
                                 class="mdi mdi-arrow-down text-warning icon-item"
                             >
-                                -100%</span
+                                0</span
                             >
                             <small>vs last month</small>
                         </div>
@@ -111,13 +111,13 @@
                             <h6
                                 class="text-primary font-weight-normal lead text-dark"
                             >
-                                {{ onTrackCount }}
+                                {{ onTrack }}
                             </h6>
                             <h5 class="mb-2 text-dark">PARTNERS</h5>
                             <span
                                 class="mdi mdi-arrow-up text-success icon-item"
                             >
-                                +50%</span
+                                0</span
                             >
                             <span class="ml-2"></span>
                             <small>vs last month</small>
@@ -375,33 +375,42 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                {{ metric.totalCurrentValue.toFixed(0) }}
+                                                {{
+                                                    metric.totalCurrentValue.toFixed(
+                                                        0
+                                                    )
+                                                }}
                                             </td>
-                                            <td>{{metric.totalTargetValue.toFixed(2)}}</td>
-                                           
+                                            <td>
+                                                {{
+                                                    metric.totalTargetValue.toFixed(
+                                                        2
+                                                    )
+                                                }}
+                                            </td>
 
                                             <td>
-                                                        {{
-                                                            metric.calculatedProgress.toFixed(
-                                                                2
-                                                            )
-                                                        }}%
+                                                {{
+                                                    metric.calculatedProgress.toFixed(
+                                                        2
+                                                    )
+                                                }}%
 
-                                                        <div class="progress">
-                                                            <div
-                                                                class="progress-bar"
-                                                                :style="{
-                                                                    width:
-                                                                        metric.calculatedProgress +
-                                                                        '%',
-                                                                }"
-                                                                aria-valuemin="0"
-                                                                aria-valuemax="100"
-                                                            ></div>
-                                                        </div>
-                                                    </td>
+                                                <div class="progress">
+                                                    <div
+                                                        class="progress-bar"
+                                                        :style="{
+                                                            width:
+                                                                metric.calculatedProgress +
+                                                                '%',
+                                                        }"
+                                                        aria-valuemin="0"
+                                                        aria-valuemax="100"
+                                                    ></div>
+                                                </div>
+                                            </td>
 
-                                                    <td></td>
+                                            <td></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -721,24 +730,24 @@
                                     </td>
 
                                     <td></td>
-                                    
-                                                <td>
-                                                    <button
-                                                        class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
-                                                    >
-                                                        <span
-                                                            class="mdi mdi-eye-outline text-light"
-                                                        ></span>
-                                                        <a
-                                                            :href="
-                                                                '/department_members/' +
-                                                                member.id
-                                                            "
-                                                            class="text-light"
-                                                            >View</a
-                                                        >
-                                                    </button>
-                                                </td>
+
+                                    <td>
+                                        <button
+                                            class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                        >
+                                            <span
+                                                class="mdi mdi-eye-outline text-light"
+                                            ></span>
+                                            <a
+                                                :href="
+                                                    '/department_members/' +
+                                                    member.id
+                                                "
+                                                class="text-light"
+                                                >View</a
+                                            >
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -767,7 +776,7 @@
                         form="form-submit"
                         type="submit"
                     >
-                        Add
+                        Save Changes
                     </button>
                 </div>
             </div>
@@ -882,6 +891,79 @@
                 </div>
                 <hr />
 
+                <!-- <div class="row mb-2">
+                    <label
+                        for="members"
+                        class="col-md-3 col-form-label text-md-start"
+                    >
+                        {{ "Members" }} <br /><span class="txt-gray">
+                            {{
+                                "Invite or select the relevant members to this department."
+                            }}
+                        </span>
+                    </label>
+
+                    <div class="col-md-9 offset-md-0 text-center">
+                        <div class="row">
+                             <div class="col-md-4">
+                                <input
+                                    class="form-control py-2 pr-5"
+                                    autocomplete="member_email"
+                                    autofocus
+                                    type="email"
+                                    placeholder="Enter email address"
+                                    name="member_email"
+                                    v-model="member.email"
+                                />
+                            </div> -->
+                <!-- 
+                            <div class="col-md-4">
+                                <select
+                                    class="form-control py-2 pr-5"
+                                    name="member_email"
+                                    v-model="memberDepartment.email"
+                                  >
+                                    <option value="">Select team member or enter email address</option>
+
+                                    <option
+                                        v-for="member in this.members"
+                                        :value="member.email"
+                                    >
+                                        {{ member.email }}
+                                    </option>
+                                </select>
+                            </div>
+
+                           
+                            <div class="col-md-2">
+                                <button
+                                    type="button"
+                                    class="btn btn-warning ml-0 text-light mt-md-0 mt-2"
+                                    @click.prevent="addToList"
+                                >
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+
+                        <ul>
+                            <li
+                                v-for="(item, index) in selectedItems"
+                                class="list-item"
+                            >
+                                <span>
+                                    <i class="mdi mdi-email-outline"></i>
+                                    {{ item.memberEmail }}
+                                </span>
+                                <i
+                                    class="mdi mdi-delete delete-icon"
+                                    @click="removeFromList(index)"
+                                ></i>
+                            </li>
+                        </ul>
+                    </div> -->
+                <!-- </div>  -->
+
                 <div class="row mb-2 p-3">
                     <label
                         for="email"
@@ -905,9 +987,7 @@
                                     id="email"
                                     class="form-control"
                                     name="email"
-                                    v-model="selectedMember"
-                                    @input="handleMemberInput"
-                                    @keydown.enter.prevent="addMemberToList"
+                                    v-model="member.email"
                                 />
                                 <div class="input-group-append mx-3">
                                     <button
@@ -921,10 +1001,10 @@
                             </div>
                             <datalist id="memberEmails">
                                 <option
-                                    v-for="member in memberEmails"
-                                    :value="member"
+                                    v-for="member in this.members"
+                                    :value="member.email"
                                 >
-                                    {{ member }}
+                                    {{ member.email }}
                                 </option>
                             </datalist>
                         </div>
@@ -957,8 +1037,25 @@
 
                 <hr />
 
+                <div class="row mb-2 p-3">
+                    <label
+                        for="email"
+                        class="col-md-3 col-form-label text-md-start"
+                        >{{ "Remove Department" }}</label
+                    >
+                    <div class="col-md-5 offset-md-0 text-center">
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            @click="closeAccount"
+                        >
+                            Remove Department
+                        </button>
+                    </div>
+                </div>
+
                 <div class="text-right mt-3 mb-5">
-                    <div class="btn-icon text-end">
+                    <div class="btn-icon justify-content-end">
                         <button
                             style="border: lightgrey"
                             class="btn btn-light border-dark p-3 btn-action cancel-btn"
@@ -970,7 +1067,7 @@
                             form="form-submit"
                             type="submit"
                         >
-                            Add
+                            Save Changes
                         </button>
                     </div>
                 </div>
@@ -1004,6 +1101,14 @@ export default {
             base_url: "../",
             department: {
                 name: this.department.name,
+            },
+
+            member: {
+                email: "",
+            },
+
+            memberDepartment: {
+                email: "",
             },
 
             partnerCount: 6,
@@ -1086,7 +1191,6 @@ export default {
 
         metricWithProgress() {
             const groupedMetrics = {};
-            
 
             this.kpiMetricsDetails.forEach((metric) => {
                 const id = metric.metric.id;
@@ -1122,6 +1226,22 @@ export default {
             return Object.values(groupedMetrics);
         },
 
+        offTrack() {
+            return this.partnersWithProgress.filter(
+                (partner) => this.getStatusClass(partner) === "off-track"
+            ).length;
+        },
+        atRisk() {
+            return this.partnersWithProgress.filter(
+                (partner) => this.getStatusClass(partner) === "at-risk"
+            ).length;
+        },
+        onTrack() {
+            return this.partnersWithProgress.filter(
+                (partner) => this.getStatusClass(partner) === "on-track"
+            ).length;
+        },
+
         // partnersWithProgress() {
         //     return this.partners.map((partner) => ({
         //         ...partner,
@@ -1148,9 +1268,10 @@ export default {
                         calculatedProgress: this.calculateKpiProgress(
                             partner.kpis
                         ),
-                        statusClass: this.getStatusClass(partner),
+                        statusClass: this.getStatusClass(partner.kpis),
                         members: partner.members,
                         departments: partner.departments,
+                        kpis: partner.kpis,
                     };
                 }
             });
@@ -1287,6 +1408,7 @@ export default {
         // },
 
         getStatusClass(partner) {
+            console.log("Who is this partner:", partner);
             const progressPercentage = parseFloat(partner.calculatedProgress);
 
             if (Array.isArray(partner.kpis)) {
@@ -1394,10 +1516,8 @@ export default {
             return totalCurrentValue;
         },
 
-
         calculateTotalTargetValueforMetric(metricTargetTotal) {
-
-             let totalTargetValue = 0;
+            let totalTargetValue = 0;
 
             metricTargetTotal.forEach((kpiMetric) => {
                 kpiMetric.kpi_metric_members.forEach((member) => {
@@ -1500,6 +1620,28 @@ export default {
             }
         },
 
+
+         closeAccount() {
+            let uri =
+                this.base_url + `api/v1/department-delete/${this.department.id}`;
+            axios
+                .delete(uri)
+                .then((response) => {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Department account Closed successfully!",
+                    }).then(() => {
+                        window.location.href = "/departments/";
+                    });
+                })
+                .catch((error) => {
+                    // Handle errors from the server or API request
+                    console.error("Error closing Department account:", error);
+                    // You may want to show an error message to the user here
+                });
+        },
+
         // getStatusClass1(partner) {
         //     const progressKpiMetricPercentage = parseFloat(
         //         partner.calculatedKpiMetricProgress
@@ -1548,6 +1690,7 @@ export default {
     },
 };
 </script>
+
 <style scoped>
 .encircle {
     padding: 3px;
@@ -1579,7 +1722,6 @@ nav-link {
 .btn-action {
     padding: 2px 5px; /* Adjust the padding as needed */
     line-height: 0.2; /* Set line-height to 1 to remove any extra spacing */
-    width: 70px;
 }
 
 .cancel-btn:hover {

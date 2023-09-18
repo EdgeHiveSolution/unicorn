@@ -16,11 +16,13 @@ use App\Http\Controllers\Api\DepartmentApiController;
 use App\Http\Controllers\Api\ProgressApiController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\KpiProgressApiController;
-
+use App\Http\Controllers\Api\AuthApiController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/login', [AuthApiController::class, 'login']);
 
 Route::get('v1/partner-list',[PartnerApiController::class, 'index']);
 Route::get('v1/partner-new',[PartnerApiController::class, 'latest']);
@@ -33,7 +35,7 @@ Route::delete('v1/partner-delete/{id}',[PartnerApiController::class, 'destroy'])
 Route::get('v1/department-list',[DepartmentApiController::class, 'index']);
 Route::post('v1/department-create',[DepartmentApiController::class, 'store']);
 Route::patch('v1/department-update',[DepartmentApiController::class, 'update']);
-Route::delete('v1/department-delete',[DepartmentApiController::class, 'destroy']);
+Route::delete('v1/department-delete/{id}',[DepartmentApiController::class, 'destroy']);
 
 
 Route::get('v1/standardUnit-list',[UnitApiController::class, 'index']);

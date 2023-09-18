@@ -169,7 +169,13 @@
                                                     </div>
                                                 </td>
 
-                                                <td>
+                                                <td
+                                                    v-if="
+                                                        calculateProgressPercentage(
+                                                            kpiMetric
+                                                        ) > 0
+                                                    "
+                                                >
                                                     <div>
                                                         {{
                                                             calculateProgressPercentage(
@@ -205,6 +211,7 @@
                                                         )
                                                     }}
                                                 </td>
+                                                <td v-else>N/A</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -444,8 +451,12 @@ export default {
                 }
             });
 
+            const distinctStatuses = new Set(aggregateStatuses);
+
+            const uniqueStatuses = Array.from(distinctStatuses);
+
             // You can return the aggregate statuses for all kpiMetrics as an array here
-            return aggregateStatuses;
+            return uniqueStatuses;
         },
 
         // getAggregateStatus(percentage, kpi) {

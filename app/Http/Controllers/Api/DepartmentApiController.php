@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Member;
 use App\Models\Department;
+use App\Models\DepartmentPartner;
 use Illuminate\Http\Request;
 use App\Mail\MemberInvitation;
 use App\Http\Controllers\Controller;
@@ -163,10 +164,62 @@ class DepartmentApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    //  public function destroy($id)
+    //  {
+    //      // Retrieve the department by ID from the database
+    //      $department = Department::findOrFail($id);
+     
+    //      // Check if the department has any related partner records in the pivot table
+    //      $hasRelatedPartners = DepartmentPartner::where('department_id', $department->id)->exists();
+     
+    //      if ($hasRelatedPartners) {
+    //          // If there are related partners, deactivate the department
+    //          $department->update(['is_active' => false]);
+    //      } else {
+    //          // If there are no related partners, delete the department
+    //          $department->delete(); // Soft delete if you have implemented it
+    //      }
+     
+    //      return response()->json(['message' => 'Department deleted or deactivated successfully'], 200);
+    //  }
+
+
     public function destroy($id)
-    {
-        //
+{
+    // Retrieve the department by ID from the database (including soft deleted departments)
+    $department = Department::withTrashed()->findOrFail($id);
+
+    // Check if the department has any related partner records
+    $hasRelatedPartners = $department->partners()->exists();
+
+    if ($hasRelatedPartners) {
+        // If there are related partners, deactivate the department
+        $department->update(['is_active' => false]);
+    } else {
+        // If there are no related partners, delete the department
+        $department->forceDelete(); // Use forceDelete to permanently delete
     }
+
+    return response()->json(['message' => 'Department deleted or deactivated successfully'], 200);
+}
+
+     
+
+//         public function destroy($id)
+// {
+//     // Retrieve the partner by ID from the database (including soft deleted partners)
+//     $department= Department::withTrashed()->findOrFail($id);
+
+//     // Handle the partner logo file deletion (if it exists)
+   
+
+//     $department->delete();
+
+
+//     return response()->json(['message' => 'Department deleted successfully'], 200);
+// }
+
 
 
     

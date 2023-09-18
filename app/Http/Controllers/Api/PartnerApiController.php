@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\MemberPartner;
 use App\Models\UserRole;
+use App\Models\Progress;
 use DB;
 use Session;
 use Illuminate\Support\Facades\DB as FacadesDB;
@@ -464,12 +465,12 @@ public function store(Request $request)
     $validatedData = $request->validate([
         'name' => 'string|max:255',
         'email' => 'email|max:255',
-        'website' => 'string|max:255',
+        'website' => 'nullable',
         'phone' => 'string|max:20',
-        'address' => 'string|max:255',
+        'address' => 'nullable',
         'business_type' => 'string|max:100',
         'about' => 'string|max:1000',
-        'logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        'logo' => 'nullable',
     ]);
 
     $partner = Partner::findOrFail($request->id);
@@ -490,6 +491,8 @@ public function store(Request $request)
 }
 
 
+
+
             public function getKpiAndKpiMetricsAndProgressForPartner($partnerId)  {
 
                 $partner = Partner::with([
@@ -504,27 +507,59 @@ public function store(Request $request)
 
 
 
-
-     public function destroy($id)
+            public function destroy($id)
 {
     // Retrieve the partner by ID from the database (including soft deleted partners)
     $partner = Partner::withTrashed()->findOrFail($id);
 
-    // Handle the partner logo file deletion (if it exists)
-    if (!empty($partner->logo)) {
-        // Get the logo file name from the URL
-        $logoFileName = basename($partner->logo);
+    // Check if the partner has any related progress records
+    $hasProgressRecords = Progress::whereIn('kpi_metric_member_id', function ($query) use ($partner) {
+        $query->select('id')
+            ->from('kpi_metric_members')
+            ->whereIn('kpi_metric_id', function ($subquery) use ($partner) {
+                $subquery->select('id')
+                    ->from('kpi_metrics')
+                    ->whereIn('kpi_id', function ($subsubquery) use ($partner) {
+                        $subsubquery->select('id')
+                            ->from('kpis')
+                            ->where('partner_id', $partner->id);
+                    });
+            });
+    })->exists();
 
-
-        Storage::delete('public/partner_logos/' . $logoFileName);
+    if ($hasProgressRecords) {
+        // If there are progress records, deactivate the partner
+        $partner->update(['is_active' => false]);
+    } else {
+        // If there are no progress records, delete the partner
+        $partner->forceDelete(); // Use forceDelete to permanently delete
     }
 
-
-    $partner->delete();
-
-
-    return response()->json(['message' => 'Partner deleted successfully'], 200);
+    return response()->json(['message' => 'Partner deleted or deactivated successfully'], 200);
 }
+
+
+
+//      public function destroy($id)
+// {
+//     // Retrieve the partner by ID from the database (including soft deleted partners)
+//     $partner = Partner::withTrashed()->findOrFail($id);
+
+//     // Handle the partner logo file deletion (if it exists)
+//     if (!empty($partner->logo)) {
+//         // Get the logo file name from the URL
+//         $logoFileName = basename($partner->logo);
+
+
+//         Storage::delete('public/partner_logos/' . $logoFileName);
+//     }
+
+
+//     $partner->delete();
+
+
+//     return response()->json(['message' => 'Partner deleted successfully'], 200);
+// }
 
 
 
