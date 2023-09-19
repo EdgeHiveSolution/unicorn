@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthApiController::class, 'login']);
 
-Route::get('v1/partner-list',[PartnerApiController::class, 'index']);
+Route::post('v1/partner-list',[PartnerApiController::class, 'index']);
 Route::get('v1/partner-new',[PartnerApiController::class, 'latest']);
 Route::post('v1/partner-create',[PartnerApiController::class, 'store']);
 Route::get('v1/partners/{partnerId}/kpis-and-metrics', [PartnerApiController::class, 'getKpiAndKpiMetricsAndProgressForPartner']);
