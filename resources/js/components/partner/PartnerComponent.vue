@@ -266,7 +266,10 @@
                                             
                                             <td v-else class="text-muted progress_text">No Active Kpis</td>
                                             <td>
-                                                <button class="btn view-btn">
+                                                <a :href="
+                                                            '/partners/' +
+                                                            partner.id
+                                                        "><button class="btn view-btn">
                                                     <a
                                                         :href="
                                                             '/partners/' +
@@ -279,7 +282,7 @@
                                                         ></i>
                                                         View</a
                                                     >
-                                                </button>
+                                                </button></a>
                                             </td>
                                         </tr>
                                     </tbody>

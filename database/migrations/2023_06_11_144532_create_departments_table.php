@@ -18,6 +18,7 @@ class CreateDepartmentsTable extends Migration
             $table->string('name')->unique();
             $table->string('email')->unique();
             $table->longText('about')->nullable();
+            $table->boolean('is_active')->default(true); 
             $table->timestamps();
             $table->softDeletes();
         });
