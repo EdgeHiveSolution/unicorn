@@ -106,7 +106,7 @@ public function index(Request $request)
         $userId = $request->input('user_id');
         $userRoleId = $request->input('user_role_id');
 
-        if ($userRoleId == 2) {
+        if ($userRoleId == 14) {
 
             $memberId = Member::where('user_id', $userId)->value('id');
             $partnerIds = MemberPartner::where('member_id', $memberId)->pluck('partner_id');
@@ -118,7 +118,7 @@ public function index(Request $request)
             ->take(3)
             ->get();
 
-        } else if ($userRoleId == 3) {
+        } else if ($userRoleId == 24) {
 
              // User is a partner
         $partners = Partner::with('departments', 'members', 'kpis')
