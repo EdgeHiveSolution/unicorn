@@ -90,6 +90,7 @@
                             </p>
                         </div>
 
+                   <div v-if="kpiMetricData && kpiMetricData.kpiMetric && kpiMetricData.progress_sum">
   <div>
     <div>
       <h4  class="txt-dark">{{ aggregatePercentage }}%</h4>
@@ -105,7 +106,13 @@
       }">
           {{ getAggregateStatus(aggregatePercentage, kpiMetricData.kpiMetric) }}</span>
     </div>
+    <span style="font-weight: bold" class="txt-dark">{{getAggregateStatus(getAggregatePercentage(kpiMetricData), kpiMetricData)}}</span>
+   <!-- <span style="font-weight: bold" class="txt-dark">{{ getAggregatePercentage(kpiMetricData) }}%</span>-->
   </div>
+  <!--<div>
+    {{ getAggregateStatus(getAggregatePercentage(kpiMetricData), kpiMetricData) }}
+  </div>-->
+</div>
 </div>
 
                             <div
@@ -172,8 +179,8 @@
 
                         
                         </td>
-                        <!--<td>-->
-                        <td class="stats">
+                       <!-- <td>-->
+                        <td class="stats" v-if=" calculateProgressPercentage( kpiMetricData.progress_sum) > 0">
                             <p class="progress_text text-muted">
                             {{ calculateProgressPercentage( kpiMetricData.progress_sum) }}%
                             </p>
@@ -191,7 +198,8 @@
                             {{ calculateProgressStatus( kpiMetricData.progress_sum, kpiMetricData.kpiMetric) }}
                             </p>
                         </td>
-       <!-- </td>-->
+                        <td v-else>N/A</td>
+        <!--</td>-->
       </tr>
     </tbody>
   </table>
@@ -236,23 +244,36 @@ export default {
                 return this.$store.state.loggedUser;
             },
 
-  aggregatePercentage() {
-    const totalCurrentSum = this.member.kpiMetrics.reduce(
-      (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.current_sum,
-      0
-    );
+        getAggregatePercentage() {
+    return (kpiMetricData) => {
+      const totalCurrentSum = kpiMetricData.progress_sum.current_sum;
+      const totalTargetSum = kpiMetricData.progress_sum.target_sum;
 
-    const totalTargetSum = this.member.kpiMetrics.reduce(
-      (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.target_sum,
-      0
-    );
+      if (totalTargetSum === 0) {
+        return 0; // To prevent division by zero
+      }
 
-    if (totalTargetSum === 0) {
-      return 0; // To prevent division by zero
-    }
-
-    return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+      return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+    };
   },
+
+//   aggregatePercentage() {
+//     const totalCurrentSum = this.member.kpiMetrics.reduce(
+//       (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.current_sum,
+//       0
+//     );
+
+//     const totalTargetSum = this.member.kpiMetrics.reduce(
+//       (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.target_sum,
+//       0
+//     );
+
+//     if (totalTargetSum === 0) {
+//       return 0; // To prevent division by zero
+//     }
+
+//     return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+//   },
 
 },
 
@@ -353,6 +374,24 @@ export default {
                     console.error("Error fetching member details:", error);
                 });
         },
+
+           getAggregateStatus(aggregatePercentage, kpiMetricData) {
+    const onTrackValue = parseFloat(kpiMetricData.kpiMetric.on_track_value);
+    const offTrackMin = parseFloat(kpiMetricData.kpiMetric.off_track_min);
+    const offTrackMax = parseFloat(kpiMetricData.kpiMetric.off_track_max);
+    const atRiskMin = parseFloat(kpiMetricData.kpiMetric.at_risk_min);
+    const atRiskMax = parseFloat(kpiMetricData.kpiMetric.at_risk_max);
+
+    if (aggregatePercentage >= onTrackValue) {
+      return 'On Track';
+    } else if (aggregatePercentage >= atRiskMin && aggregatePercentage <= atRiskMax) {
+      return 'At Risk';
+    } else if (aggregatePercentage >= offTrackMin && aggregatePercentage <= offTrackMax) {
+      return 'Off Track';
+    } else {
+      return 'N/A'; // You can add additional handling if needed
+    }
+  },
     },
 };
 </script>

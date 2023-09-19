@@ -435,7 +435,7 @@
                             >
                                 <option value="">
                                     Select department
-                                    <i class="mdi mdi-account"></i>
+                                   
                                 </option>
                                 <option
                                     v-for="department in departments"
@@ -676,17 +676,23 @@ export default {
                 const selectedDepartmentId = this.member.department_id; // Store the department_id as an integer
                 const selectedRole = this.member.role;
 
+                console.log("Seleced Department ID:", selectedDepartmentId);
+
                 this.selectedItems.push({
                     memberEmail: selectedMemberEmail,
                     departmentId: selectedDepartmentId, // Store the department ID directly
                     roleName: selectedRole,
                 });
 
+                console.log("Items are:", this.selectedItems);
+
                 this.formData.members.push({
                     email: selectedMemberEmail,
                     department_id: selectedDepartmentId, // Store the department ID directly
                     role: selectedRole,
                 });
+
+                console.log("New Items are:",  this.formData.members);
 
                 this.member.email = "";
                 this.member.department_id = "";

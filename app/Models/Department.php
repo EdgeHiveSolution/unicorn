@@ -10,15 +10,17 @@ use App\Models\DepartmentPartner;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Department extends Model
 
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'name', 'email','about'
+        'name', 'email','about','is_active'
 
     ];
 

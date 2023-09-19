@@ -306,11 +306,19 @@ public function getKpiMetricsByMetricId(Request $request, $metricId)
         // Find the Metric by its ID
         $metric = Metric::findOrFail($metricId);
 
+        Log::info("Metric ID:". $metric->id);
+
         // Load the KpiMetrics relationship and its nested relationships
         $metric->load('kpiMetric.kpi.kpiMetrics.kpiMetricMembers.progress');
 
         // Load relationships related to the Partner model
-        $metric->kpiMetric->kpi->partner->load(['departments', 'members']);
+        $partner = optional($metric->kpiMetric->kpi->partner);
+
+        if ($partner) {
+            $partner->load(['departments', 'members']);
+        } else {
+            Log::info("Partner is null for Metric ID: " . $metricId);
+        }
 
         // Return the Metric along with its KpiMetrics and related data, including Partners
         return response()->json([
