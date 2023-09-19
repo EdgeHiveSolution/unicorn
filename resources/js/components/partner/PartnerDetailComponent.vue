@@ -1,3 +1,5 @@
+
+
 <template>
     <div>
         <div class="module-nav">
@@ -347,13 +349,7 @@
                                                             )
                                                 }}</label>
                                             </td>
-                                            <td
-                                                v-if="
-                                                    calculateProgressPercentage(
-                                                        kpiMetric
-                                                    ) > 0
-                                                "
-                                            >
+                                            <td>
                                                 <div>
                                                     {{
                                                         calculateProgressPercentage(
@@ -410,7 +406,6 @@
                                                     )
                                                 }}</span>
                                             </td>
-                                            <td v-else>N/A</td>
 
                                             <td class="td-members">
                                                  <div class="d-flex flex-row">
@@ -667,7 +662,7 @@
                             <label
                                 for="business_type"
                                 class="col-md-3 col-form-label text-md-start"
-                                >{{ "Type of Business" }} <br /><span
+                                >{{ "Business type" }} <br /><span
                                     class="txt-gray"
                                 >
                                     {{
@@ -677,28 +672,20 @@
                             </label>
 
                             <div class="col-md-5 offset-md-0 text-center">
-                                <input
-                                    id="address"
-                                    type="text"
-                                    class="form-control"
-                                    name="address"
-                                    v-model="partner.business_type"
-                                    autocomplete="address"
-                                    autofocus
-                                />
-                                <!-- <select
+                                <select
                                     id="business_type"
                                     class="form-control"
                                     name="business_type"
                                     v-model="partner.business_type"
-                                >  
-                                      
-
-                                    <option value="this.partner.business_type">{{this.partner.business_type}}
+                                >
+                                    <option value="">Business type</option>
+                                    <option value="Software">Software</option>
+                                    <option value="Hardware">Hardware</option>
+                                    <option value="Consulting">
+                                        Consulting
                                     </option>
-
-                                    
-                                </select> -->
+                                    <!-- Add more business types as needed -->
+                                </select>
                             </div>
                         </div>
                         <hr />
@@ -713,11 +700,11 @@
                                     }}</span
                                 >
                             </label>
+
                             <div class="col-md-5 offset-md-0 text-center">
                                 <textarea
                                     id="about"
                                     class="form-control"
-                                    :class="{ 'is-invalid': errors.about }"
                                     name="about"
                                     v-model="partner.about"
                                     autocomplete="about"
@@ -731,14 +718,6 @@
                                         remainingCharacters + " characters left"
                                     }}</span
                                 >
-
-                                <span
-                                    v-if="errors.about"
-                                    class="invalid-feedback"
-                                    role="alert"
-                                >
-                                    <strong>{{ errors.about }}</strong>
-                                </span>
                             </div>
                         </div>
                         <hr />
@@ -767,8 +746,10 @@
                             </div>
                         </div>
 
+                        <hr />
+
                         <div class="row mb-2">
-                            <!-- <label
+                            <label
                                 for="members"
                                 class="col-md-3 col-form-label text-md-start"
                             >
@@ -777,11 +758,11 @@
                                         "Invite or select the relevant members to this organisation."
                                     }}
                                 </span>
-                            </label> -->
+                            </label>
 
-                            <!-- <div class="col-md-9 offset-md-0 text-center">
+                            <div class="col-md-9 offset-md-0 text-center">
                                 <div class="row">
-                                     <div class="col-md-4">
+                                    <div class="col-md-4">
                                         <input
                                             class="form-control py-2 pr-5"
                                             autocomplete="member_email"
@@ -791,54 +772,34 @@
                                             name="member_email"
                                             v-model="member.email"
                                         />
-                                    </div> -->
-                            <!-- 
-                                    <div class="col-md-4">
-                                        <select
-                                            class="form-control py-2 pr-5"
-                                            name="member_email"
-                                            v-model="memberPartner.email"
-                                        >
-                                            <option value="">
-                                                Select Member
-                                            </option>
-
-                                            <option
-                                                v-for="member in this.members"
-                                                :value="member.email"
-                                            >
-                                                {{ member.email }}
-                                            </option>
-                                        </select>
-                                    </div> -->
-
-                            <!-- <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-3">
                                         <select
                                             id="department_id"
                                             class="form-control"
                                             name="department"
-                                            v-model="
-                                                memberPartner.department_id
-                                            "
+                                            v-model="member.department_id"
                                         >
                                             <option value="">
                                                 Select department
+                                                <i class="mdi mdi-account"></i>
                                             </option>
                                             <option
-                                                v-for="department in uniqueDepartments"
+                                                v-for="department in this
+                                                    .partner.departments"
                                                 :value="department.name"
                                                 :key="department.id"
                                             >
                                                 {{ department.name }}
                                             </option>
                                         </select>
-                                    </div> -->
-                            <!-- <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-3">
                                         <select
                                             id="role_id"
                                             class="form-control"
                                             name="role"
-                                            v-model="memberPartner.role"
+                                            v-model="member.role"
                                         >
                                             <option value="">
                                                 Select role
@@ -853,8 +814,8 @@
                                                 Advisor
                                             </option>
                                         </select>
-                                    </div> -->
-                            <!-- <div class="col-md-2">
+                                    </div>
+                                    <div class="col-md-2">
                                         <button
                                             type="button"
                                             class="btn btn-warning ml-0 text-light mt-md-0 mt-2"
@@ -862,8 +823,8 @@
                                         >
                                             Add
                                         </button>
-                                    </div> -->
-                            <!-- </div>
+                                    </div>
+                                </div>
 
                                 <ul>
                                     <li
@@ -895,7 +856,7 @@
                                         ></i>
                                     </li>
                                 </ul>
-                            </div>  -->
+                            </div>
                         </div>
 
                         <hr />
@@ -935,13 +896,10 @@
                         <div class="align-right mb-5">
                             <div class="text-right mt-3 mb-5">
                                 <button
-                                    type="button"
-                                    @click="gotToPartners"
                                     class="btn btn-light border-dark btn-action"
                                 >
                                     Cancel
                                 </button>
-
                                 <button
                                     type="submit"
                                     class="btn btn-primary btn-action"
@@ -1216,7 +1174,7 @@
                 </div>
 
                 <div class="row">
-                    <div v-if="loggedUser.user_role_id === 34">
+                    <div v-if="loggedUser.user_role_id === 4">
                         <div
                             class="col-12 px-0"
                             v-for="kpi in kpis"
@@ -2171,14 +2129,8 @@ export default {
 
     data() {
         return {
-            maxCharacters: 250,
             loggedUser: {
                 user_role_id: null,
-            },
-
-            errors: {
-                logo: null,
-                about: null,
             },
 
             kpiPartnerProgress: {
@@ -2249,12 +2201,6 @@ export default {
                 id: "",
             },
 
-            memberPartner: {
-                email: "",
-                department_id: "",
-                role: "",
-            },
-
             progressData: [],
             selectedKpiMetric: "",
 
@@ -2313,7 +2259,6 @@ export default {
                 member_email: "",
                 department_id: "",
                 role: "",
-                members: [],
 
                 role_id: "",
             },
@@ -2331,13 +2276,6 @@ export default {
     computed: {
         loggedUser() {
             return this.$store.state.loggedUser;
-        },
-
-        remainingCharacters() {
-            return this.maxCharacters - this.partner.about.length;
-        },
-        isOverMax() {
-            return this.remainingCharacters < 0;
         },
 
         monthNames() {
@@ -2537,13 +2475,12 @@ export default {
             return Object.values(groupedMetrics);
         },
 
-        // remainingCharacters() {
-        //     //   console.log("Characters are:",this.partner.about.length);
-        //     return this.maxCharacters - this.partner.about.length;
-        // },
-        // isOverMax() {
-        //     return this.remainingCharacters < 0;
-        // },
+        remainingCharacters() {
+            return this.maxCharacters - this.formData.about.length;
+        },
+        isOverMax() {
+            return this.remainingCharacters < 0;
+        },
         // partnersWithProgress() {
         //     const partner = this.partner;
         //     return {
@@ -2620,21 +2557,15 @@ export default {
         },
     },
 
-    watch: {
-        // metrics: {
-        //     handler(newMetrics) {
-        //         console.log("Metrics have changed:", newMetrics);
-        //         // Now you can safely use newMetrics when it changes.
-        //     },
-        //     deep: true,
-        // },
-        "partner.about": {
-            handler() {
-                this.validateAbout();
-            },
-            immediate: true,
-        },
-    },
+    // watch: {
+    //     metrics: {
+    //         handler(newMetrics) {
+    //             console.log("Metrics have changed:", newMetrics);
+    //             // Now you can safely use newMetrics when it changes.
+    //         },
+    //         deep: true,
+    //     },
+    // },
 
     async created() {
         await this.fetchMetrics();
@@ -2887,14 +2818,6 @@ export default {
         handleLinkClick() {
             this.currentPage = 1; // Set currentPage to 1
             window.location.reload(); // Reload the current page
-        },
-
-        validateAbout() {
-            if (this.isOverMax) {
-                this.errors.about = "Maximum character limit exceeded.";
-            } else {
-                this.errors.about = null;
-            }
         },
 
         calculateCurrentSum(kpiMetric) {
@@ -3166,80 +3089,34 @@ export default {
             try {
                 const kpiMetricsDetails = [];
 
-                // Create an array of promises for API requests
-                const apiRequests = [];
-
                 // Iterate through each KPI of the partner
                 for (const kpi of this.partner.kpis) {
                     // Iterate through each kpi_metric of the KPI
                     for (const kpiMetric of kpi.kpi_metrics) {
                         const metricId = kpiMetric.metric_id;
-
-                        console.log("Metric ID:"+metricId);
-
                         const uri =
                             this.base_url + `api/v1/kpi-metrics/${metricId}`;
 
-                        // Add the promise for this API request to the array
-                        apiRequests.push(axios.get(uri));
+                        // Make an API request for each KPI Metric
+                        const response = await axios.get(uri);
+
+                        // Handle the response data as needed
+                        console.log(
+                            "API Response for KPI Metric:",
+                            response.data
+                        );
+
+                        // Push the KPI Metric data into the array
+                        kpiMetricsDetails.push(response.data);
                     }
                 }
 
-                // Make all API requests concurrently
-                const responses = await Promise.all(apiRequests);
-
-                // Handle the response data for each KPI Metric
-                responses.forEach((response) => {
-                    const kpiMetricData = response.data;
-                    kpiMetricsDetails.push(kpiMetricData);
-                });
-
-                // Update the state or perform further actions as needed
+                // Store or process the KPI Metrics data as needed
                 this.kpiMetricsDetails = kpiMetricsDetails;
-
-                console.log(
-                    "All API Responses for KPI Metrics:",
-                    kpiMetricsDetails
-                );
             } catch (error) {
                 console.error("Error fetching KPI Metrics:", error);
-                // Handle the error gracefully
             }
         },
-
-        // async fetchKpiMetrics() {
-        //     try {
-        //         const kpiMetricsDetails = [];
-
-        //         // Iterate through each KPI of the partner
-        //         for (const kpi of this.partner.kpis) {
-        //             // Iterate through each kpi_metric of the KPI
-        //             for (const kpiMetric of kpi.kpi_metrics) {
-        //                 const metricId = kpiMetric.metric_id;
-        //                 const uri =
-        //                     this.base_url + `api/v1/kpi-metrics/${metricId}`;
-
-        //                 // Make an API request for each KPI Metric
-        //                await axios.get(uri).then((response) => {
-
-        //                this.kpiMetricsDetails = response.data
-
-        //                  });
-        //                 // Handle the response data as needed
-        //                 console.log(
-        //                     "API Response for KPI Metric:",
-        //                     response.data
-        //                 );
-
-        //             }
-        //         }
-
-        //         // Store or process the KPI Metrics data as needed
-        //         this.kpiMetricsDetails = kpiMetricsDetails;
-        //     } catch (error) {
-        //         console.error("Error fetching KPI Metrics:", error);
-        //     }
-        // },
 
         toggleDateInputs(kpiId) {
             this.showInputs[kpiId] = !this.showInputs[kpiId];
@@ -3250,54 +3127,25 @@ export default {
 
             this.partnerSubmit();
         },
-
         addToList() {
-            if (
-                this.memberPartner.email &&
-                this.memberPartner.department_id &&
-                this.memberPartner.role
-            ) {
-                const selectedMemberEmail = this.memberPartner.email;
-                const selectedDepartmentId = this.memberPartner.department_id; // Store the department_id as an integer
-                const selectedRole = this.memberPartner.role;
+            const selectedMemberEmail = this.member.email;
+            const selectedTarget = this.member.target;
 
-                this.selectedItems.push({
-                    memberEmail: selectedMemberEmail,
-                    departmentId: selectedDepartmentId, // Store the department ID directly
-                    roleName: selectedRole,
-                });
+            this.selectedItems.push({
+                memberEmail: selectedMemberEmail,
+                memberTarget: selectedTarget,
+            });
 
-                this.formData.members.push({
-                    email: selectedMemberEmail,
-                    department_id: selectedDepartmentId, // Store the department ID directly
-                    role: selectedRole,
-                });
+            this.formData.members.push({
+                email: selectedMemberEmail,
+                department_id: selectedDepartment ? selectedDepartment.id : "",
+                role: selectedRole,
+            });
 
-                this.memberPartner.email = "";
-                this.memberPartner.department_id = "";
-                this.memberPartner.role = "";
-            }
+            this.member.email = "";
+            this.member.department_id = "";
+            this.member.role = "";
         },
-
-        // addToList() {
-        //     const selectedMemberEmail = this.member.email;
-        //     const selectedTarget = this.member.target;
-
-        //     this.selectedItems.push({
-        //         memberEmail: selectedMemberEmail,
-        //         memberTarget: selectedTarget,
-        //     });
-
-        //     this.formData.members.push({
-        //         email: selectedMemberEmail,
-        //         department_id: selectedDepartment ? selectedDepartment.id : "",
-        //         role: selectedRole,
-        //     });
-
-        //     this.member.email = "";
-        //     this.member.department_id = "";
-        //     this.member.role = "";
-        // },
 
         removeFromList(index) {
             this.selectedItems.splice(index, 1);
@@ -3357,7 +3205,7 @@ export default {
                         title: "Success!",
                         text: "Partner account Closed successfully!",
                     }).then(() => {
-                        window.location.href = "/partners/";
+                        window.location.reload();
                     });
                 })
                 .catch((error) => {
@@ -3380,8 +3228,6 @@ export default {
                 about: this.partner.about,
             };
 
-            console.log("Whose partner data is this:", partnerData);
-
             let uri = this.base_url + `api/v1/partner-update`;
             axios
                 .patch(uri, partnerData)
@@ -3391,7 +3237,7 @@ export default {
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
-                        text: "Partner Updated successfully!",
+                        text: "Partner created successfully!",
                     }).then(() => {
                         window.location.reload();
                     });
