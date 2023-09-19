@@ -135,12 +135,22 @@
                                 </div>-->
                                  <div v-if="kpiMetricData && kpiMetricData.kpiMetric && kpiMetricData.progress_sum">
   <div>
-    <span style="font-weight: bold" class="txt-dark"
+    <h4 style="font-weight: bold" class="txt-dark"
     
-    >{{ getAggregatePercentage(kpiMetricData) }}%</span>
+    >{{ getAggregatePercentage(kpiMetricData) }}%</h4>
   </div>
   <div>
-    {{ getAggregateStatus(getAggregatePercentage(kpiMetricData), kpiMetricData) }}
+    <h5 
+    :class="{
+         'on-track-label':
+         getAggregateStatus(getAggregatePercentage(kpiMetricData), kpiMetricData)==='On Track',
+         'at-risk-label':
+        getAggregateStatus(getAggregatePercentage(kpiMetricData), kpiMetricData)==='At Risk',
+        'off-track-label':
+         getAggregateStatus(getAggregatePercentage(kpiMetricData), kpiMetricData)==='Off Track'
+
+                                    }"
+    >{{ getAggregateStatus(getAggregatePercentage(kpiMetricData), kpiMetricData) }}</h5>
   </div>
 </div>
                             </div>
