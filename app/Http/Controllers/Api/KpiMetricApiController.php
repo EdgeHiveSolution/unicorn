@@ -298,31 +298,35 @@ class KpiMetricApiController extends Controller
 
     // }
 
-
-    
-public function getKpiMetricsByMetricId(Request $request, $metricId)
+   
+    public function getKpiMetricsByMetricId(Request $request, $metricId)
 {
     try {
         // Find the Metric by its ID
         $metric = Metric::findOrFail($metricId);
 
-        Log::info("Metric ID:". $metric->id);
+        Log::info("Metric ID: " . $metric->id);
 
-        // Load the KpiMetrics relationship and its nested relationships
-        $metric->load('kpiMetric.kpi.kpiMetrics.kpiMetricMembers.progress');
+        // Get an array of partner IDs related to KpiMetrics of this Metric
+        $partnerIds = KpiMetric::whereIn('metric_id', [$metric->id])
+            ->pluck('kpi_id') // Get Kpi IDs
+            ->unique() // Ensure unique Kpi IDs
+            ->map(function ($kpiId) {
+                return Kpi::where('id', $kpiId)
+                    ->value('partner_id'); // Get Partner IDs related to Kpi IDs
+            })
+            ->unique() // Ensure unique Partner IDs
+            ->toArray(); // Convert to an array
 
-        // Load relationships related to the Partner model
-        $partner = optional($metric->kpiMetric->kpi->partner);
-
-        if ($partner) {
-            $partner->load(['departments', 'members']);
-        } else {
-            Log::info("Partner is null for Metric ID: " . $metricId);
-        }
+        // Load the Partner models using the partner IDs
+        $partners = Partner::whereIn('id', $partnerIds)
+            ->with(['departments', 'members'])
+            ->get();
 
         // Return the Metric along with its KpiMetrics and related data, including Partners
         return response()->json([
             'metric' => $metric,
+            'partners' => $partners,
         ], 200);
     } catch (\Exception $e) {
         // Handle any exceptions that occur during the process
@@ -330,6 +334,40 @@ public function getKpiMetricsByMetricId(Request $request, $metricId)
         return response()->json(['error' => 'Failed to fetch KpiMetrics'], 500);
     }
 }
+
+
+    
+    
+// public function getKpiMetricsByMetricId(Request $request, $metricId)
+// {
+//     try {
+//         // Find the Metric by its ID
+//         $metric = Metric::findOrFail($metricId);
+
+//         Log::info("Metric ID:". $metric->id);
+
+//         // Load the KpiMetrics relationship and its nested relationships
+//         $metric->load('kpiMetric.kpi.kpiMetrics.kpiMetricMembers.progress');
+
+//         // Load relationships related to the Partner model
+//         $partner = optional($metric->kpiMetric->kpi->partner);
+
+//         if ($partner) {
+//             $partner->load(['departments', 'members']);
+//         } else {
+//             Log::info("Partner is null for Metric ID: " . $metricId);
+//         }
+
+//         // Return the Metric along with its KpiMetrics and related data, including Partners
+//         return response()->json([
+//             'metric' => $metric,
+//         ], 200);
+//     } catch (\Exception $e) {
+//         // Handle any exceptions that occur during the process
+//         Log::error('Error fetching KpiMetrics:', ['error' => $e->getMessage()]);
+//         return response()->json(['error' => 'Failed to fetch KpiMetrics'], 500);
+//     }
+// }
 
     /**
      * Display the specified resource.

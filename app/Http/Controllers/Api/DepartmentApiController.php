@@ -153,10 +153,77 @@ class DepartmentApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+
+     public function update(Request $request, $id)
+{
+    // Validate the request data
+    $this->validate($request, [
+        'name' => 'required',
+        'email' => 'required|email',
+        'about' => 'required',
+        'members.*' => 'email',
+    ]);
+
+    // Find the department by its ID
+    $department = Department::findOrFail($id);
+
+    // Update department properties
+    $department->name = $request->input('name');
+    $department->email = $request->input('email');
+    $department->about = $request->input('about');
+    $department->save();
+
+    // Update or add members
+    $members = $request->input('members', []);
+
+    foreach ($members as $memberEmail) {
+        // Check if the member already exists
+        $existingMember = Member::where('email', trim($memberEmail))->first();
+
+        if ($existingMember) {
+
+            $department->members()->attach($existingMember->id);
+
+            Mail::to($existingMember->email)->queue(new MemberInvitation($existingMember, $request->name, null, 'login'));
+        } else {
+           
+            $registrationLink = url('/register?department_id=' . $department->id);
+            Mail::to($memberEmail)->queue(new MemberInvitation(null, $request->name, null, 'register', $registrationLink));
+        }
     }
+
+    return response()->json([
+        'success' => 'Department updated successfully',
+    ]);
+}
+
+
+public function fetchDepartmentMembers($departmentId)
+{
+    try {
+        $department = Department::findOrFail($departmentId);
+
+        // Retrieve a list of member_ids in the department_members pivot table
+        $memberIdsInDepartment = $department->members()
+            ->select('department_member.member_id')
+            ->get()
+            ->pluck('member_id'); // Extract member_id values into an array
+
+        // Fetch the corresponding members' emails and names
+        $members = Member::whereIn('id', $memberIdsInDepartment)
+            ->select('id', 'email', 'name', 'is_active')
+            ->get();
+
+
+            Log::info("Returned Members:" .$members );
+
+        return response()->json($members);
+    } catch (\Exception $e) {
+        // Handle any errors or exceptions as needed
+        return response()->json(['error' => 'Failed to fetch department members'], 500);
+    }
+}
+
 
     /**
      * Remove the specified resource from storage.
