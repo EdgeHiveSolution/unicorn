@@ -19,10 +19,10 @@
             </div>
         </div>
         <div class="text-end">
-            <button class="btn btn-light border-dark px-3 py-2 btn-action">
+            <button type="button" class="btn btn-light border-dark px-3 py-2 btn-action">
                 Cancel
             </button>
-            <button
+            <button 
                 class="btn btn-primary px-3 py-2 btn-action"
                 form="form-submit"
                 type="submit"
@@ -492,7 +492,7 @@
 
             <div class="align-right mb-5">
                 <div class="text-right mt-3 mb-5">
-                    <button class="btn btn-light border-dark btn-action">
+                    <button type="button" class="btn btn-light border-dark btn-action">
                         Cancel
                     </button>
                     <button type="submit" class="btn btn-primary btn-action">

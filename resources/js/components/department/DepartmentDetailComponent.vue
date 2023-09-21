@@ -915,7 +915,7 @@
                             >Invite or select the relevant members to this
                             department</span
                         ></label
-                    >
+                     >
                     <div class="col-md-5 offset-md-0 text-center">
                         <div class="row">
                             <div class="input-group">
@@ -965,7 +965,7 @@
                                         {{ member.email }}
                                         <!-- Check if the member is active to decide which button to display -->
                                         <button
-                                            v-if="member.is_active"
+                                            
                                             class="btn btn-sm txt-gray float-end"
                                             @click.prevent="
                                                 removeMemberFromList(member.id)
@@ -977,11 +977,7 @@
                                             ></i>
                                         </button>
                                         <!-- Display a different indicator for deactivated members -->
-                                        <div v-else>
-                                            <span class="text-muted"
-                                                >Deactivated</span
-                                            >
-                                        </div>
+                                       
                                     </li>
                                 </ul>
 
