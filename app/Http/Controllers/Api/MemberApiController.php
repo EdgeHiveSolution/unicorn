@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use App\Models\KpiMetric;
+use App\Models\Progress;
 
 
 
 class MemberApiController extends Controller
+
 {
     /**
      * Display a listing of the resource.
@@ -39,7 +41,8 @@ class MemberApiController extends Controller
 
 
     public function getKpisAndMetricsForMember($memberId)
-{
+     
+  {
     $member = Member::with(['departments','partners'])->findOrFail($memberId);
 
     // Get the KpiMetricMembers of the member
@@ -75,6 +78,47 @@ class MemberApiController extends Controller
     ]);
 }
 
+
+
+public function removeMemberFromList($memberId)
+
+{
+    try {
+        // Check if the member has progress records
+        $hasProgress = Progress::whereHas('kpiMetricMember.kpiMetric.kpi.members', function ($query) use ($memberId) {
+            $query->where('members.id', $memberId);
+        })->exists();
+
+        if ($hasProgress) {
+            // If the member has progress records, deactivate them
+            $member = Member::findOrFail($memberId);
+            $member->update(['is_active' => false]);
+        } else {
+            // If the member has no progress records, delete them
+            Member::destroy($memberId);
+        }
+
+        return response()->json(['message' => 'Member removed successfully']);
+    } catch (\Exception $e) {
+        // Handle any errors or exceptions as needed
+        return response()->json(['error' => 'Failed to remove member'], 500);
+    }
+}
+
+
+
+public function removeMember($id)
+{
+    try {
+        // Find and delete the member
+        Member::destroy($id);
+
+        return response()->json(['message' => 'Member removed successfully']);
+    } catch (\Exception $e) {
+        // Handle any errors or exceptions as needed
+        return response()->json(['error' => 'Failed to remove member'], 500);
+    }
+}
 
 
 //     public function getKpisAndMetricsForMember($memberId)

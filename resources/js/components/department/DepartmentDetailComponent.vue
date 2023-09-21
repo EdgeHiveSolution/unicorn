@@ -370,7 +370,7 @@
                                                 </div>
                                                 <div>
                                                     <span class="txt-gray">
-                                                        Partners:
+                                                        Partners: {{metric.partners.length}}
                                                     </span>
                                                 </div>
                                             </td>
@@ -767,6 +767,7 @@
                 </div>
                 <div class="btn-icon">
                     <button
+                        type="button"
                         class="btn btn-light border-dark p-3 btn-action cancel-btn"
                     >
                         Cancel
@@ -784,8 +785,8 @@
             <form
                 id="form-submit"
                 class="row g-3"
-                @submit.prevent="formSubmit"
-                method="post"
+                @submit.prevent="departmentSubmit"
+                method="POST"
             >
                 <div class="row mb-2 p-3">
                     <label
@@ -890,80 +891,6 @@
                     </div>
                 </div>
                 <hr />
-
-                <!-- <div class="row mb-2">
-                    <label
-                        for="members"
-                        class="col-md-3 col-form-label text-md-start"
-                    >
-                        {{ "Members" }} <br /><span class="txt-gray">
-                            {{
-                                "Invite or select the relevant members to this department."
-                            }}
-                        </span>
-                    </label>
-
-                    <div class="col-md-9 offset-md-0 text-center">
-                        <div class="row">
-                             <div class="col-md-4">
-                                <input
-                                    class="form-control py-2 pr-5"
-                                    autocomplete="member_email"
-                                    autofocus
-                                    type="email"
-                                    placeholder="Enter email address"
-                                    name="member_email"
-                                    v-model="member.email"
-                                />
-                            </div> -->
-                <!-- 
-                            <div class="col-md-4">
-                                <select
-                                    class="form-control py-2 pr-5"
-                                    name="member_email"
-                                    v-model="memberDepartment.email"
-                                  >
-                                    <option value="">Select team member or enter email address</option>
-
-                                    <option
-                                        v-for="member in this.members"
-                                        :value="member.email"
-                                    >
-                                        {{ member.email }}
-                                    </option>
-                                </select>
-                            </div>
-
-                           
-                            <div class="col-md-2">
-                                <button
-                                    type="button"
-                                    class="btn btn-warning ml-0 text-light mt-md-0 mt-2"
-                                    @click.prevent="addToList"
-                                >
-                                    Add
-                                </button>
-                            </div>
-                        </div>
-
-                        <ul>
-                            <li
-                                v-for="(item, index) in selectedItems"
-                                class="list-item"
-                            >
-                                <span>
-                                    <i class="mdi mdi-email-outline"></i>
-                                    {{ item.memberEmail }}
-                                </span>
-                                <i
-                                    class="mdi mdi-delete delete-icon"
-                                    @click="removeFromList(index)"
-                                ></i>
-                            </li>
-                        </ul>
-                    </div> -->
-                <!-- </div>  -->
-
                 <div class="row mb-2 p-3">
                     <label
                         for="email"
@@ -1008,28 +935,69 @@
                                 </option>
                             </datalist>
                         </div>
+
                         <div class="row mt-2">
                             <div class="col-md-10">
                                 <ul class="list-group">
                                     <li
                                         class="list-group-item my-2 p-0"
                                         v-for="(
-                                            email, index
-                                        ) in selectedMembers"
+                                            member, index
+                                        ) in departmentMembers"
                                         :key="index"
                                     >
-                                        {{ email }}
+                                        {{ member.email }}
+                                        <!-- Check if the member is active to decide which button to display -->
                                         <button
+                                            v-if="member.is_active"
                                             class="btn btn-sm txt-gray float-end"
-                                            @click="removeMemberFromList(index)"
+                                            @click.prevent="
+                                                removeMemberFromList(member.id)
+                                            "
                                         >
                                             <i
                                                 class="mx-3 h3 mdi mdi-delete text-gray"
                                                 id="dotted"
                                             ></i>
                                         </button>
+                                        <!-- Display a different indicator for deactivated members -->
+                                        <div v-else>
+                                            <span class="text-muted"
+                                                >Deactivated</span
+                                            >
+                                        </div>
                                     </li>
                                 </ul>
+
+                                <!-- <ul class="list-group">
+                                    <li
+                                        class="list-group-item my-2 p-0"
+                                        v-for="(
+                                            member, index
+                                        ) in departmentMembers"
+                                        :key="index"
+                                    >
+                                        {{ member.email }}
+                                        <button
+                                            v-if="member.is_active"
+                                            class="btn btn-sm txt-gray float-end"
+                                            @click.prevent="
+                                                removeMemberFromList(member.id)
+                                            "
+                                        >
+                                            <i
+                                                class="mx-3 h3 mdi mdi-delete text-gray"
+                                                id="dotted"
+                                            ></i>
+                                        </button>
+
+                                        <div v-else>
+                                            <span class="text-muted"
+                                                >Deactivated</span
+                                            >
+                                        </div>
+                                    </li>
+                                </ul> -->
                             </div>
                         </div>
                     </div>
@@ -1057,6 +1025,7 @@
                 <div class="text-right mt-3 mb-5">
                     <div class="btn-icon justify-content-end">
                         <button
+                            type="button"
                             style="border: lightgrey"
                             class="btn btn-light border-dark p-3 btn-action cancel-btn"
                         >
@@ -1098,6 +1067,8 @@ export default {
         return {
             newPartners: [],
             kpiMetricsDetails: [],
+            selectedMembers: [],
+            departmentMembers: [],
             base_url: "../",
             department: {
                 name: this.department.name,
@@ -1119,6 +1090,7 @@ export default {
             activeTab: "performance",
 
             department: {
+                id: this.department.id,
                 name: this.department.name,
                 email: this.department.email,
                 about: this.department.about,
@@ -1136,6 +1108,8 @@ export default {
     },
 
     mounted() {
+        this.fetchDepartmentMembers();
+
         // Assuming this.partners contains your data
         const data = this.partners;
 
@@ -1153,7 +1127,7 @@ export default {
 
         // Assign the newPartners array to the component's data property
         this.newPartners = newPartners;
-
+        console.log("Is active Members:", this.departmentMembers);
         console.log("New Partners are:", this.newPartners);
         console.log("Members are", this.members);
         console.log("Departments are", this.department);
@@ -1190,40 +1164,24 @@ export default {
         },
 
         metricWithProgress() {
-            const groupedMetrics = {};
-
-            this.kpiMetricsDetails.forEach((metric) => {
-                const id = metric.metric.id;
-
-                if (!groupedMetrics[id]) {
-                    groupedMetrics[id] = {
-                        id: metric.metric.id,
-                        name: metric.metric.name,
-
-                        calculatedProgress: this.calculateMetricProgress(
-                            metric.metric.kpi_metric.kpi.kpi_metrics
-                        ),
-
-                        totalCurrentValue:
-                            this.calculateTotalCurrentValueforMetric(
-                                metric.metric.kpi_metric.kpi.kpi_metrics
-                            ),
-
-                        totalTargetValue:
-                            this.calculateTotalTargetValueforMetric(
-                                metric.metric.kpi_metric.kpi.kpi_metrics
-                            ),
-
-                        // metricTopDrivers: this.getTopDrivers (metric.metric.kpi_metric.kpi.kpi_metrics)
-
-                        // statusClass: this.getStatusClass(metric),
-                        partner: metric.metric.kpi_metric.partner,
-                        // departments: partner.departments,
-                    };
-                }
-            });
-
-            return Object.values(groupedMetrics);
+            return this.kpiMetricsDetails.map((metric) => ({
+                ...metric,
+                calculatedProgress: this.calculateMetricProgress(
+                    metric.partners.flatMap((partner) =>
+                        partner.kpis.flatMap((kpi) => kpi.kpi_metrics)
+                    )
+                ),
+                totalCurrentValue: this.calculateTotalCurrentValueforMetric(
+                    metric.partners.flatMap((partner) =>
+                        partner.kpis.flatMap((kpi) => kpi.kpi_metrics)
+                    )
+                ),
+                totalTargetValue: this.calculateTotalTargetValueforMetric(
+                    metric.partners.flatMap((partner) =>
+                        partner.kpis.flatMap((kpi) => kpi.kpi_metrics)
+                    )
+                ),
+            }));
         },
 
         offTrack() {
@@ -1620,10 +1578,10 @@ export default {
             }
         },
 
-
-         closeAccount() {
+        closeAccount() {
             let uri =
-                this.base_url + `api/v1/department-delete/${this.department.id}`;
+                this.base_url +
+                `api/v1/department-delete/${this.department.id}`;
             axios
                 .delete(uri)
                 .then((response) => {
@@ -1642,6 +1600,141 @@ export default {
                 });
         },
 
+        // addMemberToList() {
+        //     const email = this.member.email.trim();
+        //     if (email !== "" && !this.selectedMembers.includes(email)) {
+        //         this.selectedMembers.push(email);
+        //         this.member.email = "";
+        //     }
+        // },
+        // removeMemberFromList(index) {
+        //     this.selectedMembers.splice(index, 1);
+        // },
+
+        departmentSubmit() {
+            // Create a departmentData object with the department properties and selected members
+            const departmentData = {
+                id: this.department.id,
+                name: this.department.name,
+                email: this.department.email,
+                about: this.department.about,
+                members: this.selectedMembers,
+            };
+
+            // Define the URI for the PATCH request
+            let uri = `${this.base_url}api/v1/department-update/${this.department.id}`;
+
+            // Make the PATCH request to update the department
+            axios
+                .patch(uri, departmentData)
+                .then((response) => {
+                    // Handle the successful response
+                    const updatedPartner = response.data;
+                    this.partner = updatedPartner;
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Department Updated successfully!",
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                })
+                .catch((error) => {
+                    // Handle errors from the server or API request
+                    console.error("Error updating department:", error);
+                    // You may want to show an error message to the user here
+                });
+        },
+
+        fetchDepartmentMembers() {
+            // Build the URI
+            const uri = `${this.base_url}api/v1/department-members/${this.department.id}`;
+
+            // Make an API request to fetch existing department members from the server
+            axios
+                .get(uri)
+                .then((response) => {
+                    console.log("Member Response is:", response.data);
+                    this.departmentMembers = response.data;
+                    console.log("Is active Members:", this.departmentMembers); // Move the log here
+                })
+                .catch((error) => {
+                    console.error("Error fetching department members:", error);
+                });
+        },
+
+        addMemberToList() {
+            const email = this.member.email.trim();
+            if (
+                email !== "" &&
+                !this.departmentMembers.some((member) => member.email === email)
+            ) {
+                // Check if the email is not already in the department members list
+                // Also want to check if the email is in the 'members' list
+                // before adding it to 'departmentMembers'
+                this.departmentMembers.push({
+                    email: email,
+                    id: null, // Replace with the actual ID if available
+                });
+                this.member.email = ""; // Clear the input field
+            }
+        },
+        removeMemberFromList(memberId) {
+            // Find the member in the departmentMembers list by their ID
+            const memberIndex = this.departmentMembers.findIndex(
+                (member) => member.id === memberId
+            );
+
+            if (memberIndex !== -1) {
+                const member = this.departmentMembers[memberIndex];
+
+                // Check if the member has progress records
+                axios
+                    .get(
+                        `${this.base_url}api/v1/member-progress-records/${member.id}`
+                    )
+                    .then((response) => {
+                        const hasProgressRecords =
+                            response.data.hasProgressRecords;
+
+                        if (hasProgressRecords) {
+                            // Member has progress records, deactivate them
+                            member.is_active = false;
+                        } else {
+                            // Member has no progress records, remove them from the list
+                            this.departmentMembers.splice(memberIndex, 1);
+
+                            // Also, make an API call to remove the member from the backend
+                            axios
+                                .delete(
+                                    `${this.base_url}api/v1/remove-member/${member.id}`
+                                )
+                                .then(() => {
+                                    console.log("Member removed from backend");
+                                })
+                                .catch((error) => {
+                                    console.error(
+                                        "Error removing member from backend:",
+                                        error
+                                    );
+                                });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(
+                            "Error checking progress records:",
+                            error
+                        );
+                    });
+            }
+        },
+
+        //  removeMemberFromList(memberId) {
+        //   const index = this.departmentMembers.findIndex((member) => member.id === memberId);
+        //   if (index !== -1) {
+        //     this.departmentMembers.splice(index, 1);
+        //   }
+        // },
         // getStatusClass1(partner) {
         //     const progressKpiMetricPercentage = parseFloat(
         //         partner.calculatedKpiMetricProgress
