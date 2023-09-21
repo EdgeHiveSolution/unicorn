@@ -745,7 +745,7 @@
                                         </span>
                                     </td>
 
-                                    <td></td>
+                                    <td>{{ totalOffTrackAndAtRisk }}</td>
 
                                     <td>
                                         <button
@@ -1261,16 +1261,23 @@ export default {
                 (partner) => this.getStatusClass(partner) === "off-track"
             ).length;
         },
+
         atRisk() {
             return this.partnersWithProgress.filter(
                 (partner) => this.getStatusClass(partner) === "at-risk"
             ).length;
         },
+
         onTrack() {
             return this.partnersWithProgress.filter(
                 (partner) => this.getStatusClass(partner) === "on-track"
             ).length;
         },
+
+
+   totalOffTrackAndAtRisk() {
+    return this.offTrack + this.atRisk;
+  },
 
         // partnersWithProgress() {
         //     return this.partners.map((partner) => ({
