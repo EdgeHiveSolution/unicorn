@@ -370,7 +370,11 @@
                                                 </div>
                                                 <div>
                                                     <span class="txt-gray">
-                                                        Partners: {{metric.partners.length}}
+                                                        Partners:
+                                                        {{
+                                                            metric.partners
+                                                                .length
+                                                        }}
                                                     </span>
                                                 </div>
                                             </td>
@@ -410,7 +414,19 @@
                                                 </div>
                                             </td>
 
-                                            <td></td>
+                                            <td class="td-members">
+                                                <template
+                                                    v-for="member in topDrivers"
+                                                    :key="member.id"
+                                                >
+                                                    <img
+                                                        v-for="member in member.topDrivers"
+                                                        :key="member.id"
+                                                        src="assets/images/faces/face1.jpg"
+                                                        :alt="member.email"
+                                                    />
+                                                </template>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -1182,6 +1198,62 @@ export default {
                     )
                 ),
             }));
+        },
+
+        topDrivers() {
+            return this.metricWithProgress.map((metric) => {
+                const topDrivers = metric.partners
+                    .flatMap((partner) =>
+                        partner.kpis.flatMap((kpi) =>
+                            kpi.kpi_metrics.flatMap((kpiMetric) =>
+                                kpiMetric.kpi_metric_members.flatMap(
+                                    (member) => {
+                                        // Find the member with matching member_id within the partner's members
+                                        const matchingMember =
+                                            partner.members.find(
+                                                (m) => m.id === member.member_id
+                                            );
+
+                                        if (matchingMember) {
+                                            return {
+                                                member_id: matchingMember.id,
+                                                name: matchingMember.name,
+                                                email: matchingMember.email,
+                                                current_value:
+                                                    member.progress
+                                                        .current_value,
+                                            };
+                                        }
+
+                                        return null; // Return null if no matching member found
+                                    }
+                                )
+                            )
+                        )
+                    )
+                    .filter((member) => member !== null) // Remove null entries
+                    .reduce((topDrivers, progressItem) => {
+                        if (
+                            !topDrivers[progressItem.member_id] ||
+                            progressItem.current_value >
+                                topDrivers[progressItem.member_id].current_value
+                        ) {
+                            topDrivers[progressItem.member_id] = progressItem;
+                        }
+                        return topDrivers;
+                    }, {});
+
+                const sortedTopDrivers = Object.values(topDrivers).sort(
+                    (a, b) => b.current_value - a.current_value
+                );
+
+                return {
+                    metricName: metric.name,
+                    metricValue: metric.totalCurrentValue,
+                    topDrivers: sortedTopDrivers,
+                    calculatedProgress: metric.calculatedProgress.toFixed(2),
+                };
+            });
         },
 
         offTrack() {

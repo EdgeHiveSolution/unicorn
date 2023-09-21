@@ -219,19 +219,19 @@
                                                         }}
                                                     </td>
                                                     <td class="td-members">
-                                                        <!-- <div
+                                                        <template
                                                             v-for="member in topDrivers"
-                                                            :key="
-                                                                member.id
-                                                            "
+                                                            :key="member.id"
                                                         >
-                                                            {{
-                                                                member.topDrivers
-                                                            }}
-                                                            
-                                                        </div> -->
-
-                                                       
+                                                            <img
+                                                                v-for="member in member.topDrivers"
+                                                                :key="member.id"
+                                                                src="assets/images/faces/face1.jpg"
+                                                                :alt="
+                                                                    member.email
+                                                                "
+                                                            />
+                                                        </template>
                                                     </td>
                                                     <td>
                                                         {{
@@ -253,7 +253,28 @@
                                                             ></div>
                                                         </div>
                                                     </td>
-                                                    <td>{{}}</td>
+                                                    <td>
+                                                        <div>
+                                                            <template
+                                                                v-for="driver in topDrivers"
+                                                                :key="driver.id"
+                                                            >
+                                                                <div>
+                                                                    <span
+                                                                        class="department-tag"
+                                                                        v-for="department in driver.allDepartments"
+                                                                        :key="
+                                                                            department.id
+                                                                        "
+                                                                    >
+                                                                        {{
+                                                                            department.name
+                                                                        }}
+                                                                    </span>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -2355,6 +2376,7 @@ export default {
                         partner.kpis.flatMap((kpi) => kpi.kpi_metrics)
                     )
                 ),
+
                 totalCurrentValue: this.calculateTotalCurrentValueforMetric(
                     metric.partners.flatMap((partner) =>
                         partner.kpis.flatMap((kpi) => kpi.kpi_metrics)
@@ -2410,11 +2432,16 @@ export default {
                     (a, b) => b.current_value - a.current_value
                 );
 
+                const allDepartments = metric.partners
+                    .map((partner) => partner.departments)
+                    .flat();
+
                 return {
                     metricName: metric.name,
                     metricValue: metric.totalCurrentValue,
                     topDrivers: sortedTopDrivers,
                     calculatedProgress: metric.calculatedProgress.toFixed(2),
+                    allDepartments,
                 };
             });
         },
