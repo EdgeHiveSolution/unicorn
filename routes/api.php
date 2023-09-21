@@ -34,8 +34,11 @@ Route::delete('v1/partner-delete/{id}',[PartnerApiController::class, 'destroy'])
 
 Route::get('v1/department-list',[DepartmentApiController::class, 'index']);
 Route::post('v1/department-create',[DepartmentApiController::class, 'store']);
-Route::patch('v1/department-update',[DepartmentApiController::class, 'update']);
+Route::patch('v1/department-update/{id}', [DepartmentApiController::class, 'update']);
 Route::delete('v1/department-delete/{id}',[DepartmentApiController::class, 'destroy']);
+
+Route::get('v1/department-members/{departmentId}', [DepartmentApiController::class, 'fetchDepartmentMembers']);
+
 
 
 Route::get('v1/standardUnit-list',[UnitApiController::class, 'index']);
@@ -60,6 +63,10 @@ Route::get('v1/members/{memberId}/kpis-and-metrics', [MemberApiController::class
 Route::post('v1/member-create',[MemberApiController::class, 'store']);
 Route::patch('v1/member-update',[MemberApiController::class, 'update']);
 Route::delete('v1/member-delete',[MemberApiController::class, 'destroy']);
+Route::get('v1/member-progress-records/{memberId}', [MemberApiController::class, 'removeMemberFromList']);
+Route::delete('v1/remove-member/{id}', [MemberApiController::class, 'removeMember']);
+
+
 
 Route::get('v1/kpi-list',[KpiApiController::class, 'index']);
 Route::post('v1/kpi-create',[KpiApiController::class, 'store']);

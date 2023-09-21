@@ -23,9 +23,10 @@ class Metric extends Model
         return $this->hasMany(Unit::class);
     }
 
-    public function kpiMetric()
+    public function kpiMetrics()
+    
     {
-        return $this->hasOne(KpiMetric::class);
+        return $this->hasMany(KpiMetric::class);
     }
 
 }

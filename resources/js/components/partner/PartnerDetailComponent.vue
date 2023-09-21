@@ -233,6 +233,11 @@
                                                             <span
                                                                 class="txt-gray"
                                                                 >Partners:
+                                                                {{
+                                                                    metric
+                                                                        .partners
+                                                                        .length
+                                                                }}
                                                             </span>
                                                         </div>
                                                     </td>
@@ -241,7 +246,21 @@
                                                             metric.totalCurrentValue
                                                         }}
                                                     </td>
-                                                    <td class="td-members"></td>
+                                                    <td class="td-members">
+                                                        <!-- <div
+                                                            v-for="member in topDrivers"
+                                                            :key="
+                                                                member.id
+                                                            "
+                                                        >
+                                                            {{
+                                                                member.topDrivers
+                                                            }}
+                                                            
+                                                        </div> -->
+
+                                                       
+                                                    </td>
                                                     <td>
                                                         {{
                                                             metric.calculatedProgress.toFixed(
@@ -1011,7 +1030,13 @@
                                                  
                                                  {{calculateActiveKpiProgress(member)}}
 
-                                                <td>
+                                                <td
+                                                    v-if="
+                                                        calculateActiveKpiProgress(
+                                                            member
+                                                        ).percentage > 0
+                                                    "
+                                                >
                                                     <div
                                                         class="progress-percentage"
                                                     >
@@ -1085,6 +1110,7 @@
                                                         }}
                                                     </div>
                                                 </td>
+                                                <td v-else>N/A</td>
 
                                                  <td>
                                                     {{
@@ -2443,36 +2469,108 @@ export default {
             ];
         },
 
+        // metricWithProgress() {
+        //     const groupedMetrics = {};
+
+        //     this.kpiMetricsDetails.forEach((metric) => {
+        //         const id = metric.metric.id;
+
+        //         if (!groupedMetrics[id]) {
+        //             groupedMetrics[id] = {
+        //                 id: metric.metric.id,
+        //                 name: metric.metric.name,
+
+        //                 calculatedProgress: this.calculateMetricProgress(
+        //                     metric.metric.kpi_metric.kpi.kpi_metrics
+        //                 ),
+
+        //                 totalCurrentValue:
+        //                     this.calculateTotalCurrentValueforMetric(
+        //                         metric.metric.kpi_metric.kpi.kpi_metrics
+        //                     ),
+
+        //                 // metricTopDrivers: this.getTopDrivers (metric.metric.kpi_metric.kpi.kpi_metrics)
+
+        //                 // statusClass: this.getStatusClass(metric),
+        //                 partner: metric.metric.kpi_metric.partner,
+        //                 // departments: partner.departments,
+        //             };
+        //         }
+        //     });
+
+        //     return Object.values(groupedMetrics);
+        // },
+
         metricWithProgress() {
-            const groupedMetrics = {};
+            return this.kpiMetricsDetails.map((metric) => ({
+                ...metric,
+                calculatedProgress: this.calculateMetricProgress(
+                    metric.partners.flatMap((partner) =>
+                        partner.kpis.flatMap((kpi) => kpi.kpi_metrics)
+                    )
+                ),
+                totalCurrentValue: this.calculateTotalCurrentValueforMetric(
+                    metric.partners.flatMap((partner) =>
+                        partner.kpis.flatMap((kpi) => kpi.kpi_metrics)
+                    )
+                ),
+            }));
+        },
 
-            this.kpiMetricsDetails.forEach((metric) => {
-                const id = metric.metric.id;
+        topDrivers() {
+            return this.metricWithProgress.map((metric) => {
+                const topDrivers = metric.partners
+                    .flatMap((partner) =>
+                        partner.kpis.flatMap((kpi) =>
+                            kpi.kpi_metrics.flatMap((kpiMetric) =>
+                                kpiMetric.kpi_metric_members.flatMap(
+                                    (member) => {
+                                        // Find the member with matching member_id within the partner's members
+                                        const matchingMember =
+                                            partner.members.find(
+                                                (m) => m.id === member.member_id
+                                            );
 
-                if (!groupedMetrics[id]) {
-                    groupedMetrics[id] = {
-                        id: metric.metric.id,
-                        name: metric.metric.name,
+                                        if (matchingMember) {
+                                            return {
+                                                member_id: matchingMember.id,
+                                                name: matchingMember.name,
+                                                email: matchingMember.email,
+                                                current_value:
+                                                    member.progress
+                                                        .current_value,
+                                            };
+                                        }
 
-                        calculatedProgress: this.calculateMetricProgress(
-                            metric.metric.kpi_metric.kpi.kpi_metrics
-                        ),
+                                        return null; // Return null if no matching member found
+                                    }
+                                )
+                            )
+                        )
+                    )
+                    .filter((member) => member !== null) // Remove null entries
+                    .reduce((topDrivers, progressItem) => {
+                        if (
+                            !topDrivers[progressItem.member_id] ||
+                            progressItem.current_value >
+                                topDrivers[progressItem.member_id].current_value
+                        ) {
+                            topDrivers[progressItem.member_id] = progressItem;
+                        }
+                        return topDrivers;
+                    }, {});
 
-                        totalCurrentValue:
-                            this.calculateTotalCurrentValueforMetric(
-                                metric.metric.kpi_metric.kpi.kpi_metrics
-                            ),
+                const sortedTopDrivers = Object.values(topDrivers).sort(
+                    (a, b) => b.current_value - a.current_value
+                );
 
-                        // metricTopDrivers: this.getTopDrivers (metric.metric.kpi_metric.kpi.kpi_metrics)
-
-                        // statusClass: this.getStatusClass(metric),
-                        partner: metric.metric.kpi_metric.partner,
-                        // departments: partner.departments,
-                    };
-                }
+                return {
+                    metricName: metric.name,
+                    metricValue: metric.totalCurrentValue,
+                    topDrivers: sortedTopDrivers,
+                    calculatedProgress: metric.calculatedProgress.toFixed(2),
+                };
             });
-
-            return Object.values(groupedMetrics);
         },
 
         remainingCharacters() {
@@ -3094,6 +3192,9 @@ export default {
                     // Iterate through each kpi_metric of the KPI
                     for (const kpiMetric of kpi.kpi_metrics) {
                         const metricId = kpiMetric.metric_id;
+
+                        console.log("Metric ID:" + metricId);
+
                         const uri =
                             this.base_url + `api/v1/kpi-metrics/${metricId}`;
 

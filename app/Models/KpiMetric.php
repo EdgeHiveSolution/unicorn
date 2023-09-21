@@ -39,11 +39,10 @@ class KpiMetric extends Model
 
 
     public function metric()
+{
+    return $this->belongsTo(Metric::class);
+}
 
-    {
-        return $this->belongsTo(Metric::class);
-    }
-    
 
    
 

@@ -44,6 +44,7 @@ class PartnerApiController extends Controller
 
 public function index(Request $request)
 
+
 {
     $userId = $request->input('user_id');
     $userRoleId = $request->input('user_role_id');
