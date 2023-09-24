@@ -155,47 +155,49 @@ class DepartmentApiController extends Controller
      */
 
      public function update(Request $request, $id)
-{
-    // Validate the request data
-    $this->validate($request, [
-        'name' => 'required',
-        'email' => 'required|email',
-        'about' => 'required',
-        'members.*' => 'email',
-    ]);
-
-    // Find the department by its ID
-    $department = Department::findOrFail($id);
-
-    // Update department properties
-    $department->name = $request->input('name');
-    $department->email = $request->input('email');
-    $department->about = $request->input('about');
-    $department->save();
-
-    // Update or add members
-    $members = $request->input('members', []);
-
-    foreach ($members as $memberEmail) {
-        // Check if the member already exists
-        $existingMember = Member::where('email', trim($memberEmail))->first();
-
-        if ($existingMember) {
-
-            $department->members()->attach($existingMember->id);
-
-            Mail::to($existingMember->email)->queue(new MemberInvitation($existingMember, $request->name, null, 'login'));
-        } else {
-           
-            $registrationLink = url('/register?department_id=' . $department->id);
-            Mail::to($memberEmail)->queue(new MemberInvitation(null, $request->name, null, 'register', $registrationLink));
-        }
-    }
-
-    return response()->json([
-        'success' => 'Department updated successfully',
-    ]);
-}
+     {
+         Log::info("Requests", ['requests' => $request->all()]);
+         // Validate the request data
+         $this->validate($request, [
+             'name' => 'required',
+             'email' => 'required|email',
+             'about' => 'required',
+             'members' => 'sometimes|array',
+             'members.*' => 'email',
+         ]);
+     
+         // Find the department by its ID
+         $department = Department::findOrFail($id);
+     
+         // Update department properties
+         $department->name = $request->input('name');
+         $department->email = $request->input('email');
+         $department->about = $request->input('about');
+         $department->save();
+     
+         // Update or add members
+         $members = $request->input('members', []);
+     
+         foreach ($members as $memberEmail) {
+             // Check if the member already exists in the department
+             $existingMemberInDepartment = $department->members()->where('email', trim($memberEmail))->first();
+     
+             if (!$existingMemberInDepartment) {
+                 // Member doesn't exist in the department, send emails to new members only
+                 $existingMember = Member::where('email', trim($memberEmail))->first();
+     
+                 if (!$existingMember) {
+                     $registrationLink = url('/register?department_id=' . $department->id);
+                     Mail::to($memberEmail)->queue(new MemberInvitation(null, $request->name, null, 'register', $registrationLink));
+                 }
+             }
+         }
+     
+         return response()->json([
+             'success' => 'Department updated successfully',
+         ]);
+     }
+     
 
 
 public function fetchDepartmentMembers($departmentId)

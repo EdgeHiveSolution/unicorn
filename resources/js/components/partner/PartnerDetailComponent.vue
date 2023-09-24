@@ -838,89 +838,83 @@
                             </div>  -->
                         </div>
 
+                        <div class="row mb-2 p-3">
+                            <label
+                                for="email"
+                                class="col-md-3 col-form-label text-md-start"
+                                >{{ "Members" }} <br /><span class="text-muted"
+                                    >Invite or select the relevant members to
+                                    this department</span
+                                ></label
+                            >
+                            <div class="col-md-5 offset-md-0 text-center">
+                                <div class="row">
+                                    <div class="input-group">
+                                        <input
+                                            style="
+                                                border-radius: 10px;
+                                                width: 200px;
+                                                height: 40px;
+                                            "
+                                            placeholder="Select team member or enter email address"
+                                            list="memberEmails"
+                                            id="email"
+                                            class="form-control"
+                                            name="email"
+                                            v-model="memberPartner.email"
+                                        />
+                                        <div class="input-group-append mx-3">
+                                            <button
+                                                style="color: white"
+                                                class="btn btn-warning"
+                                                @click.prevent="addMemberToList"
+                                            >
+                                                Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <datalist id="memberEmails">
+                                        <option
+                                            v-for="member in this.members"
+                                            :value="member.email"
+                                        >
+                                            {{ member.email }}
+                                        </option>
+                                    </datalist>
+                                </div>
 
-
-
-
-                    <div class="row mb-2 p-3">
-                    <label
-                        for="email"
-                        class="col-md-3 col-form-label text-md-start"
-                        >{{ "Members" }} <br /><span class="text-muted"
-                            >Invite or select the relevant members to this
-                            department</span
-                        ></label
-                     >
-                    <div class="col-md-5 offset-md-0 text-center">
-                        <div class="row">
-                            <div class="input-group">
-                                <input
-                                    style="
-                                        border-radius: 10px;
-                                        width: 200px;
-                                        height: 40px;
-                                    "
-                                    placeholder="Select team member or enter email address"
-                                    list="memberEmails"
-                                    id="email"
-                                    class="form-control"
-                                    name="email"
-                                    v-model="memberPartner.email"
-                                />
-                                <div class="input-group-append mx-3">
-                                    <button
-                                        style="color: white"
-                                        class="btn btn-warning"
-                                        @click.prevent="addMemberToList"
-                                    >
-                                        Add
-                                    </button>
+                                <div class="row mt-2">
+                                    <div class="col-md-10">
+                                        <ul class="list-group">
+                                            <li
+                                                class="list-group-item my-2 p-0"
+                                                v-for="(
+                                                    member, index
+                                                ) in partnerMembers"
+                                                :key="index"
+                                            >
+                                                {{ member.email }}
+                                                <!-- Check if the member is active to decide which button to display -->
+                                                <button
+                                                    class="btn btn-sm txt-gray float-end"
+                                                    @click.prevent="
+                                                        removeMemberFromList(
+                                                            member.id
+                                                        )
+                                                    "
+                                                >
+                                                    <i
+                                                        class="mx-3 h3 mdi mdi-delete text-gray"
+                                                        id="dotted"
+                                                    ></i>
+                                                </button>
+                                                <!-- Display a different indicator for deactivated members -->
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                            <datalist id="memberEmails">
-                                <option
-                                    v-for="member in this.members"
-                                    :value="member.email"
-                                >
-                                    {{ member.email }}
-                                </option>
-                            </datalist>
                         </div>
-
-                        <div class="row mt-2">
-                            <div class="col-md-10">
-                                <ul class="list-group">
-                                    <li
-                                        class="list-group-item my-2 p-0"
-                                        v-for="(
-                                            member, index
-                                        ) in partnerMembers"
-                                        :key="index"
-                                    >
-                                        {{ member.email }}
-                                        <!-- Check if the member is active to decide which button to display -->
-                                        <button
-                                            
-                                            class="btn btn-sm txt-gray float-end"
-                                            @click.prevent="
-                                                removeMemberFromList(member.id)
-                                            "
-                                        >
-                                            <i
-                                                class="mx-3 h3 mdi mdi-delete text-gray"
-                                                id="dotted"
-                                            ></i>
-                                        </button>
-                                        <!-- Display a different indicator for deactivated members -->
-                                        
-                                    </li>
-                                </ul>
-
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                         <hr />
                         <div class="row mb-2 p-3">
@@ -1304,32 +1298,39 @@
                                                     </td>
 
                                                     <td class="td-members">
-                                                      <template  v-for="dataMember in partnersWithProgress" :key="dataMember.id">
-
-                                                    
-
-                                                      <img
-                                                            v-for="member in dataMember.members"
-                                                            :key="member.id"
-                                                            src="member.photo"
-                                                            :alt="member.email"
-                                                        /> 
-
+                                                        <template
+                                                            v-for="dataMember in partnersWithProgress"
+                                                            :key="dataMember.id"
+                                                        >
+                                                            <img
+                                                                v-for="member in dataMember.members"
+                                                                :key="member.id"
+                                                                src="member.photo"
+                                                                :alt="
+                                                                    member.email
+                                                                "
+                                                            />
                                                         </template>
                                                     </td>
 
                                                     <td>
-                                                    <template  v-for="dataDepartment in partnersWithProgress" :key="dataDepartment.id">
-                                                        <span
-                                                            class="department-tag"
-                                                            v-for="department in dataDepartment .departments"
-                                                            :key="department.id"
+                                                        <template
+                                                            v-for="dataDepartment in partnersWithProgress"
+                                                            :key="
+                                                                dataDepartment.id
+                                                            "
                                                         >
-                                                            {{
-                                                                department.name
-                                                            }}
-                                                        </span>
-
+                                                            <span
+                                                                class="department-tag"
+                                                                v-for="department in dataDepartment.departments"
+                                                                :key="
+                                                                    department.id
+                                                                "
+                                                            >
+                                                                {{
+                                                                    department.name
+                                                                }}
+                                                            </span>
                                                         </template>
                                                     </td>
 
@@ -1430,8 +1431,8 @@
                                                     <th>KPI metric</th>
                                                     <th>Target</th>
                                                     <th>Response period</th>
-                                                    <!-- <th>Assigned to</th>
-                                                    <th>Departments</th> -->
+                                                    <th>Assigned to</th>
+                                                    <th>Departments</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -1470,27 +1471,42 @@
                                                             <!-- Display KPI response_period -->
                                                         </div>
                                                     </td>
-
-                                                    <!-- <td class="td-members">
-                                                        <img
-                                                            v-for="member in partner.members"
-                                                            :key="member.id"
-                                                            :src="member.photo"
-                                                            :alt="member.email"
-                                                        />
-                                                    </td> -->
-
-                                                    <!-- <td>
-                                                        <span
-                                                            class="department-tag"
-                                                            v-for="department in partner.departments"
-                                                            :key="department.id"
+                                                    <td class="td-members">
+                                                        <template
+                                                            v-for="dataMember in partnersWithProgress"
+                                                            :key="dataMember.id"
                                                         >
-                                                            {{
-                                                                department.name
-                                                            }}
-                                                        </span>
-                                                    </td> -->
+                                                            <img
+                                                                v-for="member in dataMember.members"
+                                                                :key="member.id"
+                                                                src="member.photo"
+                                                                :alt="
+                                                                    member.email
+                                                                "
+                                                            />
+                                                        </template>
+                                                    </td>
+
+                                                    <td>
+                                                        <template
+                                                            v-for="dataDepartment in partnersWithProgress"
+                                                            :key="
+                                                                dataDepartment.id
+                                                            "
+                                                        >
+                                                            <span
+                                                                class="department-tag"
+                                                                v-for="department in dataDepartment.departments"
+                                                                :key="
+                                                                    department.id
+                                                                "
+                                                            >
+                                                                {{
+                                                                    department.name
+                                                                }}
+                                                            </span>
+                                                        </template>
+                                                    </td>
 
                                                     <td>
                                                         <button
@@ -2671,8 +2687,7 @@ export default {
     },
 
     mounted() {
-     this.fetchPartnerMembers();
-
+        this.fetchPartnerMembers();
 
         const partnerId = this.partnerId;
 
@@ -3285,7 +3300,6 @@ export default {
                 });
         },
 
-
         addMemberToList() {
             const email = this.memberPartner.email.trim();
             if (
@@ -3294,7 +3308,7 @@ export default {
             ) {
                 // Check if the email is not already in the partner members list
                 // Also want to check if the email is in the 'members' list
-                // before adding it to 'departmentMembers'
+                // before adding it to 'partnerMembers'
                 this.partnerMembers.push({
                     email: email,
                     id: null, // Replace with the actual ID if available
@@ -3303,10 +3317,8 @@ export default {
             }
         },
 
-
-
-  removeMemberFromList(memberId) {
-            // Find the member in the departmentMembers list by their ID
+        removeMemberFromList(memberId) {
+            // Find the member in the partnerMembers list by their ID
             const memberIndex = this.partnerMembers.findIndex(
                 (member) => member.id === memberId
             );
@@ -3328,7 +3340,7 @@ export default {
                             member.is_active = false;
                         } else {
                             // Member has no progress records, remove them from the list
-                            this.departmentMembers.splice(memberIndex, 1);
+                            this.partnerMembers.splice(memberIndex, 1);
 
                             // Also, make an API call to remove the member from the backend
                             axios
@@ -3355,8 +3367,6 @@ export default {
             }
         },
 
-
-
         fetchPartnerMembers() {
             // Build the URI
             const uri = `${this.base_url}api/v1/partner-members/${this.partner.id}`;
@@ -3374,9 +3384,11 @@ export default {
                 });
         },
 
-
-
         partnerSubmit() {
+            
+     const emailArray = this.partnerMembers.map((member) => member.email);
+         console.log("Emails in the desired format:", emailArray);
+
             const partnerData = {
                 id: this.partner.id,
                 name: this.partner.name,
@@ -3387,11 +3399,12 @@ export default {
                 logo: this.partner.logo,
                 business_type: this.partner.business_type,
                 about: this.partner.about,
+                members: emailArray 
             };
 
             console.log("Whose partner data is this:", partnerData);
 
-            let uri = this.base_url + `api/v1/partner-update`;
+            let uri = this.base_url + `api/v1/partner-update/${this.partner.id}`;
             axios
                 .patch(uri, partnerData)
                 .then((response) => {
