@@ -16,80 +16,87 @@ class ProgressApiController extends Controller
 
 
     public function store(Request $request)
-    
-    {
-        $this->validate($request, [
-            'title' => 'required',
-            'value' => 'required|numeric',
-            'notes' => 'nullable|string',
-            'kpi_metric_member_id' => 'required|exists:kpi_metric_members,id',
-            'kpi_metric_id' => 'required|exists:kpi_metrics,id'
-        ]);
-    
-        // Find the corresponding KpiMetricMember based on the request parameters
-        $kpiMetricMember = KpiMetricMember::findOrFail($request->kpi_metric_member_id);
-        $targetValue = $kpiMetricMember->timely_value;
-    
-        // Find the corresponding KpiMetric based on the request parameters
-        $kpiMetric = KpiMetric::findOrFail($request->kpi_metric_id);
-    
-        // Set the target_value based on the total target from the KpiMetric
-       
-        // Create the progress update
-        $progress = Progress::create([
-            'title' => $request->title,
-            'current_value' => $request->value,
-            'target_value' => $targetValue,
-            'notes' => $request->notes,
-            'kpi_metric_id' => $request->kpi_metric_id,
-            'kpi_metric_member_id' => $kpiMetricMember->id,
-        ]);
-    
-        // // Calculate the sum of current_value for progress updates with the same kpi_metric_id
-        // $totalCurrentValue = Progress::where('kpi_metric_id', $request->kpi_metric_id)
-        //                              ->sum('current_value');
-    
-        // // Update the sum of current_value for progress updates with the same kpi_metric_id
-        // Progress::where('kpi_metric_id', $request->kpi_metric_id)
-        //         ->update(['current_value' => $totalCurrentValue]);
-    
-        // Associate the progress with the KpiMetricMember
-        $kpiMetricMember->progress()->save($progress);
-    
-        return response()->json([
-            'progress' => $progress
-        ]);
+{
+    $this->validate($request, [
+        'title' => 'required',
+        'value' => 'required|numeric',
+        'notes' => 'nullable|string',
+        'kpi_metric_member_id' => 'required|exists:kpi_metric_members,id',
+        'kpi_metric_id' => 'required|exists:kpi_metrics,id',
+        'file.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048', // Define file validation rules
+    ]);
+
+    // Find the corresponding KpiMetricMember based on the request parameters
+    $kpiMetricMember = KpiMetricMember::findOrFail($request->kpi_metric_member_id);
+    $targetValue = $kpiMetricMember->timely_value;
+
+    // Find the corresponding KpiMetric based on the request parameters
+    $kpiMetric = KpiMetric::findOrFail($request->kpi_metric_id);
+
+    // Set the target_value based on the total target from the KpiMetric
+
+    // Create the progress update
+    $progress = Progress::create([
+        'title' => $request->title,
+        'current_value' => $request->value,
+        'target_value' => $targetValue,
+        'notes' => $request->notes,
+        'kpi_metric_id' => $request->kpi_metric_id,
+        'kpi_metric_member_id' => $kpiMetricMember->id,
+    ]);
+
+    // Handle file uploads
+    if ($request->hasFile('file')) {
+        $filePaths = []; // Initialize an array to store file paths
+
+        foreach ($request->file('file') as $uploadedFile) {
+            $fileName = $uploadedFile->getClientOriginalName(); // Get the original file name
+            $path = $uploadedFile->storeAs('ProgressUploads', $fileName, 'public'); // Store the file in the "ProgressUploads" folder
+            $filePaths[] = $path; // Store the file path in the array
+        }
+
+        $progress->files()->createMany(
+            array_map(function ($path) {
+                return ['file_paths' => $path];
+            }, $filePaths)
+        );
     }
 
+    $kpiMetricMember->progress()->save($progress);
+
+
+    return response()->json([
+        'progress' => $progress
+    ]);
+}
 
 
     // public function store(Request $request)
+    
     // {
     //     $this->validate($request, [
     //         'title' => 'required',
     //         'value' => 'required|numeric',
     //         'notes' => 'nullable|string',
     //         'kpi_metric_member_id' => 'required|exists:kpi_metric_members,id',
-    //         'kpi_id' => 'required|exists:kpis,id',
     //         'kpi_metric_id' => 'required|exists:kpi_metrics,id'
     //     ]);
     
     //     // Find the corresponding KpiMetricMember based on the request parameters
     //     $kpiMetricMember = KpiMetricMember::findOrFail($request->kpi_metric_member_id);
+    //     $targetValue = $kpiMetricMember->timely_value;
     
     //     // Find the corresponding KpiMetric based on the request parameters
     //     $kpiMetric = KpiMetric::findOrFail($request->kpi_metric_id);
     
     //     // Set the target_value based on the total target from the KpiMetric
-    //     $targetValue = $kpiMetric->timely_value;
-    
+       
     //     // Create the progress update
     //     $progress = Progress::create([
     //         'title' => $request->title,
     //         'current_value' => $request->value,
     //         'target_value' => $targetValue,
     //         'notes' => $request->notes,
-    //         'kpi_id' => $request->kpi_id,
     //         'kpi_metric_id' => $request->kpi_metric_id,
     //         'kpi_metric_member_id' => $kpiMetricMember->id,
     //     ]);
@@ -109,7 +116,9 @@ class ProgressApiController extends Controller
     //         'progress' => $progress
     //     ]);
     // }
-    
+
+
+
 
     // public function store(Request $request)
     // {

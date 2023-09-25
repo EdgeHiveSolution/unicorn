@@ -262,13 +262,13 @@
                                                                 <div>
                                                                     <span
                                                                         class="department-tag"
-                                                                        v-for="department in driver.allDepartments"
+                                                                        v-for="department in driver.uniqueDepartments"
                                                                         :key="
-                                                                            department.id
+                                                                            department
                                                                         "
                                                                     >
                                                                         {{
-                                                                            department.name
+                                                                            department
                                                                         }}
                                                                     </span>
                                                                 </div>
@@ -2496,6 +2496,7 @@ export default {
         },
 
         topDrivers() {
+            const uniqueEmails = new Set(); // To store unique email addresses
             return this.metricWithProgress.map((metric) => {
                 const topDrivers = metric.partners
                     .flatMap((partner) =>
@@ -2509,7 +2510,15 @@ export default {
                                                 (m) => m.id === member.member_id
                                             );
 
-                                        if (matchingMember) {
+                                        if (
+                                            matchingMember &&
+                                            !uniqueEmails.has(
+                                                matchingMember.email
+                                            )
+                                        ) {
+                                            uniqueEmails.add(
+                                                matchingMember.email
+                                            ); // Add the email to the set
                                             return {
                                                 member_id: matchingMember.id,
                                                 name: matchingMember.name,
@@ -2517,10 +2526,11 @@ export default {
                                                 current_value:
                                                     member.progress
                                                         .current_value,
+                                                photo: matchingMember.photo, // Assuming you have a photo property
                                             };
                                         }
 
-                                        return null; // Return null if no matching member found
+                                        return null; // Return null if no matching member found or duplicate email
                                     }
                                 )
                             )
@@ -2538,23 +2548,89 @@ export default {
                         return topDrivers;
                     }, {});
 
+                // Extract and store unique department names
+                const allDepartments = metric.partners
+                    .map((partner) =>
+                        partner.departments.map((department) => department.name)
+                    )
+                    .flat();
+
+                const uniqueDepartments = [...new Set(allDepartments)];
+
                 const sortedTopDrivers = Object.values(topDrivers).sort(
                     (a, b) => b.current_value - a.current_value
                 );
-
-                const allDepartments = metric.partners
-                    .map((partner) => partner.departments)
-                    .flat();
 
                 return {
                     metricName: metric.name,
                     metricValue: metric.totalCurrentValue,
                     topDrivers: sortedTopDrivers,
                     calculatedProgress: metric.calculatedProgress.toFixed(2),
-                    allDepartments,
+                    uniqueDepartments,
                 };
             });
         },
+
+        // topDrivers() {
+        //     return this.metricWithProgress.map((metric) => {
+        //         const topDrivers = metric.partners
+        //             .flatMap((partner) =>
+        //                 partner.kpis.flatMap((kpi) =>
+        //                     kpi.kpi_metrics.flatMap((kpiMetric) =>
+        //                         kpiMetric.kpi_metric_members.flatMap(
+        //                             (member) => {
+        //                                 // Find the member with matching member_id within the partner's members
+        //                                 const matchingMember =
+        //                                     partner.members.find(
+        //                                         (m) => m.id === member.member_id
+        //                                     );
+
+        //                                 if (matchingMember) {
+        //                                     return {
+        //                                         member_id: matchingMember.id,
+        //                                         name: matchingMember.name,
+        //                                         email: matchingMember.email,
+        //                                         current_value:
+        //                                             member.progress
+        //                                                 .current_value,
+        //                                     };
+        //                                 }
+
+        //                                 return null; // Return null if no matching member found
+        //                             }
+        //                         )
+        //                     )
+        //                 )
+        //             )
+        //             .filter((member) => member !== null) // Remove null entries
+        //             .reduce((topDrivers, progressItem) => {
+        //                 if (
+        //                     !topDrivers[progressItem.member_id] ||
+        //                     progressItem.current_value >
+        //                         topDrivers[progressItem.member_id].current_value
+        //                 ) {
+        //                     topDrivers[progressItem.member_id] = progressItem;
+        //                 }
+        //                 return topDrivers;
+        //             }, {});
+
+        //         const sortedTopDrivers = Object.values(topDrivers).sort(
+        //             (a, b) => b.current_value - a.current_value
+        //         );
+
+        // const allDepartments = metric.partners
+        //     .map((partner) => partner.departments)
+        //     .flat();
+
+        //         return {
+        //             metricName: metric.name,
+        //             metricValue: metric.totalCurrentValue,
+        //             topDrivers: sortedTopDrivers,
+        //             calculatedProgress: metric.calculatedProgress.toFixed(2),
+        //             allDepartments,
+        //         };
+        //     });
+        // },
 
         // remainingCharacters() {
         //     //   console.log("Characters are:",this.partner.about.length);
@@ -3385,9 +3461,10 @@ export default {
         },
 
         partnerSubmit() {
-            
-     const emailArray = this.partnerMembers.map((member) => member.email);
-         console.log("Emails in the desired format:", emailArray);
+            const emailArray = this.partnerMembers.map(
+                (member) => member.email
+            );
+            console.log("Emails in the desired format:", emailArray);
 
             const partnerData = {
                 id: this.partner.id,
@@ -3399,12 +3476,13 @@ export default {
                 logo: this.partner.logo,
                 business_type: this.partner.business_type,
                 about: this.partner.about,
-                members: emailArray 
+                members: emailArray,
             };
 
             console.log("Whose partner data is this:", partnerData);
 
-            let uri = this.base_url + `api/v1/partner-update/${this.partner.id}`;
+            let uri =
+                this.base_url + `api/v1/partner-update/${this.partner.id}`;
             axios
                 .patch(uri, partnerData)
                 .then((response) => {

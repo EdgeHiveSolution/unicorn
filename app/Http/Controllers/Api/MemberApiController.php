@@ -41,42 +41,94 @@ class MemberApiController extends Controller
 
 
     public function getKpisAndMetricsForMember($memberId)
-     
-  {
-    $member = Member::with(['departments','partners'])->findOrFail($memberId);
-
-    // Get the KpiMetricMembers of the member
-    $kpiMetricMembers = $member->kpiMetricMembers;
-
-    // Calculate the summation of current_value and timely_value based on your conditions
-    $kpiMetrics = [];
-    $kpis = [];
-    $progressSummation = [];
-
-    foreach ($kpiMetricMembers as $kpiMetricMember) {
-        $kpiMetric = $kpiMetricMember->kpiMetric;
-        $progress = $kpiMetricMember->progress;
-        
-        $progressSummation[$kpiMetricMember->id] = [
-            'current_sum' => $progress->sum('current_value'),
-            'target_sum' => $progress->sum('target_value') // Assuming timely_value is the target
-        ];
-
-        $kpiMetrics[] = [
-            'kpiMetric' =>  $kpiMetric,
-            'progress' =>   $progress,
-            'progress_sum' => $progressSummation[$kpiMetricMember->id],
-        ];
-
-        $kpis[] = $kpiMetric->kpi;
-    }
+{
+    $member = Member::with(['departments', 'partners.kpis.kpiMetrics.kpiMetricMembers.progress'])
+        ->findOrFail($memberId);
 
     return response()->json([
         'member' => $member,
-        'kpis' => $kpis,
-        'kpiMetrics' => $kpiMetrics,
     ]);
 }
+
+
+//     public function getKpisAndMetricsForMember($memberId)
+// {
+//     $member = Member::with(['departments', 'partners.kpis.kpiMetrics.kpiMetricMembers.progress'])
+//         ->findOrFail($memberId);
+
+//     // Extract KPIs and metrics from partners
+//     $kpiMetrics = [];
+//     $kpis = [];
+//     $progressSummation = [];
+
+//     foreach ($member->partners as $partner) {
+//         foreach ($partner->kpis as $kpi) {
+//             foreach ($kpi->kpiMetrics as $kpiMetric) {
+//                 foreach ($kpiMetric->kpiMetricMembers as $kpiMetricMember) {
+//                     $progress = $kpiMetricMember->progress;
+
+//                     $progressSummation[$kpiMetricMember->id] = [
+//                         'current_sum' => $progress->sum('current_value'),
+//                         'target_sum' => $progress->sum('target_value'), // Assuming timely_value is the target
+//                     ];
+
+//                     $kpiMetrics[] = [
+//                         'kpiMetric' => $kpiMetric,
+//                         'progress' => $progress,
+//                         'progress_sum' => $progressSummation[$kpiMetricMember->id],
+//                     ];
+
+//                     $kpis[] = $kpi;
+//                 }
+//             }
+//         }
+//     }
+
+//     return response()->json([
+//         'member' => $member,
+//         'kpis' => $kpis,
+//         'kpiMetrics' => $kpiMetrics,
+//     ]);
+// }
+
+
+//     public function getKpisAndMetricsForMember($memberId)
+     
+//   {
+//     $member = Member::with(['departments','partners'])->findOrFail($memberId);
+
+//     // Get the KpiMetricMembers of the member
+//     $kpiMetricMembers = $member->kpiMetricMembers;
+
+//     // Calculate the summation of current_value and timely_value based on your conditions
+//     $kpiMetrics = [];
+//     $kpis = [];
+//     $progressSummation = [];
+
+//     foreach ($kpiMetricMembers as $kpiMetricMember) {
+//         $kpiMetric = $kpiMetricMember->kpiMetric;
+//         $progress = $kpiMetricMember->progress;
+        
+//         $progressSummation[$kpiMetricMember->id] = [
+//             'current_sum' => $progress->sum('current_value'),
+//             'target_sum' => $progress->sum('target_value') // Assuming timely_value is the target
+//         ];
+
+//         $kpiMetrics[] = [
+//             'kpiMetric' =>  $kpiMetric,
+//             'progress' =>   $progress,
+//             'progress_sum' => $progressSummation[$kpiMetricMember->id],
+//         ];
+
+//         $kpis[] = $kpiMetric->kpi;
+//     }
+
+//     return response()->json([
+//         'member' => $member,
+//         'kpis' => $kpis,
+//         'kpiMetrics' => $kpiMetrics,
+//     ]);
+// }
 
 
 

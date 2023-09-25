@@ -531,6 +531,7 @@ public function store(Request $request)
                 return response()->json($partner);
             }
 
+            
 
             public function fetchPartnerMembers($partnerId)
       {

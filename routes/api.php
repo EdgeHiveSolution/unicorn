@@ -17,6 +17,10 @@ use App\Http\Controllers\Api\ProgressApiController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\KpiProgressApiController;
 use App\Http\Controllers\Api\AuthApiController;
+use App\Http\Controllers\Api\ProfileApiController;
+
+
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -94,6 +98,9 @@ Route::get('v1/role-list',[RoleApiController::class, 'index']);
 Route::get('v1/user', [UserController::class, 'getUserWithRelatedData']);
 
 Route::get('v1/kpi-progress/{partnerId}', [KpiProgressApiController::class, 'getOverallProgress']);
+
+Route::put('v1/profile/{id}', [ProfileApiController::class, 'updateProfile']);
+
 
 
 // Route::get('v1/kpi-progress', [KpiProgressApiController::class, 'getOverallProgress']);

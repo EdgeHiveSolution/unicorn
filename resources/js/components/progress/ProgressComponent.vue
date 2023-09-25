@@ -68,7 +68,6 @@
                                                     <th>Current</th>
                                                     <th>Target</th>
                                                     <th>Progress</th>
-                                                  
 
                                                     <!-- <th>Assigned to</th>
                                                 <th>Departments</th> -->
@@ -168,8 +167,6 @@
                                                             }}
                                                         </p>
                                                     </td>
-
-                                                   
                                                 </tr>
 
                                                 <tr
@@ -178,7 +175,7 @@
                                                             .progress.length ===
                                                         0
                                                     "
-                                                   >
+                                                >
                                                     <td
                                                         style="
                                                             text-align: center;
@@ -223,6 +220,7 @@
                         id="form-submit"
                         @submit.prevent="submitProgress()"
                         method="POST"
+                        enctype="multipart/form-data"
                     >
                         <div class="mb-3">
                             <label
@@ -253,6 +251,22 @@
                                 class="form-control"
                                 type="text"
                                 v-model="kpimetric_value"
+                            />
+                        </div>
+
+                        <div class="mb-3">
+                            <label
+                                for="files"
+                                class="col-form-label text-md-start"
+                                >Upload Files</label
+                            >
+                            <input
+                                id="files"
+                                name="files[]"
+                                class="form-control"
+                                type="file"
+                                multiple
+                                v-on:change="handleFileUpload"
                             />
                         </div>
 
@@ -338,6 +352,7 @@ export default {
             selectedMemberKpi: "",
             selectedKpi: null,
             timelyValue: null,
+            selectedFiles: [],
 
             selectedKpiMetric: "",
 
@@ -425,11 +440,8 @@ export default {
         // },
     },
 
-    async created()  {
-
-      await this.fetchKpiMetricsDetails();
-    
-
+    async created() {
+        await this.fetchKpiMetricsDetails();
     },
 
     // mounted() {
@@ -492,7 +504,7 @@ export default {
             }
         },
 
-       async fetchKpiMetricsDetails() {
+        async fetchKpiMetricsDetails() {
             const kpimetricId = this.$props.kpimetricId;
 
             // Get the kpiMetricMemberId based on the matching kpi_metric_id
@@ -514,7 +526,7 @@ export default {
             const uri =
                 this.base_url +
                 `api/v1/kpimetrics/${kpimetricId}/progress/${kpiMetricMemberId}`;
-           await  axios
+            await axios
                 .get(uri)
                 .then((response) => {
                     console.log("Api Response:", response.data);
@@ -523,6 +535,11 @@ export default {
                 .catch((error) => {
                     console.error("Error fetching member details:", error);
                 });
+        },
+
+        handleFileUpload(event) {
+            // Get the selected files from the event
+            this.selectedFiles = Array.from(event.target.files);
         },
 
         // fetchKpiMetricsDetails() {
@@ -555,7 +572,10 @@ export default {
                 }
             )?.kpi_metric_member;
 
-             console.log("Kpi Metric Member for now is:"+ JSON.stringify(kpiMetricMember));
+            console.log(
+                "Kpi Metric Member for now is:" +
+                    JSON.stringify(kpiMetricMember)
+            );
 
             if (kpiMetricMember) {
                 const kpimetric1 = kpiMetricMember.kpi_metric;
@@ -569,7 +589,11 @@ export default {
                     JSON.stringify(store.state.loggedUser)
                 );
 
+                
                 const formData = new FormData();
+                this.selectedFiles.forEach((file) => {
+                    formData.append("files[]", file);
+                });
                 formData.append("title", this.kpimetric_title);
                 formData.append("value", this.kpimetric_value);
                 formData.append("notes", this.kpimetric_notes);
