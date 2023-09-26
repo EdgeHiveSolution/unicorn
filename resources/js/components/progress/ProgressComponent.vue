@@ -68,17 +68,11 @@
                                                     <th>Current</th>
                                                     <th>Target</th>
                                                     <th>Progress</th>
-
-                                                    <!-- <th>Assigned to</th>
-                                                <th>Departments</th> -->
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- <div v-if="member.member  && member.member.kpiMetrics"> -->
-                                                <!-- <tr
-                                                v-for="progressData in kpiMetricData.progress"
-                                                :key="progressData.id"
-                                            > -->
+                                                <!-- Your table data rows here with <td> elements -->
                                                 <tr
                                                     v-for="(
                                                         progressEntry,
@@ -89,11 +83,9 @@
                                                 >
                                                     <td>
                                                         <div>
-                                                            <span>
-                                                                {{
-                                                                    progressEntry.title
-                                                                }}
-                                                            </span>
+                                                            <span>{{
+                                                                progressEntry.title
+                                                            }}</span>
                                                         </div>
                                                     </td>
                                                     <td class="">
@@ -101,7 +93,6 @@
                                                             {{
                                                                 progressEntry.current_value
                                                             }}
-                                                            <!-- Display KPI target, assuming target is a property of the KPI -->
                                                         </div>
                                                     </td>
                                                     <td class="">
@@ -111,7 +102,6 @@
                                                             }}
                                                         </div>
                                                     </td>
-
                                                     <td
                                                         v-if="
                                                             item
@@ -122,7 +112,6 @@
                                                     >
                                                         No Progress found
                                                     </td>
-
                                                     <td class="stats">
                                                         <p
                                                             class="progress_text text-muted"
@@ -133,7 +122,6 @@
                                                                 )
                                                             }}%
                                                         </p>
-
                                                         <div class="progress">
                                                             <div
                                                                 :class="
@@ -153,7 +141,6 @@
                                                                 }"
                                                             ></div>
                                                         </div>
-
                                                         <p
                                                             class="progress-status"
                                                         >
@@ -167,8 +154,25 @@
                                                             }}
                                                         </p>
                                                     </td>
+                                                    <td>
+                                                        <button
+                                                            class="btn view-btn"
+                                                        >
+                                                            <a
+                                                                :href="
+                                                                    '/progress_detail/' +
+                                                                    progressEntry.id
+                                                                "
+                                                                class="text-light add-link text-sm"
+                                                            >
+                                                                <i
+                                                                    class="mdi mdi-eye-outline text-light"
+                                                                ></i>
+                                                                view</a
+                                                            >
+                                                        </button>
+                                                    </td>
                                                 </tr>
-
                                                 <tr
                                                     v-if="
                                                         item.kpi_metric_member
@@ -180,14 +184,14 @@
                                                         style="
                                                             text-align: center;
                                                         "
-                                                        colspan="4"
+                                                        colspan="5"
                                                     >
                                                         No Progress found
                                                     </td>
                                                 </tr>
-                                                <!-- </div> -->
                                             </tbody>
                                         </table>
+
                                         <pagination
                                             :total="totalPages"
                                             :current="currentPage"
@@ -221,7 +225,7 @@
                         @submit.prevent="submitProgress()"
                         method="POST"
                         enctype="multipart/form-data"
-                     >
+                    >
                         <div class="mb-3">
                             <label
                                 for="name"
@@ -444,20 +448,20 @@ export default {
         await this.fetchKpiMetricsDetails();
     },
 
-    // mounted() {
-    //     this.fetchKpiMetricsDetails();
-    //     console.log(
-    //         "User Related Data:",
-    //         JSON.stringify(this.$store.state.loggedUser)
-    //     );
+    mounted() {
+        
+        console.log(
+            "User Related Data:",
+            JSON.stringify(this.$store.state.loggedUser)
+        );
 
-    //     console.log(
-    //         "Kpi Metric Members are:",
-    //         JSON.stringify(
-    //             this.$store.state.loggedUser.member.kpi_metric_members
-    //         )
-    //     );
-    // },
+        console.log(
+            "Kpi Metric Members are:",
+            JSON.stringify(
+                this.$store.state.loggedUser.member.kpi_metric_members
+            )
+        );
+    },
 
     methods: {
         calculateProgressPercentage(progressEntry) {
@@ -589,13 +593,12 @@ export default {
                     JSON.stringify(store.state.loggedUser)
                 );
 
-                
                 const formData = new FormData();
                 this.selectedFiles.forEach((file) => {
                     formData.append("files[]", file);
                 });
 
-                console.log("Files sent to server side:",this.selectedFiles);
+                console.log("Files sent to server side:", this.selectedFiles);
                 formData.append("title", this.kpimetric_title);
                 formData.append("value", this.kpimetric_value);
                 formData.append("notes", this.kpimetric_notes);

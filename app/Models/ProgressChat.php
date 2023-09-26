@@ -15,7 +15,7 @@ class ProgressChat extends Model
     protected $fillable = [
         'progress_id',
         'sender_id',
-        'recipient_id',
+        // 'recipient_id',
         'message',
     ];
 

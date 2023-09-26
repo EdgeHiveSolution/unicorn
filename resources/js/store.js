@@ -13,14 +13,24 @@ const store = createStore({
         loggedUser: null,
     },
 
+    // mutations: {
+    //     UPDATE_LOGGED_USER(state, user) {
+    //         // Initialize the progress property as null for each kpi_metric_member
+    //         if (user && user.member && user.member.kpi_metric_members) {
+    //             user.member.kpi_metric_members.forEach((kpiMetricMember) => {
+    //                 kpiMetricMember.progress = null;
+    //             });
+    //         }
+    //         state.loggedUser = user;
+    //         console.log(
+    //             "Updated User State: " + JSON.stringify(state.loggedUser)
+    //         );
+    //         console.log("Updated User State: " + JSON.stringify(user));
+    //     },
+    // },
+
     mutations: {
         UPDATE_LOGGED_USER(state, user) {
-            // Initialize the progress property as null for each kpi_metric_member
-            if (user && user.member && user.member.kpi_metric_members) {
-                user.member.kpi_metric_members.forEach((kpiMetricMember) => {
-                    kpiMetricMember.progress = null;
-                });
-            }
             state.loggedUser = user;
             console.log(
                 "Updated User State: " + JSON.stringify(state.loggedUser)

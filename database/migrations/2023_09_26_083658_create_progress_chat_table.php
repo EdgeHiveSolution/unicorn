@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('progress_id');
             $table->unsignedBigInteger('sender_id');
-            $table->unsignedBigInteger('recipient_id');
+            // $table->unsignedBigInteger('recipient_id');
             $table->text('message');
             $table->timestamps();
 
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreign('progress_id')->references('id')->on('progress')->onDelete('cascade');
             // Define foreign key constraints for sender and recipient
             $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('recipient_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->foreign('recipient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

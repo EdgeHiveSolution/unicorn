@@ -18,20 +18,20 @@ class ProgressController extends Controller
      *
      *
      */
-    public function index()
+    // public function index()
 
-    {
-        $progress = Progress::latest()->cursorPaginate(5);
-
-
-        $data = [
-            'progress' => $progress,
-
-        ];
+    // {
+    //     $progress = Progress::latest()->cursorPaginate(5);
 
 
-        return view('progress.index', $data);
-    }
+    //     $data = [
+    //         'progress' => $progress,
+
+    //     ];
+
+
+    //     return view('progress.index', $data);
+    // }
 
     /**
      * Show the form for creating a new resource.

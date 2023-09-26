@@ -15,10 +15,38 @@ use Illuminate\Support\Facades\Log;
 class ProgressApiController extends Controller
 {
 
+    public function getProgressDetail($progressId) 
+
+    {
+
+        try {
+            // Use Eloquent to retrieve the progress record by its ID
+            $progress = Progress::findOrFail($progressId);
+    
+            // You can return the progress record as JSON or in any desired format
+            return response()->json([
+                'success' => true,
+                'data' => $progress,
+            ], 200);
+        } catch (\Exception $e) {
+            // Handle exceptions if the progress record is not found
+            return response()->json([
+                'success' => false,
+                'message' => 'Progress record not found.',
+            ], 404);
+        }
+
+        
+    }
+
+
 
     public function store(Request $request)
 
     {
+
+       
+
         Log::info("I need all requests here:", ["requests" =>$request->all()]);
 
         $this->validate($request, [

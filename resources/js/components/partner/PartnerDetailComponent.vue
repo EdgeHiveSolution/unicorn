@@ -277,14 +277,16 @@
                                                     </td> -->
 
                                                     <td>
-                                                <span
-                                                    class="depart-tag"
-                                                    v-for="department in uniqueDepartments"
-                                                    :key="department.id"
-                                                >
-                                                    {{ department.name }}
-                                                </span>
-                                            </td>
+                                                        <span
+                                                            class="depart-tag"
+                                                            v-for="department in uniqueDepartments"
+                                                            :key="department.id"
+                                                        >
+                                                            {{
+                                                                department.name
+                                                            }}
+                                                        </span>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1332,14 +1334,12 @@
                                                         >
                                                             <span
                                                                 class="department-tag"
-                                                                v-for="department in dataDepartment.departments"
+                                                                v-for="department in dataDepartment.uniqueDepartments"
                                                                 :key="
-                                                                    department.id
+                                                                    department
                                                                 "
                                                             >
-                                                                {{
-                                                                    department.name
-                                                                }}
+                                                                {{ department }}
                                                             </span>
                                                         </template>
                                                     </td>
@@ -1496,7 +1496,6 @@
                                                             />
                                                         </template>
                                                     </td>
-
                                                     <td>
                                                         <template
                                                             v-for="dataDepartment in partnersWithProgress"
@@ -1506,14 +1505,12 @@
                                                         >
                                                             <span
                                                                 class="department-tag"
-                                                                v-for="department in dataDepartment.departments"
+                                                                v-for="department in dataDepartment.uniqueDepartments"
                                                                 :key="
-                                                                    department.id
+                                                                    department
                                                                 "
                                                             >
-                                                                {{
-                                                                    department.name
-                                                                }}
+                                                                {{ department }}
                                                             </span>
                                                         </template>
                                                     </td>
@@ -2447,11 +2444,18 @@ export default {
             const calculatedProgress = this.calculateKpiProgress(partner.kpis);
             const statusClass = this.getStatusClass(partner);
 
+            const allDepartments = partner.departments
+                .map((department) => department.name)
+                .flat();
+
+            const uniqueDepartments = [...new Set(allDepartments)];
+
             return [
                 {
                     ...partner,
                     calculatedProgress,
                     statusClass,
+                    uniqueDepartments,
                 },
             ];
         },
