@@ -253,7 +253,7 @@
                                                             ></div>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <!-- <td>
                                                         <div>
                                                             <template
                                                                 v-for="driver in topDrivers"
@@ -274,7 +274,17 @@
                                                                 </div>
                                                             </template>
                                                         </div>
-                                                    </td>
+                                                    </td> -->
+
+                                                    <td>
+                                                <span
+                                                    class="depart-tag"
+                                                    v-for="department in uniqueDepartments"
+                                                    :key="department.id"
+                                                >
+                                                    {{ department.name }}
+                                                </span>
+                                            </td>
                                                 </tr>
                                             </tbody>
                                         </table>

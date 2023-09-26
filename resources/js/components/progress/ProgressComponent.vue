@@ -221,7 +221,7 @@
                         @submit.prevent="submitProgress()"
                         method="POST"
                         enctype="multipart/form-data"
-                    >
+                     >
                         <div class="mb-3">
                             <label
                                 for="name"
@@ -594,6 +594,8 @@ export default {
                 this.selectedFiles.forEach((file) => {
                     formData.append("files[]", file);
                 });
+
+                console.log("Files sent to server side:",this.selectedFiles);
                 formData.append("title", this.kpimetric_title);
                 formData.append("value", this.kpimetric_value);
                 formData.append("notes", this.kpimetric_notes);

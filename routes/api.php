@@ -101,7 +101,20 @@ Route::get('v1/kpi-progress/{partnerId}', [KpiProgressApiController::class, 'get
 
 Route::put('v1/profile/{id}', [ProfileApiController::class, 'updateProfile']);
 
+// Create a new progress chat message
+Route::post('v1/progress-chats', [ProgressChatController::class, 'store']);
 
+// Retrieve a specific progress chat message
+Route::get('v1/progress-chats/{id}', [ProgressChatController::class, 'show']);
+
+// Update a progress chat message
+Route::put('v1/progress-chats/{id}', [ProgressChatController::class, 'update']);
+
+// Delete a progress chat message
+Route::delete('v1/progress-chats/{id}', [ProgressChatController::class, 'destroy']);
+
+// Retrieve a list of progress chat messages
+Route::get('v1/progress-chats', [ProgressChatController::class, 'index']);
 
 // Route::get('v1/kpi-progress', [KpiProgressApiController::class, 'getOverallProgress']);
 
