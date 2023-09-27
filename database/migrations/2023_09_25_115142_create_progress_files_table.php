@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('progress_files', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('progress_id'); // Foreign key reference to the progress update
-            $table->json('file_paths'); // JSON column to store file paths
+            $table->json('file_paths')->nullable(); // JSON column to store file paths
             $table->timestamps();
 
             // Define the foreign key constraint
