@@ -245,19 +245,19 @@
                                                         }}
                                                     </td>
                                                     <td class="td-members">
-                                                        <!-- <div
+                                                        <template
                                                             v-for="member in topDrivers"
-                                                            :key="
-                                                                member.id
-                                                            "
+                                                            :key="member.id"
                                                         >
-                                                            {{
-                                                                member.topDrivers
-                                                            }}
-                                                            
-                                                        </div> -->
-
-                                                       
+                                                            <img
+                                                                v-for="member in member.topDrivers"
+                                                                :key="member.id"
+                                                                src="assets/images/faces/face1.jpg"
+                                                                :alt="
+                                                                    member.email
+                                                                "
+                                                            />
+                                                        </template>
                                                     </td>
                                                     <td>
                                                         {{
@@ -279,7 +279,28 @@
                                                             ></div>
                                                         </div>
                                                     </td>
-                                                    <td>{{}}</td>
+                                                    <td>
+                                                        <div>
+                                                            <template
+                                                                v-for="driver in topDrivers"
+                                                                :key="driver.id"
+                                                            >
+                                                                <div>
+                                                                    <span
+                                                                        class="department-tag"
+                                                                        v-for="department in driver.allDepartments"
+                                                                        :key="
+                                                                            department.id
+                                                                        "
+                                                                    >
+                                                                        {{
+                                                                            department.name
+                                                                        }}
+                                                                    </span>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -917,6 +938,90 @@
                             </div>  -->
                         </div>
 
+
+
+
+
+                    <div class="row mb-2 p-3">
+                    <label
+                        for="email"
+                        class="col-md-3 col-form-label text-md-start"
+                        >{{ "Members" }} <br /><span class="text-muted"
+                            >Invite or select the relevant members to this
+                            department</span
+                        ></label
+                     >
+                    <div class="col-md-5 offset-md-0 text-center">
+                        <div class="row">
+                            <div class="input-group">
+                                <input
+                                    style="
+                                        border-radius: 10px;
+                                        width: 200px;
+                                        height: 40px;
+                                    "
+                                    placeholder="Select team member or enter email address"
+                                    list="memberEmails"
+                                    id="email"
+                                    class="form-control"
+                                    name="email"
+                                    v-model="memberPartner.email"
+                                />
+                                <div class="input-group-append mx-3">
+                                    <button
+                                        style="color: white"
+                                        class="btn btn-warning"
+                                        @click.prevent="addMemberToList"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                            </div>
+                            <datalist id="memberEmails">
+                                <option
+                                    v-for="member in this.members"
+                                    :value="member.email"
+                                >
+                                    {{ member.email }}
+                                </option>
+                            </datalist>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-10">
+                                <ul class="list-group">
+                                    <li
+                                        class="list-group-item my-2 p-0"
+                                        v-for="(
+                                            member, index
+                                        ) in partnerMembers"
+                                        :key="index"
+                                    >
+                                        {{ member.email }}
+                                        <!-- Check if the member is active to decide which button to display -->
+                                        <button
+                                            
+                                            class="btn btn-sm txt-gray float-end"
+                                            @click.prevent="
+                                                removeMemberFromList(member.id)
+                                            "
+                                        >
+                                            <i
+                                                class="mx-3 h3 mdi mdi-delete text-gray"
+                                                id="dotted"
+                                            ></i>
+                                        </button>
+                                        <!-- Display a different indicator for deactivated members -->
+                                        
+                                    </li>
+                                </ul>
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                         <hr />
                         <div class="row mb-2 p-3">
                             <label
@@ -1350,24 +1455,33 @@
                                                     </td>
 
                                                     <td class="td-members">
-                                                        <img
-                                                            v-for="member in partner.members"
+                                                      <template  v-for="dataMember in partnersWithProgress" :key="dataMember.id">
+
+                                                    
+
+                                                      <img
+                                                            v-for="member in dataMember.members"
                                                             :key="member.id"
-                                                            :src="member.photo"
+                                                            src="member.photo"
                                                             :alt="member.email"
-                                                        />
+                                                        /> 
+
+                                                        </template>
                                                     </td>
 
                                                     <td>
+                                                    <template  v-for="dataDepartment in partnersWithProgress" :key="dataDepartment.id">
                                                         <span
                                                             class="department-tag"
-                                                            v-for="department in partner.departments"
+                                                            v-for="department in dataDepartment .departments"
                                                             :key="department.id"
                                                         >
                                                             {{
                                                                 department.name
                                                             }}
                                                         </span>
+
+                                                        </template>
                                                     </td>
 
                                                     <!-- <td>
@@ -2256,6 +2370,7 @@ export default {
 
             chartLoaded: false,
             countries: [],
+            partnerMembers: [],
             metrics: [],
             members: this.partner.members,
             kpiMetrics: [],
@@ -2571,6 +2686,7 @@ export default {
                         partner.kpis.flatMap((kpi) => kpi.kpi_metrics)
                     )
                 ),
+
                 totalCurrentValue: this.calculateTotalCurrentValueforMetric(
                     metric.partners.flatMap((partner) =>
                         partner.kpis.flatMap((kpi) => kpi.kpi_metrics)
@@ -2626,11 +2742,16 @@ export default {
                     (a, b) => b.current_value - a.current_value
                 );
 
+                const allDepartments = metric.partners
+                    .map((partner) => partner.departments)
+                    .flat();
+
                 return {
                     metricName: metric.name,
                     metricValue: metric.totalCurrentValue,
                     topDrivers: sortedTopDrivers,
                     calculatedProgress: metric.calculatedProgress.toFixed(2),
+                    allDepartments,
                 };
             });
         },
@@ -2855,7 +2976,10 @@ export default {
     },
 
     mounted() {
-        /*const partnerId = this.partnerId;
+     this.fetchPartnerMembers();
+
+
+        const partnerId = this.partnerId;
 
         const today = new Date();
 
@@ -2978,7 +3102,7 @@ export default {
             })
             .catch((error) => {
                 console.error("Error fetching data:", error);
-            });*/
+            });
     },
 
     methods: {
@@ -3464,6 +3588,97 @@ export default {
                     // You may want to show an error message to the user here
                 });
         },
+
+
+        addMemberToList() {
+            const email = this.memberPartner.email.trim();
+            if (
+                email !== "" &&
+                !this.partnerMembers.some((member) => member.email === email)
+            ) {
+                // Check if the email is not already in the partner members list
+                // Also want to check if the email is in the 'members' list
+                // before adding it to 'departmentMembers'
+                this.partnerMembers.push({
+                    email: email,
+                    id: null, // Replace with the actual ID if available
+                });
+                this.memberPartner.email = ""; // Clear the input field
+            }
+        },
+
+
+
+  removeMemberFromList(memberId) {
+            // Find the member in the departmentMembers list by their ID
+            const memberIndex = this.partnerMembers.findIndex(
+                (member) => member.id === memberId
+            );
+
+            if (memberIndex !== -1) {
+                const member = this.partnerMembers[memberIndex];
+
+                // Check if the member has progress records
+                axios
+                    .get(
+                        `${this.base_url}api/v1/member-progress-records/${member.id}`
+                    )
+                    .then((response) => {
+                        const hasProgressRecords =
+                            response.data.hasProgressRecords;
+
+                        if (hasProgressRecords) {
+                            // Member has progress records, deactivate them
+                            member.is_active = false;
+                        } else {
+                            // Member has no progress records, remove them from the list
+                            this.departmentMembers.splice(memberIndex, 1);
+
+                            // Also, make an API call to remove the member from the backend
+                            axios
+                                .delete(
+                                    `${this.base_url}api/v1/remove-member/${member.id}`
+                                )
+                                .then(() => {
+                                    console.log("Member removed from backend");
+                                })
+                                .catch((error) => {
+                                    console.error(
+                                        "Error removing member from backend:",
+                                        error
+                                    );
+                                });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(
+                            "Error checking progress records:",
+                            error
+                        );
+                    });
+            }
+        },
+
+
+
+        fetchPartnerMembers() {
+            // Build the URI
+            const uri = `${this.base_url}api/v1/partner-members/${this.partner.id}`;
+
+            // Make an API request to fetch existing department members from the server
+            axios
+                .get(uri)
+                .then((response) => {
+                    console.log("Member Response is:", response.data);
+                    this.partnerMembers = response.data;
+                    console.log("Is active Members:", this.partnerMembers); // Move the log here
+                })
+                .catch((error) => {
+                    console.error("Error fetching partner members:", error);
+                });
+        },
+
+
 
         partnerSubmit() {
             const partnerData = {

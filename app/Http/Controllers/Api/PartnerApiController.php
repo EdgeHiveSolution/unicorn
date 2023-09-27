@@ -506,9 +506,45 @@ public function store(Request $request)
             }
 
 
+            public function fetchPartnerMembers($partnerId)
+      {
+    try {
+        $partner = Partner::findOrFail($partnerId);
+
+        // Retrieve a list of member_ids in the department_members pivot table
+        $memberIdsInPartner = $partner->members()
+            ->select('member_partner.member_id')
+            ->get()
+            ->pluck('member_id'); // Extract member_id values into an array
+
+        // Fetch the corresponding members' emails and names
+        $members = Member::whereIn('id', $memberIdsInPartner)
+            ->select('id', 'email', 'name', 'is_active')
+            ->get();
 
 
-            public function destroy($id)
+            Log::info("Returned Members:" .$members );
+
+        return response()->json($members);
+    } catch (\Exception $e) {
+        // Handle any errors or exceptions as needed
+        return response()->json(['error' => 'Failed to fetch member partners'], 500);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+  public function destroy($id)
+
 {
     // Retrieve the partner by ID from the database (including soft deleted partners)
     $partner = Partner::withTrashed()->findOrFail($id);

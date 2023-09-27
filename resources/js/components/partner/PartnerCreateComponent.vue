@@ -28,20 +28,12 @@
                 <p>Enter the photo and basic details of the partner here</p>
             </div>
         </div>
-        
-        <!--<div v-if="isLoading" class="d-flex flex-row justify-content-end px-0">
-            <h1 class="add_dep_text text-info">Please wait..</h1>
-           
-            <div class="spinner-border text-info mt-1 mx-2">
-            </div>
-      </div>-->
-
-        <div  class="text-end">
-            <button class="btn btn-light border-dark px-3 py-2 btn-action">
+        <div class="text-end">
+            <button type="button" class="btn btn-light border-dark px-3 py-2 btn-action">
                 Cancel
             </button>
-            <button
-                class="btn primary_button px-3 py-2 btn-action"
+            <button 
+                class="btn btn-primary px-3 py-2 btn-action"
                 form="form-submit"
                 type="submit"
             >
@@ -560,7 +552,7 @@
             </div>
             <div v-else class="align-right mb-5">
                 <div class="text-right mt-3 mb-5">
-                    <button class="btn btn-light border-dark btn-action">
+                    <button type="button" class="btn btn-light border-dark btn-action">
                         Cancel
                     </button>
                     <button type="submit" class="btn primary_button btn-action">

@@ -430,7 +430,11 @@
                                                 </div>
                                                 <div>
                                                     <span class="txt-gray">
-                                                        Partners: {{metric.partners.length}}
+                                                        Partners:
+                                                        {{
+                                                            metric.partners
+                                                                .length
+                                                        }}
                                                     </span>
                                                 </div>
                                             </td>
@@ -470,7 +474,19 @@
                                                 </div>
                                             </td>
 
-                                            <td></td>
+                                            <td class="td-members">
+                                                <template
+                                                    v-for="member in topDrivers"
+                                                    :key="member.id"
+                                                >
+                                                    <img
+                                                        v-for="member in member.topDrivers"
+                                                        :key="member.id"
+                                                        src="assets/images/faces/face1.jpg"
+                                                        :alt="member.email"
+                                                    />
+                                                </template>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -925,29 +941,31 @@
                                                 </div>
                                     </td>
 
-                                    <td></td>
-                                    
-                                                <td>
-                                                    <a  :href="
-                                                                '/department_members/' +
-                                                                member.id
-                                                            ">
-                                                        <button
-                                                        class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
-                                                    >
-                                                        <span
-                                                            class="mdi mdi-eye-outline text-light"
-                                                        ></span>
-                                                        <a
-                                                            :href="
-                                                                '/department_members/' +
-                                                                member.id
-                                                            "
-                                                            class="text-light"
-                                                            >View</a
-                                                        >
-                                                    </button></a>
-                                                </td>
+                                    <td>{{ totalOffTrackAndAtRisk }}</td>
+
+                                    <td>
+                                        <a
+                                        :href="
+                                                    '/department_members/' +
+                                                    member.id
+                                                "
+                                                class="text-light"
+                                        ><button
+                                            class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                        >
+                                            <span
+                                                class="mdi mdi-eye-outline text-light"
+                                            ></span>
+                                            <a
+                                                :href="
+                                                    '/department_members/' +
+                                                    member.id
+                                                "
+                                                class="text-light"
+                                                >View</a
+                                            >
+                                        </button></a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1099,7 +1117,7 @@
                             >Invite or select the relevant members to this
                             department</span
                         ></label
-                    >
+                     >
                     <div class="col-md-5 offset-md-0 text-center">
                         <div class="row">
                             <div class="input-group">
@@ -1149,7 +1167,7 @@
                                         {{ member.email }}
                                         <!-- Check if the member is active to decide which button to display -->
                                         <button
-                                            v-if="member.is_active"
+                                            
                                             class="btn btn-sm txt-gray float-end"
                                             @click.prevent="
                                                 removeMemberFromList(member.id)
@@ -1161,11 +1179,7 @@
                                             ></i>
                                         </button>
                                         <!-- Display a different indicator for deactivated members -->
-                                        <div v-else>
-                                            <span class="text-muted"
-                                                >Deactivated</span
-                                            >
-                                        </div>
+                                       
                                     </li>
                                 </ul>
 
@@ -1384,21 +1398,84 @@ export default {
             }));
         },
 
+        topDrivers() {
+            return this.metricWithProgress.map((metric) => {
+                const topDrivers = metric.partners
+                    .flatMap((partner) =>
+                        partner.kpis.flatMap((kpi) =>
+                            kpi.kpi_metrics.flatMap((kpiMetric) =>
+                                kpiMetric.kpi_metric_members.flatMap(
+                                    (member) => {
+                                        // Find the member with matching member_id within the partner's members
+                                        const matchingMember =
+                                            partner.members.find(
+                                                (m) => m.id === member.member_id
+                                            );
+
+                                        if (matchingMember) {
+                                            return {
+                                                member_id: matchingMember.id,
+                                                name: matchingMember.name,
+                                                email: matchingMember.email,
+                                                current_value:
+                                                    member.progress
+                                                        .current_value,
+                                            };
+                                        }
+
+                                        return null; // Return null if no matching member found
+                                    }
+                                )
+                            )
+                        )
+                    )
+                    .filter((member) => member !== null) // Remove null entries
+                    .reduce((topDrivers, progressItem) => {
+                        if (
+                            !topDrivers[progressItem.member_id] ||
+                            progressItem.current_value >
+                                topDrivers[progressItem.member_id].current_value
+                        ) {
+                            topDrivers[progressItem.member_id] = progressItem;
+                        }
+                        return topDrivers;
+                    }, {});
+
+                const sortedTopDrivers = Object.values(topDrivers).sort(
+                    (a, b) => b.current_value - a.current_value
+                );
+
+                return {
+                    metricName: metric.name,
+                    metricValue: metric.totalCurrentValue,
+                    topDrivers: sortedTopDrivers,
+                    calculatedProgress: metric.calculatedProgress.toFixed(2),
+                };
+            });
+        },
+
         offTrack() {
             return this.partnersWithProgress.filter(
                 (partner) => this.getStatusClass(partner) === "off-track"
             ).length;
         },
+
         atRisk() {
             return this.partnersWithProgress.filter(
                 (partner) => this.getStatusClass(partner) === "at-risk"
             ).length;
         },
+
         onTrack() {
             return this.partnersWithProgress.filter(
                 (partner) => this.getStatusClass(partner) === "on-track"
             ).length;
         },
+
+
+   totalOffTrackAndAtRisk() {
+    return this.offTrack + this.atRisk;
+  },
 
         // partnersWithProgress() {
         //     return this.partners.map((partner) => ({

@@ -30,6 +30,8 @@ Route::post('v1/partner-create',[PartnerApiController::class, 'store']);
 Route::get('v1/partners/{partnerId}/kpis-and-metrics', [PartnerApiController::class, 'getKpiAndKpiMetricsAndProgressForPartner']);
 Route::patch('v1/partner-update',[PartnerApiController::class, 'update']);
 Route::delete('v1/partner-delete/{id}',[PartnerApiController::class, 'destroy']);
+Route::get('v1/partner-members/{partnerId}', [PartnerApiController::class, 'fetchPartnerMembers']);
+
 
 
 Route::get('v1/department-list',[DepartmentApiController::class, 'index']);
