@@ -518,7 +518,6 @@ img {
  /*margin-right: 5px;*/
  /*margin: 0 !important;*/
 }
-
 </style>
 
 <!--<template>
