@@ -463,6 +463,11 @@ public function store(Request $request)
 
      public function update(Request $request, $id)
    {
+    
+    $members = $request->input('members', []);
+
+    Log::info("New Members are:", ['members'=> $members]);
+
 
    Log::info("You are in updated method of partner");
 
@@ -475,7 +480,7 @@ public function store(Request $request)
         'business_type' => 'string|max:100',
         'about' => 'string|max:1000',
         'logo' => 'nullable',
-        'members.*' => 'email',
+        'members.*.email' => 'email',
     ]);
 
 
@@ -494,21 +499,30 @@ public function store(Request $request)
 
      // Update or add members
      $members = $request->input('members', []);
-     
-     foreach ($members as $memberEmail) {
-         // Check if the member already exists in the department
-         $existingMemberInPartner = $partner->members()->where('email', trim($memberEmail))->first();
- 
-         if (!$existingMemberInPartner) {
-             // Member doesn't exist in the department, send emails to new members only
-             $existingMember = Member::where('email', trim($memberEmail))->first();
- 
-             if (!$existingMember) {
-                 $registrationLink = url('/register?partner_id=' . $partner->id);
-                 Mail::to($memberEmail)->queue(new PatnerInvitation(null, $request->name, null, 'register', $registrationLink));
-             }
-         }
-     }
+
+     Log::info("Members are:", ['members'=> $members]);
+
+     foreach ($members as $memberData) {
+        $memberEmail = trim($memberData['email']);
+        $departmentId = $memberData['department_id'] ?? null;
+    
+        // Check if the member already exists in the department
+        $existingMemberInPartner = $partner->members()->where('email', $memberEmail)->first();
+    
+        if (!$existingMemberInPartner) {
+            // Member doesn't exist in the department, send emails to new members only
+            $existingMember = Member::where('email', $memberEmail)->first();
+    
+            if (!$existingMember) {
+                // Include the department ID in the registration link URL
+                $registrationLink = url("/register?partner_id={$partner->id}&department_id={$departmentId}");
+    
+                // Send the registration link to the new member
+                Mail::to($memberEmail)->queue(new PatnerInvitation(null, $request->name, null, 'register', $registrationLink));
+            }
+        }
+    }
+    
  
 
 

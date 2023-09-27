@@ -29,10 +29,13 @@
             </div>
         </div>
         <div class="text-end">
-            <button type="button" class="btn btn-light border-dark px-3 py-2 btn-action">
+            <button
+                type="button"
+                class="btn btn-light border-dark px-3 py-2 btn-action"
+            >
                 Cancel
             </button>
-            <button 
+            <button
                 class="btn btn-primary px-3 py-2 btn-action"
                 form="form-submit"
                 type="submit"
@@ -413,8 +416,11 @@
                             >
                                 <option value="">Select Member</option>
 
-                                <option v-for="member in this.members" :value="member.email">
-                                   {{member.email}}
+                                <option
+                                    v-for="member in this.members"
+                                    :value="member.email"
+                                >
+                                    {{ member.email }}
                                 </option>
                             </select>
                         </div>
@@ -425,10 +431,7 @@
                                 name="department"
                                 v-model="member.department_id"
                             >
-                                <option value="">
-                                    Select department
-                                   
-                                </option>
+                                <option value="">Select department</option>
                                 <option
                                     v-for="department in departments"
                                     :value="department.id"
@@ -552,7 +555,10 @@
             </div>
             <div v-else class="align-right mb-5">
                 <div class="text-right mt-3 mb-5">
-                    <button type="button" class="btn btn-light border-dark btn-action">
+                    <button
+                        type="button"
+                        class="btn btn-light border-dark btn-action"
+                    >
                         Cancel
                     </button>
                     <button type="submit" class="btn primary_button btn-action">
@@ -654,7 +660,10 @@ export default {
             axios.get(uri).then((response) => {
                 this.members = response.data;
 
-                console.log("Members to be added are:", JSON.stringify(this.members));
+                console.log(
+                    "Members to be added are:",
+                    JSON.stringify(this.members)
+                );
             });
         },
 
@@ -684,7 +693,7 @@ export default {
                     role: selectedRole,
                 });
 
-                console.log("New Items are:",  this.formData.members);
+                console.log("New Items are:", this.formData.members);
 
                 this.member.email = "";
                 this.member.department_id = "";
@@ -753,7 +762,10 @@ export default {
             //     };
             // });
 
-            console.log("Our Members in form Data:", JSON.stringify(this.formData.members));
+            console.log(
+                "Our Members in form Data:",
+                JSON.stringify(this.formData.members)
+            );
             formData.append("members", JSON.stringify(this.formData.members));
 
             const uri = this.base_url + "api/v1/partner-create";
