@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 
 class PatnerInvitation extends Mailable
+
 {
     use Queueable, SerializesModels;
 

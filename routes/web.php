@@ -16,6 +16,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\KpiMetricController;
 use App\Http\Controllers\DepartmentPartnerController;
 use App\Http\Controllers\DepartmentMemberController;
+use App\Http\Controllers\ProgressDetailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -73,3 +74,7 @@ Route::resource('kpimetrics', KpiMetricController::class);
 Route::resource('department_partners', DepartmentPartnerController::class);
 
 Route::resource('department_members', DepartmentMemberController::class);
+
+ Route::resource('progress_detail', ProgressDetailController::class);
+
+//Route::get('/progress_detail',  [ProgressDetailController::class, 'show']);

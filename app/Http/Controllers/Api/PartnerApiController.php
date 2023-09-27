@@ -461,8 +461,11 @@ public function store(Request $request)
      */
 
 
-     public function update(Request $request)
-{
+     public function update(Request $request, $id)
+   {
+
+   Log::info("You are in updated method of partner");
+
     $validatedData = $request->validate([
         'name' => 'string|max:255',
         'email' => 'email|max:255',
@@ -472,7 +475,9 @@ public function store(Request $request)
         'business_type' => 'string|max:100',
         'about' => 'string|max:1000',
         'logo' => 'nullable',
+        'members.*' => 'email',
     ]);
+
 
     $partner = Partner::findOrFail($request->id);
 
@@ -486,6 +491,27 @@ public function store(Request $request)
 
     // Update the partner model with the validated data (including the updated logo file URL, if applicable)
     $partner->update($validatedData);
+
+     // Update or add members
+     $members = $request->input('members', []);
+     
+     foreach ($members as $memberEmail) {
+         // Check if the member already exists in the department
+         $existingMemberInPartner = $partner->members()->where('email', trim($memberEmail))->first();
+ 
+         if (!$existingMemberInPartner) {
+             // Member doesn't exist in the department, send emails to new members only
+             $existingMember = Member::where('email', trim($memberEmail))->first();
+ 
+             if (!$existingMember) {
+                 $registrationLink = url('/register?partner_id=' . $partner->id);
+                 Mail::to($memberEmail)->queue(new PatnerInvitation(null, $request->name, null, 'register', $registrationLink));
+             }
+         }
+     }
+ 
+
+
 
     // Return a response indicating the success of the update
     return response()->json(['message' => 'Partner updated successfully'], 200);
@@ -505,6 +531,7 @@ public function store(Request $request)
                 return response()->json($partner);
             }
 
+            
 
             public function fetchPartnerMembers($partnerId)
       {

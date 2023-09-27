@@ -1,5 +1,7 @@
 @extends('layouts.app')
 @section('content')
+@include("inc.status")
+
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/profile">My account</a></li>
@@ -9,20 +11,28 @@
 
 
     <div class="col-8">
-        <form id="update-form" method="POST" action="/profile/{{ $user->id }}">
+        <form id="update-form" method="POST" action="{{ route('profile.update', $user->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="row mb-2 p-3">
-                <label for="name" class="col-md-3 col-form-label text-md-start">{{ __('Photo') }}</label>
+                <label for="photo" class="col-md-3 col-form-label text-md-start">{{ __('Photo') }}</label>
                 <div class="col-md-5 offset-md-4 text-center profile-edit">
+                    @if ($user->photo)
+                    <img src="{{ asset('profile-photos/' . $user->photo) }}" alt="profile">
+                    @else
+                    <!-- Display a default image if the user doesn't have a photo -->
                     <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="profile">
-                    @error('name')
+                @endif
+                
+                <input id="photo" name="photo" type="file" class="form-control @error('photo') is-invalid @enderror">
+                    @error('photo')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
                     @enderror
                 </div>
             </div>
+            
 
             <div class="row mb-2 p-3">
                 <label for="name" class="col-md-3 col-form-label text-md-start">{{ __('Name') }}</label>
@@ -53,23 +63,39 @@
             </div>
 
             <div class="dropdown-divider"></div>
-
+            
             <div class="row mb-2 p-3">
-                <label for="password" class="col-md-3 col-form-label text-md-start">{{ __('Password') }}</label>
+                <label for="new_password" class="col-md-3 col-form-label text-md-start">{{ __('New Password') }}</label>
                 <div class="col-md-5 offset-md-4 text-center">
-                    <input id="password" name="password"
-                        class="form-control @error('password') is-invalid @enderror form-control-lg" type="password"
-                        value="{{ $user->password }}" autocomplete="email" autofocus>
-                    @error('password')
+                    <input id="new_password" name="new_password"
+                        class="form-control @error('new_password') is-invalid @enderror form-control-lg" type="password"
+                        value="{{ old('new_password') }}" autocomplete="new-password" autofocus>
+                    @error('new_password')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
                     @enderror
                 </div>
             </div>
+            
+            <div class="row mb-2 p-3">
+                <label for="new_password_confirmation" class="col-md-3 col-form-label text-md-start">{{ __('Confirm Password') }}</label>
+                <div class="col-md-5 offset-md-4 text-center">
+                    <input id="new_password_confirmation" name="new_password_confirmation"
+                        class="form-control @error('password_confirmation') is-invalid @enderror form-control-lg" type="password"
+                        value="{{ old('new_password_confirmation') }}" autocomplete="new-password" autofocus>
+                    @error('new_password_confirmation')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+            </div>            
+            
+            
 
             <div class="text-end mt-3 mb-5">
-                <button class="btn btn-light btn-action border-dark p-3">
+                <button class="btn btn-light btn-action border-secondary">
                     Cancel
                 </button>
                 <button onclick="event.preventDefault(); document.getElementById('update-form').submit();"

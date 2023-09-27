@@ -1117,7 +1117,7 @@
                             >Invite or select the relevant members to this
                             department</span
                         ></label
-                     >
+                    >
                     <div class="col-md-5 offset-md-0 text-center">
                         <div class="row">
                             <div class="input-group">
@@ -1131,6 +1131,7 @@
                                     list="memberEmails"
                                     id="email"
                                     class="form-control"
+                                    type="email"
                                     name="email"
                                     v-model="member.email"
                                 />
@@ -1167,7 +1168,6 @@
                                         {{ member.email }}
                                         <!-- Check if the member is active to decide which button to display -->
                                         <button
-                                            
                                             class="btn btn-sm txt-gray float-end"
                                             @click.prevent="
                                                 removeMemberFromList(member.id)
@@ -1179,7 +1179,6 @@
                                             ></i>
                                         </button>
                                         <!-- Display a different indicator for deactivated members -->
-                                       
                                     </li>
                                 </ul>
 
@@ -1399,6 +1398,7 @@ export default {
         },
 
         topDrivers() {
+            const uniqueEmails = new Set(); // To store unique email addresses
             return this.metricWithProgress.map((metric) => {
                 const topDrivers = metric.partners
                     .flatMap((partner) =>
@@ -1412,7 +1412,15 @@ export default {
                                                 (m) => m.id === member.member_id
                                             );
 
-                                        if (matchingMember) {
+                                        if (
+                                            matchingMember &&
+                                            !uniqueEmails.has(
+                                                matchingMember.email
+                                            )
+                                        ) {
+                                            uniqueEmails.add(
+                                                matchingMember.email
+                                            ); // Add the email to the set
                                             return {
                                                 member_id: matchingMember.id,
                                                 name: matchingMember.name,
@@ -1420,10 +1428,11 @@ export default {
                                                 current_value:
                                                     member.progress
                                                         .current_value,
+                                                photo: matchingMember.photo, // Assuming you have a photo property
                                             };
                                         }
 
-                                        return null; // Return null if no matching member found
+                                        return null; // Return null if no matching member found or duplicate email
                                     }
                                 )
                             )
@@ -1472,10 +1481,9 @@ export default {
             ).length;
         },
 
-
-   totalOffTrackAndAtRisk() {
-    return this.offTrack + this.atRisk;
-  },
+        totalOffTrackAndAtRisk() {
+            return this.offTrack + this.atRisk;
+        },
 
         // partnersWithProgress() {
         //     return this.partners.map((partner) => ({
@@ -1889,25 +1897,34 @@ export default {
         // },
 
         departmentSubmit() {
+            const emailArray = this.departmentMembers.map(
+                (member) => member.email
+            );
+
+            console.log("Emails in the desired format:", emailArray);
+
             // Create a departmentData object with the department properties and selected members
             const departmentData = {
                 id: this.department.id,
                 name: this.department.name,
                 email: this.department.email,
                 about: this.department.about,
-                members: this.selectedMembers,
+                members: emailArray,
             };
+
+            console.log("Department Info:", departmentData);
 
             // Define the URI for the PATCH request
             let uri = `${this.base_url}api/v1/department-update/${this.department.id}`;
+            console.log("Sending PATCH request to:", uri); // Add this line to log the API endpoint
 
             // Make the PATCH request to update the department
             axios
                 .patch(uri, departmentData)
                 .then((response) => {
                     // Handle the successful response
-                    const updatedPartner = response.data;
-                    this.partner = updatedPartner;
+                    const updatedDepartment = response.data;
+                    this.department = updatedDepartment;
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
@@ -1955,6 +1972,8 @@ export default {
                 });
                 this.member.email = ""; // Clear the input field
             }
+
+            console.log("Members in this list are:", this.departmentMembers);
         },
         removeMemberFromList(memberId) {
             // Find the member in the departmentMembers list by their ID
