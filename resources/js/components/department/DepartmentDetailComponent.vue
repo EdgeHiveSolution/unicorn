@@ -430,7 +430,11 @@
                                                 </div>
                                                 <div>
                                                     <span class="txt-gray">
-                                                        Partners: {{metric.partners.length}}
+                                                        Partners:
+                                                        {{
+                                                            metric.partners
+                                                                .length
+                                                        }}
                                                     </span>
                                                 </div>
                                             </td>
@@ -470,7 +474,19 @@
                                                 </div>
                                             </td>
 
-                                            <td></td>
+                                            <td class="td-members">
+                                                <template
+                                                    v-for="member in topDrivers"
+                                                    :key="member.id"
+                                                >
+                                                    <img
+                                                        v-for="member in member.topDrivers"
+                                                        :key="member.id"
+                                                        src="assets/images/faces/face1.jpg"
+                                                        :alt="member.email"
+                                                    />
+                                                </template>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -925,29 +941,31 @@
                                                 </div>
                                     </td>
 
-                                    <td></td>
-                                    
-                                                <td>
-                                                    <a  :href="
-                                                                '/department_members/' +
-                                                                member.id
-                                                            ">
-                                                        <button
-                                                        class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
-                                                    >
-                                                        <span
-                                                            class="mdi mdi-eye-outline text-light"
-                                                        ></span>
-                                                        <a
-                                                            :href="
-                                                                '/department_members/' +
-                                                                member.id
-                                                            "
-                                                            class="text-light"
-                                                            >View</a
-                                                        >
-                                                    </button></a>
-                                                </td>
+                                    <td>{{ totalOffTrackAndAtRisk }}</td>
+
+                                    <td>
+                                        <a
+                                        :href="
+                                                    '/department_members/' +
+                                                    member.id
+                                                "
+                                                class="text-light"
+                                        ><button
+                                            class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                        >
+                                            <span
+                                                class="mdi mdi-eye-outline text-light"
+                                            ></span>
+                                            <a
+                                                :href="
+                                                    '/department_members/' +
+                                                    member.id
+                                                "
+                                                class="text-light"
+                                                >View</a
+                                            >
+                                        </button></a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1113,6 +1131,7 @@
                                     list="memberEmails"
                                     id="email"
                                     class="form-control"
+                                    type="email"
                                     name="email"
                                     v-model="member.email"
                                 />
@@ -1149,7 +1168,6 @@
                                         {{ member.email }}
                                         <!-- Check if the member is active to decide which button to display -->
                                         <button
-                                            v-if="member.is_active"
                                             class="btn btn-sm txt-gray float-end"
                                             @click.prevent="
                                                 removeMemberFromList(member.id)
@@ -1161,11 +1179,6 @@
                                             ></i>
                                         </button>
                                         <!-- Display a different indicator for deactivated members -->
-                                        <div v-else>
-                                            <span class="text-muted"
-                                                >Deactivated</span
-                                            >
-                                        </div>
                                     </li>
                                 </ul>
 
@@ -1384,20 +1397,92 @@ export default {
             }));
         },
 
+        topDrivers() {
+            const uniqueEmails = new Set(); // To store unique email addresses
+            return this.metricWithProgress.map((metric) => {
+                const topDrivers = metric.partners
+                    .flatMap((partner) =>
+                        partner.kpis.flatMap((kpi) =>
+                            kpi.kpi_metrics.flatMap((kpiMetric) =>
+                                kpiMetric.kpi_metric_members.flatMap(
+                                    (member) => {
+                                        // Find the member with matching member_id within the partner's members
+                                        const matchingMember =
+                                            partner.members.find(
+                                                (m) => m.id === member.member_id
+                                            );
+
+                                        if (
+                                            matchingMember &&
+                                            !uniqueEmails.has(
+                                                matchingMember.email
+                                            )
+                                        ) {
+                                            uniqueEmails.add(
+                                                matchingMember.email
+                                            ); // Add the email to the set
+                                            return {
+                                                member_id: matchingMember.id,
+                                                name: matchingMember.name,
+                                                email: matchingMember.email,
+                                                current_value:
+                                                    member.progress
+                                                        .current_value,
+                                                photo: matchingMember.photo, // Assuming you have a photo property
+                                            };
+                                        }
+
+                                        return null; // Return null if no matching member found or duplicate email
+                                    }
+                                )
+                            )
+                        )
+                    )
+                    .filter((member) => member !== null) // Remove null entries
+                    .reduce((topDrivers, progressItem) => {
+                        if (
+                            !topDrivers[progressItem.member_id] ||
+                            progressItem.current_value >
+                                topDrivers[progressItem.member_id].current_value
+                        ) {
+                            topDrivers[progressItem.member_id] = progressItem;
+                        }
+                        return topDrivers;
+                    }, {});
+
+                const sortedTopDrivers = Object.values(topDrivers).sort(
+                    (a, b) => b.current_value - a.current_value
+                );
+
+                return {
+                    metricName: metric.name,
+                    metricValue: metric.totalCurrentValue,
+                    topDrivers: sortedTopDrivers,
+                    calculatedProgress: metric.calculatedProgress.toFixed(2),
+                };
+            });
+        },
+
         offTrack() {
             return this.partnersWithProgress.filter(
                 (partner) => this.getStatusClass(partner) === "off-track"
             ).length;
         },
+
         atRisk() {
             return this.partnersWithProgress.filter(
                 (partner) => this.getStatusClass(partner) === "at-risk"
             ).length;
         },
+
         onTrack() {
             return this.partnersWithProgress.filter(
                 (partner) => this.getStatusClass(partner) === "on-track"
             ).length;
+        },
+
+        totalOffTrackAndAtRisk() {
+            return this.offTrack + this.atRisk;
         },
 
         // partnersWithProgress() {
@@ -1812,25 +1897,34 @@ export default {
         // },
 
         departmentSubmit() {
+            const emailArray = this.departmentMembers.map(
+                (member) => member.email
+            );
+
+            console.log("Emails in the desired format:", emailArray);
+
             // Create a departmentData object with the department properties and selected members
             const departmentData = {
                 id: this.department.id,
                 name: this.department.name,
                 email: this.department.email,
                 about: this.department.about,
-                members: this.selectedMembers,
+                members: emailArray,
             };
+
+            console.log("Department Info:", departmentData);
 
             // Define the URI for the PATCH request
             let uri = `${this.base_url}api/v1/department-update/${this.department.id}`;
+            console.log("Sending PATCH request to:", uri); // Add this line to log the API endpoint
 
             // Make the PATCH request to update the department
             axios
                 .patch(uri, departmentData)
                 .then((response) => {
                     // Handle the successful response
-                    const updatedPartner = response.data;
-                    this.partner = updatedPartner;
+                    const updatedDepartment = response.data;
+                    this.department = updatedDepartment;
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
@@ -1878,6 +1972,8 @@ export default {
                 });
                 this.member.email = ""; // Clear the input field
             }
+
+            console.log("Members in this list are:", this.departmentMembers);
         },
         removeMemberFromList(memberId) {
             // Find the member in the departmentMembers list by their ID

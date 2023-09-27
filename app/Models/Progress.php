@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\KpiMetricMember;
 use App\Models\KpiMetric;
 use App\Models\Kpi;
+use App\Models\ProgressFile;
 
 class Progress extends Model
 {
@@ -33,6 +34,10 @@ class Progress extends Model
         return $this->belongsTo(KpiMetricMember::class, 'kpi_metric_member_id');
     }
 
+    public function progressFiles()
+    {
+        return $this->hasMany(ProgressFile::class, 'progress_id');
+    }
 
 
 }

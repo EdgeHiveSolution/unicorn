@@ -17,6 +17,11 @@ use App\Http\Controllers\Api\ProgressApiController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\KpiProgressApiController;
 use App\Http\Controllers\Api\AuthApiController;
+use App\Http\Controllers\Api\ProfileApiController;
+use App\Http\Controllers\Api\ProgressChatApiController;
+
+
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -28,8 +33,10 @@ Route::get('v1/partner-list',[PartnerApiController::class, 'index']);
 Route::get('v1/partner-new',[PartnerApiController::class, 'latest']);
 Route::post('v1/partner-create',[PartnerApiController::class, 'store']);
 Route::get('v1/partners/{partnerId}/kpis-and-metrics', [PartnerApiController::class, 'getKpiAndKpiMetricsAndProgressForPartner']);
-Route::patch('v1/partner-update',[PartnerApiController::class, 'update']);
+Route::patch('v1/partner-update/{id}',[PartnerApiController::class, 'update']);
 Route::delete('v1/partner-delete/{id}',[PartnerApiController::class, 'destroy']);
+Route::get('v1/partner-members/{partnerId}', [PartnerApiController::class, 'fetchPartnerMembers']);
+
 
 
 Route::get('v1/department-list',[DepartmentApiController::class, 'index']);
@@ -50,6 +57,8 @@ Route::delete('v1/metric-delete', [MetricApiController::class, 'destroy']);
 Route::post('v1/progress', [ProgressApiController::class, 'store']);
 // Route::get('v1/kpimetrics/{kpimetricId}/progress/{kpiMetricMemberId}', [ProgressApiController::class, 'getProgressForKpiMetric']);
 Route::get('v1/kpimetrics/{kpimetricId}/progress/{kpiMetricMemberId}', [ProgressApiController::class, 'getProgressForKpiMetric']);
+
+Route::get('v1/progress/{progressId}', [ProgressApiController::class, 'getProgressDetail']);
 
 
 Route::get('v1/metric-list',[MetricApiController::class, 'index']);
@@ -90,11 +99,27 @@ Route::get('v1/country-list',[CountryApiController::class, 'index']);
 Route::get('v1/role-list',[RoleApiController::class, 'index']);
 
 Route::get('v1/user', [UserController::class, 'getUserWithRelatedData']);
+Route::get('/users/{user}', [UserController::class, 'show']);
 
 Route::get('v1/kpi-progress/{partnerId}', [KpiProgressApiController::class, 'getOverallProgress']);
 
 
-// Route::get('v1/kpi-progress', [KpiProgressApiController::class, 'getOverallProgress']);
+
+Route::put('v1/profile/{id}', [ProfileApiController::class, 'updateProfile']);
+
+// Create a new progress chat message
+Route::post('v1/progress-chats', [ProgressChatApiController::class, 'store']);
+
+Route::get('v1/progress-chats/{progress}', [ProgressChatApiController::class, 'getComments']);
+
+
+// Update a progress chat message
+Route::put('/progress-chats/{progressChat}', [ProgressChatApiController::class, 'update']);
+
+Route::delete('/progress-chats/{progressChat}', [ProgressChatApiController::class, 'destroy']);
+
+Route::get('v1/progress-chats/{progress}', [ProgressChatApiController::class, 'index']);
+
 
 
 

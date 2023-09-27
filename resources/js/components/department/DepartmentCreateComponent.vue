@@ -357,8 +357,11 @@ export default {
                     this.selectedMembers.push(this.selectedMember);
                 }
                 this.selectedMember = "";
-                this.memberEmails = [];
+               
+               this.memberEmails = [];
             }
+
+            console.log("Members selected:",this.selectedMembers);
         },
         removeMemberFromList(index) {
             this.selectedMembers.splice(index, 1);
@@ -395,6 +398,8 @@ export default {
             formData.append("members", this.selectedMembers.join(","));
 
             let uri = this.base_url + `api/v1/department-create`;
+
+            console.log("This is form data:", JSON.stringify(formData));
 
             axios
                 .post(uri, formData)

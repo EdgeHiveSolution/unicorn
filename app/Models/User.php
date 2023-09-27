@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\UserRole;
 use App\Models\Member;
+use App\Models\ProgressChat;
 
 
 
@@ -57,6 +58,19 @@ class User extends Authenticatable
     {
         return $this->hasOne(Member::class,'user_id');
     }
+
+
+
+            public function progressChatSent()
+        {
+            return $this->hasMany(ProgressChat::class, 'sender_id');
+        }
+
+        public function progressChatReceived()
+        {
+            return $this->hasMany(ProgressChat::class, 'recipient_id');
+        }
+
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -75,6 +75,7 @@ class KpiMetricController extends Controller
             return view('progress.show', ['kpimetric' => $kpimetric]);
         }
 
+        
 //     public function show($memberId)
 // {
 //     $member = Member::findOrFail($memberId); // Fetch the specific member by ID

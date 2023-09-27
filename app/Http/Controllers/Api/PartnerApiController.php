@@ -461,8 +461,11 @@ public function store(Request $request)
      */
 
 
-     public function update(Request $request)
-{
+     public function update(Request $request, $id)
+   {
+
+   Log::info("You are in updated method of partner");
+
     $validatedData = $request->validate([
         'name' => 'string|max:255',
         'email' => 'email|max:255',
@@ -472,7 +475,9 @@ public function store(Request $request)
         'business_type' => 'string|max:100',
         'about' => 'string|max:1000',
         'logo' => 'nullable',
+        'members.*' => 'email',
     ]);
+
 
     $partner = Partner::findOrFail($request->id);
 
@@ -486,6 +491,27 @@ public function store(Request $request)
 
     // Update the partner model with the validated data (including the updated logo file URL, if applicable)
     $partner->update($validatedData);
+
+     // Update or add members
+     $members = $request->input('members', []);
+     
+     foreach ($members as $memberEmail) {
+         // Check if the member already exists in the department
+         $existingMemberInPartner = $partner->members()->where('email', trim($memberEmail))->first();
+ 
+         if (!$existingMemberInPartner) {
+             // Member doesn't exist in the department, send emails to new members only
+             $existingMember = Member::where('email', trim($memberEmail))->first();
+ 
+             if (!$existingMember) {
+                 $registrationLink = url('/register?partner_id=' . $partner->id);
+                 Mail::to($memberEmail)->queue(new PatnerInvitation(null, $request->name, null, 'register', $registrationLink));
+             }
+         }
+     }
+ 
+
+
 
     // Return a response indicating the success of the update
     return response()->json(['message' => 'Partner updated successfully'], 200);
@@ -505,10 +531,47 @@ public function store(Request $request)
                 return response()->json($partner);
             }
 
+            
+
+            public function fetchPartnerMembers($partnerId)
+      {
+    try {
+        $partner = Partner::findOrFail($partnerId);
+
+        // Retrieve a list of member_ids in the department_members pivot table
+        $memberIdsInPartner = $partner->members()
+            ->select('member_partner.member_id')
+            ->get()
+            ->pluck('member_id'); // Extract member_id values into an array
+
+        // Fetch the corresponding members' emails and names
+        $members = Member::whereIn('id', $memberIdsInPartner)
+            ->select('id', 'email', 'name', 'is_active')
+            ->get();
+
+
+            Log::info("Returned Members:" .$members );
+
+        return response()->json($members);
+    } catch (\Exception $e) {
+        // Handle any errors or exceptions as needed
+        return response()->json(['error' => 'Failed to fetch member partners'], 500);
+    }
+}
 
 
 
-            public function destroy($id)
+
+
+
+
+
+
+
+
+
+  public function destroy($id)
+
 {
     // Retrieve the partner by ID from the database (including soft deleted partners)
     $partner = Partner::withTrashed()->findOrFail($id);
