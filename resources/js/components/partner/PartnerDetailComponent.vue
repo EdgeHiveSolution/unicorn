@@ -923,7 +923,7 @@
                             <div class="col-md-5 offset-md-0 text-center">
                                 <div class="row">
                                     <div class="input-group">
-                                        <!--<input
+                                        <input
                                             style="
                                                 border-radius: 10px;
                                                 width: 200px;
@@ -935,7 +935,7 @@
                                             class="form-control"
                                             name="email"
                                             v-model="memberPartner.email"
-                                        />-->
+                                        />
                                         <div class="input-group-append mx-3">
                                             <button
                                                 style="color: white"
@@ -2411,6 +2411,11 @@ export default {
                 email: "",
                 target: "",
                 id: "",
+            },
+            memberPartner: {
+                email: "",
+                department_id: "",
+                role: "",
             },
 
             progressData: [],
