@@ -349,6 +349,8 @@ export default {
             formData.append("about", this.about);
             formData.append("members", this.selectedMembers.join(","));
 
+            
+
             let uri = this.base_url + `api/v1/department-create`;
 
             console.log("This is form data:", JSON.stringify(formData));
