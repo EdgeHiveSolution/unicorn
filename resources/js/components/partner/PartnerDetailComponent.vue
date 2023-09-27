@@ -1192,7 +1192,7 @@
                                         </thead>
                                         <tbody>
                                             <tr
-                                                v-for="member in members"
+                                                v-for="member in this.partner.members"
                                                 :key="member.id"
                         
                                             >
@@ -2642,9 +2642,10 @@ export default {
 
         // },
 
+   //All Members assigned to this partner section
         calculateActiveKpiProgress() {
-            return (member) => {
-                const kpiMetrics = member.kpis
+            return (partner) => {
+                const kpiMetrics = partner.kpis
                     .flatMap((kpi) => kpi.kpi_metrics)
                     .flatMap((metric) => metric.kpi_metric_members) // Navigate to kpi_metric_members
                     .flatMap((member) => member.progress); // Navigate to progress
@@ -2672,7 +2673,7 @@ export default {
                 ).toFixed(2);
                 let label = "On Track";
 
-                const kpiThresholds = member.kpis
+                const kpiThresholds = partner.kpis
                     .flatMap((kpi) => kpi.kpi_metrics)
                     .find(
                         (metric) =>
@@ -2683,7 +2684,7 @@ export default {
                 if (kpiThresholds) {
                     label = "Off Track";
                 } else {
-                    const kpiAtRisk = member.kpis
+                    const kpiAtRisk = partner.kpis
                         .flatMap((kpi) => kpi.kpi_metrics)
                         .find(
                             (metric) =>
@@ -4386,5 +4387,16 @@ option {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.email_container{
+    /*border :1px solid #979da9;*/
+    border: 1px solid #e0e3e8;
+}
+
+.delete_email{
+    border: 1px solid #e0e3e8;
+    align-items: center;
+    
 }
 </style>
