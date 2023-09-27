@@ -923,7 +923,7 @@
                             <div class="col-md-5 offset-md-0 text-center">
                                 <div class="row">
                                     <div class="input-group">
-                                        <input
+                                        <!--<input
                                             style="
                                                 border-radius: 10px;
                                                 width: 200px;
@@ -935,7 +935,7 @@
                                             class="form-control"
                                             name="email"
                                             v-model="memberPartner.email"
-                                        />
+                                        />-->
                                         <div class="input-group-append mx-3">
                                             <button
                                                 style="color: white"
@@ -1419,7 +1419,7 @@
                                                     </td>
 
                                                     <td class="td-members">
-                                                        <template
+                                                        <!--<template
                                                             v-for="dataMember in partnersWithProgress"
                                                             :key="dataMember.id"
                                                         >
@@ -1431,7 +1431,55 @@
                                                                     member.email
                                                                 "
                                                             />
-                                                        </template>
+                                                        </template>-->
+
+                                                         <div class="d-flex flex-row">
+                                               <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                               
+                                               <template v-for="(member,index) in partnersWithProgress"
+                                               :key="index"
+                                               >
+
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 2"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
+
+                                                 <div class="member_image_plus"
+                                                 v-else
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+{{index - 1}}</p>
+                                                </div>
+
+                                                <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                                </template>
+
+                                                <!--<img
+                                                    
+                                                    alt="image"
+                                                />-->
+                                                </div>
                                                     </td>
 
                                                     <td>
