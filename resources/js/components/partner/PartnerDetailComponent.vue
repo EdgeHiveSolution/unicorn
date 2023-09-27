@@ -2438,6 +2438,12 @@ export default {
             loggedUser: {
                 user_role_id: null,
             },
+             errors: {
+                logo: null,
+                about: null
+               // documents:null
+            },
+
 
             kpiPartnerProgress: {
                 progress_percentage: null,
