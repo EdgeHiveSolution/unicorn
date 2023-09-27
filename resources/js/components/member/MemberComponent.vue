@@ -358,6 +358,166 @@ export default {
 </script>
 
 <style scoped>
+a {
+    font-size: 20px;
+}
+
+.active-link {
+    color: rgb(14, 28, 223);
+    border-bottom: 2px solid blue;
+}
+
+.add-link {
+    font-size: 14px;
+}
+
+.p-progress h5 {
+    font-size: 1.2rem;
+}
+
+.p-progress p {
+    font-size: 1.6rem;
+    color: brown;
+    font-weight: 800;
+}
+
+.status h6 {
+    font-size: 1rem;
+    color: brown;
+}
+img {
+    width: 80px;
+    height: 80px;
+}
+
+.set-metric input[type="text"] {
+    width: 70px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+.member-count {
+    background-color: rgba(195, 195, 209, 0.733);
+    padding: 7px;
+    border-radius: 40%;
+    font-size: 0.7rem;
+}
+
+.status span {
+    background-color: rgba(51, 255, 0, 0.164);
+    padding: 8px;
+    border-radius: 15px;
+}
+.depart-tag {
+    background-color: rgba(235, 240, 234, 0.685);
+    padding: 8px;
+    border-radius: 15px;
+}
+.list-item {
+    list-style-type: none;
+    border: 1px solid rgba(128, 128, 128, 0.534);
+    border-radius: 10px;
+    width: 70%;
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.encircle {
+    padding: 3px;
+    border-radius: 50%;
+    background-color: rgba(128, 128, 128, 0.089);
+    color: rgba(24, 23, 23, 0.911);
+}
+
+.nav-link {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.view-btn {
+    cursor: pointer;
+    font-size: 11px; /* Adjust font size */
+    padding: 5px 10px; /* Adjust padding (top/bottom, left/right) */
+    display: flex;
+    background-color: #0072bb;
+    align-items: center;
+    justify-content: center; /* Center the content horizontally */
+    border-radius: 8px;
+    height: 35px;
+}
+
+.view-btn a {
+    display: flex;
+    align-items: center;
+}
+
+.view-btn i {
+    margin-right: 8px;
+}
+
+.view-btn a {
+    display: flex;
+    align-items: center;
+}
+
+.view-btn i {
+    margin-right: 8px;
+}
+
+.status span {
+    background-color: rgba(51, 255, 0, 0.164);
+    padding: 8px;
+    border-radius: 15px;
+}
+
+.profile_image{
+    width: 50px;
+    margin-left: -10px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #f3f4f7;
+    border-color: 1px solid #979da9;
+    /*background-color: #d3d3d3;*/
+    /*border-color: 1px solid white;*/
+}
+
+.txt-gray{
+    /*color: #b1b6c0;*/
+    color: rgba(102,112,133,1);
+}
+
+.on-track-label{
+    font-size: 18px;
+    color: #047a48;
+    font-weight: 700;
+}
+
+
+.off-track-label {
+    color: #d9534f;
+    font-size: 18px;
+     font-weight: 700;
+    
+}
+
+.at-risk-label {
+    color: #f0ad4e;
+    font-size: 18px;
+     font-weight: 700;
+}
+
+.department-tag{
+  border-radius: 10px;
+  padding: 3px 7px;
+ background: #eceff3;
+ font-size: .4 rem;
+ /*margin-right: 5px;*/
+ /*margin: 0 !important;*/
+}
 </style>
 
 <!--<template>
