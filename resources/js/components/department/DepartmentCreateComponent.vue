@@ -374,8 +374,7 @@ export default {
             if (
                 !this.name ||
                 !this.email ||
-                !this.about ||
-                this.selectedMembers.length === 0
+                !this.about 
             ) {
                 Swal.fire({
                     icon: "error",
