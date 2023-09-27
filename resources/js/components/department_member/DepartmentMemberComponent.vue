@@ -1,6 +1,32 @@
 <template>
    <div>
-        <div class="d-flex align-items-center">
+        <!--<div class="d-flex align-items-center">
+            <div class="data-info">
+                <div v-if="member.member && member.member.name">
+                    <h4>{{ member.member.name }}</h4>
+                </div>
+                <div v-if="member.member && member.member.is_active">
+                    <p>
+                        Status:
+                        <span class="text-success">
+                            {{
+                                member.member.is_active ? "Active" : "Inactive"
+                            }}</span
+                        >
+                    </p>
+                </div>
+            </div>
+        </div>-->
+        <div class="d-flex flex-row">
+            <div class="profile_image d-flex flex-column align-items-center mx-2">
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="lg"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
             <div class="data-info">
                 <div v-if="member.member && member.member.name">
                     <h4>{{ member.member.name }}</h4>
@@ -20,10 +46,10 @@
         <div class="module-nav"></div>
 
         <div class="top-header">
-            <div v-if="member.member && member.member.departments">
-                <h5>
-                    Departments:
-                    <span
+            <div v-if="member.member && member.member.departments" class="d-flex flex-row my-2">
+                <h5 class=" mx-2">
+                    Departments:</h5>
+                    <!--<span
                         v-for="(department, index) in member.member.departments"
                         :key="index"
                     >
@@ -33,12 +59,23 @@
                                 index !== member.member.departments.length - 1
                             "
                         ></span>
-                    </span>
-                </h5>
+                    </span>-->
+
+                    <template  v-for="(department, index) in member.member.departments"
+                        :key="index">
+                        <div class="department-tag mx-2 mb-1">
+                        {{ department.name }}
+                        <!--<span
+                            v-if="
+                                index !== member.member.departments.length - 1
+                            "
+                            ></span>-->
+                    </div></template>
+                
             </div>
         </div>
 
-        <div v-for="partner in getPartner" :key="partner.id">
+        <div v-for="partner in getPartner" :key="partner.id" class="container-fluid purple_container p-4 my-4">
             <div class="d-flex flex justify-content-between">
                 <div class="data-info">
                     <div>
@@ -82,7 +119,7 @@
                                         <h4>
                                             {{ kpi.title }}
                                         </h4>
-                                        <p>
+                                        <p class="txt-gray">
                                             <b>
                                                 Review period:{{
                                                     kpi.review_period_range
