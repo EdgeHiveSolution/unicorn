@@ -850,62 +850,102 @@
                             </div>  -->
                         </div>
 
-                        <div class="row mb-2 p-3">
+                        <div class="row mb-2">
                             <label
-                                for="email"
+                                for="members"
                                 class="col-md-3 col-form-label text-md-start"
-                                >{{ "Members" }} <br /><span class="text-muted"
-                                    >Invite or select the relevant members to
-                                    this department</span
-                                ></label
                             >
-                            <div class="col-md-5 offset-md-0 text-center">
+                                {{ "Members" }} <br /><span class="txt-gray">
+                                    {{
+                                        "Invite or select the relevant members to this organisation."
+                                    }}
+                                </span>
+                            </label>
+
+                            <div class="col-md-9 offset-md-0 text-center">
                                 <div class="row">
-                                    <div class="input-group">
+                                    <div class="col-md-4">
                                         <input
                                             style="
                                                 border-radius: 10px;
                                                 width: 200px;
                                                 height: 40px;
                                             "
-                                            placeholder="Select team member or enter email address"
+                                            placeholder="Enter email address"
                                             list="memberEmails"
                                             id="email"
+                                            type="email"
                                             class="form-control"
                                             name="email"
                                             v-model="memberPartner.email"
                                         />
-                                        <div class="input-group-append mx-3">
-                                            <button
-                                                style="color: white"
-                                                class="btn btn-warning"
-                                                @click.prevent="addMemberToList"
-                                            >
-                                                Add
-                                            </button>
-                                        </div>
                                     </div>
-                                    <datalist id="memberEmails">
-                                        <option
-                                            v-for="member in this.members"
-                                            :value="member.email"
-                                        >
-                                            {{ member.email }}
-                                        </option>
-                                    </datalist>
-                                </div>
 
+                                    <div class="col-md-3">
+                                        <select
+                                            id="department_id"
+                                            class="form-control"
+                                            name="department"
+                                            v-model="
+                                                memberPartner.department_id
+                                            "
+                                        >
+                                            <option value="">
+                                                Select department
+                                            </option>
+                                            <option
+                                                v-for="department in uniqueDepartments"
+                                                :value="department.id"
+                                            >
+                                                {{ department.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select
+                                            id="role_id"
+                                            class="form-control"
+                                            name="role"
+                                            v-model="memberPartner.role"
+                                        >
+                                            <option value="">
+                                                Select role
+                                            </option>
+                                            <option value="leader">
+                                                leader
+                                            </option>
+                                            <option value="mentor">
+                                                Mentor
+                                            </option>
+                                            <option value="advisor">
+                                                Advisor
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button
+                                            type="button"
+                                            class="btn btn-warning ml-0 text-light mt-md-0 mt-2"
+                                            @click.prevent="addMemberToList"
+                                        >
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
                                 <div class="row mt-2">
                                     <div class="col-md-10">
                                         <ul class="list-group">
                                             <li
-                                                class="list-group-item my-2 p-0"
+                                                class="list-item"
                                                 v-for="(
                                                     member, index
                                                 ) in partnerMembers"
                                                 :key="index"
                                             >
-                                                {{ member.email }}
+                                                <span>
+                                                    {{ member.email }}
+                                                </span>
+
                                                 <!-- Check if the member is active to decide which button to display -->
                                                 <button
                                                     class="btn btn-sm txt-gray float-end"
@@ -925,6 +965,14 @@
                                         </ul>
                                     </div>
                                 </div>
+
+                                <span
+                                    v-if="errors.documents"
+                                    class="invalid-feedback"
+                                    role="alert"
+                                >
+                                    <strong>{{ errors.documents }}</strong>
+                                </span>
                             </div>
                         </div>
 
@@ -2907,6 +2955,15 @@ export default {
     },
 
     methods: {
+        getDepartmentName(departmentId) {
+            const department = uniqueDepartments.find(
+                (department) => department.id === departmentId
+            );
+            return department ? department.name : "";
+
+            console.log("Current department:", department);
+        },
+
         handleLinkClick() {
             this.currentPage = 1; // Set currentPage to 1
             window.location.reload(); // Reload the current page
@@ -3390,8 +3447,35 @@ export default {
                 });
         },
 
+        // addMemberToList() {
+        //     const email = this.memberPartner.email.trim();
+        //     const selectedDepartmentId = this.memberPartner.department_id; // Store the department_id as an integer
+        //      const selectedRole = this.memberPartner.role;
+        //     if (
+        //         email !== "" &&
+        //         !this.partnerMembers.some((member) => member.email === email)
+        //     ) {
+        //         // Check if the email is not already in the partner members list
+        //         // Also want to check if the email is in the 'members' list
+        //         // before adding it to 'partnerMembers'
+        //         this.partnerMembers.push({
+        //             email: email,
+        //             department_id: selectedDepartmentId,
+        //             role:selectedRole,
+        //             id: null, // Replace with the actual ID if available
+        //         });
+        //         this.memberPartner.email = "";
+        //         this.memberPartner.department_id = "";// Clear the input field
+        //         this.memberPartner.role ="";
+
+        //     }
+        // },
+
         addMemberToList() {
             const email = this.memberPartner.email.trim();
+            const selectedDepartmentId = this.memberPartner.department_id;
+            const selectedRole = this.memberPartner.role;
+
             if (
                 email !== "" &&
                 !this.partnerMembers.some((member) => member.email === email)
@@ -3401,10 +3485,16 @@ export default {
                 // before adding it to 'partnerMembers'
                 this.partnerMembers.push({
                     email: email,
+                    department_id: selectedDepartmentId,
+                    role: selectedRole,
                     id: null, // Replace with the actual ID if available
                 });
-                this.memberPartner.email = ""; // Clear the input field
+                this.memberPartner.email = "";
+                this.memberPartner.department_id = "";
+                this.memberPartner.role = "";
             }
+
+            console.log("Members added to list:", this.partnerMembers);
         },
 
         removeMemberFromList(memberId) {
@@ -3474,11 +3564,55 @@ export default {
                 });
         },
 
+        // partnerSubmit() {
+        //     const emailArray = this.partnerMembers.map(
+        //         (member) => member.email
+        //     );
+        //     console.log("Emails in the desired format:", emailArray);
+
+        //     const partnerData = {
+        //         id: this.partner.id,
+        //         name: this.partner.name,
+        //         email: this.partner.email,
+        //         website: this.partner.website,
+        //         phone: this.partner.phone,
+        //         address: this.partner.address,
+        //         logo: this.partner.logo,
+        //         business_type: this.partner.business_type,
+        //         about: this.partner.about,
+        //         members: emailArray,
+        //     };
+
+        //     console.log("Whose partner data is this:", partnerData);
+
+        //     let uri =
+        //         this.base_url + `api/v1/partner-update/${this.partner.id}`;
+        //     axios
+        //         .patch(uri, partnerData)
+        //         .then((response) => {
+        //             const updatedPartner = response.data;
+        //             this.partner = updatedPartner;
+        //             Swal.fire({
+        //                 icon: "success",
+        //                 title: "Success!",
+        //                 text: "Partner Updated successfully!",
+        //             }).then(() => {
+        //                 window.location.reload();
+        //             });
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error updating partner:", error);
+        //         });
+        // },
+
         partnerSubmit() {
-            const emailArray = this.partnerMembers.map(
-                (member) => member.email
-            );
-            console.log("Emails in the desired format:", emailArray);
+            const memberArray = this.partnerMembers.map((member) => ({
+                email: member.email,
+                department_id: member.department_id,
+                role: member.role,
+            }));
+
+            console.log("Hi Members , here i am:", memberArray);
 
             const partnerData = {
                 id: this.partner.id,
@@ -3490,10 +3624,8 @@ export default {
                 logo: this.partner.logo,
                 business_type: this.partner.business_type,
                 about: this.partner.about,
-                members: emailArray,
+                members: memberArray, // Use the modified memberArray
             };
-
-            console.log("Whose partner data is this:", partnerData);
 
             let uri =
                 this.base_url + `api/v1/partner-update/${this.partner.id}`;
@@ -3910,5 +4042,19 @@ option {
     font-size: 16px;
     color: #777;
     margin-top: 20px;
+}
+
+.btn-suc {
+    background-color: #ccccccc5;
+}
+
+.list-item {
+    list-style-type: none;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 </style>
