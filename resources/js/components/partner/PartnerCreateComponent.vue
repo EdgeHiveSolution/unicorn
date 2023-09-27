@@ -549,10 +549,15 @@ export default {
             selectedItems: [],
         };
     },
+
+    async  created() {
+     await this.fetchDepartments();
+      await   this.fetchMembers();
+       await this.fetchCountries();
+
+    },
     mounted() {
-        this.fetchDepartments();
-        this.fetchMembers();
-        this.fetchCountries();
+       
     },
     computed: {
         remainingCharacters() {
@@ -577,16 +582,20 @@ export default {
             );
             return department ? department.name : "";
         },
-        fetchDepartments() {
+        
+        async fetchDepartments() {
             let uri = this.base_url + `api/v1/department-list`;
-            axios.get(uri).then((response) => {
+           await axios.get(uri).then((response) => {
+            console.log("Here response is:", response.data);
                 this.departments = response.data;
+
+                console.log("Departments to be added here:", this.departments );
             });
         },
 
-        fetchMembers() {
+       async fetchMembers() {
             let uri = this.base_url + `api/v1/member-list`;
-            axios.get(uri).then((response) => {
+           await axios.get(uri).then((response) => {
                 this.members = response.data;
 
                 console.log(
@@ -640,9 +649,9 @@ export default {
         //         this.members = response.data;
         //     });
         // },
-        fetchCountries() {
+      async   fetchCountries() {
             let uri = this.base_url + `api/v1/country-list`;
-            axios.get(uri).then((response) => {
+         await   axios.get(uri).then((response) => {
                 this.countries = response.data;
             });
         },
