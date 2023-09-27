@@ -32,141 +32,211 @@
                             v-if="
                                 index !== member.member.departments.length - 1
                             "
-                            >,</span
-                        >
+                        ></span>
                     </span>
                 </h5>
             </div>
         </div>
 
-        <div class="body-items">
-            <div id="kpis">
-                <!-- KPIs content -->
+        
+           
 
-                <div class="row">
-                    <div
-                        class="col-12 px-0"
-                        v-for="kpiMetricData in member.kpiMetrics"
-                        :key="kpiMetricData.kpiMetric.id"
-                        >
-                        <div class="card mb-5">
-                            <div class="d-flex justify-content-between p-4">
-                        <div>
-                            <h4>{{ kpiMetricData.kpiMetric.kpi.title }}</h4>
-                            <p>
-                            <b>
-                                Review period:{{
-                                kpiMetricData.kpiMetric.kpi.review_period_range
-                                }}
-                            </b>
-                            <span class="txt-gray"> </span>
-                            </p>
-                        </div>
-
-                   <div v-if="kpiMetricData && kpiMetricData.kpiMetric && kpiMetricData.progress_sum">
-  <div>
-    <span style="font-weight: bold" class="txt-dark">{{ getAggregatePercentage(kpiMetricData) }}%</span>
-  </div>
-  <div>
-    {{ getAggregateStatus(getAggregatePercentage(kpiMetricData), kpiMetricData) }}
-  </div>
-</div>
-</div>
-
+            <div class="body-items">
+                <div id="kpis">
+                    <!-- KPIs content -->
+                        <div class="row">
                             <div
-                                class="card-header d-flex justify-content-between my-3"
+                                class="col-12 px-0"
+                               v-for="kpi in getKPIs" :key="kpi.id"
+                                
                             >
-                                <div>
-                                    <div class="input-container">
-                                        <i class="mdi mdi-magnify mdi-icon"></i>
-                                        <input
-                                            style="height: 25px"
-                                            class="input-field"
-                                            type="text"
-                                            placeholder="Search Kpi Metrics "
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <button
-                                        style="height: 10px"
-                                        class="btn btn-light p-3 btn-icon"
+                                <div class="card mb-5">
+                                    <div
+                                        class="d-flex justify-content-between p-4"
                                     >
-                                        <i
-                                            class="mdi mdi-sort-variant text-dark"
-                                        ></i>
-                                        Filters
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body mb-5">
-                                <div class="table-responsive">
-                              <table class="table">
-                                  <thead>
-                                    <tr>
-                                    <th>KPI Metric</th>
-                                    <th>Current</th>
-                                    <th>Target</th>
-                                    <th>Progress</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <!-- <tr v-for="progressData in kpiMetricData" :key="progressData.id"> -->
-                                   <tr>
-                                    <td>
-                                    <div>
-                                     <!-- <span>{{ kpiMetricData.kpiMetric.title }}</span> -->
-                                        <span>{{ kpiMetricData.kpiMetric.title }}</span>
-                                        
-                                    </div>
-                                    <div> <span>{{kpiMetricData.kpiMetric.type}}</span></div>
-                                    </td>
-                                    <td class="">
-                                     <!-- <div>{{ progressData.progress_sum.current_sum }}</div> -->
-                                                    <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.current_sum }}</div>
-                            </td>
-                        <td class="">
-                        <!-- <div>{{ progressData.progress_sum.target_sum }}</div> -->
-                        <div><span v-if="kpiMetricData.kpiMetric.type === currency">KES</span> {{ kpiMetricData.progress_sum.target_sum }} </div>
+                                        <div>
+                                            <h4>
+                                                {{ kpi.title }}
+                                            </h4>
+                                            <p>
+                                                <b>
+                                                    Review period:{{
+                                                        kpi.review_period_range
+                                                    }}
+                                                </b>
+                                                <span class="txt-gray"> </span>
+                                            </p>
+                                        </div>
 
-                        
-                        </td>
-                        <td>
-                        <td class="stats" v-if=" calculateProgressPercentage( kpiMetricData.progress_sum) > 0">
-                            <p class="progress_text text-muted">
-                            {{ calculateProgressPercentage( kpiMetricData.progress_sum) }}%
-                            </p>
-                            <div class="progress">
-                            <div
-                                :class="getProgressBarClass( kpiMetricData.progress_sum, kpiMetricData.kpiMetric)"
-                                role="progressbar"
-                                :style="{ width: calculateProgressPercentage( kpiMetricData.progress_sum) + '%' }"
-                                aria-valuenow="5"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                            ></div>
-                            </div>
-                            <p class="progress-status">
-                            {{ calculateProgressStatus( kpiMetricData.progress_sum, kpiMetricData.kpiMetric) }}
-                            </p>
-                        </td>
-                        <td v-else>N/A</td>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-                                    <pagination
-                                        :total="totalPages"
-                                        :current="currentPage"
-                                        @page-change="handlePageChange"
-                                    ></pagination>
+                                        <div>
+                                            <div>
+                                                <span
+                                                    style="font-weight: bold"
+                                                    class="txt-dark"
+                                                    >{{
+                                                        getAggregatePercentage(
+                                                            kpi
+                                                        )
+                                                    }}%</span
+                                                >
+                                            </div>
+                                            <div>
+                                                {{ getAggregateStatus(kpi) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="card-header d-flex justify-content-between my-3"
+                                    >
+                                        <div>
+                                            <div class="input-container">
+                                                <i
+                                                    class="mdi mdi-magnify mdi-icon"
+                                                ></i>
+                                                <input
+                                                    style="height: 25px"
+                                                    class="input-field"
+                                                    type="text"
+                                                    placeholder="Search Kpi Metrics "
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button
+                                                style="height: 10px"
+                                                class="btn btn-light p-3 btn-icon"
+                                            >
+                                                <i
+                                                    class="mdi mdi-sort-variant text-dark"
+                                                ></i>
+                                                Filters
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body mb-5">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>KPI Metric</th>
+                                                        <th>Current</th>
+                                                        <th>Target</th>
+                                                        <th>Progress</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- <tr v-for="progressData in kpiMetricData" :key="progressData.id"> -->
+                                                    <tr
+                                                        v-for="kpiMetric in kpi.kpi_metrics"
+                                                        :key="kpiMetric.id"
+                                                    >
+                                                        <td>
+                                                            <div>
+                                                                <!-- <span>{{ kpiMetricData.kpiMetric.title }}</span> -->
+                                                                <span>
+                                                                    {{
+                                                                        kpiMetric.title
+                                                                    }}
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                <span>{{
+                                                                    kpiMetric.type
+                                                                }}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td class="">
+                                                            <!-- <div>{{ progressData.progress_sum.current_sum }}</div> -->
+                                                            <div>
+                                                                <span
+                                                                    v-if="
+                                                                        kpiMetric.type ===
+                                                                        currency
+                                                                    "
+                                                                    >KES</span
+                                                                >
+                                                                {{
+                                                                    calculateCurrentSum(
+                                                                        kpiMetric
+                                                                    ).toFixed(2)
+                                                                }}
+                                                            </div>
+                                                        </td>
+                                                        <td class="">
+                                                            <!-- <div>{{ progressData.progress_sum.target_sum }}</div> -->
+                                                            <div>
+                                                                <span
+                                                                    v-if="
+                                                                        kpiMetric.type ===
+                                                                        currency
+                                                                    "
+                                                                    >KES</span
+                                                                >
+                                                                {{
+                                                                    calculateTargetSum(
+                                                                        kpiMetric
+                                                                    ).toFixed(2)
+                                                                }}
+                                                            </div>
+                                                        </td>
+
+                                                        <td
+                                                            v-if="
+                                                                calculateProgressPercentage(
+                                                                    kpiMetric
+                                                                ) > 0
+                                                            "
+                                                        >
+                                                            <div>
+                                                                {{
+                                                                    calculateProgressPercentage(
+                                                                        kpiMetric
+                                                                    )
+                                                                }}%
+                                                                <div
+                                                                    class="progress"
+                                                                >
+                                                                    <div
+                                                                        class="progress-bar"
+                                                                        role="progressbar"
+                                                                        :style="{
+                                                                            width:
+                                                                                calculateProgressPercentage(
+                                                                                    kpiMetric
+                                                                                ) +
+                                                                                '%',
+                                                                        }"
+                                                                        aria-valuemin="0"
+                                                                        aria-valuemax="100"
+                                                                    ></div>
+                                                                </div>
+                                                            </div>
+                                                            {{
+                                                                calculateProgressStatus(
+                                                                    kpiMetric
+                                                                )
+                                                            }}
+                                                        </td>
+                                                        <td v-else>N/A</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <pagination
+                                                :total="totalPages"
+                                                :current="currentPage"
+                                                @page-change="handlePageChange"
+                                            ></pagination>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                  
+                    <!-- Display message when there are no KPIs for the partner -->
+                  
                 </div>
             </div>
-        </div>
+      
     </div>
 </template>
 
@@ -190,50 +260,140 @@ export default {
         };
     },
 
-        computed: {
+    computed: {
+        loggedUser() {
+            return this.$store.state.loggedUser;
+        },
 
-            loggedUser() {
-                return this.$store.state.loggedUser;
-            },
+       
 
-        getAggregatePercentage() {
-    return (kpiMetricData) => {
-      const totalCurrentSum = kpiMetricData.progress_sum.current_sum;
-      const totalTargetSum = kpiMetricData.progress_sum.target_sum;
 
-      if (totalTargetSum === 0) {
-        return 0; // To prevent division by zero
+getKPIs() {
+    const member = this.member;
+
+    if (!member || !member.member || !member.member.partners) {
+      return [];
+    }
+
+    // Create an array to store all kpis from all partners
+    const allKPIs = [];
+
+    member.member.partners.forEach((partner) => {
+      // Check if the partner has kpis
+      if (partner.kpis && partner.kpis.length > 0) {
+        // Concatenate the kpis from the current partner to the allKPIs array
+        allKPIs.push(...partner.kpis);
       }
+    });
 
-      return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
-    };
+    return allKPIs;
   },
 
-//   aggregatePercentage() {
-//     const totalCurrentSum = this.member.kpiMetrics.reduce(
-//       (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.current_sum,
-//       0
-//     );
 
-//     const totalTargetSum = this.member.kpiMetrics.reduce(
-//       (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.target_sum,
-//       0
-//     );
+        getAggregatePercentage() {
+            return (kpi) => {
+                // Initialize variables to store the sum of current and target values
+                let totalCurrentSum = 0;
+                let totalTargetSum = 0;
 
-//     if (totalTargetSum === 0) {
-//       return 0; // To prevent division by zero
-//     }
+                // Traverse through kpi_metrics associated with the KPI
+                kpi.kpi_metrics.forEach((kpiMetric) => {
+                    // Traverse through kpi_metric_members associated with the KPI Metric
+                    kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+                        // Traverse through progress associated with the KPI Metric Member
+                        kpiMetricMember.progress.forEach((progress) => {
+                            // Sum up the current values and target values
+                            totalCurrentSum += progress.current_value;
+                            totalTargetSum += progress.target_value;
+                        });
+                    });
+                });
 
-//     return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
-//   },
+                // Calculate the aggregate percentage
+                if (totalTargetSum === 0) {
+                    return 0; // To prevent division by zero
+                }
 
-},
+                return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+            };
+        },
 
+        getAggregateStatus() {
+            return (kpi, aggregatePercentage) => {
+                // Initialize variables for the thresholds from kpi_metrics
+                let onTrackValue = 0;
+                let atRiskMin = 0;
+                let atRiskMax = 0;
+                let offTrackMin = 0;
+                let offTrackMax = 0;
+
+                // Traverse through kpi_metrics associated with the KPI to find the thresholds
+                kpi.kpi_metrics.forEach((kpiMetric) => {
+                    onTrackValue = parseFloat(kpiMetric.on_track_value);
+                    atRiskMin = parseFloat(kpiMetric.at_risk_min);
+                    atRiskMax = parseFloat(kpiMetric.at_risk_max);
+                    offTrackMin = parseFloat(kpiMetric.off_track_min);
+                    offTrackMax = parseFloat(kpiMetric.off_track_max);
+                });
+
+                if (aggregatePercentage >= onTrackValue) {
+                    return "On Track";
+                } else if (
+                    aggregatePercentage >= atRiskMin &&
+                    aggregatePercentage <= atRiskMax
+                ) {
+                    return "At Risk";
+                } else if (
+                    aggregatePercentage >= offTrackMin &&
+                    aggregatePercentage <= offTrackMax
+                ) {
+                    return "Off Track";
+                } else {
+                    return "N/A"; // You can add additional handling if needed
+                }
+            };
+        },
+        //   getPartner() {
+        //     const member = this.member;
+
+        //     if (!member || !member.member || !member.member.partners) {
+        //         return [];
+        //     }
+
+        //     const partners = member.member.partners.map((partner) => {
+        //         // Transform each partner here if needed
+        //         const partnerData = {
+        //             name: partner.name,
+        //             is_active: partner.is_active,
+        //             kpis: partner.kpis,
+        //             // Add more properties as needed
+        //         };
+
+        //         return partnerData;
+        //     });
+        //   },
+
+        //   aggregatePercentage() {
+        //     const totalCurrentSum = this.member.kpiMetrics.reduce(
+        //       (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.current_sum,
+        //       0
+        //     );
+
+        //     const totalTargetSum = this.member.kpiMetrics.reduce(
+        //       (acc, kpiMetricData) => acc + kpiMetricData.progress_sum.target_sum,
+        //       0
+        //     );
+
+        //     if (totalTargetSum === 0) {
+        //       return 0; // To prevent division by zero
+        //     }
+
+        //     return ((totalCurrentSum / totalTargetSum) * 100).toFixed(2);
+        //   },
+    },
 
     async created() {
-
-    await this.fetchMemberDetails();
-
+        await this.fetchMemberDetails();
     },
     // mounted() {
     //     this.fetchMemberDetails();
@@ -245,60 +405,71 @@ export default {
     // },
 
     methods: {
-   calculateProgressPercentage(progressSum) {
-      const currentSum = progressSum.current_sum;
-      const targetSum = progressSum.target_sum;
-      const percentage = (currentSum / targetSum) * 100;
-      return percentage.toFixed(2);
-    },
-    calculateProgressStatus(progressSum, kpiMetric) {
-      const progressPercentage = parseFloat(this.calculateProgressPercentage(progressSum));
+        calculateProgressPercentage(progressSum) {
+            const currentSum = progressSum.current_sum;
+            const targetSum = progressSum.target_sum;
+            const percentage = (currentSum / targetSum) * 100;
+            return percentage.toFixed(2);
+        },
 
-      if (progressPercentage >= parseFloat(kpiMetric.on_track_value)) {
-        return "On Track";
-      } else if (
-        progressPercentage >= parseFloat(kpiMetric.at_risk_min) &&
-        progressPercentage < parseFloat(kpiMetric.on_track_value)
-      ) {
-        return "At Risk";
-      } else {
-        return "Off Track";
-      }
-    },
-    getProgressBarClass(progressSum, kpiMetric) {
-      const progressPercentage = parseFloat(this.calculateProgressPercentage(progressSum));
+        calculateProgressStatus(progressSum, kpiMetric) {
+            const progressPercentage = parseFloat(
+                this.calculateProgressPercentage(progressSum)
+            );
 
-      if (progressPercentage >= parseFloat(kpiMetric.on_track_value)) {
-        return "bg-success"; // On track
-      } else if (
-        progressPercentage >= parseFloat(kpiMetric.at_risk_min) &&
-        progressPercentage < parseFloat(kpiMetric.on_track_value)
-      ) {
-        return "bg-warning"; // At risk
-      } else {
-        return "bg-danger"; // Off track
-      }
-    },
+            if (progressPercentage >= parseFloat(kpiMetric.on_track_value)) {
+                return "On Track";
+            } else if (
+                progressPercentage >= parseFloat(kpiMetric.at_risk_min) &&
+                progressPercentage < parseFloat(kpiMetric.on_track_value)
+            ) {
+                return "At Risk";
+            } else {
+                return "Off Track";
+            }
+        },
 
+        getProgressBarClass(progressSum, kpiMetric) {
+            const progressPercentage = parseFloat(
+                this.calculateProgressPercentage(progressSum)
+            );
 
-    getAggregateStatus(aggregatePercentage, kpiMetric) {
-    const onTrackValue = parseFloat(kpiMetric.on_track_value);
-    const offTrackMin = parseFloat(kpiMetric.off_track_min);
-    const offTrackMax = parseFloat(kpiMetric.off_track_max);
-    const atRiskMin = parseFloat(kpiMetric.at_risk_min);
-    const atRiskMax = parseFloat(kpiMetric.at_risk_max);
+            if (progressPercentage >= parseFloat(kpiMetric.on_track_value)) {
+                return "bg-success"; // On track
+            } else if (
+                progressPercentage >= parseFloat(kpiMetric.at_risk_min) &&
+                progressPercentage < parseFloat(kpiMetric.on_track_value)
+            ) {
+                return "bg-warning"; // At risk
+            } else {
+                return "bg-danger"; // Off track
+            }
+        },
 
-    if (aggregatePercentage >= onTrackValue) {
-      return 'On Track';
-    } else if (aggregatePercentage >= atRiskMin && aggregatePercentage <= atRiskMax) {
-      return 'At Risk';
-    } else if (aggregatePercentage >= offTrackMin && aggregatePercentage <= offTrackMax) {
-      return 'Off Track';
-    } else {
-      return 'N/A'; // You can add additional handling if needed
-    }
-  },
-  
+        getAggregateStatus(aggregatePercentage, kpiMetric) {
+            const onTrackValue = parseFloat(kpiMetric.on_track_value);
+            const offTrackMin = parseFloat(kpiMetric.off_track_min);
+            const offTrackMax = parseFloat(kpiMetric.off_track_max);
+            const atRiskMin = parseFloat(kpiMetric.at_risk_min);
+            const atRiskMax = parseFloat(kpiMetric.at_risk_max);
+
+            if (aggregatePercentage >= onTrackValue) {
+                return "On Track";
+            } else if (
+                aggregatePercentage >= atRiskMin &&
+                aggregatePercentage <= atRiskMax
+            ) {
+                return "At Risk";
+            } else if (
+                aggregatePercentage >= offTrackMin &&
+                aggregatePercentage <= offTrackMax
+            ) {
+                return "Off Track";
+            } else {
+                return "N/A"; // You can add additional handling if needed
+            }
+        },
+
         // fetchMemberDetails() {
         //     const uri = this.base_url + `api/v1/members/${this.memberId}`;
         //     axios
@@ -316,7 +487,7 @@ export default {
             const memberId = this.$props.memberId;
             const uri =
                 this.base_url + `api/v1/members/${memberId}/kpis-and-metrics`;
-          await  axios
+            await axios
                 .get(uri)
                 .then((response) => {
                     console.log("Api Response:", response.data);
@@ -327,23 +498,47 @@ export default {
                 });
         },
 
-           getAggregateStatus(aggregatePercentage, kpiMetricData) {
-    const onTrackValue = parseFloat(kpiMetricData.kpiMetric.on_track_value);
-    const offTrackMin = parseFloat(kpiMetricData.kpiMetric.off_track_min);
-    const offTrackMax = parseFloat(kpiMetricData.kpiMetric.off_track_max);
-    const atRiskMin = parseFloat(kpiMetricData.kpiMetric.at_risk_min);
-    const atRiskMax = parseFloat(kpiMetricData.kpiMetric.at_risk_max);
+        calculateCurrentSum(kpiMetric) {
+            let currentSum = 0;
+            kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+                kpiMetricMember.progress.forEach((progressEntry) => {
+                    currentSum += progressEntry.current_value;
+                });
+            });
+            return currentSum;
+        },
+        calculateTargetSum(kpiMetric) {
+            let targetSum = 0;
+            kpiMetric.kpi_metric_members.forEach((kpiMetricMember) => {
+                kpiMetricMember.progress.forEach((progressEntry1) => {
+                    targetSum += progressEntry1.target_value;
+                });
+            });
+            return targetSum;
+        },
+        calculateProgressPercentage(kpiMetric) {
+            const currentSum = this.calculateCurrentSum(kpiMetric);
+            const targetSum = this.calculateTargetSum(kpiMetric);
+            const percentage = (currentSum / targetSum) * 100;
+            return percentage.toFixed(2);
+        },
 
-    if (aggregatePercentage >= onTrackValue) {
-      return 'On Track';
-    } else if (aggregatePercentage >= atRiskMin && aggregatePercentage <= atRiskMax) {
-      return 'At Risk';
-    } else if (aggregatePercentage >= offTrackMin && aggregatePercentage <= offTrackMax) {
-      return 'Off Track';
-    } else {
-      return 'N/A'; // You can add additional handling if needed
-    }
-  },
+        calculateProgressStatus(kpiMetric) {
+            const progressPercentage = parseFloat(
+                this.calculateProgressPercentage(kpiMetric)
+            );
+
+            if (progressPercentage >= parseFloat(kpiMetric.on_track_value)) {
+                return "On Track";
+            } else if (
+                progressPercentage >= parseFloat(kpiMetric.at_risk_min) &&
+                progressPercentage < parseFloat(kpiMetric.on_track_value)
+            ) {
+                return "At Risk";
+            } else {
+                return "Off Track";
+            }
+        },
     },
 };
 </script>
