@@ -95,7 +95,8 @@ class DepartmentApiController extends Controller
         'name' => 'required',
         'email' => 'required|email',
         'about' => 'required',
-        'members.*' => 'email',
+        'members.*' => 'nullable|email'
+       // 'members.*' => 'email',
 
     ]);
 
