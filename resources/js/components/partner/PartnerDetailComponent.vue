@@ -994,7 +994,7 @@
                                                 Select department
                                             </option>
                                             <option
-                                                v-for="department in uniqueDepartments"
+                                                v-for="department in departmentsUnique"
                                                 :value="department.id"
                                             >
                                                 {{ department.name }}
@@ -2446,6 +2446,7 @@ export default {
             metrics: [],
             members: this.partner.members,
             kpiMetrics: [],
+            fetchedDepartments: [],
             selectedKpiTitle: "",
             selectedMemberKpi: "",
             selectedKpi: null,
@@ -2993,6 +2994,24 @@ export default {
 
             return uniqueDepartments;
         },
+
+
+        
+        departmentsUnique() {
+            const departmentsUnique= [];
+
+            this.fetchedDepartments.forEach((department) => {
+                // Check if the department is not already in the uniqueDepartments array
+                const existingDepartment = departmentsUnique.find(
+                    (d) => d.id === department.id
+                );
+                if (!existingDepartment) {
+                    departmentsUnique.push(department);
+                }
+            });
+
+            return departmentsUnique;
+        },
     },
 
     watch: {
@@ -3015,6 +3034,7 @@ export default {
         await this.fetchMetrics();
         await this.fetchKpiMetrics();
         await this.fetchCountries();
+        await this.fetchDepartments()
 
         this.formattedDate = format(
             new Date(this.partner.created_at),
@@ -3261,6 +3281,17 @@ export default {
     },
 
     methods: {
+
+         async fetchDepartments() {
+            let uri = this.base_url + `api/v1/department-list`;
+           await axios.get(uri).then((response) => {
+            console.log("Here response is:", response.data);
+                this.fetchedDepartments = response.data;
+
+                console.log("Departments to be added here:", this.departments );
+            });
+        },
+        
         getDepartmentName(departmentId) {
             const department = uniqueDepartments.find(
                 (department) => department.id === departmentId

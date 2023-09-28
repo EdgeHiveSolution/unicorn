@@ -87,52 +87,53 @@ class DepartmentApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      */
-
-     public function store(Request $request)
-{
-    $this->validate($request, [
-        'name' => 'required',
-        'email' => 'required|email',
-        'about' => 'required',
-        'members.*' => 'nullable|email', // Allow nullable and email format
-    ]);
-
-    $department = Department::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'about' => $request->about,
-    ]);
-
-    $members = $request->input('members', []); // Get the members array from the request
-
-    if (!empty($members)) {
-        $memberIds = [];
-        $password_generator = new PasswordGeneratorUtil();
-        $password = $password_generator->generatePassword();
-
-        foreach ($members as $memberEmail) {
-            $registrationLink = url('/register?department_id=' . $department->id);
-
-            // Check if the member already exists
-            $existingMember = Member::where('email', trim($memberEmail))->first();
-
-            if ($existingMember) {
-                // Member exists, send the login URL
-                Mail::to($existingMember->email)->queue(new MemberInvitation($existingMember, $request->name, $password, 'login'));
-                $memberIds[] = $existingMember->id;
-            } else {
-                // Member is new, send the register URL
-                Mail::to($memberEmail)->queue(new MemberInvitation(null, $request->name, null, 'register', $registrationLink));
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email',
+            'about' => 'required',
+            'members' => 'nullable|string', // Allow nullable string for members
+        ]);
+    
+        $department = Department::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'about' => $request->about,
+        ]);
+    
+        $membersString = $request->input('members', ''); // Get the members string from the request
+        $membersArray = explode(',', $membersString); // Split the string into an array
+    
+        if (!empty($membersArray)) {
+            $memberIds = [];
+            $password_generator = new PasswordGeneratorUtil();
+            $password = $password_generator->generatePassword();
+    
+            foreach ($membersArray as $memberEmail) {
+                $registrationLink = url('/register?department_id=' . $department->id);
+    
+                // Check if the member already exists
+                $existingMember = Member::where('email', trim($memberEmail))->first();
+    
+                if ($existingMember) {
+                    // Member exists, send the login URL
+                    Mail::to($existingMember->email)->queue(new MemberInvitation($existingMember, $request->name, $password, 'login'));
+                    $memberIds[] = $existingMember->id;
+                } else {
+                    // Member is new, send the register URL
+                    Mail::to($memberEmail)->queue(new MemberInvitation(null, $request->name, null, 'register', $registrationLink));
+                }
             }
+    
+            $department->members()->attach($memberIds);
         }
-
-        $department->members()->attach($memberIds);
+    
+        return response()->json([
+            'success' => 'Department created successfully',
+        ]);
     }
-
-    return response()->json([
-        'success' => 'Department created successfully',
-    ]);
-}
+    
 
 
 //      public function store(Request $request)
