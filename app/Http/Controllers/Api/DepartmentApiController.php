@@ -89,6 +89,8 @@ class DepartmentApiController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info('Members input:', ['members' => $request->input('members')]);
+
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email',
@@ -103,7 +105,7 @@ class DepartmentApiController extends Controller
         ]);
     
         $membersString = $request->input('members', ''); // Get the members string from the request
-        $membersArray = explode(',', $membersString); // Split the string into an array
+        $membersArray = $membersString ? explode(',', $membersString) : []; // Split the string into an array if it's not empty
     
         if (!empty($membersArray)) {
             $memberIds = [];

@@ -97,14 +97,14 @@
 
                                         <div>
                                             <div>
-                                                <span
+                                                <h4
                                                     style="font-weight: bold"
                                                     class="txt-dark"
                                                     >{{
                                                         getAggregatePercentage(
                                                             kpi
                                                         )
-                                                    }}%</span
+                                                    }}%</h4
                                                 >
                                             </div>
                                             <div>

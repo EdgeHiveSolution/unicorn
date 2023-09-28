@@ -32,9 +32,11 @@
             <button
                 type="button"
                 class="btn btn-light border-dark px-3 py-2 btn-action"
+                @click="navigateToPartners"
             >
                 Cancel
             </button>
+
             <button
                 class="btn btn-primary px-3 py-2 btn-action"
                 form="form-submit"
@@ -51,7 +53,7 @@
             class="row g-3"
             @submit.prevent="formSubmit"
             method="POST"
-        >
+          >
             <div class="row mb-2 p-3">
                 <label
                     for="name"
@@ -558,6 +560,7 @@
                     <button
                         type="button"
                         class="btn btn-light border-dark btn-action"
+                        @click="navigateToPartners"
                     >
                         Cancel
                     </button>
@@ -621,15 +624,12 @@ export default {
         };
     },
 
-    async  created() {
-     await this.fetchDepartments();
-      await   this.fetchMembers();
-       await this.fetchCountries();
-
+    async created() {
+        await this.fetchDepartments();
+        await this.fetchMembers();
+        await this.fetchCountries();
     },
-    mounted() {
-       
-    },
+    mounted() {},
     computed: {
         remainingCharacters() {
             return this.maxCharacters - this.formData.about.length;
@@ -647,26 +647,32 @@ export default {
         },
     },
     methods: {
+
+        navigateToPartners(event) {
+            event.preventDefault(); 
+            window.location.href = "/partners";
+        },
+        
         getDepartmentName(departmentId) {
             const department = this.departments.find(
                 (department) => department.id === departmentId
             );
             return department ? department.name : "";
         },
-        
+
         async fetchDepartments() {
             let uri = this.base_url + `api/v1/department-list`;
-           await axios.get(uri).then((response) => {
-            console.log("Here response is:", response.data);
+            await axios.get(uri).then((response) => {
+                console.log("Here response is:", response.data);
                 this.departments = response.data;
 
-                console.log("Departments to be added here:", this.departments );
+                console.log("Departments to be added here:", this.departments);
             });
         },
 
-       async fetchMembers() {
+        async fetchMembers() {
             let uri = this.base_url + `api/v1/member-list`;
-           await axios.get(uri).then((response) => {
+            await axios.get(uri).then((response) => {
                 this.members = response.data;
 
                 console.log(
@@ -720,9 +726,9 @@ export default {
         //         this.members = response.data;
         //     });
         // },
-      async   fetchCountries() {
+        async fetchCountries() {
             let uri = this.base_url + `api/v1/country-list`;
-         await   axios.get(uri).then((response) => {
+            await axios.get(uri).then((response) => {
                 this.countries = response.data;
             });
         },
