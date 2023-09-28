@@ -101,7 +101,7 @@ Route::get('v1/country-list',[CountryApiController::class, 'index']);
 Route::get('v1/role-list',[RoleApiController::class, 'index']);
 
 Route::get('v1/user', [UserController::class, 'getUserWithRelatedData']);
-Route::get('/users/{user}', [UserController::class, 'show']);
+Route::get('v1/users/{user}', [UserController::class, 'show']);
 
 Route::get('v1/kpi-progress/{partnerId}', [KpiProgressApiController::class, 'getOverallProgress']);
 

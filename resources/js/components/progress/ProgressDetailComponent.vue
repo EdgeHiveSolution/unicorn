@@ -62,24 +62,20 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Comments</h5>
-
                                     <div
                                         v-for="comment in formattedTimestamps"
                                         :key="comment.id"
                                     >
                                         <!-- Display user information like profile photos here -->
-                                        <div>
+                                        <div v-if="comment.sender">
                                             <!-- You can display user profile photo here -->
                                             <img
-                                                :src="
-                                                    comment.sender
-                                                        .photo
-                                                "
+                                                :src="comment.sender.photo"
                                                 alt="Profile Photo"
                                             />
                                         </div>
                                         <div>
-                                            <strong>{{
+                                            <strong v-if="comment.sender">{{
                                                 comment.sender.name
                                             }}</strong>
                                             {{ comment.formattedTimestamp }}
@@ -162,7 +158,7 @@ export default {
         await this.fetchComments();
         await this.fetchProgressDetails();
 
-        console.log("Comments are:",this.comments);
+        console.log("Comments are:", this.comments);
     },
 
     mounted() {
@@ -180,33 +176,30 @@ export default {
                 const response = await axios.get(uri);
                 const comments = response.data.data;
 
+
+                console.log("Which comment is this being updated:", comments);
+
                 // Fetch sender information for each comment
                 for (const comment of comments) {
                     const senderId = comment.sender_id;
 
-                    // Check if the sender_id matches the ID of the logged-in user
-                    if (senderId === this.loggedUser.id) {
-                        // Use the logged-in user's data
-                        comment.sender = this.loggedUser;
-                    } else {
-                        // Fetch sender information from the API
-                        const senderInfoUri =
-                            this.base_url + `api/v1/users/${senderId}`;
+                    // Fetch sender information from the API
+                    const senderInfoUri =
+                        this.base_url + `api/v1/users/${senderId}`;
 
-                        try {
-                            const senderResponse = await axios.get(
-                                senderInfoUri
-                            );
-                            const senderData = senderResponse.data;
+                    try {
+                        const senderResponse = await axios.get(senderInfoUri);
+                        const senderData = senderResponse.data;
 
-                            // Assign the sender's data to the comment
-                            comment.sender = senderData;
-                        } catch (error) {
-                            console.error(
-                                "Error fetching sender information:",
-                                error
-                            );
-                        }
+                        // Assign the sender's data to the comment
+                        comment.sender = senderData;
+
+                        console.log("Senders info", comment.sender);
+                    } catch (error) {
+                        console.error(
+                            "Error fetching sender information:",
+                            error
+                        );
                     }
 
                     // Push the updated comment to the comments array
