@@ -374,8 +374,7 @@ export default {
             if (
                 !this.name ||
                 !this.email ||
-                !this.about  ||
-                this.selectedMembers.length === 0
+                !this.about 
             ) {
                 Swal.fire({
                     icon: "error",
@@ -396,6 +395,8 @@ export default {
             formData.append("email", this.email);
             formData.append("about", this.about);
             formData.append("members", this.selectedMembers.join(","));
+
+            
 
             let uri = this.base_url + `api/v1/department-create`;
 

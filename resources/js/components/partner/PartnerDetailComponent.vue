@@ -247,7 +247,7 @@
                                                         }}
                                                     </td>
                                                     <td class="td-members">
-                                                       <!-- <template
+                                                        <!--<template
                                                             v-for="member in topDrivers"
                                                             :key="member.id"
                                                         >
@@ -1002,7 +1002,7 @@
                                                 Select department
                                             </option>
                                             <option
-                                                v-for="department in uniqueDepartments"
+                                                v-for="department in departmentsUnique"
                                                 :value="department.id"
                                             >
                                                 {{ department.name }}
@@ -1197,7 +1197,7 @@
                                         </thead>
                                         <tbody>
                                             <tr
-                                                v-for="member in members"
+                                                v-for="member in this.partner.members"
                                                 :key="member.id"
                         
                                             >
@@ -1575,6 +1575,7 @@
                                                     alt="image"
                                                 />-->
                                                 </div>
+                                                        
                                                     </td>
 
                                                     <td>
@@ -1734,7 +1735,7 @@
                                                         </div>
                                                     </td>
                                                     <td class="td-members">
-                                                        <template
+                                                        <!--<template
                                                             v-for="dataMember in partnersWithProgress"
                                                             :key="dataMember.id"
                                                         >
@@ -1746,7 +1747,54 @@
                                                                     member.email
                                                                 "
                                                             />
-                                                        </template>
+                                                        </template>-->
+                                                        <div class="d-flex flex-row">
+                                               <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                               
+                                               <template v-for="(member,index) in partnersWithProgress"
+                                               :key="index"
+                                               >
+
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 2"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
+
+                                                 <div class="member_image_plus"
+                                                 v-else
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+{{index - 1}}</p>
+                                                </div>
+
+                                                <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                                </template>
+
+                                                <!--<img
+                                                    
+                                                    alt="image"
+                                                />-->
+                                                </div>
                                                     </td>
                                                     <td>
                                                         <template
@@ -1800,7 +1848,7 @@
                     </div>
 
                     <div v-else>
-                        <p>No Kpis</p>
+                       <!-- <p>No Kpis</p>-->
                     </div>
                 </div>
 
@@ -2440,8 +2488,8 @@ export default {
             },
              errors: {
                 logo: null,
-                about: null
-               // documents:null
+                about: null,
+                documents:null
             },
 
 
@@ -2498,6 +2546,7 @@ export default {
             metrics: [],
             members: this.partner.members,
             kpiMetrics: [],
+            fetchedDepartments: [],
             selectedKpiTitle: "",
             selectedMemberKpi: "",
             selectedKpi: null,
@@ -2685,9 +2734,10 @@ export default {
 
         // },
 
+   //All Members assigned to this partner section
         calculateActiveKpiProgress() {
-            return (member) => {
-                const kpiMetrics = member.kpis
+            return (partner) => {
+                const kpiMetrics = partner.kpis
                     .flatMap((kpi) => kpi.kpi_metrics)
                     .flatMap((metric) => metric.kpi_metric_members) // Navigate to kpi_metric_members
                     .flatMap((member) => member.progress); // Navigate to progress
@@ -2715,7 +2765,7 @@ export default {
                 ).toFixed(2);
                 let label = "On Track";
 
-                const kpiThresholds = member.kpis
+                const kpiThresholds = partner.kpis
                     .flatMap((kpi) => kpi.kpi_metrics)
                     .find(
                         (metric) =>
@@ -2726,7 +2776,7 @@ export default {
                 if (kpiThresholds) {
                     label = "Off Track";
                 } else {
-                    const kpiAtRisk = member.kpis
+                    const kpiAtRisk = partner.kpis
                         .flatMap((kpi) => kpi.kpi_metrics)
                         .find(
                             (metric) =>
@@ -3035,6 +3085,24 @@ export default {
 
             return uniqueDepartments;
         },
+
+
+        
+        departmentsUnique() {
+            const departmentsUnique= [];
+
+            this.fetchedDepartments.forEach((department) => {
+                // Check if the department is not already in the uniqueDepartments array
+                const existingDepartment = departmentsUnique.find(
+                    (d) => d.id === department.id
+                );
+                if (!existingDepartment) {
+                    departmentsUnique.push(department);
+                }
+            });
+
+            return departmentsUnique;
+        },
     },
 
     // watch: {
@@ -3051,6 +3119,7 @@ export default {
         await this.fetchMetrics();
         await this.fetchKpiMetrics();
         await this.fetchCountries();
+        await this.fetchDepartments()
 
         this.formattedDate = format(
             new Date(this.partner.created_at),
@@ -3297,6 +3366,17 @@ export default {
     },
 
     methods: {
+
+         async fetchDepartments() {
+            let uri = this.base_url + `api/v1/department-list`;
+           await axios.get(uri).then((response) => {
+            console.log("Here response is:", response.data);
+                this.fetchedDepartments = response.data;
+
+                console.log("Departments to be added here:", this.departments );
+            });
+        },
+        
         getDepartmentName(departmentId) {
             const department = uniqueDepartments.find(
                 (department) => department.id === departmentId
@@ -4344,4 +4424,34 @@ option {
     align-items: center;
     justify-content: space-between;
 }
+
+.email_container{
+    /*border :1px solid #979da9;*/
+    border: 1px solid #e0e3e8;
+}
+
+.delete_email{
+    border: 1px solid #e0e3e8;
+    align-items: center;
+    
+}
+
+.on-track-header {
+    color: #047a48;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.at-risk-header {
+    color: #f0ad4e;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.off-track-header {
+    color: #a5292a;
+    font-size: 18px;
+    font-weight: 700;
+}
+
 </style>

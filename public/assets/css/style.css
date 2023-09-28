@@ -355,6 +355,17 @@ input{
 
 }
 
+.email_container{
+    /*border :1px solid #979da9;*/
+    border: 1px solid #e0e3e8;
+}
+
+.delete_email{
+    border: 1px solid #e0e3e8;
+    align-items: center;
+    
+}
+
 .purple_container{
     background-color:rgba(234,243,255,1);
     border-radius: 24px;

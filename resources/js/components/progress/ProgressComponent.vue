@@ -449,7 +449,6 @@ export default {
     },
 
     mounted() {
-        
         console.log(
             "User Related Data:",
             JSON.stringify(this.$store.state.loggedUser)
@@ -614,6 +613,34 @@ export default {
                             "Response for Progress from server:",
                             response.data
                         );
+
+                        // const updatedLoggedUser = {
+                        //     ...this.$store.state.loggedUser,
+                        // };
+
+                        // if (updatedLoggedUser.member !== null) {
+                        //     // Find the index of the member in kpi_metric_members
+                        //     const memberIndex =
+                        //         updatedLoggedUser.member.kpi_metric_members.findIndex(
+                        //             (member) => member.id === kpiMetricMember.id
+                        //         );
+
+                        //     if (memberIndex !== -1) {
+                        //         // Update the progress for the matching member
+                        //         updatedLoggedUser.member.kpi_metric_members[
+                        //             memberIndex
+                        //         ].progress = response.data.progress;
+
+                        //         this.$store.dispatch(
+                        //             "updateLoggedUser",
+                        //             updatedLoggedUser
+                        //         );
+                        //     } else {
+                        //         console.log(
+                        //             "No matching member found in kpi_metric_members."
+                        //         );
+                        //     }
+                        // }
 
                         Swal.fire({
                             icon: "success",

@@ -1,22 +1,5 @@
 <template>
    <div>
-        <!--<div class="d-flex align-items-center">
-            <div class="data-info">
-                <div v-if="member.member && member.member.name">
-                    <h4>{{ member.member.name }}</h4>
-                </div>
-                <div v-if="member.member && member.member.is_active">
-                    <p>
-                        Status:
-                        <span class="text-success">
-                            {{
-                                member.member.is_active ? "Active" : "Inactive"
-                            }}</span
-                        >
-                    </p>
-                </div>
-            </div>
-        </div>-->
         <div class="d-flex flex-row">
             <div class="profile_image d-flex flex-column align-items-center mx-2">
                                                  <font-awesome-icon
@@ -43,24 +26,32 @@
                 </div>
             </div>
         </div>
+       <!-- <div class="d-flex align-items-center">
+            <div class="data-info">
+                <div v-if="member.member && member.member.name">
+                    <h4>{{ member.member.name }}</h4>
+                </div>
+                <div v-if="member.member && member.member.is_active">
+                    <p>
+                        Status:
+                        <span class="text-success">
+                            {{
+                                member.member.is_active ? "Active" : "Inactive"
+                            }}</span
+                        >
+                    </p>
+                </div>
+            </div>
+        </div>-->
         <div class="module-nav"></div>
+
+      
 
         <div class="top-header">
             <div v-if="member.member && member.member.departments" class="d-flex flex-row my-2">
                 <h5 class=" mx-2">
-                    Departments:</h5>
-                    <!--<span
-                        v-for="(department, index) in member.member.departments"
-                        :key="index"
-                    >
-                        {{ department.name }}
-                        <span
-                            v-if="
-                                index !== member.member.departments.length - 1
-                            "
-                        ></span>
-                    </span>-->
-
+                    Departments:
+                </h5>
                     <template  v-for="(department, index) in member.member.departments"
                         :key="index">
                         <div class="department-tag mx-2 mb-1">

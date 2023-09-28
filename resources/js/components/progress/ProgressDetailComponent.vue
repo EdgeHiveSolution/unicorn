@@ -73,7 +73,7 @@
                                             <img
                                                 :src="
                                                     comment.sender
-                                                        .profile_photo_url
+                                                        .photo
                                                 "
                                                 alt="Profile Photo"
                                             />
@@ -158,11 +158,14 @@ export default {
         },
     },
 
-    async created() {},
+    async created() {
+        await this.fetchComments();
+        await this.fetchProgressDetails();
+
+        console.log("Comments are:",this.comments);
+    },
 
     mounted() {
-        this.fetchComments();
-        this.fetchProgressDetails();
         console.log("Progress Details:", this.progressDetail);
         console.log("Which user is this?", this.$store.state.loggedUser);
     },
@@ -238,35 +241,49 @@ export default {
 
         async fetchProgressDetails() {
             const progressId = this.$props.progressId;
-
             console.log("Progress Id:", progressId);
 
-            for (const member of this.$store.state.loggedUser.member
-                .kpi_metric_members) {
-                const progress = member.progress.find(
-                    (p) => p.id === progressId
-                );
+            // Replace this with your API endpoint URL
+            const uri = this.base_url + `api/v1/progress/${progressId}`;
 
-                if (progress) {
-                    console.log("Found matching progress:", progress);
-                    const uri = this.base_url + `api/v1/progress/${progressId}`;
-
-                    try {
-                        const response = await axios.get(uri); // Await the API request
-                        console.log("API Response:", response.data);
-                        this.progressDetail = response.data;
-                        return; // Exit the function once a matching progress is found
-                    } catch (error) {
-                        console.error(
-                            "Error fetching progress details:",
-                            error
-                        );
-                    }
-                }
+            try {
+                const response = await axios.get(uri); // Await the API request
+                console.log("API Response:", response.data);
+                this.progressDetail = response.data;
+            } catch (error) {
+                console.error("Error fetching progress details:", error);
+                console.log("No matching progress found.");
             }
-
-            console.log("No matching progress found.");
         },
+
+        // async fetchProgressDetails() {
+        //     const progressId = this.$props.progressId;
+
+        //     console.log("Progress Id:", progressId);
+
+        //     for (const member of this.$store.state.loggedUser.member
+        //         .kpi_metric_members) {
+        //         // Check if member.progress has an id property
+        //         if (member.progress && member.progress.id === progressId) {
+        //             console.log("Found matching progress:", member.progress);
+        //             const uri = this.base_url + `api/v1/progress/${progressId}`;
+
+        //             try {
+        //                 const response = await axios.get(uri); // Await the API request
+        //                 console.log("API Response:", response.data);
+        //                 this.progressDetail = response.data;
+        //                 return; // Exit the function once a matching progress is found
+        //             } catch (error) {
+        //                 console.error(
+        //                     "Error fetching progress details:",
+        //                     error
+        //                 );
+        //             }
+        //         }
+        //     }
+
+        //     console.log("No matching progress found.");
+        // },
     },
 };
 </script>
