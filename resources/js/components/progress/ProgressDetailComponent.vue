@@ -73,7 +73,7 @@
                                             <img
                                                 :src="
                                                     comment.sender
-                                                        .profile_photo_url
+                                                        .photo
                                                 "
                                                 alt="Profile Photo"
                                             />
@@ -161,6 +161,8 @@ export default {
     async created() {
         await this.fetchComments();
         await this.fetchProgressDetails();
+
+        console.log("Comments are:",this.comments);
     },
 
     mounted() {
