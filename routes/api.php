@@ -58,6 +58,8 @@ Route::post('v1/progress', [ProgressApiController::class, 'store']);
 // Route::get('v1/kpimetrics/{kpimetricId}/progress/{kpiMetricMemberId}', [ProgressApiController::class, 'getProgressForKpiMetric']);
 Route::get('v1/kpimetrics/{kpimetricId}/progress/{kpiMetricMemberId}', [ProgressApiController::class, 'getProgressForKpiMetric']);
 
+Route::get('v1/kpimetrics/{kpimetricId}/progress', [ProgressApiController::class, 'getKpiMetricProgressDetail']);
+
 Route::get('v1/progress/{progressId}', [ProgressApiController::class, 'getProgressDetail']);
 
 

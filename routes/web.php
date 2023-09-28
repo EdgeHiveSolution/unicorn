@@ -77,4 +77,6 @@ Route::resource('department_members', DepartmentMemberController::class);
 
  Route::resource('progress_detail', ProgressDetailController::class);
 
+ Route::resource('progress_details', ProgressController::class);
+
 //Route::get('/progress_detail',  [ProgressDetailController::class, 'show']);

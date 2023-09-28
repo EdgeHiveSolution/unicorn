@@ -1092,7 +1092,8 @@
                                         </thead>
                                         <tbody>
                                             <tr
-                                                v-for="member in this.partner.members"
+                                                v-for="member in this.partner
+                                                    .members"
                                                 :key="member.id"
                                             >
                                                 <td>
@@ -1250,6 +1251,7 @@
                 </div>
 
                 <div class="row">
+                
                     <div v-if="loggedUser.user_role_id === 1">
                         <div
                             class="col-12 px-0"
@@ -1318,7 +1320,7 @@
                                                     <th>Response period</th>
                                                     <th>Assigned to</th>
                                                     <th>Departments</th>
-                                                    <!-- <th></th> -->
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1392,24 +1394,24 @@
                                                         </template>
                                                     </td>
 
-                                                    <!-- <td>
-                                                    <button
-                                                        class="btn view-btn"
-                                                    >
-                                                        <a
-                                                            :href="
-                                                                '/kpimetrics/' +
-                                                                kpimetric.id
-                                                            "
-                                                            class="text-light add-link text-sm"
+                                                    <td>
+                                                        <button
+                                                            class="btn view-btn"
                                                         >
-                                                            <i
-                                                                class="mdi mdi-eye-outline text-light"
-                                                            ></i>
-                                                            Activity</a
-                                                        >
-                                                    </button>
-                                                </td> -->
+                                                            <a
+                                                                :href="
+                                                                    '/kpimetrics/' +
+                                                                    kpimetric.id
+                                                                "
+                                                                class="text-light add-link text-sm"
+                                                            >
+                                                                <i
+                                                                    class="mdi mdi-eye-outline text-light"
+                                                                ></i>
+                                                                Activity</a
+                                                            >
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -2426,7 +2428,7 @@ export default {
 
         // },
 
-   //All Members assigned to this partner section
+        //All Members assigned to this partner section
         calculateActiveKpiProgress() {
             return (partner) => {
                 const kpiMetrics = partner.kpis
@@ -2778,10 +2780,8 @@ export default {
             return uniqueDepartments;
         },
 
-
-        
         departmentsUnique() {
-            const departmentsUnique= [];
+            const departmentsUnique = [];
 
             this.fetchedDepartments.forEach((department) => {
                 // Check if the department is not already in the uniqueDepartments array
@@ -2817,7 +2817,7 @@ export default {
         await this.fetchMetrics();
         await this.fetchKpiMetrics();
         await this.fetchCountries();
-        await this.fetchDepartments()
+        await this.fetchDepartments();
 
         this.formattedDate = format(
             new Date(this.partner.created_at),
@@ -2976,17 +2976,16 @@ export default {
     },
 
     methods: {
-
-         async fetchDepartments() {
+        async fetchDepartments() {
             let uri = this.base_url + `api/v1/department-list`;
-           await axios.get(uri).then((response) => {
-            console.log("Here response is:", response.data);
+            await axios.get(uri).then((response) => {
+                console.log("Here response is:", response.data);
                 this.fetchedDepartments = response.data;
 
-                console.log("Departments to be added here:", this.departments );
+                console.log("Departments to be added here:", this.departments);
             });
         },
-        
+
         getDepartmentName(departmentId) {
             const department = uniqueDepartments.find(
                 (department) => department.id === departmentId

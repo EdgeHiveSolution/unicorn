@@ -9,7 +9,7 @@
                         class="col-12 px-0"
                         v-for="(item, index) in progressData.progress_data"
                         :key="index"
-                    >
+                     >
                         <div>
                             <div class="card mb-5">
                                 <div class="d-flex justify-content-between p-4">
@@ -202,6 +202,9 @@
                             </div>
                         </div>
                     </div>
+
+
+
                 </div>
             </div>
         </div>
@@ -352,6 +355,7 @@ export default {
     data() {
         return {
             progressData: {},
+            progressData1: {},
             selectedKpiTitle: "",
             selectedMemberKpi: "",
             selectedKpi: null,
@@ -539,6 +543,7 @@ export default {
                     console.error("Error fetching member details:", error);
                 });
         },
+
 
         handleFileUpload(event) {
             // Get the selected files from the event
