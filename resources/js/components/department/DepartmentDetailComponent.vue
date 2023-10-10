@@ -360,13 +360,11 @@
                                     </thead>
                                     <tbody>
                                         <!-- Replace the static data with dynamic data using v-for directive -->
-                                        <tr
-                                            v-for="metric in metricWithProgress"
-                                            :key="metric.id"
-                                        >
+                                        <tr v-for="metric in uniqueMetricWithProgress" :key="metric.id">
+
                                             <td>
                                                 <div>
-                                                    {{ metric.name }}
+                                                    {{ metric.metric.name }}
                                                 </div>
                                                 <div>
                                                     <span class="txt-gray">
@@ -378,6 +376,7 @@
                                                     </span>
                                                 </div>
                                             </td>
+
                                             <td>
                                                 {{
                                                     metric.totalCurrentValue.toFixed(
@@ -385,6 +384,7 @@
                                                     )
                                                 }}
                                             </td>
+
                                             <td>
                                                 {{
                                                     metric.totalTargetValue.toFixed(
@@ -414,19 +414,21 @@
                                                 </div>
                                             </td>
 
-                                            <td class="td-members">
-                                                <template
-                                                    v-for="member in topDrivers"
-                                                    :key="member.id"
-                                                >
-                                                    <img
-                                                        v-for="member in member.topDrivers"
-                                                        :key="member.id"
-                                                        src="assets/images/faces/face1.jpg"
-                                                        :alt="member.email"
-                                                    />
-                                                </template>
-                                            </td>
+                                             <td class="td-members">
+                                                        <template
+                                                            v-for="member in topDrivers"
+                                                            :key="member.id"
+                                                        >
+                                                            <img
+                                                                v-for="member in member.topDrivers"
+                                                                :key="member.id"
+                                                                src="assets/images/faces/face1.jpg"
+                                                                :alt="
+                                                                    member.email
+                                                                "
+                                                            />
+                                                        </template>
+                                                    </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -1172,6 +1174,20 @@ export default {
                 });
             });
             return uniqueDepartments;
+        },
+
+        uniqueMetricWithProgress() {
+            // Use a Set to store unique identifiers
+            const uniqueIdentifiers = new Set();
+
+            // Filter out duplicates based on a unique identifier (e.g., id)
+            return this.metricWithProgress.filter((metric) => {
+                if (!uniqueIdentifiers.has(metric.id)) {
+                    uniqueIdentifiers.add(metric.id);
+                    return true;
+                }
+                return false;
+            });
         },
 
         metricWithProgress() {

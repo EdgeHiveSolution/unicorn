@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use App\Models\KpiMetric;
 use App\Models\Progress;
+use DB;
 
 
 
@@ -144,7 +145,7 @@ public function removeMemberFromList($memberId)
         if ($hasProgress) {
             // If the member has progress records, deactivate them
             $member = Member::findOrFail($memberId);
-            $member->update(['is_active' => false]);
+           // $member->update(['is_active' => true]);
         } else {
             // If the member has no progress records, delete them
             Member::destroy($memberId);
@@ -170,6 +171,26 @@ public function removeMember($id)
         // Handle any errors or exceptions as needed
         return response()->json(['error' => 'Failed to remove member'], 500);
     }
+}
+
+
+public function getMembersByPartner($partnerId)
+{
+    Log::info("You are in this method");
+    // Fetch members based on the $partnerId
+    $members = DB::table('kpis')
+        ->join('kpi_metrics', 'kpis.id', '=', 'kpi_metrics.kpi_id')
+        ->join('kpi_metric_members', 'kpi_metrics.id', '=', 'kpi_metric_members.kpi_metric_id')
+        ->join('members', 'kpi_metric_members.member_id', '=', 'members.id')
+        ->where('kpis.partner_id', $partnerId)
+        ->select('members.*')
+        ->distinct()
+        ->get();
+
+    Log::info("Members to be sent to client:", ['members'=> $members ]);
+
+    // Return the members as a JSON response
+    return response()->json(['data' => $members]);
 }
 
 

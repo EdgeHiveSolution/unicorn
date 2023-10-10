@@ -191,11 +191,11 @@ class ProgressApiController extends Controller
     //     ]);
     // }
   
-    
-    public function getProgressForKpiMetric($kpimetricId, $kpiMetricMemberId) {
-        // Find the specific KpiMetricMember based on kpi_metric_id and kpi_metric_member_id
+
+    public function getProgressForKpiMetric($kpimetricId, $memberId) {
+        // Find the specific KpiMetricMember based on kpi_metric_id and member_id
         $kpiMetricMembers = KpiMetricMember::where('kpi_metric_id', $kpimetricId)
-            ->where('id', $kpiMetricMemberId)
+            ->where('member_id', $memberId) // Assuming the member_id field is used to link KpiMetricMember to a specific member
             ->with('kpiMetric', 'progress')
             ->get();
     
@@ -212,6 +212,30 @@ class ProgressApiController extends Controller
             'progress_data' => $progressData
         ]);
     }
+
+    
+    
+    
+    // public function getProgressForKpiMetric($kpimetricId, $kpiMetricMemberId) {
+    //     // Find the specific KpiMetricMember based on kpi_metric_id and kpi_metric_member_id
+    //     $kpiMetricMembers = KpiMetricMember::where('kpi_metric_id', $kpimetricId)
+    //         ->where('id', $kpiMetricMemberId)
+    //         ->with('kpiMetric', 'progress')
+    //         ->get();
+    
+    //     $progressData = [];
+    
+    //     // Loop through the retrieved KpiMetricMember and retrieve its associated progress
+    //     foreach ($kpiMetricMembers as $kpiMetricMember) {
+    //         $progressData[] = [
+    //             'kpi_metric_member' => $kpiMetricMember,
+    //         ];
+    //     }
+    
+    //     return response()->json([
+    //         'progress_data' => $progressData
+    //     ]);
+    // }
     
 
    public function  getKpiMetricProgressDetail($kpimetricId)
