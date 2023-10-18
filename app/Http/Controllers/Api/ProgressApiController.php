@@ -214,6 +214,29 @@ class ProgressApiController extends Controller
     }
     
 
+   public function  getKpiMetricProgressDetail($kpimetricId)
+
+   {
+ // Find all KpiMetricMembers associated with the given KpiMetric
+ $kpiMetricMembers = KpiMetricMember::where('kpi_metric_id', $kpimetricId)->with('kpiMetric', 'progress')->get();
+    
+ $progressData = [];
+
+ // Loop through each KpiMetricMember and retrieve its associated progress
+ foreach ($kpiMetricMembers as $kpiMetricMember) {
+     $progressData[] = [
+         'kpi_metric_member' => $kpiMetricMember,
+        
+     ];
+ }
+
+ return response()->json([
+     'progress_data' => $progressData
+ ]);
+
+
+   }
+
     // public function getProgressForKpiMetric($kpimetricId) {
     //     // Find all KpiMetricMembers associated with the given KpiMetric
     //     $kpiMetricMembers = KpiMetricMember::where('kpi_metric_id', $kpimetricId)->with('kpiMetric', 'progress')->get();

@@ -505,6 +505,11 @@ public function store(Request $request)
      foreach ($members as $memberData) {
         $memberEmail = trim($memberData['email']);
         $departmentId = $memberData['department_id'] ?? null;
+
+         // Associate the department_id with the partner
+         if ($departmentId) {
+            $partner->departments()->attach($departmentId);
+        }
     
         // Check if the member already exists in the department
         $existingMemberInPartner = $partner->members()->where('email', $memberEmail)->first();

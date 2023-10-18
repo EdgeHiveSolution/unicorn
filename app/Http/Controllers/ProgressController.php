@@ -64,19 +64,24 @@ class ProgressController extends Controller
     // }
 
 
-    public function show(Progress $progress)
-{
-    // Fetch the associated KpiMetricMember
-    $kpiMetricMember = $progress->kpiMetricMember;
+        public function show(KpiMetric $kpimetric)
+    {
+        return view('progress.detail', ['kpimetric' => $kpimetric]);
+    }
 
-    // Load the KpiMetrics and their related KPIs
-    $kpiMetricMember->load('kpiMetric.kpi');
+//     public function show(Progress $progress)
+// {
+//     // Fetch the associated KpiMetricMember
+//     $kpiMetricMember = $progress->kpiMetricMember;
 
-    return view('progress.show', [
-        'progress' => $progress,
-        'kpiMetricMember' => $kpiMetricMember,
-    ]);
-}
+//     // Load the KpiMetrics and their related KPIs
+//     $kpiMetricMember->load('kpiMetric.kpi');
+
+//     return view('progress.show', [
+//         'progress' => $progress,
+//         'kpiMetricMember' => $kpiMetricMember,
+//     ]);
+// }
 
 
     /**

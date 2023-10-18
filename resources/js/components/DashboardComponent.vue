@@ -651,6 +651,7 @@ export default {
                 return `${monthsAgo} months ago`;
             });
         },
+
         //   partnersWithProgress() {
         //      console.log("partnersWithProgress method called.");
         //     // Create an empty object to store unique partners
@@ -689,6 +690,7 @@ export default {
         // }
             },
     methods: {
+
         async fetchUserWithRelatedData() {
             let uri = this.base_url + `api/v1/user`;
             try {
@@ -701,9 +703,11 @@ export default {
             }
         },
 
+
         handlePageChange(page) {
             this.currentPage = page;
         },
+        
 
         async fetchPartners() {
             console.log("Logged User", JSON.stringify(this.data.loggeduser));

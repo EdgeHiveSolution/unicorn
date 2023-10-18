@@ -16,6 +16,7 @@ import PartnerCreateComponent from './components/partner/PartnerCreateComponent.
 import PartnerDetailComponent from './components/partner/PartnerDetailComponent.vue';
 import ProgressComponent from './components/progress/ProgressComponent.vue';
 import ProgressDetailComponent from './components/progress/ProgressDetailComponent.vue';
+import ProgressAllComponent from './components/progress/ProgressAllComponent.vue'
 import ConfigurationComponent from './components/configuration/ConfigurationComponent.vue';
 import DepartmentComponent from './components/department/DepartmentComponent.vue';
 import DepartmentCreateComponent from './components/department/DepartmentCreateComponent.vue';
@@ -32,6 +33,7 @@ app.component('partner-component', PartnerComponent);
 app.component('partner-detail-component', PartnerDetailComponent);
 app.component('progress-component', ProgressComponent);
 app.component('progress-detail-component', ProgressDetailComponent);
+app.component('progress-all-component', ProgressAllComponent);
 app.component('profile-edit-component', ProfileEditComponent);
 app.component('partner-create-component', PartnerCreateComponent);
 app.component('configuration-component', ConfigurationComponent)

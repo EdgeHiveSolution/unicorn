@@ -58,6 +58,8 @@ Route::post('v1/progress', [ProgressApiController::class, 'store']);
 // Route::get('v1/kpimetrics/{kpimetricId}/progress/{kpiMetricMemberId}', [ProgressApiController::class, 'getProgressForKpiMetric']);
 Route::get('v1/kpimetrics/{kpimetricId}/progress/{kpiMetricMemberId}', [ProgressApiController::class, 'getProgressForKpiMetric']);
 
+Route::get('v1/kpimetrics/{kpimetricId}/progress', [ProgressApiController::class, 'getKpiMetricProgressDetail']);
+
 Route::get('v1/progress/{progressId}', [ProgressApiController::class, 'getProgressDetail']);
 
 
@@ -99,7 +101,7 @@ Route::get('v1/country-list',[CountryApiController::class, 'index']);
 Route::get('v1/role-list',[RoleApiController::class, 'index']);
 
 Route::get('v1/user', [UserController::class, 'getUserWithRelatedData']);
-Route::get('/users/{user}', [UserController::class, 'show']);
+Route::get('v1/users/{user}', [UserController::class, 'show']);
 
 Route::get('v1/kpi-progress/{partnerId}', [KpiProgressApiController::class, 'getOverallProgress']);
 

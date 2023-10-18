@@ -1157,7 +1157,10 @@
                         </div>
                         <hr />
 
-                        <div class="align-right mb-5">
+                         <div v-if="isLoading" class="loading">
+                
+                         </div>
+                        <div v-else class="align-right mb-5">
                             <div class="text-right mt-3 mb-5">
                                 <button
                                     type="button"
@@ -1239,7 +1242,8 @@
                                         </thead>
                                         <tbody>
                                             <tr
-                                                v-for="member in this.partner.members"
+                                                v-for="member in this.partner
+                                                    .members"
                                                 :key="member.id"
                         
                                             >
@@ -1448,6 +1452,7 @@
                 </div>
 
                 <div class="row">
+                
                     <div v-if="loggedUser.user_role_id === 1">
                         <div
                             class="col-12 px-0"
@@ -1516,7 +1521,7 @@
                                                     <th>Response period</th>
                                                     <th>Assigned to</th>
                                                     <th>Departments</th>
-                                                    <!-- <th></th> -->
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1640,24 +1645,24 @@
                                                         </template>
                                                     </td>
 
-                                                    <!-- <td>
-                                                    <button
-                                                        class="btn view-btn"
-                                                    >
-                                                        <a
-                                                            :href="
-                                                                '/kpimetrics/' +
-                                                                kpimetric.id
-                                                            "
-                                                            class="text-light add-link text-sm"
+                                                    <td>
+                                                        <button
+                                                            class="btn view-btn"
                                                         >
-                                                            <i
-                                                                class="mdi mdi-eye-outline text-light"
-                                                            ></i>
-                                                            Activity</a
-                                                        >
-                                                    </button>
-                                                </td> -->
+                                                            <a
+                                                                :href="
+                                                                    '/kpimetrics/' +
+                                                                    kpimetric.id
+                                                                "
+                                                                class="text-light add-link text-sm"
+                                                            >
+                                                                <i
+                                                                    class="mdi mdi-eye-outline text-light"
+                                                                ></i>
+                                                                Activity</a
+                                                            >
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -2536,6 +2541,7 @@ export default {
                 about: null,
                 documents:null
             },
+            isLoading:false,
 
             kpiPartnerProgress: {
                 progress_percentage: null,
@@ -2787,7 +2793,7 @@ export default {
 
         // },
 
-   //All Members assigned to this partner section
+        //All Members assigned to this partner section
         calculateActiveKpiProgress() {
             return (partner) => {
                 const kpiMetrics = partner.kpis
@@ -3139,10 +3145,8 @@ export default {
             return uniqueDepartments;
         },
 
-
-        
         departmentsUnique() {
-            const departmentsUnique= [];
+            const departmentsUnique = [];
 
             this.fetchedDepartments.forEach((department) => {
                 // Check if the department is not already in the uniqueDepartments array
@@ -3178,7 +3182,7 @@ export default {
         await this.fetchMetrics();
         await this.fetchKpiMetrics();
         await this.fetchCountries();
-        await this.fetchDepartments()
+        await this.fetchDepartments();
 
         this.formattedDate = format(
             new Date(this.partner.created_at),
@@ -3425,17 +3429,16 @@ export default {
     },
 
     methods: {
-
-         async fetchDepartments() {
+        async fetchDepartments() {
             let uri = this.base_url + `api/v1/department-list`;
-           await axios.get(uri).then((response) => {
-            console.log("Here response is:", response.data);
+            await axios.get(uri).then((response) => {
+                console.log("Here response is:", response.data);
                 this.fetchedDepartments = response.data;
 
-                console.log("Departments to be added here:", this.departments );
+                console.log("Departments to be added here:", this.departments);
             });
         },
-        
+
         getDepartmentName(departmentId) {
             const department = uniqueDepartments.find(
                 (department) => department.id === departmentId
@@ -4087,6 +4090,7 @@ export default {
         // },
 
         partnerSubmit() {
+            this.isLoading=true;
             const memberArray = this.partnerMembers.map((member) => ({
                 email: member.email,
                 department_id: member.department_id,
@@ -4115,6 +4119,7 @@ export default {
                 .then((response) => {
                     const updatedPartner = response.data;
                     this.partner = updatedPartner;
+                    this.isLoading=false;
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
@@ -4124,6 +4129,7 @@ export default {
                     });
                 })
                 .catch((error) => {
+                    this.isLoading=false;
                     console.error("Error updating partner:", error);
                 });
         },
@@ -4591,6 +4597,126 @@ option {
     color: #a5292a;
     font-size: 18px;
     font-weight: 700;
+}
+
+.loading {
+  position: fixed;
+  z-index: 999;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+}
+
+/* Transparent Overlay */
+.loading:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255,255,255,0.5);
+}
+
+/* :not(:required) hides these rules from IE9 and below */
+.loading:not(:required) {
+  /* hide "loading..." text */
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+
+.loading:not(:required):after {
+  content: '';
+  display: block;
+  font-size: 10px;
+  width: 50px;
+  height: 50px;
+  margin-top: -0.5em;
+
+  /*border: 15px solid rgba(33, 150, 243, 1.0);*/
+  border: 15px solid #f7b309;
+  border-radius: 100%;
+  border-bottom-color: transparent;
+  -webkit-animation: spinner 1s linear 0s infinite;
+  animation: spinner 1s linear 0s infinite;
+
+
+}
+
+/* Animation */
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 
 </style>
