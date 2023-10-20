@@ -21,7 +21,7 @@
                                             }}
                                         </h4>
                                     </div>
-
+                                    
                                     <button
                                         data-toggle="modal"
                                         class="btn btn-light border"
@@ -352,6 +352,7 @@ export default {
     data() {
         return {
             progressData: {},
+            progressData1: {},
             selectedKpiTitle: "",
             selectedMemberKpi: "",
             selectedKpi: null,
@@ -509,36 +510,56 @@ export default {
 
         async fetchKpiMetricsDetails() {
             const kpimetricId = this.$props.kpimetricId;
+            const memberId = this.$store.state.loggedUser.member.id; // Get the member id of the logged user
 
-            // Get the kpiMetricMemberId based on the matching kpi_metric_id
-            const matchingKpiMetricId = kpimetricId; // Assuming the kpi_metric_id is the same as kpimetricId
-            const kpiMetricMember =
-                this.$store.state.loggedUser.member.kpi_metric_members.find(
-                    (member) => {
-                        return member.kpi_metric_id === matchingKpiMetricId;
-                    }
-                );
+            console.log("I am seeing this member now:",memberId);
 
-            if (!kpiMetricMember) {
-                console.log("No matching KPI Metric Member found.");
-                return; // Exit the function if no matching member is found
-            }
-
-            const kpiMetricMemberId = kpiMetricMember.id;
-
+            // Construct the URI with kpiMetricId and memberId
             const uri =
                 this.base_url +
-                `api/v1/kpimetrics/${kpimetricId}/progress/${kpiMetricMemberId}`;
-            await axios
-                .get(uri)
-                .then((response) => {
-                    console.log("Api Response:", response.data);
-                    this.progressData = response.data;
-                })
-                .catch((error) => {
-                    console.error("Error fetching member details:", error);
-                });
+                `api/v1/kpimetrics/${kpimetricId}/progress/${memberId}`;
+
+            try {
+                const response = await axios.get(uri); // Await the API request
+                console.log("API Response:", response.data);
+                this.progressData = response.data;
+            } catch (error) {
+                console.error("Error fetching member details:", error);
+            }
         },
+
+        // async fetchKpiMetricsDetails() {
+        //     const kpimetricId = this.$props.kpimetricId;
+
+        //     // Get the kpiMetricMemberId based on the matching kpi_metric_id
+        //     const matchingKpiMetricId = kpimetricId; // Assuming the kpi_metric_id is the same as kpimetricId
+        //     const kpiMetricMember =
+        //         this.$store.state.loggedUser.member.kpi_metric_members.find(
+        //             (member) => {
+        //                 return member.kpi_metric_id === matchingKpiMetricId;
+        //             }
+        //         );
+
+        //     if (!kpiMetricMember) {
+        //         console.log("No matching KPI Metric Member found.");
+        //         return; // Exit the function if no matching member is found
+        //     }
+
+        //     const kpiMetricMemberId = kpiMetricMember.id;
+
+        //     const uri =
+        //         this.base_url +
+        //         `api/v1/kpimetrics/${kpimetricId}/progress/${kpiMetricMemberId}`;
+        //     await axios
+        //         .get(uri)
+        //         .then((response) => {
+        //             console.log("Api Response:", response.data);
+        //             this.progressData = response.data;
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error fetching member details:", error);
+        //         });
+        // },
 
         handleFileUpload(event) {
             // Get the selected files from the event

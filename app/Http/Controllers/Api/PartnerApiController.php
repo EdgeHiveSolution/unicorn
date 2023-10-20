@@ -49,7 +49,7 @@ public function index(Request $request)
     $userId = $request->input('user_id');
     $userRoleId = $request->input('user_role_id');
 
-    if ($userRoleId == 14) {
+    if ($userRoleId == 2) {
         
         $memberId = Member::where('user_id', $userId)->value('id');
         $partnerIds = MemberPartner::where('member_id', $memberId)->pluck('partner_id');
@@ -57,7 +57,7 @@ public function index(Request $request)
         $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
             ->whereIn('id', $partnerIds)
             ->get();
-    } else if ($userRoleId == 24) {
+    } else if ($userRoleId == 3) {
         // User is a partner
         $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
             ->where('user_id', $userId)
@@ -107,7 +107,7 @@ public function index(Request $request)
         $userId = $request->input('user_id');
         $userRoleId = $request->input('user_role_id');
 
-        if ($userRoleId == 14) {
+        if ($userRoleId == 2) {
 
             $memberId = Member::where('user_id', $userId)->value('id');
             $partnerIds = MemberPartner::where('member_id', $memberId)->pluck('partner_id');
@@ -119,7 +119,7 @@ public function index(Request $request)
             ->take(3)
             ->get();
 
-        } else if ($userRoleId == 24) {
+        } else if ($userRoleId == 3) {
 
              // User is a partner
         $partners = Partner::with('departments', 'members', 'kpis')
@@ -273,7 +273,8 @@ public function store(Request $request)
                 try {
                     Log::info('Existing Member Email: ' . $existingMember->email);
                     Log::info('Department ID: ' . $member->department_id);
-                    Mail::to($existingMember->email)->send(new PatnerInvitation($existingMember, $partner->name, $password, 'login'));
+                    $loginLink = url('/login');
+                    Mail::to($existingMember->email)->send(new PatnerInvitation($existingMember, $partner->name, $password, 'login', $loginLink ));
                     $existingMember->partners()->attach($partner->id, [
                         'department_id' => $existingMember->department_id,
                         'role' => $member->role,
@@ -501,17 +502,23 @@ public function store(Request $request)
      $members = $request->input('members', []);
 
      Log::info("Members are:", ['members'=> $members]);
+     $password_generator = new PasswordGeneratorUtil();
 
      foreach ($members as $memberData) {
         $memberEmail = trim($memberData['email']);
         $departmentId = $memberData['department_id'] ?? null;
     
-        // Check if the member already exists in the department
+        // Associate the department_id with the partner
+        if ($departmentId) {
+            $partner->departments()->attach($departmentId);
+        }
+    
+        // Check if the member already exists in the partner
         $existingMemberInPartner = $partner->members()->where('email', $memberEmail)->first();
     
         if (!$existingMemberInPartner) {
-            // Member doesn't exist in the department, send emails to new members only
-            $existingMember = Member::where('email', $memberEmail)->first();
+            // Member doesn't exist in the partner, send emails to new members only
+            $existingMember = Member::withTrashed()->where('email', $memberEmail)->first();
     
             if (!$existingMember) {
                 // Include the department ID in the registration link URL
@@ -519,9 +526,30 @@ public function store(Request $request)
     
                 // Send the registration link to the new member
                 Mail::to($memberEmail)->queue(new PatnerInvitation(null, $request->name, null, 'register', $registrationLink));
+            } else {
+                // Check if the member is soft-deleted (marked as deleted but not removed from the database)
+                if ($existingMember->trashed()) {
+                    // Reactivate the soft-deleted member
+                    $existingMember->restore();
+                }
+    
+                // Send an invitation email with the 'login' type and include the password
+                $loginLink = url('/login');
+                $password = $password_generator->generatePassword(); // Generate a password
+    
+                // Ensure that you pass a non-deleted instance of Member
+                Mail::to($existingMember->email)->queue(new PatnerInvitation(
+                    $existingMember,
+                    $request->name,
+                    $password,
+                    'login',
+                    null,
+                    $loginLink
+                ));
             }
         }
     }
+    
     
  
 

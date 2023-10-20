@@ -227,7 +227,10 @@
                                                 >
                                                     <td>
                                                         <div>
-                                                            {{ metric.name }}
+                                                            {{
+                                                                metric.metric
+                                                                    .name
+                                                            }}
                                                         </div>
                                                         <div>
                                                             <span
@@ -1118,7 +1121,10 @@
                         </div>
                         <hr />
 
-                        <div class="align-right mb-5">
+                         <div v-if="isLoading" class="loading">
+                
+                         </div>
+                        <div v-else class="align-right mb-5">
                             <div class="text-right mt-3 mb-5">
                                 <button
                                     class="btn btn-light border-dark btn-action"
@@ -1197,7 +1203,8 @@
                                         </thead>
                                         <tbody>
                                             <tr
-                                                v-for="member in this.partner.members"
+                                                v-for="member in this.partner
+                                                    .members"
                                                 :key="member.id"
                         
                                             >
@@ -1394,19 +1401,26 @@
                     <h4>KPIs</h4>
                     <p>Key milestones for {{ partner.name }}</p>
                 </div>
-                <div v-if="loggedUser.user_role_id === 4">
-                    <a
-                        href="#"
-                        class="text-light add-link text-sm btn btn-primary btn-sm my-2"
-                        data-toggle="modal"
-                        data-target="#addKpimodal"
-                    >
-                        <span class="plus">+</span> Add KPI
-                    </a>
+                <div
+                    v-if="
+                        loggedUser.user_role_id === 1 ||
+                        loggedUser.user_role_id === 3
+                    "
+                >
+                    <div>
+                        <a
+                            href="#"
+                            class="text-light add-link text-sm btn btn-primary btn-sm my-2"
+                            data-toggle="modal"
+                            data-target="#addKpimodal"
+                        >
+                            <span class="plus">+</span> Add KPI
+                        </a>
+                    </div>
                 </div>
 
                 <div class="row">
-                    <div v-if="loggedUser.user_role_id === 4">
+                    <div v-if="loggedUser.user_role_id === 1">
                         <div
                             class="col-12 px-0"
                             v-for="kpi in kpis"
@@ -1425,7 +1439,7 @@
                                             >
                                         </p>
                                     </div>
-                                    <div v-if="loggedUser.user_role_id === 4">
+                                    <div v-if="loggedUser.user_role_id === 1">
                                         <button
                                             @click="openAddKpiMetricModal(kpi)"
                                             data-toggle="modal"
@@ -1449,228 +1463,6 @@
                                                 type="text"
                                                 placeholder="Search for Kpi Metrics"
                                                 v-model="searchQuery"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <button
-                                            style="height: 10px"
-                                            class="btn btn-light p-3 btn-icon"
-                                        >
-                                            <i
-                                                class="mdi mdi-sort-variant text-dark"
-                                            ></i>
-                                            Filters
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="card-body mb-5">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>KPI metric</th>
-                                                    <th>Target</th>
-                                                    <th>Response period</th>
-                                                    <th>Assigned to</th>
-                                                    <th>Departments</th>
-                                                    <!-- <th></th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <!-- <tr
-                                                v-for="kpi in partner.kpis"
-                                                :key="kpi.id"
-
-                                                 > -->
-                                                <tr
-                                                    v-for="kpimetric in kpi.kpi_metrics"
-                                                    :key="kpimetric.id"
-                                                >
-                                                    <td>
-                                                        <div>
-                                                            <span>
-                                                                {{
-                                                                    kpimetric.title
-                                                                }}
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td class="">
-                                                        <div>
-                                                            {{
-                                                                kpimetric.target
-                                                            }}
-                                                            <!-- Display KPI target, assuming target is a property of the KPI -->
-                                                        </div>
-                                                    </td>
-                                                    <td class="">
-                                                        <div>
-                                                            {{
-                                                                kpimetric.response_period
-                                                            }}
-                                                            <!-- Display KPI response_period -->
-                                                        </div>
-                                                    </td>
-
-                                                    <td class="td-members">
-                                                        <!--<template
-                                                            v-for="dataMember in partnersWithProgress"
-                                                            :key="dataMember.id"
-                                                        >
-                                                            <img
-                                                                v-for="member in dataMember.members"
-                                                                :key="member.id"
-                                                                src="member.photo"
-                                                                :alt="
-                                                                    member.email
-                                                                "
-                                                            />
-                                                        </template>-->
-
-                                                         <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                               
-                                               <template v-for="(member,index) in partnersWithProgress"
-                                               :key="index"
-                                               >
-
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                                <!--<p class="member_image_text">+1</p>-->
-                                                </div>
-
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
-
-                                                <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                                </template>
-
-                                                <!--<img
-                                                    
-                                                    alt="image"
-                                                />-->
-                                                </div>
-                                                        
-                                                    </td>
-
-                                                    <td>
-                                                        <template
-                                                            v-for="dataDepartment in partnersWithProgress"
-                                                            :key="
-                                                                dataDepartment.id
-                                                            "
-                                                        >
-                                                            <span
-                                                                class="department-tag"
-                                                                v-for="department in dataDepartment.uniqueDepartments"
-                                                                :key="
-                                                                    department
-                                                                "
-                                                            >
-                                                                {{ department }}
-                                                            </span>
-                                                        </template>
-                                                    </td>
-
-                                                    <!-- <td>
-                                                    <button
-                                                        class="btn view-btn"
-                                                    >
-                                                        <a
-                                                            :href="
-                                                                '/kpimetrics/' +
-                                                                kpimetric.id
-                                                            "
-                                                            class="text-light add-link text-sm"
-                                                        >
-                                                            <i
-                                                                class="mdi mdi-eye-outline text-light"
-                                                            ></i>
-                                                            Activity</a
-                                                        >
-                                                    </button>
-                                                </td> -->
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <pagination
-                                            :total="totalPages"
-                                            :current="currentPage"
-                                            @page-change="handlePageChange"
-                                        ></pagination>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div v-else-if="loggedUser.user_role_id === 14">
-                        <div
-                            class="col-12 px-0"
-                            v-for="kpi in kpis"
-                            :key="kpi.id"
-                        >
-                            <div class="card mb-5">
-                                <div class="d-flex justify-content-between p-4">
-                                    <div>
-                                        <h4>{{ kpi.title }}</h4>
-                                        <p>
-                                            <b> Review period: </b>
-                                            <span class="txt-gray">
-                                                {{
-                                                    kpi.review_period_range
-                                                }}</span
-                                            >
-                                        </p>
-                                    </div>
-                                    <div v-if="loggedUser.user_role_id === 4">
-                                        <button
-                                            @click="openAddKpiMetricModal(kpi)"
-                                            data-toggle="modal"
-                                            class="btn btn-light border"
-                                        >
-                                            + Add KPI metric
-                                        </button>
-                                    </div>
-                                </div>
-                                <div
-                                    class="card-header d-flex justify-content-between my-3"
-                                >
-                                    <div>
-                                        <div class="input-container">
-                                            <i
-                                                class="mdi mdi-magnify mdi-icon"
-                                            ></i>
-                                            <input
-                                                style="height: 25px"
-                                                class="input-field"
-                                                type="text"
-                                                placeholder="Search for metrics"
                                             />
                                         </div>
                                     </div>
@@ -1734,67 +1526,194 @@
                                                             <!-- Display KPI response_period -->
                                                         </div>
                                                     </td>
+
                                                     <td class="td-members">
-                                                        <!--<template
-                                                            v-for="dataMember in partnersWithProgress"
-                                                            :key="dataMember.id"
-                                                        >
+                                                       
                                                             <img
-                                                                v-for="member in dataMember.members"
+                                                                v-for="member in membersData"
                                                                 :key="member.id"
                                                                 src="member.photo"
                                                                 :alt="
                                                                     member.email
                                                                 "
                                                             />
-                                                        </template>-->
-                                                        <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                               
-                                               <template v-for="(member,index) in partnersWithProgress"
-                                               :key="index"
-                                               >
+                                                       
+                                                    </td>
 
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                                <!--<p class="member_image_text">+1</p>-->
-                                                </div>
+                                                    <td>
+                                                        <template
+                                                            v-for="dataDepartment in partnersWithProgress"
+                                                            :key="
+                                                                dataDepartment.id
+                                                            "
+                                                        >
+                                                            <span
+                                                                class="department-tag"
+                                                                v-for="department in dataDepartment.uniqueDepartments"
+                                                                :key="
+                                                                    department
+                                                                "
+                                                            >
+                                                                {{ department }}
+                                                            </span>
+                                                        </template>
+                                                    </td>
 
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
+                                                    <td>
+                                                        <button
+                                                            class="btn view-btn"
+                                                        >
+                                                            <a
+                                                                :href="
+                                                                    '/kpimetrics/' +
+                                                                    kpimetric.id
+                                                                "
+                                                                class="text-light add-link text-sm"
+                                                            >
+                                                                <i
+                                                                    class="mdi mdi-eye-outline text-light"
+                                                                ></i>
+                                                                Activity</a
+                                                            >
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <pagination
+                                            :total="totalPages"
+                                            :current="currentPage"
+                                            @page-change="handlePageChange"
+                                        ></pagination>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                                <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                                </template>
+                    <div v-else-if="loggedUser.user_role_id === 2">
+                        <div
+                            class="col-12 px-0"
+                            v-for="kpi in kpis"
+                            :key="kpi.id"
+                        >
+                            <div class="card mb-5">
+                                <div class="d-flex justify-content-between p-4">
+                                    <div>
+                                        <h4>{{ kpi.title }}</h4>
+                                        <p>
+                                            <b> Review period: </b>
+                                            <span class="txt-gray">
+                                                {{
+                                                    kpi.review_period_range
+                                                }}</span
+                                            >
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <div
+                                            v-if="
+                                                !loggedUser.user_role_id === 2
+                                            "
+                                        >
+                                            <button
+                                                @click="
+                                                    openAddKpiMetricModal(kpi)
+                                                "
+                                                data-toggle="modal"
+                                                class="btn btn-light border"
+                                            >
+                                                + Add KPI metric
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="card-header d-flex justify-content-between my-3"
+                                >
+                                    <div>
+                                        <div class="input-container">
+                                            <i
+                                                class="mdi mdi-magnify mdi-icon"
+                                            ></i>
+                                            <input
+                                                style="height: 25px"
+                                                class="input-field"
+                                                type="text"
+                                                placeholder="Search for metrics"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button
+                                            style="height: 10px"
+                                            class="btn btn-light p-3 btn-icon"
+                                        >
+                                            <i
+                                                class="mdi mdi-sort-variant text-dark"
+                                            ></i>
+                                            Filters
+                                        </button>
+                                    </div>
+                                </div>
 
-                                                <!--<img
-                                                    
-                                                    alt="image"
-                                                />-->
-                                                </div>
+                                <div class="card-body mb-5">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>KPI metric</th>
+                                                    <th>Target</th>
+                                                    <th>Response period</th>
+                                                    <th>Assigned to</th>
+                                                    <th>Departments</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- <tr
+                                                v-for="kpi in partner.kpis"
+                                                :key="kpi.id"
+
+                                                 > -->
+                                                <tr
+                                                    v-for="kpimetric in kpi.kpi_metrics"
+                                                    :key="kpimetric.id"
+                                                >
+                                                    <td>
+                                                        <div>
+                                                            <span>
+                                                                {{
+                                                                    kpimetric.title
+                                                                }}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="">
+                                                        <div>
+                                                            {{
+                                                                kpimetric.target
+                                                            }}
+                                                            <!-- Display KPI target, assuming target is a property of the KPI -->
+                                                        </div>
+                                                    </td>
+                                                    <td class="">
+                                                        <div>
+                                                            {{
+                                                                kpimetric.response_period
+                                                            }}
+                                                            <!-- Display KPI response_period -->
+                                                        </div>
+                                                    </td>
+                                                    <td class="td-members">
+                                                      <img
+                                                                v-for="member in membersData"
+                                                                :key="member.id"
+                                                                src="member.photo"
+                                                                :alt="
+                                                                    member.email
+                                                                "
+                                                            />
                                                     </td>
                                                     <td>
                                                         <template
@@ -1817,6 +1736,11 @@
 
                                                     <td>
                                                         <button
+                                                            v-if="
+                                                                canViewActivity(
+                                                                    kpimetric
+                                                                )
+                                                            "
                                                             class="btn view-btn"
                                                         >
                                                             <a
@@ -2491,6 +2415,9 @@ export default {
                 about: null,
                 documents:null
             },
+            isLoading:false,
+
+            membersData: [],
 
 
             kpiPartnerProgress: {
@@ -2641,6 +2568,13 @@ export default {
     },
 
     computed: {
+        isKpiMetricMembersEmpty() {
+            return (
+                this.$store.state.loggedUser.member.kpi_metric_members
+                    .length === 0
+            );
+        },
+
         loggedUser() {
             return this.$store.state.loggedUser;
         },
@@ -2734,7 +2668,7 @@ export default {
 
         // },
 
-   //All Members assigned to this partner section
+        //All Members assigned to this partner section
         calculateActiveKpiProgress() {
             return (partner) => {
                 const kpiMetrics = partner.kpis
@@ -3086,10 +3020,8 @@ export default {
             return uniqueDepartments;
         },
 
-
-        
         departmentsUnique() {
-            const departmentsUnique= [];
+            const departmentsUnique = [];
 
             this.fetchedDepartments.forEach((department) => {
                 // Check if the department is not already in the uniqueDepartments array
@@ -3119,7 +3051,8 @@ export default {
         await this.fetchMetrics();
         await this.fetchKpiMetrics();
         await this.fetchCountries();
-        await this.fetchDepartments()
+        await this.fetchDepartments();
+        await this.fetchMembers();
 
         this.formattedDate = format(
             new Date(this.partner.created_at),
@@ -3130,6 +3063,8 @@ export default {
             "KpiMetrics fetch according to metric_id:",
             JSON.stringify(this.kpiMetricsDetails)
         );
+
+        console.log("Members returned:", this.membersData)
         console.log("Metrics are:", JSON.stringify(this.metrics));
         console.log("Partners prop:", this.partner);
         console.log("Kpi Metrics are:", JSON.stringify(this.partner.kpis));
@@ -3366,17 +3301,61 @@ export default {
     },
 
     methods: {
-
-         async fetchDepartments() {
+        async fetchDepartments() {
             let uri = this.base_url + `api/v1/department-list`;
-           await axios.get(uri).then((response) => {
-            console.log("Here response is:", response.data);
+            await axios.get(uri).then((response) => {
+                console.log("Here response is:", response.data);
                 this.fetchedDepartments = response.data;
 
-                console.log("Departments to be added here:", this.departments );
+                console.log("Departments to be added here:", this.departments);
             });
         },
-        
+
+        // Inside your Vue.js component method (e.g., fetchMembers)
+        // async fetchMembers() {
+        //     // Assuming you have the partnerId prop passed in
+        //     const partnerId = this.$props.partnerId;
+
+        //     console.log("Partner Id to be sent to server:",partnerId)
+
+        //     // Construct the URI to fetch members based on the partnerId
+        //     const uri =
+        //         this.base_url + `api/v1/members?partner_id=${partnerId}`;
+
+        //    await  axios
+        //         .get(uri)
+        //         .then((response) => {
+        //             this.membersData = response.data.data;
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error fetching members:", error);
+        //         });
+        // },
+
+        async fetchMembers() {
+    const partnerId = this.$props.partnerId;
+    console.log("Partner Id to be sent to server:", partnerId);
+
+    const uri = this.base_url + `api/v1/members/${partnerId}`;
+
+    try {
+        const response = await axios.get(uri);
+        console.log("API Members Response:", response.data.data);
+        this.membersData = response.data.data;
+    } catch (error) {
+        console.error("Error fetching members:", error);
+    }
+},
+
+
+        canViewActivity(kpimetric) {
+            // Check if the logged user's member_id is in the kpi_metric_members for the current KPI metric
+            const memberId = this.$store.state.loggedUser.member.id;
+            return kpimetric.kpi_metric_members.some(
+                (member) => member.member_id === memberId
+            );
+        },
+
         getDepartmentName(departmentId) {
             const department = uniqueDepartments.find(
                 (department) => department.id === departmentId
@@ -3845,6 +3824,8 @@ export default {
                 (member) => member.id === memberId
             );
 
+            console.log("This id is mine:", memberIndex);
+
             if (memberIndex !== -1) {
                 const member = this.partnerMembers[memberIndex];
 
@@ -3948,6 +3929,7 @@ export default {
         // },
 
         partnerSubmit() {
+            this.isLoading=true;
             const memberArray = this.partnerMembers.map((member) => ({
                 email: member.email,
                 department_id: member.department_id,
@@ -3976,6 +3958,7 @@ export default {
                 .then((response) => {
                     const updatedPartner = response.data;
                     this.partner = updatedPartner;
+                    this.isLoading=false;
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
@@ -3985,6 +3968,7 @@ export default {
                     });
                 })
                 .catch((error) => {
+                    this.isLoading=false;
                     console.error("Error updating partner:", error);
                 });
         },
@@ -4452,6 +4436,126 @@ option {
     color: #a5292a;
     font-size: 18px;
     font-weight: 700;
+}
+
+.loading {
+  position: fixed;
+  z-index: 999;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+}
+
+/* Transparent Overlay */
+.loading:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255,255,255,0.5);
+}
+
+/* :not(:required) hides these rules from IE9 and below */
+.loading:not(:required) {
+  /* hide "loading..." text */
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+
+.loading:not(:required):after {
+  content: '';
+  display: block;
+  font-size: 10px;
+  width: 50px;
+  height: 50px;
+  margin-top: -0.5em;
+
+  /*border: 15px solid rgba(33, 150, 243, 1.0);*/
+  border: 15px solid #f7b309;
+  border-radius: 100%;
+  border-bottom-color: transparent;
+  -webkit-animation: spinner 1s linear 0s infinite;
+  animation: spinner 1s linear 0s infinite;
+
+
+}
+
+/* Animation */
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 
 </style>

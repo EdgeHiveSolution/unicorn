@@ -54,32 +54,32 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-else>
+                           <!-- <div v-else>
                                 <p>Loading progress details...</p>
-                            </div>
+                            </div>-->
+
+                            <div v-if="isLoading" class="loading">
+                
+                         </div>
 
                             <!-- New card for comments section -->
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Comments</h5>
-
                                     <div
                                         v-for="comment in formattedTimestamps"
                                         :key="comment.id"
                                     >
                                         <!-- Display user information like profile photos here -->
-                                        <div>
+                                        <div v-if="comment.sender">
                                             <!-- You can display user profile photo here -->
                                             <img
-                                                :src="
-                                                    comment.sender
-                                                        .photo
-                                                "
+                                                :src="comment.sender.photo"
                                                 alt="Profile Photo"
                                             />
                                         </div>
                                         <div>
-                                            <strong>{{
+                                            <strong v-if="comment.sender">{{
                                                 comment.sender.name
                                             }}</strong>
                                             {{ comment.formattedTimestamp }}
@@ -137,6 +137,7 @@ export default {
             newComment: "",
             base_url: "../",
             progressDetail: {},
+            isLoading:false
         };
     },
 
@@ -162,7 +163,7 @@ export default {
         await this.fetchComments();
         await this.fetchProgressDetails();
 
-        console.log("Comments are:",this.comments);
+        console.log("Comments are:", this.comments);
     },
 
     mounted() {
@@ -180,33 +181,30 @@ export default {
                 const response = await axios.get(uri);
                 const comments = response.data.data;
 
+
+                console.log("Which comment is this being updated:", comments);
+
                 // Fetch sender information for each comment
                 for (const comment of comments) {
                     const senderId = comment.sender_id;
 
-                    // Check if the sender_id matches the ID of the logged-in user
-                    if (senderId === this.loggedUser.id) {
-                        // Use the logged-in user's data
-                        comment.sender = this.loggedUser;
-                    } else {
-                        // Fetch sender information from the API
-                        const senderInfoUri =
-                            this.base_url + `api/v1/users/${senderId}`;
+                    // Fetch sender information from the API
+                    const senderInfoUri =
+                        this.base_url + `api/v1/users/${senderId}`;
 
-                        try {
-                            const senderResponse = await axios.get(
-                                senderInfoUri
-                            );
-                            const senderData = senderResponse.data;
+                    try {
+                        const senderResponse = await axios.get(senderInfoUri);
+                        const senderData = senderResponse.data;
 
-                            // Assign the sender's data to the comment
-                            comment.sender = senderData;
-                        } catch (error) {
-                            console.error(
-                                "Error fetching sender information:",
-                                error
-                            );
-                        }
+                        // Assign the sender's data to the comment
+                        comment.sender = senderData;
+
+                        console.log("Senders info", comment.sender);
+                    } catch (error) {
+                        console.error(
+                            "Error fetching sender information:",
+                            error
+                        );
                     }
 
                     // Push the updated comment to the comments array
@@ -220,6 +218,7 @@ export default {
 
         // New method to post a comment
         postComment() {
+            this.isLoading=true;
             const progressId = this.$props.progressId;
             const uri = this.base_url + `api/v1/progress-chats`;
 
@@ -232,9 +231,11 @@ export default {
                 .then((response) => {
                     // Successfully posted comment, update the comments array with the new comment
                     this.comments.push(response.data);
-                    this.newComment = ""; // Clear the input field
+                    this.newComment = "";
+                    this.isLoading=false; // Clear the input field
                 })
                 .catch((error) => {
+                    this.isLoading=false;
                     console.error("Error posting comment:", error);
                 });
         },
@@ -397,5 +398,126 @@ img {
 
 .view-btn i {
     margin-right: 8px;
+}
+
+
+.loading {
+  position: fixed;
+  z-index: 999;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+}
+
+/* Transparent Overlay */
+.loading:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255,255,255,0.5);
+}
+
+/* :not(:required) hides these rules from IE9 and below */
+.loading:not(:required) {
+  /* hide "loading..." text */
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+
+.loading:not(:required):after {
+  content: '';
+  display: block;
+  font-size: 10px;
+  width: 50px;
+  height: 50px;
+  margin-top: -0.5em;
+
+  /*border: 15px solid rgba(33, 150, 243, 1.0);*/
+  border: 15px solid #f7b309;
+  border-radius: 100%;
+  border-bottom-color: transparent;
+  -webkit-animation: spinner 1s linear 0s infinite;
+  animation: spinner 1s linear 0s infinite;
+
+
+}
+
+/* Animation */
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 </style>

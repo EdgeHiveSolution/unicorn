@@ -420,13 +420,11 @@
                                     </thead>
                                     <tbody>
                                         <!-- Replace the static data with dynamic data using v-for directive -->
-                                        <tr
-                                            v-for="metric in metricWithProgress"
-                                            :key="metric.id"
-                                        >
+                                        <tr v-for="metric in uniqueMetricWithProgress" :key="metric.id">
+
                                             <td>
                                                 <div>
-                                                    {{ metric.name }}
+                                                    {{ metric.metric.name }}
                                                 </div>
                                                 <div>
                                                     <span class="txt-gray">
@@ -438,6 +436,7 @@
                                                     </span>
                                                 </div>
                                             </td>
+
                                             <td>
                                                 <span class="txt-gray">{{
                                                     metric.totalCurrentValue.toFixed(
@@ -445,6 +444,7 @@
                                                     )
                                                 }}</span>
                                             </td>
+
                                             <td>
                                                 <span class="txt-gray">{{
                                                     metric.totalTargetValue.toFixed(
@@ -474,66 +474,21 @@
                                                 </div>
                                             </td>
 
-                                            <td class="td-members">
-                                                <!--<template
-                                                    v-for="member in topDrivers"
-                                                    :key="member.id"
-                                                >
-                                                    <img
-                                                        v-for="member in member.topDrivers"
-                                                        :key="member.id"
-                                                        src="assets/images/faces/face1.jpg"
-                                                        :alt="member.email"
-                                                    />
-                                                </template>-->
-                                                 <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                               
-                                               <template v-for="(member,index) in topDrivers"
-                                               :key="index"
-                                               >
-
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                                <!--<p class="member_image_text">+1</p>-->
-                                                </div>
-
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
-
-                                                <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                                </template>
-
-                                                <!--<img
-                                                    
-                                                    alt="image"
-                                                />-->
-                                                </div>
-                                            </td>
+                                             <td class="td-members">
+                                                        <template
+                                                            v-for="member in topDrivers"
+                                                            :key="member.id"
+                                                        >
+                                                            <img
+                                                                v-for="member in member.topDrivers"
+                                                                :key="member.id"
+                                                                src="assets/images/faces/face1.jpg"
+                                                                :alt="
+                                                                    member.email
+                                                                "
+                                                            />
+                                                        </template>
+                                                    </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -1421,6 +1376,20 @@ export default {
                 });
             });
             return uniqueDepartments;
+        },
+
+        uniqueMetricWithProgress() {
+            // Use a Set to store unique identifiers
+            const uniqueIdentifiers = new Set();
+
+            // Filter out duplicates based on a unique identifier (e.g., id)
+            return this.metricWithProgress.filter((metric) => {
+                if (!uniqueIdentifiers.has(metric.id)) {
+                    uniqueIdentifiers.add(metric.id);
+                    return true;
+                }
+                return false;
+            });
         },
 
         metricWithProgress() {

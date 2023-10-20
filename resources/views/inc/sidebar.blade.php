@@ -1,7 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
         <!-- Dashboard -->
-        @if (auth()->check() && auth()->user()->isAdmin() || auth()->user()->user_role_id == 14)
+        @if (auth()->check() && auth()->user()->isAdmin() || auth()->user()->user_role_id == 2)
         <li class="nav-item">
             <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/">
                 <span class="menu-icon">
@@ -12,7 +12,7 @@
         </li>
         @endif
 
-        @if (auth()->check() &&  auth()->user()->user_role_id == 24)
+        @if (auth()->check() &&  auth()->user()->user_role_id == 3)
         <!-- Partners -->
         <li style="margin-top: -10px" class="nav-item">
             <a class="nav-link {{ Request::is('partners') ? 'active' : '' }}" href="/partners">
@@ -25,7 +25,7 @@
 
         @endif
 
-        @if (auth()->check() && (auth()->user()->isAdmin()  || auth()->user()->user_role_id == 14))
+        @if (auth()->check() && (auth()->user()->isAdmin()  || auth()->user()->user_role_id == 2))
         <!-- Partners -->
         <li style="margin-top: -10px" class="nav-item">
             <a class="nav-link {{ Request::is('partners') ? 'active' : '' }}" href="/partners">
@@ -63,7 +63,7 @@
         @endif
 
         <!-- My Profile -->
-        @if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->user_role_id == 24  || auth()->user()->user_role_id == 14))
+        @if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->user_role_id == 3  || auth()->user()->user_role_id == 2))
         <li style="margin-top: -10px" class="nav-item">
             <a class="nav-link {{ Request::is('profile/*') ? 'active' : '' }}" href="/profile/{{ Auth::user()->id }}">
                 <span class="menu-icon">
@@ -75,7 +75,7 @@
         @endif
 
         <!-- Settings -->
-        @if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->user_role_id == 24 || auth()->user()->user_role_id == 14))
+        @if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->user_role_id == 3 || auth()->user()->user_role_id == 2))
         <li style="margin-top: -10px" class="nav-item">
             <a class="nav-link {{ Request::is('settings') ? 'active' : '' }}" href="/settings">
                 <span class="menu-icon">

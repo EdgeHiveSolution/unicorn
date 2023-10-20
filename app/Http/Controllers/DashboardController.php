@@ -36,7 +36,7 @@ class DashboardController extends Controller
          $loggeduser = Session::get('user');
          Log::info('Session User', ['user' => $loggeduser]);
      
-         if ($loggeduser->user_role_id == 14) {
+         if ($loggeduser->user_role_id == 2) {
              
              $memberId = Member::where('user_id', $loggeduser->id)->value('id');
              Log::info('Member id is:' . $memberId);

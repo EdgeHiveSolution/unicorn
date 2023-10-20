@@ -5,7 +5,7 @@
             <p class="subtitle_text">Manage and on-board Tactive partners.</p>
         </div>
 
-        <div v-if="loggedUser.user_role_id === 4">
+        <div v-if="loggedUser.user_role_id === 1">
             <div class="btn btn-primary my-3 module-add">
                 <a class="text-light" href="/partners/create">+ Add Partner</a>
             </div>
