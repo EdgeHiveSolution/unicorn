@@ -56,7 +56,7 @@ Route::delete('v1/metric-delete', [MetricApiController::class, 'destroy']);
 
 Route::post('v1/progress', [ProgressApiController::class, 'store']);
 // Route::get('v1/kpimetrics/{kpimetricId}/progress/{kpiMetricMemberId}', [ProgressApiController::class, 'getProgressForKpiMetric']);
-Route::get('v1/kpimetrics/{kpimetricId}/progress/{kpiMetricMemberId}', [ProgressApiController::class, 'getProgressForKpiMetric']);
+Route::get('v1/kpimetrics/{kpimetricId}/progress/{memberId}', [ProgressApiController::class, 'getProgressForKpiMetric']);
 
 Route::get('v1/kpimetrics/{kpimetricId}/progress', [ProgressApiController::class, 'getKpiMetricProgressDetail']);
 
@@ -76,6 +76,9 @@ Route::patch('v1/member-update',[MemberApiController::class, 'update']);
 Route::delete('v1/member-delete',[MemberApiController::class, 'destroy']);
 Route::get('v1/member-progress-records/{memberId}', [MemberApiController::class, 'removeMemberFromList']);
 Route::delete('v1/remove-member/{id}', [MemberApiController::class, 'removeMember']);
+
+Route::get('v1/members/{partnerId}', [MemberApiController::class, 'getMembersByPartner']);
+
 
 
 

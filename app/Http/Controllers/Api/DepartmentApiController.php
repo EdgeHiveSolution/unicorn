@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Util\PasswordGeneratorUtil;
 use App\Mail\PatnerInvitation;
+use App\Mail\MemberReactivateInvitation;
 use Illuminate\Support\Facades\Log;
 use App\Models\Partner;
 use Illuminate\Support\Facades\DB;
@@ -202,50 +203,121 @@ class DepartmentApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function update(Request $request, $id)
+    {
+        Log::info("Requests", ['requests' => $request->all()]);
+    
+        // Validate the request data
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email',
+            'about' => 'required',
+            'members' => 'sometimes|array',
+            'members.*' => 'email',
+        ]);
+    
+        // Find the department by its ID
+        $department = Department::findOrFail($id);
+    
+        // Update department properties
+        $department->name = $request->input('name');
+        $department->email = $request->input('email');
+        $department->about = $request->input('about');
+        $department->save();
+    
+        // Update or add members
+        $members = $request->input('members', []);
+    
+        Log::info('Members array:', ['members' => $members]);
+        $password_generator = new PasswordGeneratorUtil();
+    
+        foreach ($members as $memberEmail) {
+            // Check if the member already exists in the department
+            $existingMemberInDepartment = $department->members()->where('email', trim($memberEmail))->first();
+            
+            if (!$existingMemberInDepartment) {
+                // Member doesn't exist in the department
+                $existingMember = Member::withTrashed()->where('email', trim($memberEmail))->first();
+            
+                if (!$existingMember) {
+                    // Member doesn't exist in the system, send an invitation to register
+                    $registrationLink = url('/register?department_id=' . $department->id);
+                    $password = $password_generator->generatePassword(); // Generate a password
+                    Mail::to($memberEmail)->queue(new MemberInvitation(null, $request->name, $password, 'register', $registrationLink));
+                } else {
+                    // Check if the member is soft-deleted (marked as deleted but not removed from the database)
+                    if ($existingMember->trashed()) {
+                        // Reactivate the soft-deleted member
+                        $existingMember->restore();
+                    }
+            
+                    // Send an invitation email with the 'login' type and include the password
+                    $loginLink = url('/login');
+                    $password = $password_generator->generatePassword(); // Generate a password
+        
+                    // Ensure that you pass a non-deleted instance of Member
+                    Mail::to($existingMember->email)->queue(new MemberReactivateInvitation(
+                        $existingMember,
+                        $request->name,
+                        $password,
+                        'login',
+                        null,
+                        $loginLink
+                    ));
+                }
+            }
+        }
+        
+        return response()->json([
+            'success' => 'Department updated successfully',
+        ]);
+    }
+     
 
-     public function update(Request $request, $id)
-     {
-         Log::info("Requests", ['requests' => $request->all()]);
-         // Validate the request data
-         $this->validate($request, [
-             'name' => 'required',
-             'email' => 'required|email',
-             'about' => 'required',
-             'members' => 'sometimes|array',
-             'members.*' => 'email',
-         ]);
+
+    //  public function update(Request $request, $id)
+    //  {
+    //      Log::info("Requests", ['requests' => $request->all()]);
+    //      // Validate the request data
+    //      $this->validate($request, [
+    //          'name' => 'required',
+    //          'email' => 'required|email',
+    //          'about' => 'required',
+    //          'members' => 'sometimes|array',
+    //          'members.*' => 'email',
+    //      ]);
      
-         // Find the department by its ID
-         $department = Department::findOrFail($id);
+    //      // Find the department by its ID
+    //      $department = Department::findOrFail($id);
      
-         // Update department properties
-         $department->name = $request->input('name');
-         $department->email = $request->input('email');
-         $department->about = $request->input('about');
-         $department->save();
+    //      // Update department properties
+    //      $department->name = $request->input('name');
+    //      $department->email = $request->input('email');
+    //      $department->about = $request->input('about');
+    //      $department->save();
      
-         // Update or add members
-         $members = $request->input('members', []);
+    //      // Update or add members
+    //      $members = $request->input('members', []);
      
-         foreach ($members as $memberEmail) {
-             // Check if the member already exists in the department
-             $existingMemberInDepartment = $department->members()->where('email', trim($memberEmail))->first();
+    //      foreach ($members as $memberEmail) {
+    //          // Check if the member already exists in the department
+    //          $existingMemberInDepartment = $department->members()->where('email', trim($memberEmail))->first();
      
-             if (!$existingMemberInDepartment) {
-                 // Member doesn't exist in the department, send emails to new members only
-                 $existingMember = Member::where('email', trim($memberEmail))->first();
+    //          if (!$existingMemberInDepartment) {
+    //              // Member doesn't exist in the department, send emails to new members only
+    //              $existingMember = Member::where('email', trim($memberEmail))->first();
      
-                 if (!$existingMember) {
-                     $registrationLink = url('/register?department_id=' . $department->id);
-                     Mail::to($memberEmail)->queue(new MemberInvitation(null, $request->name, null, 'register', $registrationLink));
-                 }
-             }
-         }
+    //              if (!$existingMember) {
+    //                  $registrationLink = url('/register?department_id=' . $department->id);
+    //                  Mail::to($memberEmail)->queue(new MemberInvitation(null, $request->name, null, 'register', $registrationLink));
+    //              }
+    //          }
+    //      }
      
-         return response()->json([
-             'success' => 'Department updated successfully',
-         ]);
-     }
+    //      return response()->json([
+    //          'success' => 'Department updated successfully',
+    //      ]);
+    //  }
      
 
 

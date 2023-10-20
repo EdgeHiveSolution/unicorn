@@ -225,7 +225,10 @@
                                                 >
                                                     <td>
                                                         <div>
-                                                            {{ metric.name }}
+                                                            {{
+                                                                metric.metric
+                                                                    .name
+                                                            }}
                                                         </div>
                                                         <div>
                                                             <span
@@ -1440,19 +1443,25 @@
                     <h4>KPIs</h4>
                     <p>Key milestones for {{ partner.name }}</p>
                 </div>
-                <div v-if="loggedUser.user_role_id === 1">
-                    <a
-                        href="#"
-                        class="text-light add-link text-sm btn btn-primary btn-sm my-2"
-                        data-toggle="modal"
-                        data-target="#addKpimodal"
-                    >
-                        <span class="plus">+</span> Add KPI
-                    </a>
+                <div
+                    v-if="
+                        loggedUser.user_role_id === 1 ||
+                        loggedUser.user_role_id === 3
+                    "
+                >
+                    <div>
+                        <a
+                            href="#"
+                            class="text-light add-link text-sm btn btn-primary btn-sm my-2"
+                            data-toggle="modal"
+                            data-target="#addKpimodal"
+                        >
+                            <span class="plus">+</span> Add KPI
+                        </a>
+                    </div>
                 </div>
 
                 <div class="row">
-                
                     <div v-if="loggedUser.user_role_id === 1">
                         <div
                             class="col-12 px-0"
@@ -1561,69 +1570,16 @@
                                                     </td>
 
                                                     <td class="td-members">
-
-                                                        <!--<template
-                                                            v-for="dataMember in partnersWithProgress"
-                                                            :key="dataMember.id"
-                                                        >
+                                                       
                                                             <img
-                                                                v-for="member in dataMember.members"
+                                                                v-for="member in membersData"
                                                                 :key="member.id"
                                                                 src="member.photo"
                                                                 :alt="
                                                                     member.email
                                                                 "
                                                             />
-                                                        </template>-->
-
-                                                         <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                               
-                                               <template v-for="(member,index) in partnersWithProgress"
-                                               :key="index"
-                                               >
-
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                                <!--<p class="member_image_text">+1</p>-->
-                                                </div>
-
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
-
-                                                <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                                </template>
-
-                                                <!--<img
-                                                    
-                                                    alt="image"
-                                                />-->
-                                                </div>
-                                                        
+                                                       
                                                     </td>
 
                                                     <td>
@@ -1696,14 +1652,22 @@
                                             >
                                         </p>
                                     </div>
-                                    <div v-if="loggedUser.user_role_id === 1">
-                                        <button
-                                            @click="openAddKpiMetricModal(kpi)"
-                                            data-toggle="modal"
-                                            class="btn btn-light border"
+                                    <div>
+                                        <div
+                                            v-if="
+                                                !loggedUser.user_role_id === 2
+                                            "
                                         >
-                                            + Add KPI metric
-                                        </button>
+                                            <button
+                                                @click="
+                                                    openAddKpiMetricModal(kpi)
+                                                "
+                                                data-toggle="modal"
+                                                class="btn btn-light border"
+                                            >
+                                                + Add KPI metric
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div
@@ -1734,6 +1698,7 @@
                                         </button>
                                     </div>
                                 </div>
+
                                 <div class="card-body mb-5">
                                     <div class="table-responsive">
                                         <table class="table">
@@ -1783,66 +1748,14 @@
                                                         </div>
                                                     </td>
                                                     <td class="td-members">
-                                                        <!--<template
-                                                            v-for="dataMember in partnersWithProgress"
-                                                            :key="dataMember.id"
-                                                        >
-                                                            <img
-                                                                v-for="member in dataMember.members"
+                                                      <img
+                                                                v-for="member in membersData"
                                                                 :key="member.id"
                                                                 src="member.photo"
                                                                 :alt="
                                                                     member.email
                                                                 "
                                                             />
-                                                        </template>-->
-                                                        <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                               
-                                               <template v-for="(member,index) in partnersWithProgress"
-                                               :key="index"
-                                               >
-
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                                <!--<p class="member_image_text">+1</p>-->
-                                                </div>
-
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
-
-                                                <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                                </template>
-
-                                                <!--<img
-                                                    
-                                                    alt="image"
-                                                />-->
-                                                </div>
                                                     </td>
                                                     <td>
                                                         <template
@@ -1865,6 +1778,11 @@
 
                                                     <td>
                                                         <button
+                                                            v-if="
+                                                                canViewActivity(
+                                                                    kpimetric
+                                                                )
+                                                            "
                                                             class="btn view-btn"
                                                         >
                                                             <a
@@ -2543,6 +2461,8 @@ export default {
             },
             isLoading:false,
 
+            membersData: [],
+
             kpiPartnerProgress: {
                 progress_percentage: null,
                 status: null,
@@ -2693,6 +2613,13 @@ export default {
     },
 
     computed: {
+        isKpiMetricMembersEmpty() {
+            return (
+                this.$store.state.loggedUser.member.kpi_metric_members
+                    .length === 0
+            );
+        },
+
         loggedUser() {
             return this.$store.state.loggedUser;
         },
@@ -3183,6 +3110,7 @@ export default {
         await this.fetchKpiMetrics();
         await this.fetchCountries();
         await this.fetchDepartments();
+        await this.fetchMembers();
 
         this.formattedDate = format(
             new Date(this.partner.created_at),
@@ -3193,6 +3121,8 @@ export default {
             "KpiMetrics fetch according to metric_id:",
             JSON.stringify(this.kpiMetricsDetails)
         );
+
+        console.log("Members returned:", this.membersData)
         console.log("Metrics are:", JSON.stringify(this.metrics));
         console.log("Partners prop:", this.partner);
         console.log("Kpi Metrics are:", JSON.stringify(this.partner.kpis));
@@ -3437,6 +3367,51 @@ export default {
 
                 console.log("Departments to be added here:", this.departments);
             });
+        },
+
+        // Inside your Vue.js component method (e.g., fetchMembers)
+        // async fetchMembers() {
+        //     // Assuming you have the partnerId prop passed in
+        //     const partnerId = this.$props.partnerId;
+
+        //     console.log("Partner Id to be sent to server:",partnerId)
+
+        //     // Construct the URI to fetch members based on the partnerId
+        //     const uri =
+        //         this.base_url + `api/v1/members?partner_id=${partnerId}`;
+
+        //    await  axios
+        //         .get(uri)
+        //         .then((response) => {
+        //             this.membersData = response.data.data;
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error fetching members:", error);
+        //         });
+        // },
+
+        async fetchMembers() {
+    const partnerId = this.$props.partnerId;
+    console.log("Partner Id to be sent to server:", partnerId);
+
+    const uri = this.base_url + `api/v1/members/${partnerId}`;
+
+    try {
+        const response = await axios.get(uri);
+        console.log("API Members Response:", response.data.data);
+        this.membersData = response.data.data;
+    } catch (error) {
+        console.error("Error fetching members:", error);
+    }
+},
+
+
+        canViewActivity(kpimetric) {
+            // Check if the logged user's member_id is in the kpi_metric_members for the current KPI metric
+            const memberId = this.$store.state.loggedUser.member.id;
+            return kpimetric.kpi_metric_members.some(
+                (member) => member.member_id === memberId
+            );
         },
 
         getDepartmentName(departmentId) {
@@ -3986,6 +3961,8 @@ export default {
             const memberIndex = this.partnerMembers.findIndex(
                 (member) => member.id === memberId
             );
+
+            console.log("This id is mine:", memberIndex);
 
             if (memberIndex !== -1) {
                 const member = this.partnerMembers[memberIndex];

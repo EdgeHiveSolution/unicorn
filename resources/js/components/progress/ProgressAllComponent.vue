@@ -24,14 +24,17 @@
                                                 }}
                                             </h4>
                                         </div>
-
-                                        <button
+                                        <div  v-if="!loggedUser.user_role_id === 1   &&  !loggedUser.user_role_id === 3">
+ 
+                                        <button 
                                             data-toggle="modal"
                                             class="btn btn-light border"
                                             data-target="#addKpimodal2"
                                         >
                                             + Add Progress
                                         </button>
+
+                                        </div>
                                     </div>
 
                                     <div
