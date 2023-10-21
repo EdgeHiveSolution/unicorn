@@ -61,4 +61,6 @@ class KpiMetric extends Model
     return $this->hasMany(KpiMetricMember::class);
   }
 
+  
+
 }

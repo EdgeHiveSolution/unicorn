@@ -386,7 +386,7 @@ class KpiMetricApiController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in scode torage.
      */
     public function update(Request $request, string $id)
     {

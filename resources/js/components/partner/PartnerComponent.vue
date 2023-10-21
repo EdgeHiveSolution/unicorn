@@ -11,16 +11,14 @@
             </div>
         </div>
 
-         <div v-else>
-          
-        </div>
+        <div v-else></div>
 
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div
                         class="card-header d-flex justify-content-between my-3"
-                    >
+                      >
                         <div>
                             <div class="input-container">
                                 <i class="mdi mdi-magnify mdi-icon"></i>
@@ -55,7 +53,7 @@
                                     style="font-size: 17px; margin-left: 5px"
                                 ></i>
                             </button>
-                            <div style="margin-left: 10px"></div>
+                            <div style="margin-left: 20px"></div>
 
                             <button
                                 style="height: 10px"
@@ -65,6 +63,28 @@
                                 <i class="mdi mdi-sort-variant text-dark"></i>
                                 Filters
                             </button>
+                            <div style="margin-left: 20px"></div>
+
+                            <div class="btn-group">
+                                <button
+                                    class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                >
+                                    <span
+                                        class="fas fa-ellipsis-h icon-dark"
+                                    ></span>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item text-danger">
+                                        <span
+                                            class="fa fa-download mr-2"
+                                        ></span
+                                        >Report
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -93,7 +113,7 @@
                                             <td>
                                                 <div
                                                     class="d-flex align-items-center"
-                                                 >
+                                                >
                                                     <img
                                                         :src="partner.logo"
                                                         alt="logo"
@@ -202,7 +222,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            
+
                                             <td v-else>No Active Kpis</td>
                                             <td>
                                                 <button class="btn view-btn">
@@ -257,10 +277,9 @@ export default {
     },
 
     computed: {
-     loggedUser() {
+        loggedUser() {
             return this.$store.state.loggedUser;
         },
-
 
         partnersWithProgress() {
             return this.partners.map((partner) => ({
@@ -273,23 +292,20 @@ export default {
     },
 
     methods: {
-
         fetchPartners() {
-            
-
             const loggeduser = this.$store.state.loggedUser;
 
-            console.log("Logged User Now:"+JSON.stringify(loggeduser));
-            let uri = this.base_url + `api/v1/partner-list?user_id=${loggeduser.id}&user_role_id=${loggeduser.user_role_id}`;
+            console.log("Logged User Now:" + JSON.stringify(loggeduser));
+            let uri =
+                this.base_url +
+                `api/v1/partner-list?user_id=${loggeduser.id}&user_role_id=${loggeduser.user_role_id}`;
             axios.get(uri).then((response) => {
                 console.log("API Response:", response.data);
                 this.partners = response.data;
 
                 console.log("New Partners:", JSON.stringify(this.partners));
             });
-
         },
-        
 
         calculateKpiProgress(kpis) {
             let totalCurrentValue = 0;
@@ -301,7 +317,6 @@ export default {
                         member.progress.forEach((progress) => {
                             totalCurrentValue += progress.current_value;
                             totalTargetValue += progress.target_value;
-                           
                         });
                     });
                 });

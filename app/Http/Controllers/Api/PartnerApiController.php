@@ -603,6 +603,29 @@ public function store(Request $request)
 
 
 
+public function fetchPartnerMembersWithKPIs($partnerId)
+{
+    try {
+        // Fetch members with KPIs and progress for a specific partner
+        $members = Member::whereHas('kpis.kpiMetrics.kpiMetricMembers.progress', function ($query) {
+            // No need to filter by a specific KPI metric ID
+        })->with(['kpis' => function ($query) use ($partnerId) {
+            $query->where('partner_id', $partnerId)
+                  ->whereHas('kpiMetrics.kpiMetricMembers.progress');
+        }])->get();
+
+        Log::info("Returned Members:" . $members);
+
+        return response()->json($members);
+    } catch (\Exception $e) {
+        // Handle any errors or exceptions as needed
+        return response()->json(['error' => 'Failed to fetch members with KPIs and progress'], 500);
+    } 
+}
+
+
+
+
 
 
 
@@ -645,7 +668,70 @@ public function store(Request $request)
 }
 
 
+public function generate(Request $request)
 
+{
+    Log::info("You are here");
+    // Step 1: Verify the user's role (user_role_id) before generating the report
+    $userId = $request->query('user_id');
+    $user = User::find($userId); // Adjust as per your User model
+    if ($user->user_role_id !== 3) {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+
+    // Step 2: Fetch data based on the user or any other criteria
+    $data = $this->fetchReportData($userId);
+
+    // Step 3: Generate the Excel report
+    $export = new ReportExport($data);
+    $filePath = 'reports/report.xlsx';
+    Excel::store($export, $filePath);
+
+    return response()->json(['url' => asset($filePath)]);
+}
+
+private function fetchReportData($userId)
+{
+    // Get the start and end dates for the current and previous months
+    $currentMonthStart = now()->startOfMonth();
+    $currentMonthEnd = now()->endOfMonth();
+    $previousMonthStart = now()->subMonth()->startOfMonth();
+    $previousMonthEnd = now()->subMonth()->endOfMonth();
+
+    $bindings = [
+        $previousMonthStart,
+        $previousMonthEnd,
+        $previousMonthStart,
+        $previousMonthEnd,
+        $previousMonthStart,
+        $previousMonthEnd,
+        $currentMonthStart,
+        $currentMonthEnd,
+    ];
+
+    $data = DB::table('kpis')
+        ->select(
+            'kpis.title as kpi_title',
+            'kpi_metrics.title as kpi_metric',
+            DB::raw('SUM(progress.current_value) as current_month'),
+            DB::raw('SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END) as previous_month', $bindings),
+            DB::raw('CONCAT(ROUND(((SUM(progress.current_value) - SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END)) / SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END) * 100), 2), "%") as mom_change', $bindings)
+        )
+        ->join('kpi_metrics', 'kpis.id', '=', 'kpi_metrics.kpi_id')
+        ->join('kpi_metric_members', 'kpi_metrics.id', '=', 'kpi_metric_members.kpi_metric_id')
+        ->join('progress', 'kpi_metric_members.id', '=', 'progress.kpi_metric_member_id')
+        ->join('partners', 'partners.id', '=', 'kpis.partner_id')
+        ->where('progress.created_at', '>=', $currentMonthStart)
+        ->where('progress.created_at', '<=', $currentMonthEnd)
+        ->where('partners.user_id', $userId)
+        ->groupBy('kpis.title', 'kpi_metrics.title', 'kpi_metrics.id');
+
+    return $data->get();
+}
+
+
+
+}
 //      public function destroy($id)
 // {
 //     // Retrieve the partner by ID from the database (including soft deleted partners)
@@ -669,4 +755,4 @@ public function store(Request $request)
 
 
 
-}
+
