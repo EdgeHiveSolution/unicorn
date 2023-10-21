@@ -449,7 +449,8 @@ input{
 
 .profile-edit img{
     width: 100px;
-    height: auto;
+    height: 100px;
+  /*  height: auto;*/
 }
 
 .align-right {

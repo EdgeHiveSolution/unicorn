@@ -59,7 +59,7 @@ class LoginController extends Controller
             {
                 $user->load('userrole', 'member.kpiMetricMembers.progress');
                 
-                // You can log the user to verify that the related properties are loaded.
+                // You can log the user2 to verify that the related properties are loaded.
               //  Log::info("User object:", ['user' => $user]);
                 Log::info("User role:", ['userrole' => $user->userrole]);
                 Log::info("Member data:", ['member' => $user->member]);
@@ -69,6 +69,9 @@ class LoginController extends Controller
                  Session::save();
                  Log::info("User Updated  object:", ['user' => $user]);
 
+                 if ($user->user_role_id === 3) {
+                    return redirect('/partners'); // Redirect to /partners for users with user_role_id 3.
+                }
                 //  $loggeduser= Session::get('user');
                 //  Log::info('Session User 0', ['user'=> $loggeduser]);
                 //  dd($loggeduser);

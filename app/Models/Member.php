@@ -72,7 +72,7 @@ class Member extends Model
 
 
 
-                    public function kpis()
+                 public function kpis()
             {
                 return $this->belongsToMany(Kpi::class, 'kpi_member')
                     ->using(KpiMember::class)

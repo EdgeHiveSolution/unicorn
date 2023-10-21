@@ -18,7 +18,12 @@
                 <label for="photo" class="col-md-3 col-form-label text-md-start">{{ __('Photo') }}</label>
                 <div class="col-md-5 offset-md-4 text-center profile-edit">
                     @if ($user->photo)
-                    <img src="{{ asset('profile-photos/' . $user->photo) }}" alt="profile">
+                    <div style="
+                     margin-left: 0px;
+                     border-radius: 50%;margin-bottom: 50px;">
+                        <img src="{{ asset('profile-photos/' . $user->photo) }}"
+                
+                        alt="profile"></div>
                     @else
                     <!-- Display a default image if the user doesn't have a photo -->
                     <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="profile">
