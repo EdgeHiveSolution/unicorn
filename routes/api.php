@@ -36,6 +36,9 @@ Route::get('v1/partners/{partnerId}/kpis-and-metrics', [PartnerApiController::cl
 Route::patch('v1/partner-update/{id}',[PartnerApiController::class, 'update']);
 Route::delete('v1/partner-delete/{id}',[PartnerApiController::class, 'destroy']);
 Route::get('v1/partner-members/{partnerId}', [PartnerApiController::class, 'fetchPartnerMembers']);
+Route::get('v1/partner-members-with-kpis/{partnerId}', [PartnerApiController::class, 'fetchPartnerMembersWithKPIs']);
+Route::get('v1/generate-report', [PartnerApiController::class,  'generate']);
+
 
 
 

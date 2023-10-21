@@ -1,7 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
         <!-- Dashboard -->
-        @if (auth()->check() && auth()->user()->isAdmin() || auth()->user()->user_role_id == 2)
+        @if (auth()->check() && auth()->user()->isAdmin() || auth()->user()->user_role_id == 2 || auth()->user()->user_role_id == 3)
         <li class="nav-item">
             <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/">
                 <span class="menu-icon">
@@ -12,7 +12,7 @@
         </li>
         @endif
 
-        @if (auth()->check() &&  auth()->user()->user_role_id == 3)
+        {{-- @if (auth()->check() &&  auth()->user()->user_role_id == 3)
         <!-- Partners -->
         <li style="margin-top: -10px" class="nav-item">
             <a class="nav-link {{ Request::is('partners') ? 'active' : '' }}" href="/partners">
@@ -23,7 +23,7 @@
             </a>
         </li>
 
-        @endif
+        @endif --}}
 
         @if (auth()->check() && (auth()->user()->isAdmin()  || auth()->user()->user_role_id == 2))
         <!-- Partners -->

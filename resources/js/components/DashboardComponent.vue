@@ -3,13 +3,15 @@
         <h1 style="font-size: 20px" class="txt-dark">
             Welcome Back, {{ data.loggeduser.name.split(" ")[0] }}
         </h1>
-        <h3 style="font-size: 20px; font-weight: lighter" class="txt-gray">
+          <div v-if="data.loggeduser.user_role_id === 1">
+        <h3 style="font-size: 20px" class="txt-gray">
             Track and manage the team’s overall performance.
         </h3>
         <h4 style="font-size: 20px; font-weight: semi-bold" class="txt-dark">
             Performance Overview
         </h4>
 
+      
         <div class="row">
             <div class="col-xl-3 col-sm-6 grid-margin">
                 <h5 class="mb-2 txt-danger">OFF TRACK</h5>
@@ -43,33 +45,84 @@
             </div>
         </div>
 
+        </div>
+
+
         <div class="row">
             <div class="col-12 px-0">
                 <div class="card">
-                    <div
+                      <div
                         class="card-header d-flex justify-content-between my-3"
-                    >
+                      >
                         <div>
                             <div class="input-container">
                                 <i class="mdi mdi-magnify mdi-icon"></i>
                                 <input
+                                    style="height: 25px"
                                     class="input-field"
-                                    style="height: 10px"
                                     type="text"
                                     placeholder="Search for partners"
+                                    v-model="searchQuery"
                                 />
                             </div>
                         </div>
-                        <div>
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                            "
+                        >
+                            <button
+                                class="btn btn-light p-1 btn-icon"
+                                style="
+                                    background-color: lightgrey;
+                                    color: #76aefd;
+                                    height: 30px;
+                                    width: 60px;
+                                "
+                            >
+                                All
+                                <i
+                                    class="mdi mdi-close"
+                                    style="font-size: 17px; margin-left: 5px"
+                                ></i>
+                            </button>
+                            <div style="margin-left: 20px"></div>
+
                             <button
                                 style="height: 10px"
                                 class="btn btn-light p-3 btn-icon"
+                                @click="showFilters = !showFilters"
                             >
                                 <i class="mdi mdi-sort-variant text-dark"></i>
                                 Filters
                             </button>
+                            <div style="margin-left: 20px"></div>
+
+                            <div class="btn-group">
+                                <button
+                                    class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                 >
+                                    <span
+                                        class="fas fa-ellipsis-h icon-dark"
+                                    ></span>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item text-danger" @click="generateReport">
+                                        <span
+                                            class="fa fa-download mr-2"
+                                        ></span
+                                        >Report
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                     <div class="card-body mb-5">
                         <div class="table-responsive">
                             <table class="table">
@@ -265,7 +318,7 @@
                 </div>
             </div>
         </div>
-
+        <div v-if="data.loggeduser.user_role_id === 1">
         <div class="my-5">
             <div class="col-12 px-0">
                 <h3 class="text-dark">New partners</h3>
@@ -485,6 +538,8 @@
                 </div>
             </div>
         </div>
+        </div>
+
     </div>
 </template>
 
@@ -690,6 +745,27 @@ export default {
         // }
             },
     methods: {
+
+    generateReport() {
+
+      if (this.data.loggeduser.user_role_id !== 3) {
+        console.error('Unauthorized');
+        return;
+      }
+
+
+      const userId = this.data.loggeduser.id;
+      let uri = this.base_url + `api/v1/generate-report?user_id=${userId}`;
+      axios
+        .get(uri)
+        .then((response) => {
+          const downloadUrl = response.data.url; 
+          window.location.href = downloadUrl;
+        })
+        .catch((error) => {
+          console.error('Error generating report:', error);
+        });
+    },
 
         async fetchUserWithRelatedData() {
             let uri = this.base_url + `api/v1/user`;

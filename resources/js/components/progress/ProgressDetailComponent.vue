@@ -71,20 +71,33 @@
                                         :key="comment.id"
                                     >
                                         <!-- Display user information like profile photos here -->
-                                        <div v-if="comment.sender">
+                                        <!--alt="Profile Photo"-->
+                                        <div v-if="comment.sender" class="d-flex flex-row">
                                             <!-- You can display user profile photo here -->
-                                            <img
+                                            <div class="profile_photo">
+                                                <img v-if="comment.sender.photo"
                                                 :src="comment.sender.photo"
-                                                alt="Profile Photo"
+                                                
                                             />
+                                            </div>
+                                            <div class="container-fluid d-flex mx-2 flex-column">
+                                                <strong v-if="comment.sender" class="header_name_text">{{
+                                                comment.sender.name
+                                            }}</strong>
+                                           
+                                            <p class="body_name_text">{{ comment.message }}</p>
+
+                                            <div class="d-flex flex-row justify-content-end"><label class="text-muted mx-1"> {{ comment.formattedTimestamp }}</label></div>
+                                            
+                                            </div>
                                         </div>
-                                        <div>
+                                        <!--<div>
                                             <strong v-if="comment.sender">{{
                                                 comment.sender.name
                                             }}</strong>
-                                            {{ comment.formattedTimestamp }}
+                                           <label class="text-muted m-2"> {{ comment.formattedTimestamp }}</label>
                                             <p>{{ comment.message }}</p>
-                                        </div>
+                                        </div>-->
                                     </div>
 
                                     <!-- Comment form -->
@@ -398,6 +411,23 @@ img {
 
 .view-btn i {
     margin-right: 8px;
+}
+
+.profile_photo{
+     width: 35px;
+    margin-left: -10px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #f3f4f7;
+    border-color: 1px solid #979da9;
+}
+
+.header_name_text {
+    color: #111828;
+}
+
+.body_name_text{
+    font-size: 14px;
 }
 
 
