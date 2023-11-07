@@ -21,12 +21,12 @@
                     <div style="
                      margin-left: 0px;
                      border-radius: 50%;margin-bottom: 50px;">
-                        <img src="{{ asset('profile-photos/' . $user->photo) }}"
+                        <img src="{{ secure_asset('profile-photos/' . $user->photo) }}"
                 
                         alt="profile"></div>
                     @else
                     <!-- Display a default image if the user doesn't have a photo -->
-                    <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="profile">
+                    <img src="{{ secure_asset('assets/images/faces/face1.jpg') }}" alt="profile">
                 @endif
                 
                 <input id="photo" name="photo" type="file" class="form-control @error('photo') is-invalid @enderror">
