@@ -25,6 +25,9 @@ use App\Models\Progress;
 use DB;
 use Session;
 use Illuminate\Support\Facades\DB as FacadesDB;
+use  App\Exports\ReportExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class PartnerApiController extends Controller
 
@@ -671,63 +674,152 @@ public function fetchPartnerMembersWithKPIs($partnerId)
 public function generate(Request $request)
 
 {
-    Log::info("You are here");
-    // Step 1: Verify the user's role (user_role_id) before generating the report
-    $userId = $request->query('user_id');
-    $user = User::find($userId); // Adjust as per your User model
-    if ($user->user_role_id !== 3) {
-        return response()->json(['error' => 'Unauthorized'], 403);
+    try {
+        Log::info("You are here");
+        $userId = $request->query('user_id');
+        $user = User::find($userId); // Adjust as per your User model
+        if ($user->user_role_id !== 3) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $data = $this->fetchReportData($userId);
+
+        $export = new ReportExport($data);
+
+        // Generate the filename with a timestamp
+        $timestamp = now()->format('Y-m-d_His');
+        $fileName = 'report_' . $timestamp . '.xlsx';
+
+        Excel::store($export, 'reports/' . $fileName, 'public');
+
+        return response()->json(['url' => asset('storage/reports/' . $fileName)]);
+    } catch (\Exception $e) {
+        Log::error('Error generating report: ' . $e->getMessage());
+        return response()->json(['error' => 'Error generating report'], 500);
     }
-
-    // Step 2: Fetch data based on the user or any other criteria
-    $data = $this->fetchReportData($userId);
-
-    // Step 3: Generate the Excel report
-    $export = new ReportExport($data);
-    $filePath = 'reports/report.xlsx';
-    Excel::store($export, $filePath);
-
-    return response()->json(['url' => asset($filePath)]);
 }
+
 
 private function fetchReportData($userId)
 {
     // Get the start and end dates for the current and previous months
-    $currentMonthStart = now()->startOfMonth();
-    $currentMonthEnd = now()->endOfMonth();
-    $previousMonthStart = now()->subMonth()->startOfMonth();
-    $previousMonthEnd = now()->subMonth()->endOfMonth();
+    $currentMonthStart = now()->startOfMonth()->toDateTimeString();
+    $currentMonthEnd = now()->endOfMonth()->toDateTimeString();
+    $previousMonthStart = now()->subMonth()->startOfMonth()->toDateTimeString();
+    $previousMonthEnd = now()->subMonth()->endOfMonth()->toDateTimeString();
 
-    $bindings = [
-        $previousMonthStart,
-        $previousMonthEnd,
-        $previousMonthStart,
-        $previousMonthEnd,
-        $previousMonthStart,
-        $previousMonthEnd,
-        $currentMonthStart,
-        $currentMonthEnd,
-    ];
+    $sql = "
+        SELECT 
+            kpis.title AS kpi_title,
+            kpi_metrics.title AS kpi_metric,
+            SUM(progress.current_value) AS current_month,
+            SUM(CASE WHEN progress.created_at >= '{$previousMonthStart}' AND progress.created_at <= '{$previousMonthEnd}' THEN progress.current_value ELSE 0 END) AS previous_month,
+            CONCAT(ROUND(((SUM(progress.current_value) - SUM(CASE WHEN progress.created_at >= '{$previousMonthStart}' AND progress.created_at <= '{$previousMonthEnd}' THEN progress.current_value ELSE 0 END)) / SUM(CASE WHEN progress.created_at >= '{$previousMonthStart}' AND progress.created_at <= '{$previousMonthEnd}' THEN progress.current_value ELSE 0 END) * 100), 2), '%') AS mom_change
+        FROM kpis
+        INNER JOIN kpi_metrics ON kpis.id = kpi_metrics.kpi_id
+        INNER JOIN kpi_metric_members ON kpi_metrics.id = kpi_metric_members.kpi_metric_id
+        INNER JOIN progress ON kpi_metric_members.id = progress.kpi_metric_member_id
+        INNER JOIN partners ON partners.id = kpis.partner_id
+        WHERE progress.created_at >= '{$currentMonthStart}' AND progress.created_at <= '{$currentMonthEnd}' AND partners.user_id = {$userId}
+        GROUP BY kpis.title, kpi_metrics.title, kpi_metrics.id
+    ";
 
-    $data = DB::table('kpis')
-        ->select(
-            'kpis.title as kpi_title',
-            'kpi_metrics.title as kpi_metric',
-            DB::raw('SUM(progress.current_value) as current_month'),
-            DB::raw('SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END) as previous_month', $bindings),
-            DB::raw('CONCAT(ROUND(((SUM(progress.current_value) - SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END)) / SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END) * 100), 2), "%") as mom_change', $bindings)
-        )
-        ->join('kpi_metrics', 'kpis.id', '=', 'kpi_metrics.kpi_id')
-        ->join('kpi_metric_members', 'kpi_metrics.id', '=', 'kpi_metric_members.kpi_metric_id')
-        ->join('progress', 'kpi_metric_members.id', '=', 'progress.kpi_metric_member_id')
-        ->join('partners', 'partners.id', '=', 'kpis.partner_id')
-        ->where('progress.created_at', '>=', $currentMonthStart)
-        ->where('progress.created_at', '<=', $currentMonthEnd)
-        ->where('partners.user_id', $userId)
-        ->groupBy('kpis.title', 'kpi_metrics.title', 'kpi_metrics.id');
+    $data = DB::select($sql);
 
-    return $data->get();
+    // Organize the data in the desired format
+    
+    $formattedData = [];
+    $currentKpiTitle = null;
+
+    foreach ($data as $row) {
+        $formattedData[$row->kpi_title][] = [
+            'kpi_metric' => $row->kpi_metric,
+            'current_month' => $row->current_month,
+            'previous_month' => $row->previous_month,
+            'mom_change' => $row->mom_change,
+        ];
+    }
+
+    // Remove duplicates
+    foreach ($formattedData as $kpiTitle => $metrics) {
+        $formattedData[$kpiTitle] = array_map("unserialize", array_unique(array_map("serialize", $metrics)));
+    }
+
+    Log::info("Formated Data:", ['formated_data'=>$formattedData]);
+
+    return $formattedData;
 }
+// private function fetchReportData($userId)
+// {
+//     // Get the start and end dates for the current and previous months
+//     $currentMonthStart = now()->startOfMonth();
+//     $currentMonthEnd = now()->endOfMonth();
+//     $previousMonthStart = now()->subMonth()->startOfMonth();
+//     $previousMonthEnd = now()->subMonth()->endOfMonth();
+
+ 
+//     $bindings1 = [
+//         $previousMonthStart,
+//         $previousMonthEnd,
+//         $previousMonthStart,
+//         $previousMonthEnd,
+//     ];
+    
+//     $bindings2 = [
+//         $previousMonthStart,
+//         $previousMonthEnd,
+//         $currentMonthStart,
+//         $currentMonthEnd,
+//         $currentMonthStart,
+//     ];
+
+//     $data = DB::table('kpis')
+//         ->select(
+//             'kpis.title as kpi_title',
+//             'kpi_metrics.title as kpi_metric',
+//             DB::raw('SUM(progress.current_value) as current_month'),
+//             DB::raw('SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END) as previous_month', $bindings1),
+//             DB::raw('CONCAT(ROUND(((SUM(progress.current_value) - SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END)) / SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END) * 100), 2), "%") as mom_change', $bindings2)
+//         )
+//         ->join('kpi_metrics', 'kpis.id', '=', 'kpi_metrics.kpi_id')
+//         ->join('kpi_metric_members', 'kpi_metrics.id', '=', 'kpi_metric_members.kpi_metric_id')
+//         ->join('progress', 'kpi_metric_members.id', '=', 'progress.kpi_metric_member_id')
+//         ->join('partners', 'partners.id', '=', 'kpis.partner_id')
+//         ->where('progress.created_at', '>=', $currentMonthStart->format('Y-m-d H:i:s'))
+//         ->where('progress.created_at', '<=', $currentMonthEnd->format('Y-m-d H:i:s'))
+//         ->where('partners.user_id', $userId)
+//         ->groupBy('kpis.title', 'kpi_metrics.title', 'kpi_metrics.id')
+//         ->get();
+
+//     // Organize the data in the desired format
+//     $formattedData = [];
+//     $currentKpiTitle = null;
+    
+//     foreach ($data as $row) {
+//         if ($row->kpi_title !== $currentKpiTitle) {
+//             // Start a new KPI section
+//             $currentKpiTitle = $row->kpi_title;
+//             $formattedData[] = [
+//                 'Kpi title' => $currentKpiTitle,
+//                 'Kpi Metric' => 'Current Month',
+//                 'Current Month' => $row->current_month,
+//                 'Previous Month' => $row->previous_month,
+//                 'MOM Change' => $row->mom_change,
+//             ];
+//         } else {
+//             // Continue the existing KPI section
+//             $formattedData[] = [
+//                 'Kpi Metric' => $row->kpi_metric,
+//                 'Current Month' => $row->current_month,
+//                 'Previous Month' => $row->previous_month,
+//                 'MOM Change' => $row->mom_change,
+//             ];
+//         }
+//     }
+
+//     return $formattedData;
+// }
+
 
 
 

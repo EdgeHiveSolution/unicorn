@@ -69,9 +69,9 @@ class LoginController extends Controller
                  Session::save();
                  Log::info("User Updated  object:", ['user' => $user]);
 
-                 if ($user->user_role_id === 3) {
-                    return redirect('/partners'); // Redirect to /partners for users with user_role_id 3.
-                }
+                //  if ($user->user_role_id === 3) {
+                //     return redirect('/partners'); // Redirect to /partners for users with user_role_id 3.
+                // }
                 //  $loggeduser= Session::get('user');
                 //  Log::info('Session User 0', ['user'=> $loggeduser]);
                 //  dd($loggeduser);

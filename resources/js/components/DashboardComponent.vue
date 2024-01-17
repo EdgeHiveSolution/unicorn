@@ -3,57 +3,63 @@
         <h1 style="font-size: 20px" class="txt-dark">
             Welcome Back, {{ data.loggeduser.name.split(" ")[0] }}
         </h1>
-          <div v-if="data.loggeduser.user_role_id === 1">
-        <h3 style="font-size: 20px" class="txt-gray">
-            Track and manage the team’s overall performance.
-        </h3>
-        <h4 style="font-size: 20px; font-weight: semi-bold" class="txt-dark">
-            Performance Overview
-        </h4>
+        <div v-if="data.loggeduser.user_role_id === 1 || data.loggeduser.user_role_id === 2">
+            <h3 style="font-size: 20px" class="txt-gray">
+                Track and manage the team’s overall performance.
+            </h3>
+            <h4
+                style="font-size: 20px; font-weight: semi-bold"
+                class="txt-dark"
+            >
+                Performance Overview
+            </h4>
 
-      
-        <div class="row">
-            <div class="col-xl-3 col-sm-6 grid-margin">
-                <h5 class="mb-2 txt-danger">OFF TRACK</h5>
-                <h6 class="text-primary font-weight-normal lead text-dark">
-                    {{ offTrack }}
-                </h6>
-                <h4 class="mb-2 txt-dark">PARTNERS</h4>
-                <span class="mdi mdi-arrow-up txt-danger icon-item"> 0</span>
-                <small> vs last month</small>
-            </div>
+            <div class="row">
+                <div class="col-xl-3 col-sm-6 grid-margin">
+                    <h5 class="mb-2 txt-danger">OFF TRACK</h5>
+                    <h6 class="text-primary font-weight-normal lead text-dark">
+                        {{ offTrack }}
+                    </h6>
+                    <h4 class="mb-2 txt-dark">PARTNERS</h4>
+                    <span class="mdi mdi-arrow-up txt-danger icon-item">
+                        0</span
+                    >
+                    <small> vs last month</small>
+                </div>
 
-            <div class="col-xl-3 col-sm-6 grid-margin">
-                <h5 class="mb-2 txt-warning">AT RISK</h5>
-                <h6 class="text-primary font-weight-normal lead text-dark">
-                    {{ atRisk }}
-                </h6>
-                <h4 class="mb- txt-dark">PARTNERS</h4>
-                <span class="mdi mdi-arrow-down txt-warning icon-item"> 0</span>
-                <small> vs last month</small>
-            </div>
+                <div class="col-xl-3 col-sm-6 grid-margin">
+                    <h5 class="mb-2 txt-warning">AT RISK</h5>
+                    <h6 class="text-primary font-weight-normal lead text-dark">
+                        {{ atRisk }}
+                    </h6>
+                    <h4 class="mb- txt-dark">PARTNERS</h4>
+                    <span class="mdi mdi-arrow-down txt-warning icon-item">
+                        0</span
+                    >
+                    <small> vs last month</small>
+                </div>
 
-            <div class="col-xl-3 col-sm-6 grid-margin">
-                <h5 class="mb-2 txt-success">ON TRACK</h5>
-                <h6 class="text-primary font-weight-normal text-dark">
-                    {{ onTrack }}
-                </h6>
-                <h4 class="mb-2 txt-dark">PARTNERS</h4>
-                <span class="mdi mdi-arrow-up txt-success icon-item"> 0</span>
-                <span class="ml-2"></span>
-                <small> vs last month</small>
+                <div class="col-xl-3 col-sm-6 grid-margin">
+                    <h5 class="mb-2 txt-success">ON TRACK</h5>
+                    <h6 class="text-primary font-weight-normal text-dark">
+                        {{ onTrack }}
+                    </h6>
+                    <h4 class="mb-2 txt-dark">PARTNERS</h4>
+                    <span class="mdi mdi-arrow-up txt-success icon-item">
+                        0</span
+                    >
+                    <span class="ml-2"></span>
+                    <small> vs last month</small>
+                </div>
             </div>
         </div>
-
-        </div>
-
 
         <div class="row">
             <div class="col-12 px-0">
                 <div class="card">
-                      <div
+                    <div
                         class="card-header d-flex justify-content-between my-3"
-                      >
+                    >
                         <div>
                             <div class="input-container">
                                 <i class="mdi mdi-magnify mdi-icon"></i>
@@ -99,26 +105,28 @@
                                 Filters
                             </button>
                             <div style="margin-left: 20px"></div>
-
+                              <div v-if="data.loggeduser.user_role_id === 1 || data.loggeduser.user_role_id === 3">
                             <div class="btn-group">
                                 <button
                                     class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0"
                                     data-toggle="dropdown"
                                     aria-haspopup="true"
                                     aria-expanded="false"
-                                 >
+                                >
                                     <span
                                         class="fas fa-ellipsis-h icon-dark"
                                     ></span>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <button class="dropdown-item text-danger" @click="generateReport">
-                                        <span
-                                            class="fa fa-download mr-2"
-                                        ></span
+                                    <button
+                                        class="dropdown-item text-danger"
+                                        @click="generateReport"
+                                    >
+                                        <span class="fa fa-download mr-2"></span
                                         >Report
                                     </button>
                                 </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -318,228 +326,189 @@
                 </div>
             </div>
         </div>
-        <div v-if="data.loggeduser.user_role_id === 1">
-        <div class="my-5">
-            <div class="col-12 px-0">
-                <h3 class="text-dark">New partners</h3>
-                <div class="card" v-if="partnersWithProgress.length > 0">
-                    <div
-                        class="card-header d-flex justify-content-between my-3"
-                    >
-                        <div>
-                            <div class="input-container">
-                                <i class="mdi mdi-magnify mdi-icon"></i>
-                                <input
-                                    class="input-field"
-                                    type="text"
-                                    placeholder="Search for partners"
-                                />
+        <div v-if="data.loggeduser.user_role_id === 1 || data.loggeduser.user_role_id === 2">
+            <div class="my-5">
+                <div class="col-12 px-0">
+                    <h3 class="text-dark">New partners</h3>
+                    <div class="card" v-if="Newpartners.length > 0">
+                        <div
+                            class="card-header d-flex justify-content-between my-3"
+                        >
+                            <div>
+                                <div class="input-container">
+                                    <i class="mdi mdi-magnify mdi-icon"></i>
+                                    <input
+                                        class="input-field"
+                                        type="text"
+                                        placeholder="Search for partners"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <button class="btn btn-light p-3">
+                                    <i
+                                        class="mdi mdi-sort-variant text-dark"
+                                    ></i>
+                                    Filters
+                                </button>
                             </div>
                         </div>
-                        <div>
-                            <button class="btn btn-light p-3">
-                                <i class="mdi mdi-sort-variant text-dark"></i>
-                                Filters
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body mb-5">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Partner</th>
-                                        <th>Progress</th>
-                                        <th>Members</th>
-                                        <th>Departments</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr
-                                        v-for="partner in newpartnersWithProgress"
-                                        :key="partner.id"
-                                    >
-                                    <!--<tr v-for="partner in partnersWithProgress"
-                                            :key="partner.id">-->
-                                        <td>
-                                            <div
-                                                class="d-flex align-items-center"
-                                            >
-                                                <img
-                                                    :src="partner.logo"
-                                                    alt="logo"
-                                                />
-                                                <span class="pl-2">{{
-                                                    partner.name
-                                                }}</span>
-                                            </div>
-                                            <div
-                                                class="d-flex align-items-center"
-                                            >
-                                                <span
-                                                    class="active-period txt-gray"
-                                                    >Active Period:
-                                                    {{
-                                                        calculateActivePeriod(
-                                                            partner.created_at
-                                                        )
-                                                    }}</span
-                                                >
-                                            </div>
-                                        </td>
-                                        <td
-                                            v-if="
-                                                partner.calculatedProgress > 0
-                                            "
+                        <div class="card-body mb-5">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Partner</th>
+                                            <th>Progress</th>
+                                            <th>Members</th>
+                                            <th>Departments</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            v-for="partner in newpartnersWithProgress"
+                                            :key="partner.id"
                                         >
-                                            <div>
-                                                <label class="progress_text">{{
-                                                    partner.calculatedProgress.toFixed(
-                                                        2
-                                                    )
-                                                }}</label>%
-                                                <div class="progress">
-                                                    <div
-                                                        class="progress-bar"
-                                                        :class="
-                                                            getStatusClass(
-                                                                partner
+                                            <td>
+                                                <div
+                                                    class="d-flex align-items-center"
+                                                >
+                                                    <img
+                                                        :src="partner.logo"
+                                                        alt="logo"
+                                                    />
+                                                    <span class="pl-2">{{
+                                                        partner.name
+                                                    }}</span>
+                                                </div>
+                                                <div
+                                                    class="d-flex align-items-center"
+                                                >
+                                                    <span
+                                                        class="active-period txt-gray"
+                                                        >Active Period:
+                                                        {{
+                                                            calculateActivePeriod(
+                                                                partner.created_at
                                                             )
-                                                        "
-                                                        :style="{
-                                                            width:
-                                                                partner.calculatedProgress +
-                                                                '%',
-                                                        }"
-                                                        aria-valuemin="0"
-                                                        aria-valuemax="100"
-                                                    ></div>
-                                                </div>
-                                                <div class="progress-labels">
-                                                    <span
-                                                        class="status-label off-track-label"
-                                                        v-if="
-                                                            getStatusClass(
-                                                                partner
-                                                            ) === 'off-track'
-                                                        "
-                                                        >Off Track</span
-                                                    >
-                                                    <span
-                                                        class="status-label at-risk-label"
-                                                        v-else-if="
-                                                            getStatusClass(
-                                                                partner
-                                                            ) === 'at-risk'
-                                                        "
-                                                        >At Risk</span
-                                                    >
-                                                    <span
-                                                        class="status-label on-track-label"
-                                                        v-else-if="
-                                                            getStatusClass(
-                                                                partner
-                                                            ) === 'on-track'
-                                                        "
-                                                        >On Track</span
+                                                        }}</span
                                                     >
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td v-else>N/A</td>
-                                        <td class="td-members">
-                                           <!-- <img
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                src="member.image"
-                                                alt="image"
-                                            />-->
-                                            <div class="d-flex flex-row">
-                                            <template v-for="(member,index) in partner.members"
-                                               :key="index"
-                                               >
-
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                                <!--<p class="member_image_text">+1</p>-->
-                                                </div>
-
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
-
-                                                <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                                </template></div>
-                                            <!--<div class="d-flex flex-row">
-                                                <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>
-                                                </div>-->
-                                        </td>
-                                        <td>
-                                            <span
-                                                class="department-tag"
-                                                v-for="department in uniqueDepartments"
-                                                :key="department.id"
-                                                >{{ department.name }}</span
+                                            </td>
+                                            <td
+                                                v-if="
+                                                    partner.calculatedProgress >
+                                                    0
+                                                "
                                             >
-                                        </td>
-                                        <td>
-                                            <button class="btn view-btn">
-                                                <a
-                                                    :href="
-                                                        '/partners/' +
-                                                        partner.id
-                                                    "
-                                                    class="text-light"
+                                                <div>
+                                                    {{
+                                                        partner.calculatedProgress.toFixed(
+                                                            2
+                                                        )
+                                                    }}%
+                                                    <div class="progress">
+                                                        <div
+                                                            class="progress-bar"
+                                                            :class="
+                                                                getStatusClass(
+                                                                    partner
+                                                                )
+                                                            "
+                                                            :style="{
+                                                                width:
+                                                                    partner.calculatedProgress +
+                                                                    '%',
+                                                            }"
+                                                            aria-valuemin="0"
+                                                            aria-valuemax="100"
+                                                        ></div>
+                                                    </div>
+                                                    <div
+                                                        class="progress-labels"
+                                                    >
+                                                        <span
+                                                            class="status-label off-track-label"
+                                                            v-if="
+                                                                getStatusClass(
+                                                                    partner
+                                                                ) ===
+                                                                'off-track'
+                                                            "
+                                                            >Off Track</span
+                                                        >
+                                                        <span
+                                                            class="status-label at-risk-label"
+                                                            v-else-if="
+                                                                getStatusClass(
+                                                                    partner
+                                                                ) === 'at-risk'
+                                                            "
+                                                            >At Risk</span
+                                                        >
+                                                        <span
+                                                            class="status-label on-track-label"
+                                                            v-else-if="
+                                                                getStatusClass(
+                                                                    partner
+                                                                ) === 'on-track'
+                                                            "
+                                                            >On Track</span
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td v-else>N/A</td>
+                                            <td class="td-members">
+                                                <img
+                                                    v-for="member in partner.members"
+                                                    :key="member.id"
+                                                    src="member.image"
+                                                    alt="image"
+                                                />
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="department-tag"
+                                                    v-for="department in uniqueDepartments"
+                                                    :key="department.id"
+                                                    >{{ department.name }}</span
                                                 >
-                                                    <i
-                                                        class="mdi mdi-eye-outline text-light mx-2"
-                                                    ></i>
-                                                    View Details</a
-                                                >
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <pagination
-                                :total="totalPages"
-                                :current="currentPage"
-                                @page-change="handlePageChange"
-                            ></pagination>
+                                            </td>
+                                            <td>
+                                                <button class="btn view-btn">
+                                                    <a
+                                                        :href="
+                                                            '/partners/' +
+                                                            partner.id
+                                                        "
+                                                        class="text-light"
+                                                    >
+                                                        <i
+                                                            class="mdi mdi-eye-outline text-light mx-2"
+                                                        ></i>
+                                                        View Details</a
+                                                    >
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <pagination
+                                    :total="totalPages"
+                                    :current="currentPage"
+                                    @page-change="handlePageChange"
+                                ></pagination>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div v-else>
-                    <p>There are no new partners.</p>
+                    <div v-else>
+                        <p>There are no new partners.</p>
+                    </div>
                 </div>
             </div>
         </div>
-        </div>
-
     </div>
 </template>
 
@@ -745,27 +714,25 @@ export default {
         // }
             },
     methods: {
+        generateReport() {
+            if (this.data.loggeduser.user_role_id !== 3) {
+                console.error("Unauthorized");
+                return;
+            }
 
-    generateReport() {
-
-      if (this.data.loggeduser.user_role_id !== 3) {
-        console.error('Unauthorized');
-        return;
-      }
-
-
-      const userId = this.data.loggeduser.id;
-      let uri = this.base_url + `api/v1/generate-report?user_id=${userId}`;
-      axios
-        .get(uri)
-        .then((response) => {
-          const downloadUrl = response.data.url; 
-          window.location.href = downloadUrl;
-        })
-        .catch((error) => {
-          console.error('Error generating report:', error);
-        });
-    },
+            const userId = this.data.loggeduser.id;
+            let uri =
+                this.base_url + `api/v1/generate-report?user_id=${userId}`;
+            axios
+                .get(uri)
+                .then((response) => {
+                    const downloadUrl = response.data.url;
+                    window.location.href = downloadUrl;
+                })
+                .catch((error) => {
+                    console.error("Error generating report:", error);
+                });
+        },
 
         async fetchUserWithRelatedData() {
             let uri = this.base_url + `api/v1/user`;
@@ -779,11 +746,9 @@ export default {
             }
         },
 
-
         handlePageChange(page) {
             this.currentPage = page;
         },
-        
 
         async fetchPartners() {
             console.log("Logged User", JSON.stringify(this.data.loggeduser));
@@ -808,7 +773,9 @@ export default {
         // },
 
         async fetchNewPartners() {
-            let uri = this.base_url + `api/v1/partner-new?user_id=${this.data.loggeduser.id}&user_role_id=${this.data.loggeduser.user_role_id}`;
+            let uri =
+                this.base_url +
+                `api/v1/partner-new?user_id=${this.data.loggeduser.id}&user_role_id=${this.data.loggeduser.user_role_id}`;
             await axios.get(uri).then((response) => {
                 this.Newpartners = response.data;
             });
