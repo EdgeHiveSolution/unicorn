@@ -67,26 +67,7 @@
                             </button>
                             <div style="margin-left: 20px"></div>
 
-                            <div class="btn-group">
-                                <button
-                                    class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0"
-                                    data-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false"
-                                >
-                                    <span
-                                        class="fas fa-ellipsis-h icon-dark"
-                                    ></span>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <button class="dropdown-item text-danger">
-                                        <span
-                                            class="fa fa-download mr-2"
-                                        ></span
-                                        >Report
-                                    </button>
-                                </div>
-                            </div>
+                          
                         </div>
                     </div>
 
