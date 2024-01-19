@@ -17,6 +17,7 @@
                                                         <th>Title</th>
                                                         <th>Value</th>
                                                         <th>Notes</th>
+                                                        <th>Documents</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -40,6 +41,38 @@
                                                                 progressDetail
                                                                     .data.notes
                                                             }}
+                                                        </td>
+
+                                                        <td>
+                                                            <ul
+                                                                class="no-bullets"
+                                                            >
+                                                                <li
+                                                                    v-for="filePath in progressDetail.progress_files"
+                                                                    :key="
+                                                                        filePath
+                                                                    "
+                                                                >
+                                                                    <a
+                                                                        :href="
+                                                                            base_url +
+                                                                            '/' +
+                                                                            filePath
+                                                                        "
+                                                                        :download="
+                                                                            getFileName(
+                                                                                filePath
+                                                                            )
+                                                                        "
+                                                                        target="_blank"
+                                                                        >{{
+                                                                            getFileName(
+                                                                                filePath
+                                                                            )
+                                                                        }}</a
+                                                                    >
+                                                                </li>
+                                                            </ul>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -167,6 +200,11 @@ export default {
     },
 
     methods: {
+        getFileName(filePath) {
+            // Assuming the file path is in the format "ProgressUploads/filename.ext"
+            return filePath.split("/").pop();
+        },
+
         async fetchComments() {
             const progressId = this.$props.progressId;
 
@@ -175,7 +213,6 @@ export default {
             try {
                 const response = await axios.get(uri);
                 const comments = response.data.data;
-
 
                 console.log("Which comment is this being updated:", comments);
 
@@ -374,6 +411,11 @@ img {
     height: 35px;
 }
 
+.no-bullets {
+    list-style-type: circle;
+    padding: 0;
+    margin-bottom: 5px;
+}
 .view-btn a {
     display: flex;
     align-items: center;
