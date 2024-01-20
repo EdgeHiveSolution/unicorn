@@ -636,9 +636,7 @@ public function fetchPartnerMembersWithKPIs($partnerId)
 
 
 
-
-
-  public function destroy($id)
+public function destroy($id)
 
 {
     // Retrieve the partner by ID from the database (including soft deleted partners)
@@ -678,7 +676,7 @@ public function generate(Request $request)
         Log::info("You are here");
         $userId = $request->query('user_id');
         $user = User::find($userId); // Adjust as per your User model
-        if ($user->user_role_id !== 3) {
+        if ($user->user_role_id !== 3 && $user->user_role_id !== 1 ) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

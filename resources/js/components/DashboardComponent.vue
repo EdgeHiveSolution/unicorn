@@ -3,7 +3,12 @@
         <h1 style="font-size: 20px" class="txt-dark">
             Welcome Back, {{ data.loggeduser.name.split(" ")[0] }}
         </h1>
-        <div v-if="data.loggeduser.user_role_id === 1 || data.loggeduser.user_role_id === 2">
+        <div
+            v-if="
+                data.loggeduser.user_role_id === 1 ||
+                data.loggeduser.user_role_id === 2
+            "
+        >
             <h3 style="font-size: 20px" class="txt-gray">
                 Track and manage the team’s overall performance.
             </h3>
@@ -105,28 +110,35 @@
                                 Filters
                             </button>
                             <div style="margin-left: 20px"></div>
-                              <div v-if="data.loggeduser.user_role_id === 1 || data.loggeduser.user_role_id === 3">
-                            <div class="btn-group">
-                                <button
-                                    class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0"
-                                    data-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false"
-                                >
-                                    <span
-                                        class="fas fa-ellipsis-h icon-dark"
-                                    ></span>
-                                </button>
-                                <div class="dropdown-menu">
+                            <div
+                                v-if="
+                                    data.loggeduser.user_role_id === 1 ||
+                                    data.loggeduser.user_role_id === 3
+                                "
+                            >
+                                <div class="btn-group">
                                     <button
-                                        class="dropdown-item text-danger"
-                                        @click="generateReport"
+                                        class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false"
                                     >
-                                        <span class="fa fa-download mr-2"></span
-                                        >Report
+                                        <span
+                                            class="fas fa-ellipsis-h icon-dark"
+                                        ></span>
                                     </button>
+                                    <div class="dropdown-menu">
+                                        <button
+                                            class="dropdown-item text-danger"
+                                            @click="generateReport"
+                                        >
+                                            <span
+                                                class="fa fa-download mr-2"
+                                            ></span
+                                            >Report
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
                             </div>
                         </div>
                     </div>
@@ -326,7 +338,12 @@
                 </div>
             </div>
         </div>
-        <div v-if="data.loggeduser.user_role_id === 1 || data.loggeduser.user_role_id === 2">
+        <div
+            v-if="
+                data.loggeduser.user_role_id === 1 ||
+                data.loggeduser.user_role_id === 2
+            "
+        >
             <div class="my-5">
                 <div class="col-12 px-0">
                     <h3 class="text-dark">New partners</h3>
@@ -715,7 +732,10 @@ export default {
             },
     methods: {
         generateReport() {
-            if (this.data.loggeduser.user_role_id !== 3) {
+            if (
+                this.data.loggeduser.user_role_id !== 3 &&
+                this.data.loggeduser.user_role_id !== 1
+            ) {
                 console.error("Unauthorized");
                 return;
             }
