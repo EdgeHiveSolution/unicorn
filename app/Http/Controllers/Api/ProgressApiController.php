@@ -16,28 +16,59 @@ class ProgressApiController extends Controller
 {
 
     public function getProgressDetail($progressId) 
+{
+    try {
+        // Use Eloquent to retrieve the progress record by its ID
+        $progress = Progress::with('progressFiles')->findOrFail($progressId);
 
-    {
+        // Decode the JSON-encoded file paths
+        $filePaths = array_map('json_decode', $progress->progressFiles->pluck('file_paths')->toArray());
 
-        try {
-            // Use Eloquent to retrieve the progress record by its ID
-            $progress = Progress::findOrFail($progressId);
-    
-            // You can return the progress record as JSON or in any desired format
-            return response()->json([
-                'success' => true,
-                'data' => $progress,
-            ], 200);
-        } catch (\Exception $e) {
-            // Handle exceptions if the progress record is not found
-            return response()->json([
-                'success' => false,
-                'message' => 'Progress record not found.',
-            ], 404);
-        }
+        // Flatten the array to handle nested arrays (if any)
+        $filePaths = collect($filePaths)->flatten()->toArray();
 
-        
+        // You can return the progress record as JSON or in any desired format
+        return response()->json([
+            'success' => true,
+            'data' => $progress,
+            'progress_files' => $filePaths,
+        ], 200);
+    } catch (\Exception $e) {
+        // Handle exceptions if the progress record is not found
+        return response()->json([
+            'success' => false,
+            'message' => 'Progress record not found.',
+        ], 404);
     }
+}
+
+
+//    public function getProgressDetail($progressId) 
+// {
+//     try {
+//         // Use Eloquent to retrieve the progress record by its ID
+//         $progress = Progress::with('progressFiles')->findOrFail($progressId);
+
+//         $filePaths = $progress->progressFiles->pluck('file_paths')->flatten()->map(function ($path) {
+//             // Remove extra characters like %22 and square brackets
+//             return urldecode(trim($path, '[]'));
+//         })->toArray();
+
+//         // You can return the progress record as JSON or in any desired format
+//         return response()->json([
+//             'success' => true,
+//             'data' => $progress,
+//             'progress_files' => $filePaths,
+//         ], 200);
+//     } catch (\Exception $e) {
+//         // Handle exceptions if the progress record is not found
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Progress record not found.',
+//         ], 404);
+//     }
+// }
+
 
 
 
