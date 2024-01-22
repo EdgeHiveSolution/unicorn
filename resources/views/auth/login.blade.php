@@ -17,11 +17,13 @@
                                 value="{{ old('email') }}" autocomplete="email">
                         </div>
 
+                  
+{{-- 
                         @error('email')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mt-3">
@@ -41,12 +43,22 @@
                                 autocomplete="new-password">
                         </div>
 
-                        @error('password')
+                        {{-- @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
-                        @enderror
+                        @enderror --}}
                     </div>
+
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                   </div>
+                @endif
 
                     <div class="mt-3">
                         <button type="submit" class="btn btn-primary w-100 px-3">

@@ -105,6 +105,8 @@ class RegisterController extends Controller
         
         Log::info("User Registered and stored in session:", ['user' => $user]);
 
+
+       toastr('Logged in Successfully','success');
         return redirect($this->redirectTo);
     }
     
