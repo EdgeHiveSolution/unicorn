@@ -76,6 +76,8 @@ class LoginController extends Controller
                 //  Log::info('Session User 0', ['user'=> $loggeduser]);
                 //  dd($loggeduser);
                 // redirect()->route('dashboard');
+                toastr('Logged in Successfully','success');
+              //  toastr()->warning("Something went wrong!");
                 return redirect()->intended($this->redirectTo);
                  
 
