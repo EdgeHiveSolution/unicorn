@@ -21,7 +21,7 @@
                                             }}
                                         </h4>
                                     </div>
-                                    
+
                                     <button
                                         data-toggle="modal"
                                         class="btn btn-light border"
@@ -239,6 +239,7 @@
                                 class="form-control"
                                 type="text"
                                 v-model="kpimetric_title"
+                                required
                             />
                         </div>
 
@@ -255,6 +256,7 @@
                                 class="form-control"
                                 type="text"
                                 v-model="kpimetric_value"
+                                required
                             />
                         </div>
 
@@ -287,6 +289,7 @@
                                 class="form-control"
                                 v-model="kpimetric_notes"
                                 style="height: 100px"
+                                required
                             ></textarea>
                         </div>
 
@@ -512,7 +515,7 @@ export default {
             const kpimetricId = this.$props.kpimetricId;
             const memberId = this.$store.state.loggedUser.member.id; // Get the member id of the logged user
 
-            console.log("I am seeing this member now:",memberId);
+            console.log("I am seeing this member now:", memberId);
 
             // Construct the URI with kpiMetricId and memberId
             const uri =
@@ -585,6 +588,19 @@ export default {
         // },
 
         submitProgress() {
+            if (!this.kpimetric_title || !this.kpimetric_value) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Please fill in all the required fields",
+                    customClass: {
+                        container: "custom-swal",
+                    },
+                });
+                this.isLoading = false; // Reset isLoading in case of error
+                return;
+            }
+
             const loggedMemberId = store.state.loggedUser.member.id;
 
             console.log("Member Id:" + JSON.stringify(loggedMemberId));

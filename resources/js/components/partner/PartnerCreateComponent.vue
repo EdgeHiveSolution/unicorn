@@ -43,7 +43,7 @@
             class="row g-3"
             @submit.prevent="formSubmit"
             method="POST"
-          >
+        >
             <div class="row mb-2 p-3">
                 <label
                     for="name"
@@ -61,6 +61,7 @@
                         v-model="formData.name"
                         autocomplete="name"
                         autofocus
+                        required
                     />
 
                     <span
@@ -94,6 +95,7 @@
                             v-model="formData.email"
                             autocomplete="email"
                             autofocus
+                            required
                         />
                     </div>
 
@@ -321,6 +323,7 @@
                         v-model="formData.about"
                         autocomplete="about"
                         autofocus
+                        required
                     ></textarea>
                     <span
                         v-if="true"
@@ -504,7 +507,11 @@
                     >
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-primary btn-action">
+                    <button
+                        type="submit"
+                        form="form-submit"
+                        class="btn btn-primary btn-action"
+                    >
                         Add
                     </button>
                 </div>
@@ -576,12 +583,11 @@ export default {
         },
     },
     methods: {
-
         navigateToPartners(event) {
-            event.preventDefault(); 
+            event.preventDefault();
             window.location.href = "/partners";
         },
-        
+
         getDepartmentName(departmentId) {
             const department = this.departments.find(
                 (department) => department.id === departmentId
@@ -683,6 +689,19 @@ export default {
         },
 
         formSubmit() {
+            if (!this.name || !this.email || !this.about) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Please fill in all the required fields",
+                    customClass: {
+                        container: "custom-swal",
+                    },
+                });
+                this.isLoading = false; // Reset isLoading in case of error
+                return;
+            }
+
             const formData = new FormData();
 
             formData.append("name", this.formData.name);
