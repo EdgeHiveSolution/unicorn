@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Partner;
 use App\Models\Kpi;
 use App\Models\KpiMetric;
+use App\Models\Unit;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
             //UserSeeder::class, 
             // DepartmentSeeder::class,
              CountrySeeder::class,
+             UnitSeeder::class
             // PartnerSeeder::class,
             // DepartmentPartnerSeeder::class,
             // MemberSeeder::class,

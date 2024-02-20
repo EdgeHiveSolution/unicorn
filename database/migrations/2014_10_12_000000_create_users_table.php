@@ -23,6 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_role_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            //$table->unsignedBigInteger('partner_id')->nullable();
             $table->foreign('user_role_id')->references('id')->on('user_roles');
 
         });

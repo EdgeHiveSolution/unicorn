@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Log;
 use App\Models\UserRole; 
 use App\Models\Member;   
 use Session;
+use App\Models\Partner;
+use App\Models\MemberPartner;
+use App\Models\User;
 
 
 class LoginController extends Controller
@@ -63,6 +66,25 @@ class LoginController extends Controller
               //  Log::info("User object:", ['user' => $user]);
                 Log::info("User role:", ['userrole' => $user->userrole]);
                 Log::info("Member data:", ['member' => $user->member]);
+                $user_role_id = $user->userrole->id;
+                Log::info("user role id is ".$user_role_id);
+                if($user_role_id==3){
+                $partner = Partner::where('user_id', $user->id)->first();
+                Log::info("the partner is ".$partner);
+                $user->partner = $partner;
+                Session::put("partner_id",$partner->id);
+                Session::save();
+                 }
+
+                 else if($user_role_id==2){
+                //   $member = Member::where("user_id",$user->id);
+                   $member = $user->member;
+                   Log::info("the member is ".json_encode($member));
+                  $partner_id = MemberPartner::where('member_id', $member->id)->value('partner_id');
+                  Log::info("the partner in role 2 is ".$partner_id);
+                  Session::put("partner_id",$partner_id);
+                  Session::save();
+                 }
 
                 //return redirect()->intended($this->redirectTo); // Redirect to the intended URL after login
                  Session::put('user', $user);

@@ -1,6 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
         <!-- Dashboard -->
+        <!--|| auth()->user()->user_role_id == 2 -->
         @if (auth()->check() && auth()->user()->isAdmin() || auth()->user()->user_role_id == 2 || auth()->user()->user_role_id == 3)
         <li class="nav-item">
             <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/">
@@ -12,7 +13,7 @@
         </li>
         @endif
 
-        {{-- @if (auth()->check() &&  auth()->user()->user_role_id == 3)
+    {{-- @if (auth()->check() &&  auth()->user()->user_role_id == 10)
         <!-- Partners -->
         <li style="margin-top: -10px" class="nav-item">
             <a class="nav-link {{ Request::is('partners') ? 'active' : '' }}" href="/partners">
@@ -21,11 +22,11 @@
                 </span>
                 <span class="menu-title txt-light" style="font-size: 16px;">Dashboard</span>
             </a>
-        </li>
+        </li>-->
 
         @endif --}}
 
-        @if (auth()->check() && (auth()->user()->isAdmin()  || auth()->user()->user_role_id == 2))
+        @if (auth()->check() && (auth()->user()->isAdmin()))
         <!-- Partners -->
         <li style="margin-top: -10px" class="nav-item">
             <a class="nav-link {{ Request::is('partners') ? 'active' : '' }}" href="/partners">
@@ -33,6 +34,19 @@
                     <i class="mdi mdi-account-multiple"></i>
                 </span>
                 <span class="menu-title txt-light" style="font-size: 16px;">Partners</span>
+            </a>
+        </li>
+
+        @endif
+
+        @if (auth()->check() && ( auth()->user()->user_role_id == 3 || auth()->user()->user_role_id == 2))
+        <!-- Partners -->
+        <li style="margin-top: -10px" class="nav-item">
+            <a class="nav-link {{ Request::is('partners') ? 'active' : '' }}" href="/partners/{{ session()->get('partner_id')}}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-account-multiple"></i>
+                </span>
+                <span class="menu-title txt-light">Kpis</span>
             </a>
         </li>
 

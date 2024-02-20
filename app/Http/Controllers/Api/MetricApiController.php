@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Models\Metric;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
+use App\Task;
 
 class MetricApiController extends Controller
 {
@@ -30,7 +32,7 @@ class MetricApiController extends Controller
         ]);
 
 
-
+        Log::info("the message for create log: ".$request);
         Metric::create([
             'name' => $request->name,
             'unit' => $request->unit,
@@ -47,14 +49,28 @@ class MetricApiController extends Controller
    public function update(Request $request, Metric $metric)
     {
 
-
-
+        Log::info("the message for log: ".$request->name);
+        /**$this->validate($request,[
+            'name' => 'required|string',
+            "unit" => 'required|string'
+        ]);
+**/
+        $formData = $request->input();
+        
+      //  Log::info("the message for log: ".json_encode($formData));
         // Update the metric
-        $metric->update([
+        /**$metric->update([
             'name' => $request->name,
             'unit' => $request->unit,
 
+        ]);**/
+
+        $metric->find($request->id)->update([
+           // 'completed' => $request->has('completed')
+           'name' => $request->name,
+            'unit' => $request->unit,
         ]);
+
 
         
         return response()->json(['success' => 'Metric updated successfully']);

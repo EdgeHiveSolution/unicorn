@@ -67,6 +67,7 @@ class MetricController extends Controller
      */
     public function update(Request $request, Metric $metric)
     {
+        dump("metric 1:".$metric);
         $metric->update([
             'name' => $request['name'],
             'unit' => $request['unit'],
