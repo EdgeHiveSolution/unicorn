@@ -27,7 +27,8 @@
                                 >Progress</a
                             >
                         </li>
-                        <li class="nav-item">
+                        
+                        <li v-if="loggedUser.user_role_id!=2" class="nav-item">
                             <a
                                 href="#account"
                                 class="nav-link"

@@ -328,7 +328,7 @@
             </div>
         </div>
 
-        <div class="row configs mt-5">
+        <!--<div class="row configs mt-5">
             <div class="col-3"></div>
             <div class="col-9">
                 <div class="row">
@@ -425,7 +425,7 @@
                                         </tbody>
                                     </table>
                                     <div class="pagination">
-                                        <!-- Add pagination buttons here if needed -->
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -433,7 +433,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <div
             class="modal fade p-5"
@@ -941,6 +941,7 @@ export default {
                 type: "",
             },
             selectedMetric: {
+                id: "",
                 name: "",
                 unit: "",
             },
@@ -977,6 +978,8 @@ export default {
             const formData = new FormData();
             formData.append("name", this.newMetric.name);
             formData.append("unit", this.newMetric.unit);
+
+            console.log("the new form is " + JSON.stringify(formData));
 
             let uri = this.base_url + `api/v1/metric-create`;
             axios
@@ -1055,12 +1058,36 @@ export default {
             $("#editMetricModal").modal("show");
         },
 
+        getMetricId($name){
+         return 
+        },
+
         updateMetric() {
-            const formData = new FormData();
+            let formData = new FormData();
+            console.log("id is " + this.selectedMetric.id);
+            console.log("name is " + this.selectedMetric.name);
+            console.log("unit is " + this.selectedMetric.unit);
+            formData.append("id",this.selectedMetric.id);
             formData.append("name", this.selectedMetric.name);
             formData.append("unit", this.selectedMetric.unit);
+            formData.append("_method","patch");
+
+            /**const item = {
+             name: this.selectedMetric.name,
+             unit: this.selectedMetric.unit
+             };
+
+
+
+           Object.entries(item).forEach(([key, value]) => {
+              formData.append(key, value); });**/
+            for (var pair of formData.entries()) {
+              console.log(pair[0]+ ', ' + pair[1]); 
+           }  
+            console.log("the form is " + JSON.stringify(formData));
 
             let uri = this.base_url + `api/v1/metric-update`;
+            console.log("url is " + uri);
             axios
                 .post(uri, formData)
                 .then((response) => {
@@ -1068,6 +1095,7 @@ export default {
                     this.fetchMetrics(); // Refresh the metrics
                 })
                 .catch((error) => {
+                    console.log("errors: " + JSON.stringify(error));
                     this.errors = error.response.data.errors;
                 });
         },
