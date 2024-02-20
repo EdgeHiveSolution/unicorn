@@ -46,7 +46,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-account-multiple"></i>
                 </span>
-                <span class="menu-title txt-light">Kpis</span>
+                <span class="menu-title txt-light">Members & Kpis</span>
             </a>
         </li>
 
