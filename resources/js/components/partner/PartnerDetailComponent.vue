@@ -851,7 +851,7 @@
 
                         <hr />
 
-                        <div class="row mb-2">
+                       <!-- <div class="row mb-2">
                             <label
                                 for="members"
                                 class="col-md-3 col-form-label text-md-start"
@@ -960,7 +960,7 @@
                                     </li>
                                 </ul>
                             </div>
-                        </div>
+                        </div>-->
 
                         <div class="row mb-2">
                             <label
