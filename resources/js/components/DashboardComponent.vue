@@ -6,7 +6,8 @@
         <div
             v-if="
                 data.loggeduser.user_role_id === 1 ||
-                data.loggeduser.user_role_id === 2
+                data.loggeduser.user_role_id === 2 ||
+                data.loggeduser.user_role_id === 3 
             "
         >
             <h3 style="font-size: 20px" class="txt-gray">
