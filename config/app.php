@@ -58,7 +58,8 @@ return [
 
     #'url' => env('APP_URL', 'http://localhost'),
    # 'url' => env('APP_URL', 'https://unicon1-4e6bc01d9a83.herokuapp.com'),
-   'url' => env('APP_URL', 'https://tactiv.clifford.co.ke'),
+   #'url' => env('APP_URL', 'https://tactiv.clifford.co.ke'),
+    'url' => env('APP_URL', 'https://unicon.clifford.co.ke'), 
    
 
 
