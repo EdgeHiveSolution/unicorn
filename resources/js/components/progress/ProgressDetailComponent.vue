@@ -53,24 +53,25 @@
                                                                         filePath
                                                                     "
                                                                 >
-                                                                    <a
-                                                                        :href="
-                                                                            base_url +
-                                                                            '/' +
-                                                                            filePath
-                                                                        "
-                                                                        :download="
-                                                                            getFileName(
-                                                                                filePath
-                                                                            )
-                                                                        "
-                                                                        target="_blank"
-                                                                        >{{
-                                                                            getFileName(
-                                                                                filePath
-                                                                            )
-                                                                        }}</a
-                                                                    >
+                                                                  <a
+    :href="base_url + 'storage/' + filePath"
+    :download="getFileName(filePath)"
+    target="_blank">
+    {{ getFileName(filePath) }}
+</a>
+
+                                                                       
+                                                                            
+                                                                              
+                                                                                                                                                                                       
+                                                                                                                                                                                 
+                                                                        
+                                                                        
+                                                                           
+                                                                               
+                                                                            
+                                                                       
+                                                                  
                                                                 </li>
                                                             </ul>
                                                         </td>
