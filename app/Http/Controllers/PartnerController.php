@@ -18,9 +18,9 @@ class PartnerController extends Controller
      *
      *
      */
-    public function index()
+    public function index(Member $member)
     {
-        $partners = Partner::latest()->cursorPaginate(5);
+        $partners = $member->partners()->latest()->cursorPaginate(5);
 
         $data = [
             'partners' => $partners,
@@ -45,7 +45,7 @@ class PartnerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      */
-    
+
 
     /**
      * Display the specified resource.
@@ -54,11 +54,25 @@ class PartnerController extends Controller
      * onse
      */
     public function show(Partner $partner)
-    {
-        $data = ['partner'=> $partner];
 
-        return view('partner.show', $data);
-    }
+    {
+    $partner->load([
+        'members',
+        'kpis',
+        'departments'
+    ]);
+
+    // Load kpiMetrics for each KPI
+    $partner->kpis->load('kpiMetrics.kpiMetricMembers.progress');
+
+    $data = [
+        'partner' => $partner,
+    ];
+
+    return view('partner.show', $data);
+}
+
+
 
     /**
      * Show the form for editing the specified resource.

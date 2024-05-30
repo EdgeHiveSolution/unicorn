@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\MetricController;
@@ -9,8 +10,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\ConfigurationController;
-
+use App\Http\Controllers\Util\ConfigurationController;
+use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\KpiMetricController;
+use App\Http\Controllers\DepartmentPartnerController;
+use App\Http\Controllers\DepartmentMemberController;
+use App\Http\Controllers\ProgressDetailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,8 +31,9 @@ use App\Http\Controllers\ConfigurationController;
 
 
 Auth::routes();
+
 Route::get('/', [DashboardController::class, 'index'])->name('home');
-Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('home.dashboard');
 
 Auth::routes();
 
@@ -51,3 +58,25 @@ Route::resource('units', UnitController::class);
 
 //Units Routes
 Route::resource('profile', ProfileController::class);
+
+//Progress
+Route::resource('progress', ProgressController::class);
+
+//Member
+Route::resource('members', MemberController::class);
+
+
+//Member
+Route::resource('kpimetrics', KpiMetricController::class);
+
+//Department_Partner
+
+Route::resource('department_partners', DepartmentPartnerController::class);
+
+Route::resource('department_members', DepartmentMemberController::class);
+
+ Route::resource('progress_detail', ProgressDetailController::class);
+
+ Route::resource('progress_details', ProgressController::class);
+
+//Route::get('/progress_detail',  [ProgressDetailController::class, 'show']);

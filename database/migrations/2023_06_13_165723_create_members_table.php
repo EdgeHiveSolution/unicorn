@@ -15,11 +15,20 @@ class CreateMembersTable extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
-            $table->foreignId('department_id');
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('photo')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_role_id')->nullable();
+            $table->boolean('is_active')->default(true); 
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_role_id')->references('id')->on('user_roles')->onDelete('set null');
+
+
         });
     }
 

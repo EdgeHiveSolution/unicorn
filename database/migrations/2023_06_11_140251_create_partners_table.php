@@ -21,12 +21,17 @@ class CreatePartnersTable extends Migration
             $table->string('email')->unique();
             $table->string('website')->nullable();
             $table->string('logo')->nullable();
-            $table->string('country')->nullable();
+            $table->foreignId('country_id')->constrained();
             $table->string('business_type')->nullable();
             $table->longText('about');
             $table->string('documents')->nullable();
+            $table->string('password');
+            $table->boolean('is_active')->default(true); 
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('user_id')->references('id')->on('users');
+
         });
     }
 

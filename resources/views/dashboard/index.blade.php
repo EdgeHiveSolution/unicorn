@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @section('content')
-<dashboard-component :user-name="{{ json_encode(Auth::user()->name) }}"></dashboard-component>
+<dashboard-component :user="{{ json_encode(Auth::user()) }}"
+                    :data="{{json_encode($data)}}" ></dashboard-component>
+
 @endsection
 
 

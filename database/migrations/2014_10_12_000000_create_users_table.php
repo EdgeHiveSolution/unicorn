@@ -15,10 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('photo')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('is_active')->default(true); 
             $table->rememberToken();
+            $table->unsignedBigInteger('user_role_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+            $table->foreign('user_role_id')->references('id')->on('user_roles');
+
         });
     }
 

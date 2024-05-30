@@ -1,0 +1,72 @@
+0000000000000000000000000000000000000000 31df93763931e479699ede4cd556456117b9bee4 douglasrono <douglasronno@gmail.com> 1688731872 +0300	clone: from github.com:douglasrono/unicorn.git
+31df93763931e479699ede4cd556456117b9bee4 e2c7ad8c488f6b0c6392453404c0699ef2b46b3a douglasrono <douglasronno@gmail.com> 1688732162 +0300	commit: random commits
+e2c7ad8c488f6b0c6392453404c0699ef2b46b3a 51dc4ddf6c5fb2c9217aa97f4806de7ceefb46b4 douglasrono <douglasronno@gmail.com> 1688735058 +0300	commit: random commits
+51dc4ddf6c5fb2c9217aa97f4806de7ceefb46b4 2d4c24ff3658c45d39e69d1f2ab86201ab1698bf douglasrono <douglasronno@gmail.com> 1688738734 +0300	commit: added parters rship
+2d4c24ff3658c45d39e69d1f2ab86201ab1698bf 73d55145f28d03663b82db1fb75946809e4ef9d7 douglasrono <douglasronno@gmail.com> 1688738786 +0300	commit: comment out the email sending
+73d55145f28d03663b82db1fb75946809e4ef9d7 6bc1aee4f781048dad649c5548b9254c69fd72a6 douglasrono <douglasronno@gmail.com> 1688744294 +0300	commit: configured mail address
+6bc1aee4f781048dad649c5548b9254c69fd72a6 1c0117f2706ee84e5a32510f0dadc523d19a0403 douglasrono <douglasronno@gmail.com> 1688744511 +0300	commit: commented out members
+1c0117f2706ee84e5a32510f0dadc523d19a0403 ae44d9406b9fa1cc77dadd26b0da39ea9abcb3c3 douglasrono <douglasronno@gmail.com> 1688744651 +0300	commit: random commits
+ae44d9406b9fa1cc77dadd26b0da39ea9abcb3c3 2f0f334650af44abc59bc793e1a6719c82ee6229 douglasrono <douglasronno@gmail.com> 1688746221 +0300	commit: modified email tempalte
+2f0f334650af44abc59bc793e1a6719c82ee6229 bf175dff8338fe133f730c3cad1fac5b8f97ccc0 douglasrono <douglasronno@gmail.com> 1688754765 +0300	commit: latest stable changes
+bf175dff8338fe133f730c3cad1fac5b8f97ccc0 6f4ff40c6949d709a93ad0dac5a772261984d089 douglasrono <douglasronno@gmail.com> 1688802118 +0300	commit: random updates
+6f4ff40c6949d709a93ad0dac5a772261984d089 d7eda8fd62337ea3ce920126164e9540bc4777a8 douglasrono <douglasronno@gmail.com> 1688803162 +0300	commit: added member addition mail template
+d7eda8fd62337ea3ce920126164e9540bc4777a8 649d0c800bf3ee14e0bc0cd0fbef6e79c1cba216 douglasrono <douglasronno@gmail.com> 1688804080 +0300	commit: added login title
+649d0c800bf3ee14e0bc0cd0fbef6e79c1cba216 689e40ef7701babbe9bddf20a381f03604c08cdb douglasrono <douglasronno@gmail.com> 1688822400 +0300	commit: random changes
+689e40ef7701babbe9bddf20a381f03604c08cdb 904503fb5be4a8c79f6eba1f00a90d60daa28f6b douglasrono <douglasronno@gmail.com> 1688825834 +0300	commit: added mail sending
+904503fb5be4a8c79f6eba1f00a90d60daa28f6b 4349aeccae0cf2b0d5d83e8ef8b223bd10e28ef9 douglasrono <douglasronno@gmail.com> 1688825935 +0300	commit: renamed partner added mail template
+4349aeccae0cf2b0d5d83e8ef8b223bd10e28ef9 f463c03010a75c0ae53620744c40c98eb39e4b28 douglasrono <douglasronno@gmail.com> 1688825986 +0300	commit: created partner added mail
+f463c03010a75c0ae53620744c40c98eb39e4b28 8ed605fb6bff723ae1008c11d2b09afa71bdeec3 douglasrono <douglasronno@gmail.com> 1688826109 +0300	commit: added mailing partner added template
+8ed605fb6bff723ae1008c11d2b09afa71bdeec3 ab1e8b35b556fbe9d817e87898850fde3018c1a2 douglasrono <douglasronno@gmail.com> 1688829810 +0300	commit: recent stable changes
+ab1e8b35b556fbe9d817e87898850fde3018c1a2 58f38299336955f3cde445489e1bbeb3d82e8a05 douglasrono <douglasronno@gmail.com> 1688839463 +0300	commit: added logo upload logic
+58f38299336955f3cde445489e1bbeb3d82e8a05 c2c2e772b6b0ec96c7e183290442e0196a607e7d douglasrono <douglasronno@gmail.com> 1688839657 +0300	commit: removed duplicate partner create
+c2c2e772b6b0ec96c7e183290442e0196a607e7d ffce4d4acc8051262e898cde63d173f40986409b douglasrono <douglasronno@gmail.com> 1688880667 +0300	commit: random updates
+ffce4d4acc8051262e898cde63d173f40986409b bbe71e25244a18e53b21413c8d376e985fbe4bce douglasrono <douglasronno@gmail.com> 1688881257 +0300	commit: split fullname to display first name only
+bbe71e25244a18e53b21413c8d376e985fbe4bce 8491429042ec8c31c2ed8139224bd75ddc688004 douglasrono <douglasronno@gmail.com> 1688881310 +0300	commit: removed style tags
+8491429042ec8c31c2ed8139224bd75ddc688004 b4aa2150a6a16ef4d8e16486483737930004d93f douglasrono <douglasronno@gmail.com> 1688884058 +0300	commit: added styling on active links
+b4aa2150a6a16ef4d8e16486483737930004d93f fbf305a4b7d80215319cead44a7bab91141611d1 douglasrono <douglasronno@gmail.com> 1688884261 +0300	commit: removed light color on icons
+fbf305a4b7d80215319cead44a7bab91141611d1 69cd002d0e71afaff0e549217403e8869dbde5de douglasrono <douglasronno@gmail.com> 1688884429 +0300	commit: changed active class for icons
+69cd002d0e71afaff0e549217403e8869dbde5de 12ff29c0cae22ee35d51754f64f5f8b2e3ff1ce3 douglasrono <douglasronno@gmail.com> 1688885127 +0300	commit: changed logo src atrribute
+12ff29c0cae22ee35d51754f64f5f8b2e3ff1ce3 28d773abdab21c6398fa538181b4a6f74390f19d douglasrono <douglasronno@gmail.com> 1688934789 +0300	commit: added recent stable changes
+28d773abdab21c6398fa538181b4a6f74390f19d 736cbb2b7314c61cb13d6696a61b6f91fc9f58ca douglasrono <douglasronno@gmail.com> 1688967711 +0300	commit: centered placeholder text
+736cbb2b7314c61cb13d6696a61b6f91fc9f58ca 889f4f598ee95f739e413b3d9e95629ae817a306 douglasrono <douglasronno@gmail.com> 1688971209 +0300	commit: updated business types list
+889f4f598ee95f739e413b3d9e95629ae817a306 105ad2817c9cc8487bfd5a92c8ea70d8b2111d8b douglasrono <douglasronno@gmail.com> 1689010941 +0300	commit: random updates
+105ad2817c9cc8487bfd5a92c8ea70d8b2111d8b cab2b4c7c2ef9b7d35de94d20e843dd1707567f1 douglasrono <douglasronno@gmail.com> 1689014390 +0300	commit: recent stable changes
+cab2b4c7c2ef9b7d35de94d20e843dd1707567f1 3b32a06152e1390763d46fe7e30db0b646e1134e douglasrono <douglasronno@gmail.com> 1689057021 +0300	commit: random commits
+3b32a06152e1390763d46fe7e30db0b646e1134e 69b13ed5b0358a786427533d3650e911508082a4 douglasrono <douglasronno@gmail.com> 1689057284 +0300	commit: added pivot r-ship
+69b13ed5b0358a786427533d3650e911508082a4 945d08e3fb87ed204409bb877f024dc6910e145b douglasrono <douglasronno@gmail.com> 1689064550 +0300	commit: recent stable changes
+945d08e3fb87ed204409bb877f024dc6910e145b 65d751250dfe55df822c880b14b8d9b36231c9fb douglasrono <douglasronno@gmail.com> 1689163376 +0300	commit: recent stable changes
+65d751250dfe55df822c880b14b8d9b36231c9fb b147173f403364a74465e086b05986eb2b8431fa douglasrono <douglasronno@gmail.com> 1689163885 +0300	commit: added photo column
+b147173f403364a74465e086b05986eb2b8431fa 8a3070d701a72b533bfc2521677329bf4cbfeb69 douglasrono <douglasronno@gmail.com> 1689615733 +0300	commit: recently updated changes
+8a3070d701a72b533bfc2521677329bf4cbfeb69 72e455a44bfd581ea0b2bd01e2da277a1277c37b douglasrono <douglasronno@gmail.com> 1689618895 +0300	commit: removed component style
+72e455a44bfd581ea0b2bd01e2da277a1277c37b de9104df365090f7744f399beedccad40951bc84 douglasrono <douglasronno@gmail.com> 1689764604 +0300	commit: random updates
+de9104df365090f7744f399beedccad40951bc84 3e4e0afd22770cc4875e13f6d6ffc066a99db06c douglasrono <douglasronno@gmail.com> 1689784453 +0300	commit: recent stable changes
+3e4e0afd22770cc4875e13f6d6ffc066a99db06c 21258987f771759e51b49260cc63fd942c05edbc douglasrono <douglasronno@gmail.com> 1689794286 +0300	commit: stable changes in partner resource
+21258987f771759e51b49260cc63fd942c05edbc 0816c74cb6052dbde61961ec8a7aea6ac1df3f69 douglasrono <douglasronno@gmail.com> 1689830873 +0300	commit: deleted partner logos
+0816c74cb6052dbde61961ec8a7aea6ac1df3f69 20a58ba976544e2bb1d584312bc36febc4cefc3d douglasrono <douglasronno@gmail.com> 1689863716 +0300	commit: updated progress
+20a58ba976544e2bb1d584312bc36febc4cefc3d 2b63b31e98dffb73c8d9dfe3654344c7aadf13d0 douglasrono <douglasronno@gmail.com> 1689870005 +0300	commit: added kpi logic
+2b63b31e98dffb73c8d9dfe3654344c7aadf13d0 52513419f43073d19c74c8195ae18d239500f5c5 douglasrono <douglasronno@gmail.com> 1689871975 +0300	commit: created partner - kpi relationship
+52513419f43073d19c74c8195ae18d239500f5c5 87ae9efbba081d8d80e2b700adb650d5a846bcd4 douglasrono <douglasronno@gmail.com> 1689879552 +0300	commit: random changes
+87ae9efbba081d8d80e2b700adb650d5a846bcd4 90b60f1cfcc4eee905ae72fc0a88011558e34a01 douglasrono <douglasronno@gmail.com> 1689879736 +0300	commit: added password column
+90b60f1cfcc4eee905ae72fc0a88011558e34a01 03f5b5762c0ef6e01897e60ae289bf2ac1507567 douglasrono <douglasronno@gmail.com> 1689926486 +0300	commit: random commits
+03f5b5762c0ef6e01897e60ae289bf2ac1507567 090d343a722afa8dad8b9ef7ce168787d9372305 douglasrono <douglasronno@gmail.com> 1689926747 +0300	commit: removed unused methods
+090d343a722afa8dad8b9ef7ce168787d9372305 8340a549a8828b111bbddbf38627bba73fd7b3c7 douglasrono <douglasronno@gmail.com> 1689930502 +0300	commit: added partner edit logic
+8340a549a8828b111bbddbf38627bba73fd7b3c7 d645ac29fc4bc97ef7fb91ee71a230e201bde680 douglasrono <douglasronno@gmail.com> 1689930679 +0300	commit: added logo update logic
+d645ac29fc4bc97ef7fb91ee71a230e201bde680 8c2cdd176ad4fa028cc372ebc0d5cae203de3a36 douglasrono <douglasronno@gmail.com> 1689931881 +0300	commit: added page reload
+8c2cdd176ad4fa028cc372ebc0d5cae203de3a36 f075dc56cdce13f49e5bd59e17677be324dbf80e douglasrono <douglasronno@gmail.com> 1689948650 +0300	commit: random changes
+f075dc56cdce13f49e5bd59e17677be324dbf80e 5a1acd2022986c59678328ec0ffa3c0c6f1f0e60 douglasrono <douglasronno@gmail.com> 1689951429 +0300	commit: changed user to admin resource
+5a1acd2022986c59678328ec0ffa3c0c6f1f0e60 cae4fe936779cae2b13454949f4e991b991ab676 douglasrono <douglasronno@gmail.com> 1690000659 +0300	commit: pulled main repo changes
+cae4fe936779cae2b13454949f4e991b991ab676 9c10054e3d0f212b7a098396dbb8e5cdb18ff13a douglasrono <douglasronno@gmail.com> 1690001303 +0300	commit: added media queries
+9c10054e3d0f212b7a098396dbb8e5cdb18ff13a f387eaa837f2d114dfeea800f95520466a6c6ed1 douglasrono <douglasronno@gmail.com> 1690035018 +0300	commit: added is_active and password fields
+f387eaa837f2d114dfeea800f95520466a6c6ed1 4e505b0fd6a698391f959d0d5c2cecc141f40cf1 douglasrono <douglasronno@gmail.com> 1690088447 +0300	commit: made notable changes in KPI relationship
+4e505b0fd6a698391f959d0d5c2cecc141f40cf1 cfc65fac7a36f35345ef5c7e7f5572beaf6c4c4e douglasrono <douglasronno@gmail.com> 1690088770 +0300	commit: added softdelete to tables
+cfc65fac7a36f35345ef5c7e7f5572beaf6c4c4e 4078241b944198e73e4497c5377b05b9c43e6d0b douglasrono <douglasronno@gmail.com> 1690090372 +0300	commit: updated changes in kpis
+4078241b944198e73e4497c5377b05b9c43e6d0b 3fbb28623783ded5337f0477f1845cda3ff4b0f9 douglasrono <douglasronno@gmail.com> 1690097262 +0300	commit: recent stable changes in metrics
+3fbb28623783ded5337f0477f1845cda3ff4b0f9 61f5b7d9e0490f1715893439284c0b0fd34d52d4 douglasrono <douglasronno@gmail.com> 1690097859 +0300	commit: updated kpi metrics
+61f5b7d9e0490f1715893439284c0b0fd34d52d4 d8f2a74a414ed16e928fc70942c3b58af046d50d douglasrono <douglasronno@gmail.com> 1690105352 +0300	commit: updated metrics form
+d8f2a74a414ed16e928fc70942c3b58af046d50d 63aa25c33f5ed9f2caae9111dfe52d507d7469c3 douglasrono <douglasronno@gmail.com> 1690128054 +0300	commit: random stable changes
+63aa25c33f5ed9f2caae9111dfe52d507d7469c3 c3e4c2cb91c133f467b03423e2055afa9d064e02 douglasrono <douglasronno@gmail.com> 1690137372 +0300	commit: recent stable changes
+c3e4c2cb91c133f467b03423e2055afa9d064e02 99854fa6071977ebfd6b3ab624ecf9f9f6cb5176 douglasrono <douglasronno@gmail.com> 1690170090 +0300	commit: recent stable changes in partners
+99854fa6071977ebfd6b3ab624ecf9f9f6cb5176 95c9009e3d8c661b98ed95c54b7019895589fb64 douglasrono <douglasronno@gmail.com> 1690180771 +0300	commit: random commits
+95c9009e3d8c661b98ed95c54b7019895589fb64 14f12c69350a37c3ae9a60759720d92e981d6696 douglasrono <douglasronno@gmail.com> 1690202518 +0300	commit: deleted duplicate metric tables
+14f12c69350a37c3ae9a60759720d92e981d6696 c52a66e55cf7780b35d2c815c1a4cd50b051a3f6 douglasrono <douglasronno@gmail.com> 1690220703 +0300	commit: random commits
+c52a66e55cf7780b35d2c815c1a4cd50b051a3f6 18ce198c71eb93943337ff71dcbcff0e3f7c5375 douglasrono <douglasronno@gmail.com> 1690256519 +0300	commit: random commits

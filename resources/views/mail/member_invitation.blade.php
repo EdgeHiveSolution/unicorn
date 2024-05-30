@@ -6,20 +6,17 @@
     <title>Member Invitation</title>
 </head>
 <body>
-    <h2>Invitation and Login Details</h2>
+    <h2>Department Invitation</h2>
 
-    <p>Dear {{ $member->email }},</p>
+    <p>Greetings!,</p>
 
-    <p>You have been invited to join the {{ $member->department->name }} department.</p>
+    <p>You have been invited to join the {{ $departmentName }} department.</p>
 
-    <p>Please find below your login details:</p>
-
-    <ul>
-        <li>Email: {{ $member->email }}</li>
-        <li>Password: ********</li> <!-- Insert the member's password here -->
-    </ul>
-
-    <p>Visit our website at <a href="{{ url('/') }}">unicon.com</a> to log in and access your account.</p>
+    @if ($actionType === 'login' && $member)
+        <p>Visit our website at <a href="{{ $url }}">Unicorn</a> to log in and access your account.</p>
+    @else
+        <p>Visit our website at <a href="{{ $url }}">Unicorn</a> to register and access your account.</p>
+    @endif
 
     <p>Thank you!</p>
 </body>

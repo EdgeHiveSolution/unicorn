@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Unit;
+use App\Models\KpiMetric;
+
+
 
 class Metric extends Model
 {
@@ -14,5 +18,15 @@ class Metric extends Model
 
     ];
 
+    public function units()
+    {
+        return $this->hasMany(Unit::class);
+    }
+
+    public function kpiMetrics()
+    
+    {
+        return $this->hasMany(KpiMetric::class);
+    }
 
 }

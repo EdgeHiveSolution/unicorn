@@ -4,28 +4,28 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use App\Models\Member;
+use App\Models\Department;
+use App\Models\User;
+use App\Models\Partner;
+use Illuminate\Support\Facades\Session;
+use App\Models\UserRole;
+use Illuminate\Support\Facades\Log;
+
+
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
+
 
     use RegistersUsers;
 
     /**
-     * Where to redirect users after registration.
+     * Where to redirect admins after registration.
      *
      * @var string
      */
@@ -41,12 +41,7 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
+
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -56,18 +51,70 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
+   
     protected function create(array $data)
     {
-        return User::create([
+        // Create the user
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'user_role_id' => UserRole::where('name', 'Member')->first()->id,
+
+
         ]);
+    
+        // Create a corresponding member for the user and set the user_id
+        $member = Member::create([
+            'name' =>$user->name,
+            'email' =>$user->email,
+            'user_id' => $user->id, // Set the user_id for the member
+        ]);
+    
+        // Check if the department_id is provided in the registration form
+        if (isset($data['department_id'])) {
+            $department = Department::find($data['department_id']);
+            if ($department) {
+                // Associate the member with the department
+                $department->members()->attach($member->id);
+            }
+        }
+
+        // Check if the partner_id is provided in the registration form
+        if (isset($data['partner_id'])) {
+            $partner = Partner::find($data['partner_id']);
+            if ($partner) {
+                // Associate the member with the partner
+                $partner->members()->attach($member->id);
+            }
+        }
+    
+        return $user;
     }
+
+
+
+    protected function registered(Request $request, $user)
+    {
+        // Load the user with its related data
+        $user->load('userrole', 'member.kpiMetricMembers.progress');
+
+        // Store the user in the session
+        Session::put('user', $user);
+        Session::save();
+        
+        Log::info("User Registered and stored in session:", ['user' => $user]);
+
+
+       toastr('Logged in Successfully','success');
+        return redirect($this->redirectTo);
+    }
+    
+                
+     protected function showRegistrationForm(Request $request)
+     {
+        $partnerId = $request->query('partner_id');
+        $departmentId = $request->query('department_id');
+        return view('auth.register', compact('partnerId', 'departmentId'));
+     }
 }

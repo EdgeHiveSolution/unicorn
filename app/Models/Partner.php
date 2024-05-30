@@ -4,24 +4,81 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\KpiMetric;
+use App\Models\Department;
+use App\Models\Member;
+use App\Models\Kpi;
+use App\Models\Country;
+use App\Models\DepartmentPartner;
+use App\Models\MemberPartner;
+use App\Models\User;
+
+
+
 
 class Partner extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'name', 'address', 'phone', 'email','website','logo','country','business_type','description','documents', 'about'
+        'name', 'address', 'phone', 'email', 'website', 'logo', 'country_id', 'business_type','is_active','password', 'description', 'documents', 'about', 'user_id'
 
     ];
 
-    public function members()
-    {
-        return $this->belongsToMany(Member::class);
-    }
 
+ // protected $with = ['members', 'kpis.kpiMetrics.kpiMetricMembers.progress'];
+  protected $with = ['departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress'];
+
+
+    // public function members()
+    // {
+    //     return $this->belongsToMany(Member::class, 'member_partner', 'partner_id', 'member_id')
+    //     ->withPivot('role');
+    // }
+
+    /**
+     * The departments that belong to the partner.
+     */
     public function departments()
     {
-        return $this->belongsToMany(Member::class);
+        return $this->belongsToMany(Department::class, 'department_partner', 'partner_id', 'department_id')
+            ->using(DepartmentPartner::class)
+            ->withPivot('department_id', 'partner_id', 'role')
+            ->withTimestamps();
     }
 
+
+    public function members()
+{
+    return $this->belongsToMany(Member::class, 'member_partner')
+        ->using(MemberPartner::class)
+        ->withPivot('department_id', 'role', 'member_id')
+        ->withTimestamps();
+}
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+
+    public function kpis()
+    {
+        return $this->hasMany(Kpi::class, 'partner_id');
+    }
+
+    // public function kpiMetrics()
+    // {
+    //     return $this->hasMany(KpiMetric::class);
+    // }
+
+
+            public function user()
+        {
+            return $this->belongsTo(User::class);
+        }
+
+    
 }

@@ -43,35 +43,38 @@ class MetricApiController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+   public function update(Request $request, Metric $metric)
     {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
 
+
+        // Update the metric
+        $metric->update([
+            'name' => $request->name,
+            'unit' => $request->unit,
+
+        ]);
+
+        
+        return response()->json(['success' => 'Metric updated successfully']);
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+
+        // Find the metric by its ID
+        $metric = Metric::find($request->id);
+
+        if (!$metric) {
+            return response()->json(['error' => 'Metric not found'], 404);
+        }
+
+        // Delete the metric
+        $metric->delete();
+
+        return response()->json(['success' => 'Metric deleted successfully']);
     }
 }

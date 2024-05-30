@@ -9,8 +9,10 @@ a{
     text-decoration: none !important;
 }
 th{
-    color: #b8b9bb;
-    font-size: .9rem;
+   /* color: #b8b9bb;*/
+    color: #9ea4b1;
+    font-size: 14px;
+    /*font-size: .9rem;*/
 
 }
 .td-members img{
@@ -19,7 +21,8 @@ th{
 .stats span{
     font-size: 12px;
     font-weight: 600;
-    color: #b73026;
+    color: black;
+   /* color: #b73026;*/
 }
 
 .stats span:last-child{
@@ -46,6 +49,7 @@ table .progress{
     height: 10px;
     border-radius: 5px;
  }
+
 
 /* body */
 
@@ -77,12 +81,12 @@ table .progress{
 
 /* mainbar */
   .main-container {
-    width: calc(100% - 344px);
+    width: calc(100% - 250px);
     display: flex;
     flex-direction: column;
 
     border-radius: 48px 0 0 0;
-    margin-top: .8rem;
+    margin-top: .12rem;
     padding-top: 2rem;
 }
 /* text colors */
@@ -91,7 +95,12 @@ table .progress{
 }
 
 .txt-gray{
-    color: #b1b6c0;
+    /*color: #b1b6c0;*/
+    color: rgba(102,112,133,1);
+}
+
+.progress_text{
+  font-size: 12px;
 }
 
 .txt-warning{
@@ -121,7 +130,7 @@ table .progress{
 
 .grid-margin{
     border: #e6e6e6 solid 1px;
-    padding: 2rem;
+    padding: .9rem;
 }
 
 .grid-margin:first-child{
@@ -143,30 +152,66 @@ table .progress{
 /* table */
 
 tr:nth-child(odd) td {
-    background-color: #f9fafb; /* Set the background color for even rows */
+     background-color: rgba(249,250,251,1);
+    /*background-color: #f9fafb;*/
+   /* background-color: #FFF5F5F5;*/
+    /* Set the background color for even rows */
   }
 
 /* button */
 
 .btn-pri{
+    /*background-color: #0072bb;*/
     background-color: #0072bb;
-    font-size: .9rem;
+    font-size: 12px !important;
+    height: 32px;
+    width: 120px;
     color: #eaf3ff;
+  
 
 }
 
 .btn-sec{
     background-color: #f1f7f4;
-    font-size: .9rem;
+    font-size: 12px;
     color: #101828;
-    border: #101828 1px solid;
+    border: #101828 1px solid ;
     margin-left: 8px;
 }
 
+.btn-suc{
+    background-color: #29ec8a46;
+    border-radius: 15px;
+    padding: 3px;
+
+}
+
 .btn-action{
-    padding: 15px 30px;
+    padding: 5px 15px;
     margin-right:20px;
 }
+
+.primary_button{
+    background-color: #084bf7;
+}
+
+.on-track {
+    background-color: #047a48;
+}
+
+.at-risk {
+    background-color: #f0ad4e;
+}
+
+.off-track {
+    background-color: #d9534f;
+}
+
+.on-track-label{
+    font-size: 12px;
+    color: #047a48;
+}
+
 .add-link{
    font-weight: 700;
 }
@@ -178,10 +223,11 @@ tr:nth-child(odd) td {
 
 .department-tag{
   border-radius: 10px;
-  padding: 8px;
+  padding: 5px;
  background: #eceff3;
  font-size: .4 rem;
- margin: 0 !important;
+ margin-right: 5px;
+ /*margin: 0 !important;*/
 }
 
 
@@ -204,14 +250,14 @@ tr:nth-child(odd) td {
 }
 
 .grid-margin h4{
-    font-size: 1.3rem;
-    font-weight: 400;
+    font-size: 1rem !important;
+    font-weight: 800 !important;
 
 }
 
 .grid-margin h5{
     font-size: .9rem;
-    font-weight: 500;
+    font-weight: 800;
 }
 
 .grid-margin h6{
@@ -220,9 +266,7 @@ tr:nth-child(odd) td {
 
 }
 
-.grid-margin .icon-item{
 
-}
 
 .welcome h1{
     font-size: 2rem;
@@ -248,7 +292,99 @@ tr:nth-child(odd) td {
 
 .active-period{
     margin-left: 25px;
-    font-weight: 500;
+    font-weight: 400;
+    font-size: 14px;
+}
+/* .mdi-email{
+    font-size: 2rem !important;
+} */
+input{
+   padding: 15px !important;
+}
+
+.active_status_container{
+    background-color: #e6f8ef;
+    align-items: center;
+    border-radius: 16px;
+}
+
+.table_text{
+    font-size: 12px;
+}
+
+
+.member_image{
+    width: 35px;
+    margin-left: -10px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #f3f4f7;
+    border-color: 1px solid #979da9;
+    /*background-color: #d3d3d3;*/
+    /*border-color: 1px solid white;*/
+}
+
+.member_image_plus{
+    width: 35px;
+    margin-left: -10px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #fff7df;
+    border: white 1px solid;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile_image{
+    width: 35px;
+    margin-left: -10px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #f3f4f7;
+    border-color: 1px solid #979da9;
+    /*background-color: #d3d3d3;*/
+    /*border-color: 1px solid white;*/
+}
+
+
+.member_image_text{
+    color:#f8b925;
+    font-size: 11px;
+    margin: auto;
+    
+
+}
+
+.email_container{
+    /*border :1px solid #979da9;*/
+    border: 1px solid #e0e3e8;
+}
+
+.delete_email{
+    border: 1px solid #e0e3e8;
+    align-items: center;
+    
+}
+
+.purple_container{
+    background-color:rgba(234,243,255,1);
+    border-radius: 24px;
+}
+
+.active_status_text{
+    color: #097c4d;
+    padding: 6px;
+    align-self: center;
+    font-size: 12px;
+}
+
+.container-overflow_wrapper{
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 250px;
+    height: 60px;
 }
 
 .input-container {
@@ -260,6 +396,7 @@ tr:nth-child(odd) td {
 .input-field {
     background: transparent;
     border: none;
+    text-align: center;
     padding: 8px 12px;
     padding-left: 32px;
     font-size: 16px;
@@ -283,7 +420,8 @@ tr:nth-child(odd) td {
 }
 
 .top-header p{
-    font-size: 1.3rem;
+    /*font-size: 1.3rem;*/
+    font-size: 18px;
 }
 
 /* configurations */
@@ -311,7 +449,8 @@ tr:nth-child(odd) td {
 
 .profile-edit img{
     width: 100px;
-    height: auto;
+    height: 100px;
+  /*  height: auto;*/
 }
 
 .align-right {
@@ -319,5 +458,86 @@ tr:nth-child(odd) td {
     justify-content: flex-end;
 }
 
+.btn-pri:hover {
+    background-color:  #0072bb;
 
+  }
+
+  .btn-pri{
+    padding: 1px 5px !important;
+  }
+
+  .nav-item .menu-icon {
+    color: #b8b9bb;
+}
+
+.nav-item .menu-title {
+    color: #b8b9bb;
+    font-size: 20px;
+}
+
+.nav-item .active .menu-icon {
+    color: rgba(250, 250, 22, 0.979);
+}
+
+.subtitle_text{
+    color: #9ea4b1;
+    font-weight: 300; 
+    font-size: 14px;
+}
+
+
+
+/* Add media queries for medium devices */
+@media screen and (max-width: 768px) {
+    .body-container {
+      flex-direction: column;
+    }
+    .sidebar {
+      width: 100%;
+    }
+    .main-container {
+      width: 100%;
+      border-radius: 0;
+      margin-top: 0;
+    }
+  }
+
+  /* Add media queries for small devices */
+  @media screen and (max-width: 576px) {
+    .nav .nav-item {
+      font-size: 1.2rem;
+      margin: 1.2rem  .4rem;
+    }
+
+    /* Adjust the font size and padding for input fields on small devices */
+    .input-field {
+      font-size: 14px;
+      padding: 6px 10px;
+    }
+
+    /* Adjust the font size for top header elements on small devices */
+    .top-header h2 {
+      font-size: 1.8rem;
+    }
+    .top-header p {
+      font-size: 1.1rem;
+    }
+  }
+
+  /* Add media queries for extra small devices (e.g., smartphones) */
+  @media screen and (max-width: 375px) {
+    /* Further adjust the font size for input fields on extra small devices */
+    .input-field {
+      font-size: 12px;
+    }
+
+    /* Further adjust the font size for top header elements on extra small devices */
+    .top-header h2 {
+      font-size: 1.6rem;
+    }
+    .top-header p {
+      font-size: 1rem;
+    }
+  }
 
