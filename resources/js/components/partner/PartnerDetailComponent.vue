@@ -1,5 +1,3 @@
-
-
 <template>
     <div>
         <div class="module-nav">
@@ -28,7 +26,7 @@
                                 @click="currentPage = 1"
                                 >Progress</a>-->
 
-                                <a
+                            <a
                                 href="#progress"
                                 class="nav-link"
                                 :class="{ 'active-link': currentPage === 1 }"
@@ -127,16 +125,16 @@
                         style="margin-top: -30px"
                         class="d-flex justify-content-end mx-2"
                     >
-                        <span v-if="kpiPartnerProgress"
-                        
-                        :class="{
-                         'on-track-header':
-                            kpiPartnerProgress.status==='On Track',
-                         'at-risk-header':
-                          kpiPartnerProgress.status==='At Risk',
-                         'off-track-header':
-                         kpiPartnerProgress.status=== 'Off Track'    
-                        }"
+                        <span
+                            v-if="kpiPartnerProgress"
+                            :class="{
+                                'on-track-header':
+                                    kpiPartnerProgress.status === 'On Track',
+                                'at-risk-header':
+                                    kpiPartnerProgress.status === 'At Risk',
+                                'off-track-header':
+                                    kpiPartnerProgress.status === 'Off Track',
+                            }"
                         >
                             {{
                                 kpiPartnerProgress.progress_percentage.toFixed(
@@ -148,16 +146,18 @@
                     </div>
                     <div
                         style="margin-top: -10px"
-                        class="d-flex justify-content-end  mx-2 mt-2"
-                        >
-                        <span v-if="kpiPartnerProgress" 
-                        :class="
-                        {'on-track-header':
-                            kpiPartnerProgress.status==='On Track',
-                         'at-risk-header':
-                          kpiPartnerProgress.status==='At Risk',
-                         'off-track-header':
-                         kpiPartnerProgress.status=== 'Off Track'}"
+                        class="d-flex justify-content-end mx-2 mt-2"
+                    >
+                        <span
+                            v-if="kpiPartnerProgress"
+                            :class="{
+                                'on-track-header':
+                                    kpiPartnerProgress.status === 'On Track',
+                                'at-risk-header':
+                                    kpiPartnerProgress.status === 'At Risk',
+                                'off-track-header':
+                                    kpiPartnerProgress.status === 'Off Track',
+                            }"
                         >
                             {{ kpiPartnerProgress.status }}
                         </span>
@@ -263,53 +263,76 @@
                                                                 "
                                                             />
                                                         </template>-->
-                                                        <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
+                                                        <div
+                                                            class="d-flex flex-row"
+                                                        >
+                                                            <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                               
-                                               <template v-for="(member,index) in topDrivers"
-                                               :key="index"
-                                               >
 
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                                <!--<p class="member_image_text">+1</p>-->
-                                                </div>
+                                                            <template
+                                                                v-for="(
+                                                                    member,
+                                                                    index
+                                                                ) in topDrivers"
+                                                                :key="index"
+                                                            >
+                                                                <div
+                                                                    class="member_image d-flex flex-column align-items-center"
+                                                                    v-if="
+                                                                        index <
+                                                                        2
+                                                                    "
+                                                                    :src="
+                                                                        member.image
+                                                                    "
+                                                                >
+                                                                    <font-awesome-icon
+                                                                        icon="fa-solid, fa-user"
+                                                                        style="
+                                                                            color: #979da9;
+                                                                        "
+                                                                        size="md"
+                                                                        class="mx-auto my-auto"
+                                                                    />
+                                                                    <!--<p class="member_image_text">+1</p>-->
+                                                                </div>
 
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
+                                                                <div
+                                                                    class="member_image_plus"
+                                                                    v-else
+                                                                    :src="
+                                                                        member.image
+                                                                    "
+                                                                >
+                                                                    <p
+                                                                        class="member_image_text"
+                                                                    >
+                                                                        +{{
+                                                                            index -
+                                                                            1
+                                                                        }}
+                                                                    </p>
+                                                                </div>
 
-                                                <!-- <div class="member_image_plus"
+                                                                <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                                </template>
+                                                            </template>
 
-                                                <!--<img
+                                                            <!--<img
                                                     
                                                     alt="image"
                                                 />-->
-                                                </div>
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         {{
@@ -379,7 +402,11 @@
                     <h4>KPI Breakdown</h4>
                     <p>A breakdown of each KPI performance</p>
 
-                    <div class="card" v-for="kpi in this.partner.kpis" :key="kpi.id">
+                    <div
+                        class="card"
+                        v-for="kpi in this.partner.kpis"
+                        :key="kpi.id"
+                    >
                         <div class="m-4 mb-0">
                             <h4>{{ kpi.title }}</h4>
                             <p>{{ kpi.review_period_range }}</p>
@@ -433,23 +460,25 @@
                                                 {{ kpiMetric.title }}
                                             </td>
                                             <td>
-                                                <label class="active-period txt-gray">{{
-                                                    calculateCurrentSum(
-                                                        kpiMetric
-                                                    ).toFixed(
-                                                                2
-                                                            )
-                                                }}</label>
-                                                    
+                                                <label
+                                                    class="active-period txt-gray"
+                                                    >{{
+                                                        calculateCurrentSum(
+                                                            kpiMetric
+                                                        ).toFixed(2)
+                                                    }}</label
+                                                >
                                             </td>
                                             <td>
-                                               <label class="active-period txt-gray"> {{
-                                                    calculateTargetSum(
-                                                        kpiMetric
-                                                    ).toFixed(
-                                                                2
-                                                            )
-                                                }}</label>
+                                                <label
+                                                    class="active-period txt-gray"
+                                                >
+                                                    {{
+                                                        calculateTargetSum(
+                                                            kpiMetric
+                                                        ).toFixed(2)
+                                                    }}</label
+                                                >
                                             </td>
                                             <td>
                                                 <div>
@@ -463,17 +492,20 @@
                                                             class="progress-bar"
                                                             :class="{
                                                                 'progress-bar-on-track on-track-label':
-                                                                calculateProgressStatus(
-                                                        kpiMetric
-                                                    )== 'On Track',
-                                                    'progress-bar-at-risk at-risk-label' :
-                                                    calculateProgressStatus(
-                                                        kpiMetric
-                                                    )=='At Risk',
-                                                    'progress-bar-off-track off-track-label' :
-                                                    calculateProgressStatus(
-                                                        kpiMetric
-                                                    ) =='Off Track'
+                                                                    calculateProgressStatus(
+                                                                        kpiMetric
+                                                                    ) ==
+                                                                    'On Track',
+                                                                'progress-bar-at-risk at-risk-label':
+                                                                    calculateProgressStatus(
+                                                                        kpiMetric
+                                                                    ) ==
+                                                                    'At Risk',
+                                                                'progress-bar-off-track off-track-label':
+                                                                    calculateProgressStatus(
+                                                                        kpiMetric
+                                                                    ) ==
+                                                                    'Off Track',
                                                             }"
                                                             role="progressbar"
                                                             :style="{
@@ -488,65 +520,72 @@
                                                     </div>
                                                 </div>
                                                 <span
-                                                :class="{
-                                                    'on-track-label':
-                                                    calculateProgressStatus(
-                                                        kpiMetric
-                                                    )== 'On Track',
-                                                    'at-risk-label' :
-                                                    calculateProgressStatus(
-                                                        kpiMetric
-                                                    )=='At Risk',
-                                                    'off-track-label' :
-                                                    calculateProgressStatus(
-                                                        kpiMetric
-                                                    ) =='Off Track'
-                                                            }"
-                                                >{{
-                                                    calculateProgressStatus(
-                                                        kpiMetric
-                                                    )
-                                                }}</span>
+                                                    :class="{
+                                                        'on-track-label':
+                                                            calculateProgressStatus(
+                                                                kpiMetric
+                                                            ) == 'On Track',
+                                                        'at-risk-label':
+                                                            calculateProgressStatus(
+                                                                kpiMetric
+                                                            ) == 'At Risk',
+                                                        'off-track-label':
+                                                            calculateProgressStatus(
+                                                                kpiMetric
+                                                            ) == 'Off Track',
+                                                    }"
+                                                    >{{
+                                                        calculateProgressStatus(
+                                                            kpiMetric
+                                                        )
+                                                    }}</span
+                                                >
                                             </td>
 
                                             <td class="td-members">
-                                                 <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
+                                                <div class="d-flex flex-row">
+                                                    <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                               
-                                               <template v-for="(member,index) in this.partner.members"
-                                               :key="index"
-                                               >
-                                                
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                        
-                                                </div>
 
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
+                                                    <template
+                                                        v-for="(
+                                                            member, index
+                                                        ) in this.partner
+                                                            .members"
+                                                        :key="index"
+                                                    >
+                                                        <div
+                                                            class="member_image d-flex flex-column align-items-center"
+                                                            v-if="index < 2"
+                                                            :src="member.image"
+                                                        >
+                                                            <font-awesome-icon
+                                                                icon="fa-solid, fa-user"
+                                                                style="
+                                                                    color: #979da9;
+                                                                "
+                                                                size="md"
+                                                                class="mx-auto my-auto"
+                                                            />
+                                                        </div>
 
-                                        
-                                                </template>
-
-                                                
+                                                        <div
+                                                            class="member_image_plus"
+                                                            v-else
+                                                            :src="member.image"
+                                                        >
+                                                            <p
+                                                                class="member_image_text"
+                                                            >
+                                                                +{{ index - 1 }}
+                                                            </p>
+                                                        </div>
+                                                    </template>
                                                 </div>
                                                 <!--<img
                                                     v-for="member in this
@@ -1121,9 +1160,7 @@
                         </div>
                         <hr />
 
-                         <div v-if="isLoading" class="loading">
-                
-                         </div>
+                        <div v-if="isLoading" class="loading"></div>
                         <div v-else class="align-right mb-5">
                             <div class="text-right mt-3 mb-5">
                                 <button
@@ -1206,40 +1243,44 @@
                                                 v-for="member in this.partner
                                                     .members"
                                                 :key="member.id"
-                        
                                             >
                                                 <td>
                                                     {{ member.email }}
                                                 </td>
                                                 <td>
-                                                   <!-- <span>
+                                                    <!-- <span>
                                                         {{
                                                             (member.is_active =
                                                                 "Active")
                                                         }}
                                                     </span>-->
-                                                    <div class="active_status_container  d-flex flex-row justify-content-center">
-                                                    <span class="active_status_text"
-                                                        >{{
-                                                            (member.is_active =
-                                                                "Active")
-                                                        }}</span
+                                                    <div
+                                                        class="active_status_container d-flex flex-row justify-content-center"
                                                     >
-                                                </div>
+                                                        <span
+                                                            class="active_status_text"
+                                                            >{{
+                                                                (member.is_active =
+                                                                    "Active")
+                                                            }}</span
+                                                        >
+                                                    </div>
                                                 </td>
                                                 <td>
-                                                     <div class="mt-1"><span
-                                                        class="department-tag py-1"
-                                                        v-for="department in member.departments"
-                                                        :key="department.id"
-                                                        >{{
-                                                            department.name
-                                                        }}</span></div>
+                                                    <div class="mt-1">
+                                                        <span
+                                                            class="department-tag py-1"
+                                                            v-for="department in member.departments"
+                                                            :key="department.id"
+                                                            >{{
+                                                                department.name
+                                                            }}</span
+                                                        >
+                                                    </div>
                                                 </td>
                                                 <td></td>
                                                 <td>
-                                                   
-                                                <!-- </td>
+                                                    <!-- </td>
                                                  
                                                  {{calculateActiveKpiProgress(member)}}
 
@@ -1349,26 +1390,33 @@
                                                             >View</a
                                                         >
                                                     </button>-->
-                                                   
-                                                    <a :href="'/members/' +
-                                                                member.id"><button
-                                                        class="btn btn-sm px-1 py-1 btn-pri d-flex flex-row justify-content-center align-items-center"
-                                                        
-                                                    >
-                                                        <span
-                                                            class="mdi mdi-eye-outline text-light py-0"
-                                                        ></span>
-                                                        <a
-                                                            :href="
-                                                                '/members/' +
-                                                                member.id
-                                                            "
-                                                            class="text-light" style="font-size: 14px;padding-left: 5px;"
-                                                            >View</a
+
+                                                    <a
+                                                        :href="
+                                                            '/members/' +
+                                                            member.id
+                                                        "
+                                                        ><button
+                                                            class="btn btn-sm px-1 py-1 btn-pri d-flex flex-row justify-content-center align-items-center"
                                                         >
-                                                    </button></a>
+                                                            <span
+                                                                class="mdi mdi-eye-outline text-light py-0"
+                                                            ></span>
+                                                            <a
+                                                                :href="
+                                                                    '/members/' +
+                                                                    member.id
+                                                                "
+                                                                class="text-light"
+                                                                style="
+                                                                    font-size: 14px;
+                                                                    padding-left: 5px;
+                                                                "
+                                                                >View</a
+                                                            >
+                                                        </button></a
+                                                    >
                                                 </td>
-                                               
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1420,7 +1468,12 @@
                 </div>
 
                 <div class="row">
-                    <div v-if="loggedUser.user_role_id === 1 || loggedUser.user_role_id === 3">
+                    <div
+                        v-if="
+                            loggedUser.user_role_id === 1 ||
+                            loggedUser.user_role_id === 3
+                        "
+                    >
                         <div
                             class="col-12 px-0"
                             v-for="kpi in kpis"
@@ -1439,8 +1492,12 @@
                                             >
                                         </p>
                                     </div>
-                                    <div v-if="loggedUser.user_role_id === 1 ||
-                        loggedUser.user_role_id === 3">
+                                    <div
+                                        v-if="
+                                            loggedUser.user_role_id === 1 ||
+                                            loggedUser.user_role_id === 3
+                                        "
+                                    >
                                         <button
                                             @click="openAddKpiMetricModal(kpi)"
                                             data-toggle="modal"
@@ -1528,7 +1585,7 @@
                                                         </div>
                                                     </td>
 
-                                                   <!-- <td class="td-members">
+                                                    <!-- <td class="td-members">
                                                        
                                                             <img
                                                                 v-for="member in membersData"
@@ -1541,53 +1598,71 @@
                                                        
                                                     </td>-->
 
-                                                     <td class="td-members">
-                                                 <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
+                                                    <td class="td-members">
+                                                        <div
+                                                            class="d-flex flex-row"
+                                                        >
+                                                            <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                               
-                                               <template v-for="(member,index) in membersData"
-                                               :key="index"
-                                               >
-                                                
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.photo"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                        
-                                                </div>
 
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.photo"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
+                                                            <template
+                                                                v-for="(
+                                                                    member,
+                                                                    index
+                                                                ) in membersData"
+                                                                :key="index"
+                                                            >
+                                                                <div
+                                                                    class="member_image d-flex flex-column align-items-center"
+                                                                    v-if="
+                                                                        index <
+                                                                        2
+                                                                    "
+                                                                    :src="
+                                                                        member.photo
+                                                                    "
+                                                                >
+                                                                    <font-awesome-icon
+                                                                        icon="fa-solid, fa-user"
+                                                                        style="
+                                                                            color: #979da9;
+                                                                        "
+                                                                        size="md"
+                                                                        class="mx-auto my-auto"
+                                                                    />
+                                                                </div>
 
-                                        
-                                                </template>
-
-                                                
-                                                </div>
-                                                <!--<img
+                                                                <div
+                                                                    class="member_image_plus"
+                                                                    v-else
+                                                                    :src="
+                                                                        member.photo
+                                                                    "
+                                                                >
+                                                                    <p
+                                                                        class="member_image_text"
+                                                                    >
+                                                                        +{{
+                                                                            index -
+                                                                            1
+                                                                        }}
+                                                                    </p>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                        <!--<img
                                                     v-for="member in this
                                                         .partner.members"
                                                     :key="member.id"
                                                     src="assets/images/faces/face1.jpg"
                                                     alt="image"
                                                 />-->
-                                            </td>
+                                                    </td>
 
                                                     <td>
                                                         <template
@@ -1765,53 +1840,71 @@
                                                             />
                                                     </td>-->
 
-                                                     <td class="td-members">
-                                                 <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
+                                                    <td class="td-members">
+                                                        <div
+                                                            class="d-flex flex-row"
+                                                        >
+                                                            <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                               
-                                               <template v-for="(member,index) in membersData"
-                                               :key="index"
-                                               >
-                                                
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.photo"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                        
-                                                </div>
 
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.photo"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
+                                                            <template
+                                                                v-for="(
+                                                                    member,
+                                                                    index
+                                                                ) in membersData"
+                                                                :key="index"
+                                                            >
+                                                                <div
+                                                                    class="member_image d-flex flex-column align-items-center"
+                                                                    v-if="
+                                                                        index <
+                                                                        2
+                                                                    "
+                                                                    :src="
+                                                                        member.photo
+                                                                    "
+                                                                >
+                                                                    <font-awesome-icon
+                                                                        icon="fa-solid, fa-user"
+                                                                        style="
+                                                                            color: #979da9;
+                                                                        "
+                                                                        size="md"
+                                                                        class="mx-auto my-auto"
+                                                                    />
+                                                                </div>
 
-                                        
-                                                </template>
-
-                                                
-                                                </div>
-                                                <!--<img
+                                                                <div
+                                                                    class="member_image_plus"
+                                                                    v-else
+                                                                    :src="
+                                                                        member.photo
+                                                                    "
+                                                                >
+                                                                    <p
+                                                                        class="member_image_text"
+                                                                    >
+                                                                        +{{
+                                                                            index -
+                                                                            1
+                                                                        }}
+                                                                    </p>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                        <!--<img
                                                     v-for="member in this
                                                         .partner.members"
                                                     :key="member.id"
                                                     src="assets/images/faces/face1.jpg"
                                                     alt="image"
                                                 />-->
-                                            </td>
+                                                    </td>
                                                     <td>
                                                         <template
                                                             v-for="dataDepartment in partnersWithProgress"
@@ -1869,7 +1962,7 @@
                     </div>
 
                     <div v-else>
-                       <!-- <p>No Kpis</p>-->
+                        <!-- <p>No Kpis</p>-->
                     </div>
                 </div>
 
@@ -1913,6 +2006,7 @@
                                             class="form-control"
                                             type="text"
                                             v-model="kpiMetric.title"
+                                            required
                                         />
                                     </div>
                                     <div class="col-md-6">
@@ -2024,6 +2118,7 @@
                                                     placeholder="Enter target"
                                                     name="target"
                                                     v-model="member.target"
+                                                    required
                                                 />
                                             </div>
 
@@ -2040,7 +2135,6 @@
                                             </div>
                                         </div>
 
-                                        
                                         <!--<ul>
                                             <li
                                                 v-for="(
@@ -2068,54 +2162,71 @@
                                             </li>
                                         </ul>-->
 
-                                         <template v-for="(item, index) in selectedItems"
-                                :key="index"
-                                >
-                                <div class="d-flex flex-row">
-                                <div class="container col-sm-10 bg-white email_container  my-2 rounded p-2 d-flex flex-row justify-content-between">
-                                <div class="d-flex flex-row ">
-                                    
-                                     <span>
-                               <!-- <i class="mdi mdi-email-outline"></i>-->
-                               <font-awesome-icon
-                                icon="fa-regular, fa-user"
-                                style="color: #979da9"
-                                size="sm"
-                                class="mx-auto my-auto"
-                            />
-                                {{ item.memberEmail }}
-                                <span class="btn-suc">
-                                   <!-- {{
+                                        <template
+                                            v-for="(
+                                                item, index
+                                            ) in selectedItems"
+                                            :key="index"
+                                        >
+                                            <div class="d-flex flex-row">
+                                                <div
+                                                    class="container col-sm-10 bg-white email_container my-2 rounded p-2 d-flex flex-row justify-content-between"
+                                                >
+                                                    <div
+                                                        class="d-flex flex-row"
+                                                    >
+                                                        <span>
+                                                            <!-- <i class="mdi mdi-email-outline"></i>-->
+                                                            <font-awesome-icon
+                                                                icon="fa-regular, fa-user"
+                                                                style="
+                                                                    color: #979da9;
+                                                                "
+                                                                size="sm"
+                                                                class="mx-auto my-auto"
+                                                            />
+                                                            {{
+                                                                item.memberEmail
+                                                            }}
+                                                            <span
+                                                                class="btn-suc"
+                                                            >
+                                                                <!-- {{
                                         item.departmentId
                                             ? getDepartmentName(
                                                   item.departmentId
                                               )
                                             : ""
                                     }}-->
-                                    sales
-                                </span>
-                        
-                            </span>
-                                    </div>    
+                                                                sales
+                                                            </span>
+                                                        </span>
+                                                    </div>
 
-                                     <label class="text-muted">{{item.memberTarget}}</label>
-                                </div>
-                                
-                                <div class="delete_email container col-sm-1 my-2 p-0 bg-white rounded d-flex flex-column align-items-center"
-                                 @click="removeFromList(index)">
-                                    <font-awesome-icon
-                                icon="fa-solid, fa-trash-can"
-                                style="color: #979da9"
-                                size="lg"
-                                class="mx-auto my-auto"
-                            />
-                              <!--    <i
+                                                    <label class="text-muted">{{
+                                                        item.memberTarget
+                                                    }}</label>
+                                                </div>
+
+                                                <div
+                                                    class="delete_email container col-sm-1 my-2 p-0 bg-white rounded d-flex flex-column align-items-center"
+                                                    @click="
+                                                        removeFromList(index)
+                                                    "
+                                                >
+                                                    <font-awesome-icon
+                                                        icon="fa-solid, fa-trash-can"
+                                                        style="color: #979da9"
+                                                        size="lg"
+                                                        class="mx-auto my-auto"
+                                                    />
+                                                    <!--    <i
                                 class="mdi mdi-delete delete-icon"
                                 @click="removeFromList(index)"
                             ></i>-->
-                                </div>
-                                </div>
-                                </template>
+                                                </div>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
 
@@ -2236,6 +2347,7 @@
                                         class="form-control"
                                         type="text"
                                         v-model="kpi_title"
+                                        required
                                     />
                                 </div>
 
@@ -2462,10 +2574,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
-library.add(
-    faTrashCan,
-    faUser
-);
+library.add(faTrashCan, faUser);
 
 export default {
     props: {
@@ -2498,7 +2607,7 @@ export default {
             required: true,
         },
     },
-     components: {
+    components: {
         FontAwesomeIcon,
     },
 
@@ -2507,15 +2616,14 @@ export default {
             loggedUser: {
                 user_role_id: null,
             },
-             errors: {
+            errors: {
                 logo: null,
                 about: null,
-                documents:null
+                documents: null,
             },
-            isLoading:false,
+            isLoading: false,
 
             membersData: [],
-
 
             kpiPartnerProgress: {
                 progress_percentage: null,
@@ -2661,7 +2769,7 @@ export default {
             review_end_date: null,
             myChart: null,
             allMonths: null,
-            dataPoints: null
+            dataPoints: null,
         };
     },
 
@@ -3218,7 +3326,10 @@ export default {
                     if (monthIndex !== -1) {
                         // If data is available for this month, use it
                         accumulatedProgress += progressPercentages[monthIndex];
-                        console.log("accumulated progress: ",accumulatedProgress);
+                        console.log(
+                            "accumulated progress: ",
+                            accumulatedProgress
+                        );
                         dataPoints.push(accumulatedProgress);
                     } else {
                         // If no data available for this month, use zero or null
@@ -3231,7 +3342,7 @@ export default {
                 const ctx = chartCanvas.getContext("2d");
 
                 // Create the chart with dynamic x-axis labels
-               
+
                 const myChart = new Chart(ctx, {
                     type: "line",
                     data: {
@@ -3324,7 +3435,7 @@ export default {
                 const ctx = chartCanvas.getContext("2d");
 
                 // Create the chart with dynamic x-axis labels
-               
+
                 const myChart = new Chart(ctx, {
                     type: "line",
                     data: {
@@ -4044,7 +4155,7 @@ export default {
         // },
 
         partnerSubmit() {
-            this.isLoading=true;
+            this.isLoading = true;
             const memberArray = this.partnerMembers.map((member) => ({
                 email: member.email,
                 department_id: member.department_id,
@@ -4073,7 +4184,7 @@ export default {
                 .then((response) => {
                     const updatedPartner = response.data;
                     this.partner = updatedPartner;
-                    this.isLoading=false;
+                    this.isLoading = false;
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
@@ -4083,7 +4194,7 @@ export default {
                     });
                 })
                 .catch((error) => {
-                    this.isLoading=false;
+                    this.isLoading = false;
                     console.error("Error updating partner:", error);
                 });
         },
@@ -4240,8 +4351,8 @@ export default {
         },
 
         handleLinkClick() {
-        this.currentPage = 1; 
-        window.location.reload(); 
+            this.currentPage = 1;
+            window.location.reload();
         },
 
         submitProgress(kpimetric1, kpi1) {
@@ -4414,7 +4525,7 @@ img {
     border-radius: 100%;
     background-color: rgba(128, 128, 128, 0.089);
     color: rgba(24, 23, 23, 0.911);*/
-  /*position: absolute;*/
+    /*position: absolute;*/
     top: 0px;
     color: rgba(24, 23, 23, 0.911);
     background-color: rgba(128, 128, 128, 0.089);
@@ -4524,15 +4635,14 @@ option {
     justify-content: space-between;
 }
 
-.email_container{
+.email_container {
     /*border :1px solid #979da9;*/
     border: 1px solid #e0e3e8;
 }
 
-.delete_email{
+.delete_email {
     border: 1px solid #e0e3e8;
     align-items: center;
-    
 }
 
 .on-track-header {
@@ -4554,123 +4664,120 @@ option {
 }
 
 .loading {
-  position: fixed;
-  z-index: 999;
-  overflow: show;
-  margin: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 50px;
-  height: 50px;
+    position: fixed;
+    z-index: 999;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
 }
 
 /* Transparent Overlay */
 .loading:before {
-  content: '';
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255,255,255,0.5);
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 /* :not(:required) hides these rules from IE9 and below */
 .loading:not(:required) {
-  /* hide "loading..." text */
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
+    /* hide "loading..." text */
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
 }
 
 .loading:not(:required):after {
-  content: '';
-  display: block;
-  font-size: 10px;
-  width: 50px;
-  height: 50px;
-  margin-top: -0.5em;
+    content: "";
+    display: block;
+    font-size: 10px;
+    width: 50px;
+    height: 50px;
+    margin-top: -0.5em;
 
-  /*border: 15px solid rgba(33, 150, 243, 1.0);*/
-  border: 15px solid #f7b309;
-  border-radius: 100%;
-  border-bottom-color: transparent;
-  -webkit-animation: spinner 1s linear 0s infinite;
-  animation: spinner 1s linear 0s infinite;
-
-
+    /*border: 15px solid rgba(33, 150, 243, 1.0);*/
+    border: 15px solid #f7b309;
+    border-radius: 100%;
+    border-bottom-color: transparent;
+    -webkit-animation: spinner 1s linear 0s infinite;
+    animation: spinner 1s linear 0s infinite;
 }
 
 /* Animation */
 
 @-webkit-keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 @-moz-keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 @-o-keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 @keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
-
 </style>

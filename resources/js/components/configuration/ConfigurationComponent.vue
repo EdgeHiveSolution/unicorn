@@ -28,16 +28,13 @@
                         KPIs
                     </p>
                     <div class="">
-                       
-
-                            <a
-                                href=""
-                                class="text-light add-link btn btn-primary my-2"
-                                data-toggle="modal"
-                                data-target="#submitMetricModal"
-                                ><span class="plus">+</span> Metric</a>
-                            
-                        
+                        <a
+                            href=""
+                            class="text-light add-link btn btn-primary my-2"
+                            data-toggle="modal"
+                            data-target="#submitMetricModal"
+                            ><span class="plus">+</span> Metric</a
+                        >
                     </div>
 
                     <div class="row">
@@ -57,16 +54,16 @@
                                 </div>
 
                                 <div>
-                                <button
-                                    style="height: 10px"
-                                    class="btn btn-light p-3 btn-icon"
-                                >
-                                    <i
-                                        class="mdi mdi-sort-variant text-dark"
-                                    ></i>
-                                    Filters
-                                </button>
-                            </div>
+                                    <button
+                                        style="height: 10px"
+                                        class="btn btn-light p-3 btn-icon"
+                                    >
+                                        <i
+                                            class="mdi mdi-sort-variant text-dark"
+                                        ></i>
+                                        Filters
+                                    </button>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -155,6 +152,7 @@
                                     class="form-control"
                                     type="text"
                                     v-model="newMetric.name"
+                                    required
                                 />
                                 <span
                                     v-if="errors.name"
@@ -183,14 +181,20 @@
                                         class="form-select"
                                         v-model="newMetric.unit"
                                     >
-                                       <!-- <option value="">
+                                        <!-- <option value="">
                                             Select or create standard unit
                                         </option>
                                         <option value="select">
                                             Create standard unit
                                         </option>-->
 
-                                     <option v-for="unit in units" :key="unit.id" :value="unit.name">{{ unit.name }}</option>
+                                        <option
+                                            v-for="unit in units"
+                                            :key="unit.id"
+                                            :value="unit.name"
+                                        >
+                                            {{ unit.name }}
+                                        </option>
 
                                         <!-- <option value="count">Count</option>
                                         <option value="currency">
@@ -337,15 +341,13 @@
                         Basic Measurument units for metric types
                     </p>
                     <div class="">
-                       
-                            <a
-                                href=""
-                                class="text-light add-link btn btn-primary my-2"
-                                data-toggle="modal"
-                                data-target="#submitStandardUnitModal"
-                                ><span class="plus">+</span> Standard Unit</a
-                            >
-                        
+                        <a
+                            href=""
+                            class="text-light add-link btn btn-primary my-2"
+                            data-toggle="modal"
+                            data-target="#submitStandardUnitModal"
+                            ><span class="plus">+</span> Standard Unit</a
+                        >
                     </div>
 
                     <div class="row">
@@ -365,16 +367,16 @@
                                 </div>
 
                                 <div>
-                                <button
-                                    style="height: 10px"
-                                    class="btn btn-light p-3 btn-icon"
-                                >
-                                    <i
-                                        class="mdi mdi-sort-variant text-dark"
-                                    ></i>
-                                    Filters
-                                </button>
-                            </div>
+                                    <button
+                                        style="height: 10px"
+                                        class="btn btn-light p-3 btn-icon"
+                                    >
+                                        <i
+                                            class="mdi mdi-sort-variant text-dark"
+                                        ></i>
+                                        Filters
+                                    </button>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -408,7 +410,7 @@
                                                     <button
                                                         type="button"
                                                         class="btn"
-                                                        >
+                                                    >
                                                         <button
                                                             @click="
                                                                 deleteMetric(
@@ -440,11 +442,11 @@
             id="submitStandardUnitModal"
             tabindex="-1"
             role="dialog"
-              >
+        >
             <div
                 class="modal-dialog modal-dialog-centered modal-lg"
                 role="document"
-                 >
+            >
                 <div class="modal-content p-5">
                     <p><i class="mdi mdi-image-filter-none h1"></i></p>
                     <h3>Add standard unit</h3>
@@ -463,6 +465,7 @@
                                     class="form-control"
                                     type="text"
                                     v-model="newStandardUnit.name"
+                                    required
                                 />
                                 <span
                                     v-if="errors.name"
@@ -656,17 +659,17 @@
                                         />
                                     </div>
                                 </div>
- <div>
-                                <button
-                                    style="height: 10px"
-                                    class="btn btn-light p-3 btn-icon"
-                                >
-                                    <i
-                                        class="mdi mdi-sort-variant text-dark"
-                                    ></i>
-                                    Filters
-                                </button>
-                            </div>
+                                <div>
+                                    <button
+                                        style="height: 10px"
+                                        class="btn btn-light p-3 btn-icon"
+                                    >
+                                        <i
+                                            class="mdi mdi-sort-variant text-dark"
+                                        ></i>
+                                        Filters
+                                    </button>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -716,7 +719,6 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    
                                 </div>
                             </div>
                         </div>
@@ -931,7 +933,7 @@ export default {
         return {
             success: "",
             metrics: [],
-            units:[],
+            units: [],
             newMetric: {
                 name: "",
                 unit: "",
@@ -964,7 +966,6 @@ export default {
             });
         },
 
-
         fetchStandardUnits() {
             // Perform API call to fetch metrics data
             let uri = this.base_url + "api/v1/standardUnit-list";
@@ -985,23 +986,20 @@ export default {
                     this.success = response.data.success;
                     this.fetchMetrics();
 
-                      Swal.fire({
+                    Swal.fire({
                         icon: "success",
                         title: "Success!",
                         text: "Metric  created successfully!",
                     }).then(() => {
-
-                      this.newMetric = {
-                        // Reset the newMetric object
-                        name: "",
-                        unit: "",
-                    };
+                        this.newMetric = {
+                            // Reset the newMetric object
+                            name: "",
+                            unit: "",
+                        };
 
                         window.location.reload();
                     });
-                 
-                 
-                    
+
                     $("#submitMetricModal").modal("hide"); // Close the modal
                 })
                 .catch((error) => {
@@ -1009,7 +1007,6 @@ export default {
                 });
         },
 
-        
         submitStandardUnit() {
             const formData = new FormData();
             formData.append("name", this.newStandardUnit.name);
@@ -1019,27 +1016,23 @@ export default {
             axios
                 .post(uri, formData)
                 .then((response) => {
-                    
-               this.success = response.data.success;
-                this.fetchStandardUnits();
-                  
+                    this.success = response.data.success;
+                    this.fetchStandardUnits();
 
-                     Swal.fire({
+                    Swal.fire({
                         icon: "success",
                         title: "Success!",
                         text: "Standard unit created successfully!",
                     }).then(() => {
                         this.newStandardUnit = {
-                        // Reset the newMetric object
-                        name: "",
-                        type: "",
-                    };
+                            // Reset the newMetric object
+                            name: "",
+                            type: "",
+                        };
 
                         window.location.reload();
                     });
-                 
-                 
-                    
+
                     $("#submitStandardUnitModal").modal("hide"); // Close the modal
                 })
                 .catch((error) => {
@@ -1090,17 +1083,17 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .btn-pri {
     padding: 5px 15px !important;
 }
-
 
 .btn-icon {
     display: flex;
     align-items: center;
     font-weight: bold;
 }
+
+
 
 </style>

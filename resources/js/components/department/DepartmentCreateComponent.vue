@@ -1,6 +1,5 @@
 <template>
     <div>
-    
         <flash-message></flash-message>
         <!-- Alerts -->
         <!-- <div class="alert alert-success" role="alert" v-if="alert_success">
@@ -20,7 +19,7 @@
             ></b-spinner>
         </div>-->
 
-     <!-- <div v-if="isLoading" class="overlay d-flex flex-row justify-content-center px-auto">
+        <!-- <div v-if="isLoading" class="overlay d-flex flex-row justify-content-center px-auto">
           <div class="container  col-sm-4 rounded bg-white mx-5 p-3">
            <div class="d-flex flex-row justify-content-center px-0">
             <h1 class="add_dep_text text-info">Please wait..</h1>
@@ -31,10 +30,8 @@
       </div>
       </div>-->
 
-      <div v-if="isLoading" class="loading">
-          
-      </div>
-          
+        <div v-if="isLoading" class="loading"></div>
+
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
@@ -75,8 +72,6 @@
             </div>
         </div>
 
-      
-
         <!-- Department form -->
         <form
             id="form-submit"
@@ -96,11 +91,21 @@
                         id="name"
                         name="name"
                         class="form-control form-control-lg"
+                        :class="{ 'is-invalid': errors.name }"
                         type="text"
                         v-model="name"
+                        @input="checkNameUniqueness(name)"
                         autocomplete="name"
                         autofocus
+                        required
                     />
+                    <span
+                        v-if="errors.name"
+                        class="invalid-feedback"
+                        role="alert"
+                    >
+                        <strong>{{ errors.name }}</strong>
+                    </span>
                 </div>
             </div>
             <hr />
@@ -116,11 +121,22 @@
                         id="email"
                         name="email"
                         class="form-control form-control-lg"
+                        :class="{ 'is-invalid': errors.email }"
                         type="email"
                         v-model="email"
+                        @input="checkEmailUniqueness(email)"
                         autocomplete="email"
                         autofocus
+                        required
                     />
+
+                    <span
+                        v-if="errors.email"
+                        class="invalid-feedback"
+                        role="alert"
+                    >
+                        <strong>{{ errors.email }}</strong>
+                    </span>
                 </div>
             </div>
             <hr />
@@ -176,6 +192,7 @@
                             placeholder="Write company about here"
                             style="height: 100px"
                             v-model="about"
+                            required
                         ></textarea>
                         <label></label>
                     </div>
@@ -227,10 +244,8 @@
                                 {{ member }}
                             </option>
                         </datalist>
-                       
-                        <div>
 
-                        </div>
+                        <div></div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-10">
@@ -259,8 +274,6 @@
 
             <hr />
 
-           
-        
             <div class="text-right mt-3 mb-5 text-end">
                 <div class="btn-icon">
                     <button
@@ -289,7 +302,7 @@
        
         </div>
       </template>
-    </b-overlay>  -->  
+    </b-overlay>  -->
     </div>
 </template>
 
@@ -300,16 +313,19 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
-library.add(
-    faTrashCan
-);
+library.add(faTrashCan);
 
 export default {
-     components: {
+    components: {
         FontAwesomeIcon,
     },
     data() {
         return {
+            errors: {
+                name: "",
+                email: "",
+            },
+
             name: "",
             email: "",
             about: "",
@@ -357,25 +373,58 @@ export default {
                     this.selectedMembers.push(this.selectedMember);
                 }
                 this.selectedMember = "";
-               
-               this.memberEmails = [];
+
+                this.memberEmails = [];
             }
 
-            console.log("Members selected:",this.selectedMembers);
+            console.log("Members selected:", this.selectedMembers);
         },
         removeMemberFromList(index) {
             this.selectedMembers.splice(index, 1);
         },
+
+        async checkNameUniqueness(name) {
+            try {
+                const response = await axios.get(
+                    `${this.base_url}api/check-department-name/${name}`
+                );
+                console.log(response);
+                if (response.data.exists) {
+                    this.errors.name = "Name exists. Please try another";
+                } else {
+                    this.errors.name = null;
+                }
+            } catch (error) {
+                console.error("Error checking name uniqueness:", error);
+                return;
+                // this.errors.name = "An error occurred. Please try again.";
+            }
+        },
+
+        async checkEmailUniqueness(email) {
+            try {
+                const response = await axios.get(
+                    `${this.base_url}api/check-department-email/${email}`
+                );
+                if (response.data.exists) {
+                    this.errors.email = "Email exists. Please try  another";
+                    // console.log(this.errors.email);
+                } else {
+                    this.errors.email = null;
+                }
+            } catch (error) {
+                console.error("Error checking email uniqueness:", error);
+                return;
+                // this.errors.email = "An error occurred. Please try again.";
+            }
+        },
+
         formSubmit() {
             console.log("formSubmit method called");
 
             this.isLoading = true;
 
-            if (
-                !this.name ||
-                !this.email ||
-                !this.about 
-            ) {
+            if (!this.name || !this.email || !this.about) {
                 Swal.fire({
                     icon: "error",
                     title: "Error!",
@@ -396,8 +445,6 @@ export default {
             formData.append("about", this.about);
             formData.append("members", this.selectedMembers.join(","));
 
-            
-
             let uri = this.base_url + `api/v1/department-create`;
 
             console.log("This is form data:", JSON.stringify(formData));
@@ -412,7 +459,7 @@ export default {
                     });
                 })
                 .catch((error) => {
-                     this.isLoading = false;
+                    this.isLoading = false;
                     this.alert_error = true;
                     console.log(error);
                 })
@@ -431,6 +478,10 @@ export default {
 <style scoped>
 h2 {
     font-weight: bold;
+}
+
+.invalid-feedback {
+    font: red;
 }
 
 .btn-action {
@@ -460,151 +511,146 @@ h2 {
     max-width: 200px; /* Adjust the maximum width as desired */
 }
 
-.overlay {  
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  width: 80%;
-  height: 100%;
-  align-self: center;
-  z-index: 1;
- /* opacity: 0;*/
-  background: rgba(39, 42, 43, 0.4);
-  transition: opacity 200ms ease-in-out;
-  border-radius: 4px;
-  margin-left: -50px;
-  /*margin-left: auto;*/
-  /*margin: 0;*/
-  padding: 0;
+.overlay {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 80%;
+    height: 100%;
+    align-self: center;
+    z-index: 1;
+    /* opacity: 0;*/
+    background: rgba(39, 42, 43, 0.4);
+    transition: opacity 200ms ease-in-out;
+    border-radius: 4px;
+    margin-left: -50px;
+    /*margin-left: auto;*/
+    /*margin: 0;*/
+    padding: 0;
 }
 
-.add_dep_text{
-   /* color: teal;*/
+.add_dep_text {
+    /* color: teal;*/
     font-size: 20px;
-     
 }
-
 
 .loading {
-  position: fixed;
-  z-index: 999;
-  overflow: show;
-  margin: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 50px;
-  height: 50px;
+    position: fixed;
+    z-index: 999;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
 }
 
 /* Transparent Overlay */
 .loading:before {
-  content: '';
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255,255,255,0.5);
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 /* :not(:required) hides these rules from IE9 and below */
 .loading:not(:required) {
-  /* hide "loading..." text */
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
+    /* hide "loading..." text */
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
 }
 
 .loading:not(:required):after {
-  content: '';
-  display: block;
-  font-size: 10px;
-  width: 50px;
-  height: 50px;
-  margin-top: -0.5em;
+    content: "";
+    display: block;
+    font-size: 10px;
+    width: 50px;
+    height: 50px;
+    margin-top: -0.5em;
 
-  /*border: 15px solid rgba(33, 150, 243, 1.0);*/
-  border: 15px solid #f7b309;
-  border-radius: 100%;
-  border-bottom-color: transparent;
-  -webkit-animation: spinner 1s linear 0s infinite;
-  animation: spinner 1s linear 0s infinite;
-
-
+    /*border: 15px solid rgba(33, 150, 243, 1.0);*/
+    border: 15px solid #f7b309;
+    border-radius: 100%;
+    border-bottom-color: transparent;
+    -webkit-animation: spinner 1s linear 0s infinite;
+    animation: spinner 1s linear 0s infinite;
 }
 
 /* Animation */
 
 @-webkit-keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 @-moz-keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 @-o-keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 @keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
-
 </style>

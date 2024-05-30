@@ -1,6 +1,6 @@
 <template>
     <div class="module-nav">
-       <!-- <div v-if="!isLoading" class="overlay d-flex flex-row justify-content-center px-auto">
+        <!-- <div v-if="!isLoading" class="overlay d-flex flex-row justify-content-center px-auto">
           <div class="container  col-sm-4 rounded bg-white mx-5 p-3">
            <div class="d-flex flex-row justify-content-center px-0">
             <h1 class="add_dep_text text-info">Please wait..</h1>
@@ -53,7 +53,7 @@
             class="row g-3"
             @submit.prevent="formSubmit"
             method="POST"
-          >
+        >
             <div class="row mb-2 p-3">
                 <label
                     for="name"
@@ -69,8 +69,10 @@
                         :class="{ 'is-invalid': errors.name }"
                         name="name"
                         v-model="formData.name"
+                        @input="checkNameUniqueness(formData.name)"
                         autocomplete="name"
                         autofocus
+                        required
                     />
 
                     <span
@@ -93,19 +95,18 @@
                 >
 
                 <div class="col-md-5 offset-md-0 text-center">
-                    <div class="input-container">
-                        <!-- <span class="mdi mdi-email input-icon"></span> -->
-                        <input
-                            id="email"
-                            type="text"
-                            class="form-control"
-                            :class="{ 'is-invalid': errors.email }"
-                            name="email"
-                            v-model="formData.email"
-                            autocomplete="email"
-                            autofocus
-                        />
-                    </div>
+                    <input
+                        id="email"
+                        type="email"
+                        class="form-control"
+                        :class="{ 'is-invalid': errors.email }"
+                        name="email"
+                        v-model="formData.email"
+                        @input="checkEmailUniqueness(formData.email)"
+                        autocomplete="email"
+                        autofocus
+                        required
+                    />
 
                     <span
                         v-if="errors.email"
@@ -163,8 +164,10 @@
                         :class="{ 'is-invalid': errors.phone }"
                         name="phone"
                         v-model="formData.phone"
+                        @input="checkPhoneUniqueness(formData.phone)"
                         autocomplete="phone"
                         autofocus
+                        required
                     />
 
                     <span
@@ -292,6 +295,7 @@
                         :class="{ 'is-invalid': errors.business_type }"
                         name="business_type"
                         v-model="formData.business_type"
+                        required
                     >
                         <option value="">Business type</option>
                         <option value="IT">IT</option>
@@ -331,6 +335,7 @@
                         v-model="formData.about"
                         autocomplete="about"
                         autofocus
+                        required
                     ></textarea>
                     <span
                         v-if="true"
@@ -493,45 +498,51 @@
                         </li>
                     </ul>-->
 
-                     <template v-for="(item, index) in selectedItems"
-                                :key="index"
-                                >
+                    <template
+                        v-for="(item, index) in selectedItems"
+                        :key="index"
+                    >
+                        <div class="d-flex flex-row">
+                            <div
+                                class="container col-sm-10 bg-white email_container my-2 rounded p-2 d-flex flex-row justify-content-between"
+                            >
                                 <div class="d-flex flex-row">
-                                <div class="container col-sm-10 bg-white email_container  my-2 rounded p-2 d-flex flex-row justify-content-between">
-                                <div class="d-flex flex-row ">
-                                    
-                                     <span>
-                                <i class="mdi mdi-email-outline"></i>
-                                {{ item.memberEmail }}
-                                <span class="btn-suc">
-                                    {{
-                                        item.departmentId
-                                            ? getDepartmentName(
-                                                  item.departmentId
-                                              )
-                                            : ""
-                                    }}
-                                </span>
-                                <span class="btn-suc">{{ item.roleName }}</span>
-                            </span>
-                                    </div>     
+                                    <span>
+                                        <i class="mdi mdi-email-outline"></i>
+                                        {{ item.memberEmail }}
+                                        <span class="btn-suc">
+                                            {{
+                                                item.departmentId
+                                                    ? getDepartmentName(
+                                                          item.departmentId
+                                                      )
+                                                    : ""
+                                            }}
+                                        </span>
+                                        <span class="btn-suc">{{
+                                            item.roleName
+                                        }}</span>
+                                    </span>
                                 </div>
-                                
-                                <div class="delete_email container col-sm-1 my-2 p-0 bg-white rounded d-flex flex-column align-items-center"
-                                 @click="removeFromList(index)">
-                                    <font-awesome-icon
-                                icon="fa-solid, fa-trash-can"
-                                style="color: #979da9"
-                                size="lg"
-                                class="mx-auto my-auto"
-                            />
-                              <!--    <i
+                            </div>
+
+                            <div
+                                class="delete_email container col-sm-1 my-2 p-0 bg-white rounded d-flex flex-column align-items-center"
+                                @click="removeFromList(index)"
+                            >
+                                <font-awesome-icon
+                                    icon="fa-solid, fa-trash-can"
+                                    style="color: #979da9"
+                                    size="lg"
+                                    class="mx-auto my-auto"
+                                />
+                                <!--    <i
                                 class="mdi mdi-delete delete-icon"
                                 @click="removeFromList(index)"
                             ></i>-->
-                                </div>
-                                </div>
-                                </template>
+                            </div>
+                        </div>
+                    </template>
 
                     <span
                         v-if="errors.documents"
@@ -545,16 +556,14 @@
 
             <hr />
 
-           <!-- <div v-if="isLoading" class="d-flex flex-row justify-content-end px-0">
+            <!-- <div v-if="isLoading" class="d-flex flex-row justify-content-end px-0">
             <h1 class="add_dep_text text-info">Please wait..</h1>
            
             <div class="spinner-border text-info mt-1 mx-2">
             </div>
             </div>-->
 
-            <div v-if="isLoading" class="loading">
-                
-            </div>
+            <div v-if="isLoading" class="loading"></div>
             <div v-else class="align-right mb-5">
                 <div class="text-right mt-3 mb-5">
                     <button
@@ -580,9 +589,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
-library.add(
-    faTrashCan
-);
+library.add(faTrashCan);
 export default {
     components: {
         FontAwesomeIcon,
@@ -593,7 +600,9 @@ export default {
             maxCharacters: 250,
             errors: {
                 logo: null,
-                about: null,
+                name: "",
+                email: "",
+                phone: "",
             },
             base_url: "../",
             isLoading: false,
@@ -647,12 +656,11 @@ export default {
         },
     },
     methods: {
-
         navigateToPartners(event) {
-            event.preventDefault(); 
+            event.preventDefault();
             window.location.href = "/partners";
         },
-        
+
         getDepartmentName(departmentId) {
             const department = this.departments.find(
                 (department) => department.id === departmentId
@@ -753,8 +761,60 @@ export default {
             document.getElementById("submit-form").submit();
         },
 
+        async checkNameUniqueness(name) {
+            try {
+                const response = await axios.get(
+                    `${this.base_url}api/check-name/${name}`
+                );
+                if (response.data.exists) {
+                    this.errors.name = "Name exists. Please try another";
+                } else {
+                    this.errors.name = null;
+                }
+            } catch (error) {
+                console.error("Error checking name uniqueness:", error);
+                return;
+                // this.errors.name = "An error occurred. Please try again.";
+            }
+        },
+
+        async checkEmailUniqueness(email) {
+            try {
+                const response = await axios.get(
+                    `${this.base_url}api/check-email/${email}`
+                );
+                if (response.data.exists) {
+                    this.errors.email = "Email exists. Please try  another";
+                } else {
+                    this.errors.email = null;
+                }
+            } catch (error) {
+                console.error("Error checking email uniqueness:", error);
+                return;
+                // this.errors.email = "An error occurred. Please try again.";
+            }
+        },
+
+        async checkPhoneUniqueness(phone) {
+            try {
+                const response = await axios.get(
+                    `${this.base_url}api/check-phone/${phone}`
+                );
+                if (response.data.exists) {
+                    this.errors.phone =
+                        "Phone Number exists. Please try  another";
+                } else {
+                    this.errors.email = null;
+                }
+            } catch (error) {
+                console.error("Error checking phone uniqueness:", error);
+                return;
+                // this.errors.email = "An error occurred. Please try again.";
+            }
+        },
+
         formSubmit() {
-            this.isLoading=true;
+            this.isLoading = true;
             const formData = new FormData();
 
             formData.append("name", this.formData.name);
@@ -788,7 +848,7 @@ export default {
             axios
                 .post(uri, formData)
                 .then((response) => {
-                     this.isLoading = false;
+                    this.isLoading = false;
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
@@ -798,7 +858,7 @@ export default {
                     });
                 })
                 .catch((error) => {
-                     this.isLoading = false;
+                    this.isLoading = false;
                     console.error(error);
                 });
         },
@@ -810,6 +870,9 @@ export default {
 .logo img {
     text-align: left;
     margin: 0;
+}
+.invalid-feedback {
+    font: red;
 }
 
 .styled input {
@@ -870,168 +933,163 @@ export default {
     padding-left: 30px;
 }
 
-.email_container{
+.email_container {
     /*border :1px solid #979da9;*/
     border: 1px solid #e0e3e8;
 }
 
-.delete_email{
+.delete_email {
     border: 1px solid #e0e3e8;
     align-items: center;
-    
 }
 
-.primary_button{
+.primary_button {
     background-color: #084bf7;
     font-size: 14px;
     font-weight: 300;
     color: white;
 }
 
-.overlay {  
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  width: 80%;
-  height: 100%;
-  align-self: center;
-  z-index: 1;
- /* opacity: 0;*/
-  background: rgba(39, 42, 43, 0.4);
-  transition: opacity 200ms ease-in-out;
-  border-radius: 4px;
-  margin-left: -50px;
-  /*margin-left: auto;*/
-  /*margin: 0;*/
-  padding: 0;
+.overlay {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 80%;
+    height: 100%;
+    align-self: center;
+    z-index: 1;
+    /* opacity: 0;*/
+    background: rgba(39, 42, 43, 0.4);
+    transition: opacity 200ms ease-in-out;
+    border-radius: 4px;
+    margin-left: -50px;
+    /*margin-left: auto;*/
+    /*margin: 0;*/
+    padding: 0;
 }
 
-.add_dep_text{
-   /* color: teal;*/
+.add_dep_text {
+    /* color: teal;*/
     font-size: 20px;
-     
 }
-
 
 .loading {
-  position: fixed;
-  z-index: 999;
-  overflow: show;
-  margin: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 50px;
-  height: 50px;
+    position: fixed;
+    z-index: 999;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
 }
 
 /* Transparent Overlay */
 .loading:before {
-  content: '';
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255,255,255,0.5);
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 /* :not(:required) hides these rules from IE9 and below */
 .loading:not(:required) {
-  /* hide "loading..." text */
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
+    /* hide "loading..." text */
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
 }
 
 .loading:not(:required):after {
-  content: '';
-  display: block;
-  font-size: 10px;
-  width: 50px;
-  height: 50px;
-  margin-top: -0.5em;
+    content: "";
+    display: block;
+    font-size: 10px;
+    width: 50px;
+    height: 50px;
+    margin-top: -0.5em;
 
-  /*border: 15px solid rgba(33, 150, 243, 1.0);*/
-  border: 15px solid #f7b309;
-  border-radius: 100%;
-  border-bottom-color: transparent;
-  -webkit-animation: spinner 1s linear 0s infinite;
-  animation: spinner 1s linear 0s infinite;
-
-
+    /*border: 15px solid rgba(33, 150, 243, 1.0);*/
+    border: 15px solid #f7b309;
+    border-radius: 100%;
+    border-bottom-color: transparent;
+    -webkit-animation: spinner 1s linear 0s infinite;
+    animation: spinner 1s linear 0s infinite;
 }
 
 /* Animation */
 
 @-webkit-keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 @-moz-keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 @-o-keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 @keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 </style>
