@@ -18,16 +18,28 @@ class AdminSeeder extends Seeder
     {
         $adminRole = UserRole::where('name', 'admin')->first();
 
-        $adminUser = User::where('email', 'admin@gmail.com')->first();
-        if (!$adminUser) {
-            $adminUser = User::create([
+        // Creating the first admin user
+        $adminUser1 = User::where('email', 'admin@gmail.com')->first();
+        if (!$adminUser1) {
+            $adminUser1 = User::create([
                 'name' => 'Admin',
                 'email' => 'admin@gmail.com',
                 'password' => bcrypt('admin@123'), // Replace 'password' with the actual admin password
             ]);
         }
+        $adminUser1->userrole()->associate($adminRole);
+        $adminUser1->save();
 
-        $adminUser->userrole()->associate($adminRole);
-        $adminUser->save();
+        // Creating the second admin user
+        $adminUser2 = User::where('email', 'kaye@unicn.africa')->first();
+        if (!$adminUser2) {
+            $adminUser2 = User::create([
+                'name' => 'Kaye',
+                'email' => 'kaye@unicn.africa',
+                'password' => bcrypt('kaye@123'), // Replace 'password' with the actual password
+            ]);
+        }
+        $adminUser2->userrole()->associate($adminRole);
+        $adminUser2->save();
     }
 }

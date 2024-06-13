@@ -637,6 +637,8 @@
 
                     <div class="text-end">
                         <button
+                            type="button"
+                            @click="navigateToPartners"
                             class="btn btn-light border-dark px-3 py-2 btn-action"
                         >
                             Cancel
@@ -717,7 +719,7 @@
                                     type="text"
                                     class="form-control"
                                     name="website"
-                                    v-model="partner.website"
+                                    v-model="this.partner.website"
                                     autocomplete="website"
                                     autofocus
                                 />
@@ -781,7 +783,7 @@
                             <div class="col-md-5 offset-md-0 text-center">
                                 <div class="row styled">
                                     <div class="col-3">
-                                        <img :src="partner.logo" alt="." />
+                                        <img :src="logoPreview" alt="." />
                                     </div>
                                     <div class="col-9">
                                         <input
@@ -803,30 +805,19 @@
                             <label
                                 for="business_type"
                                 class="col-md-3 col-form-label text-md-start"
-                                >{{ "Business type" }} <br /><span
-                                    class="txt-gray"
-                                >
-                                    {{
-                                        "Brief description of the main concern of the business e.g Software, Marketing"
-                                    }}</span
-                                >
-                            </label>
+                                >{{ "Business Type" }}</label
+                            >
 
                             <div class="col-md-5 offset-md-0 text-center">
-                                <select
+                                <input
                                     id="business_type"
+                                    type="text"
                                     class="form-control"
-                                    name="business_type"
+                                    name="address"
                                     v-model="partner.business_type"
-                                >
-                                    <option value="">Business type</option>
-                                    <option value="Software">Software</option>
-                                    <option value="Hardware">Hardware</option>
-                                    <option value="Consulting">
-                                        Consulting
-                                    </option>
-                                    <!-- Add more business types as needed -->
-                                </select>
+                                    autocomplete=""
+                                    autofocus
+                                />
                             </div>
                         </div>
                         <hr />
@@ -888,117 +879,6 @@
                         </div>
 
                         <hr />
-
-                        <div class="row mb-2">
-                            <label
-                                for="members"
-                                class="col-md-3 col-form-label text-md-start"
-                            >
-                                {{ "Members" }} <br /><span class="txt-gray">
-                                    {{
-                                        "Invite or select the relevant members to this organisation."
-                                    }}
-                                </span>
-                            </label>
-
-                            <div class="col-md-9 offset-md-0 text-center">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <input
-                                            class="form-control py-2 pr-5"
-                                            autocomplete="member_email"
-                                            autofocus
-                                            type="email"
-                                            placeholder="Enter email address"
-                                            name="member_email"
-                                            v-model="member.email"
-                                        />
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select
-                                            id="department_id"
-                                            class="form-control"
-                                            name="department"
-                                            v-model="member.department_id"
-                                        >
-                                            <option value="">
-                                                Select department
-                                                <i class="mdi mdi-account"></i>
-                                            </option>
-                                            <option
-                                                v-for="department in this
-                                                    .partner.departments"
-                                                :value="department.name"
-                                                :key="department.id"
-                                            >
-                                                {{ department.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select
-                                            id="role_id"
-                                            class="form-control"
-                                            name="role"
-                                            v-model="member.role"
-                                        >
-                                            <option value="">
-                                                Select role
-                                            </option>
-                                            <option value="leader">
-                                                leader
-                                            </option>
-                                            <option value="mentor">
-                                                Mentor
-                                            </option>
-                                            <option value="advisor">
-                                                Advisor
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button
-                                            type="button"
-                                            class="btn btn-warning ml-0 text-light mt-md-0 mt-2"
-                                            @click.prevent="addToList"
-                                        >
-                                            Add
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <ul>
-                                    <li
-                                        v-for="(item, index) in selectedItems"
-                                        class="list-item"
-                                        :key="index"
-                                    >
-                                        <span>
-                                            <i
-                                                class="mdi mdi-email-outline"
-                                            ></i>
-                                            {{ item.memberEmail }}
-                                            <span class="btn-suc">
-                                                {{
-                                                    item.departmentId
-                                                        ? getDepartmentName(
-                                                              item.departmentId
-                                                          )
-                                                        : ""
-                                                }}
-                                            </span>
-                                            <span class="btn-suc">{{
-                                                item.roleName
-                                            }}</span>
-                                        </span>
-                                        <i
-                                            class="mdi mdi-delete delete-icon"
-                                            @click="removeFromList(index)"
-                                        ></i>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
 
                         <div class="row mb-2">
                             <label
@@ -1164,6 +1044,8 @@
                         <div v-else class="align-right mb-5">
                             <div class="text-right mt-3 mb-5">
                                 <button
+                                    type="button"
+                                    @click="navigateToPartners"
                                     class="btn btn-light border-dark btn-action"
                                 >
                                     Cancel
@@ -2622,8 +2504,9 @@ export default {
                 documents: null,
             },
             isLoading: false,
-
+            logoPreview: "",
             membersData: [],
+            maxCharacters: 250,
 
             kpiPartnerProgress: {
                 progress_percentage: null,
@@ -3144,13 +3027,13 @@ export default {
         //     });
         // },
 
-        // remainingCharacters() {
-        //     //   console.log("Characters are:",this.partner.about.length);
-        //     return this.maxCharacters - this.partner.about.length;
-        // },
-        // isOverMax() {
-        //     return this.remainingCharacters < 0;
-        // },
+        remainingCharacters() {
+            //   console.log("Characters are:",this.partner.about.length);
+            return this.maxCharacters - this.partner.about.length;
+        },
+        isOverMax() {
+            return this.remainingCharacters < 0;
+        },
         // partnersWithProgress() {
         //     const partner = this.partner;
         //     return {
@@ -4154,6 +4037,13 @@ export default {
         //         });
         // },
 
+        handleLogoChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.partner.logo = file;
+                this.logoPreview = URL.createObjectURL(file);
+            }
+        },
         partnerSubmit() {
             this.isLoading = true;
             const memberArray = this.partnerMembers.map((member) => ({
@@ -4188,7 +4078,7 @@ export default {
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
-                        text: "Partner created successfully!",
+                        text: "Partner updated successfully!",
                     }).then(() => {
                         window.location.reload();
                     });
@@ -4353,6 +4243,10 @@ export default {
         handleLinkClick() {
             this.currentPage = 1;
             window.location.reload();
+        },
+
+        navigateToPartners() {
+            window.location.href = "/partners";
         },
 
         submitProgress(kpimetric1, kpi1) {

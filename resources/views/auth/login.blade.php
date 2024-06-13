@@ -3,7 +3,22 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center align-items-center vh-100">
+
+
             <div class="col-md-8 col-lg-4">
+                <img style=" width: 100px;
+               
+                height: 80px;
+                object-fit: contain;
+                margin-bottom: 20px;
+                margin-left: 100px;
+                 
+                @media (max-width: 768px) { 
+                    margin-left: 100px;
+                }
+               
+                "
+                    src="{{ asset('assets/images/unicon.png') }}" alt="Unicorn">
                 <h4>Sign in to your account</h4>
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
@@ -17,8 +32,8 @@
                                 value="{{ old('email') }}" autocomplete="email">
                         </div>
 
-                  
-{{-- 
+
+                        {{-- 
                         @error('email')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -30,8 +45,7 @@
                         <div class="d-flex justify-content-between">
                             <label for="password" class="col-form-label text-end">{{ __('Password') }}</label>
                             @if (Route::has('password.request'))
-                                <a class="btn btn-link text-decoration-none"
-                                    href="{{ route('password.request') }}">
+                                <a class="btn btn-link text-decoration-none" href="{{ route('password.request') }}">
                                     {{ __('Forgot Your Password?') }}
                                 </a>
                             @endif
@@ -51,14 +65,15 @@
                     </div>
 
                     @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                   </div>
-                @endif
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+
+                        </div>
+                    @endif
 
                     <div class="mt-3">
                         <button type="submit" class="btn w-100 px-3" style="background:#084bf7;color:white;">
