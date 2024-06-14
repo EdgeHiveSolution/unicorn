@@ -574,7 +574,7 @@ class PartnerApiController extends Controller
         $validatedData = $request->validate([
             'name' => 'string|max:255',
             'email' => 'email|max:255',
-            'website' => 'nullable|url',
+            'website' => 'nullable',
             'phone' => 'string|max:20',
             'address' => 'nullable',
             'business_type' => 'string|max:100',
