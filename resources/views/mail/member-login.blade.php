@@ -14,10 +14,10 @@
 
     @if ($actionType === 'login' && $member)
        
-        <p>Visit our website at <a href="{{ $url }}">Unicorn</a> to log in and access your account.</p>
+        <p>Visit our website at <a href="{{ $url }}">Unicn</a> to log in and access your account.</p>
         <p>Password: {{ $password }} </p>
     @else
-        <p>Visit our website at <a href="{{ $url }}">Unicorn</a> to register and access your account.</p>
+        <p>Visit our website at <a href="{{ $url }}">Unicn</a> to register and access your account.</p>
     @endif
 
     <p>Thank you!</p>

@@ -41,5 +41,19 @@ class AdminSeeder extends Seeder
         }
         $adminUser2->userrole()->associate($adminRole);
         $adminUser2->save();
+
+
+
+        // Creating the third admin user
+        $adminUser3 = User::where('email', 'judith@unicn.africa')->first();
+        if (!$adminUser3) {
+            $adminUser3 = User::create([
+                'name' => 'Judith',
+                'email' => 'judith@unicn.africa',
+                'password' => bcrypt('judith@123'), // Replace 'password' with the actual password
+            ]);
+        }
+        $adminUser3->userrole()->associate($adminRole);
+        $adminUser3->save();
     }
 }
