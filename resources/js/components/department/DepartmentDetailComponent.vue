@@ -127,7 +127,7 @@
             </div>
 
             <div class="row">
-                <div class="col-12 grid-margin bg-white" style="border: none;">
+                <div class="col-12 grid-margin bg-white" style="border: none">
                     <div class="card">
                         <div
                             class="card-header d-flex justify-content-between my-3"
@@ -173,16 +173,16 @@
                                         <tr
                                             v-for="partner in partnersWithProgress"
                                             :key="partner.id"
-                                            
                                         >
                                             <td>
                                                 <img
                                                     :src="partner.logo"
                                                     alt="logo"
                                                 />
-                                                <span class="pl-2 active-period txt-gray">{{
-                                                    partner.name
-                                                }}</span>
+                                                <span
+                                                    class="pl-2 active-period txt-gray"
+                                                    >{{ partner.name }}</span
+                                                >
                                             </td>
                                             <td
                                                 v-if="
@@ -191,15 +191,17 @@
                                                 "
                                             >
                                                 <div>
-                                                    <label class="progress_text">{{
-                                                        partner.calculatedProgress.toFixed(
-                                                            2
-                                                        )
-                                                    }}</label>%
+                                                    <label
+                                                        class="progress_text"
+                                                        >{{
+                                                            partner.calculatedProgress.toFixed(
+                                                                2
+                                                            )
+                                                        }}</label
+                                                    >%
                                                     <div class="progress">
                                                         <div
                                                             class="progress-bar"
-                                                            
                                                             :style="{
                                                                 width:
                                                                     partner.calculatedProgress +
@@ -209,7 +211,7 @@
                                                             aria-valuemax="100"
                                                         ></div>
                                                     </div>
-                                                   <!-- <div
+                                                    <!-- <div
                                                         class="progress-labels"
                                                     >
                                                         <span
@@ -260,49 +262,59 @@
                                                 <p class="member_image_text">+1</p>
                                                 </div>
                                                 </div>-->
-                                                 <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
+                                                <div class="d-flex flex-row">
+                                                    <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                               
-                                               <template v-for="(member,index) in partner.members"
-                                               :key="index"
-                                               >
 
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
-                                                >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                                <!--<p class="member_image_text">+1</p>-->
-                                                </div>
+                                                    <template
+                                                        v-for="(
+                                                            member, index
+                                                        ) in partner.members"
+                                                        :key="index"
+                                                    >
+                                                        <div
+                                                            class="member_image d-flex flex-column align-items-center"
+                                                            v-if="index < 2"
+                                                            :src="member.image"
+                                                        >
+                                                            <font-awesome-icon
+                                                                icon="fa-solid, fa-user"
+                                                                style="
+                                                                    color: #979da9;
+                                                                "
+                                                                size="md"
+                                                                class="mx-auto my-auto"
+                                                            />
+                                                            <!--<p class="member_image_text">+1</p>-->
+                                                        </div>
 
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+{{index - 1}}</p>
-                                                </div>
+                                                        <div
+                                                            class="member_image_plus"
+                                                            v-else
+                                                            :src="member.image"
+                                                        >
+                                                            <p
+                                                                class="member_image_text"
+                                                            >
+                                                                +{{ index - 1 }}
+                                                            </p>
+                                                        </div>
 
-                                                <!-- <div class="member_image_plus"
+                                                        <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                                </template>
+                                                    </template>
 
-                                                <!--<img
+                                                    <!--<img
                                                     
                                                     alt="image"
                                                 />-->
@@ -311,34 +323,38 @@
                                             <td>
                                                 <!--v-for="department in partner.departments"
                                                     class="department-tag"-->
-                                               <div class="mt-2"> <span
-                                                    
-                                                    class="department-tag active-period txt-gray my-auto"
-                                                    v-for="department in uniqueDepartments"
-                                                    :key="department.id"
-                                                >
-                                                    {{ department.name }}
-                                                </span></div>
+                                                <div class="mt-2">
+                                                    <span
+                                                        class="department-tag active-period txt-gray my-auto"
+                                                        v-for="department in uniqueDepartments"
+                                                        :key="department.id"
+                                                    >
+                                                        {{ department.name }}
+                                                    </span>
+                                                </div>
                                             </td>
                                             <td>
-                                                <a :href="
-                                                            '/department_partners/' +
-                                                            partner.id
-                                                        "><button
-                                                    class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
-                                                >
-                                                    <span
-                                                        class="mdi mdi-eye-outline text-light"
-                                                    ></span>
-                                                    <a
-                                                        :href="
-                                                            '/department_partners/' +
-                                                            partner.id
-                                                        "
-                                                        class="text-light"
-                                                        >View Details</a
+                                                <a
+                                                    :href="
+                                                        '/department_partners/' +
+                                                        partner.id
+                                                    "
+                                                    ><button
+                                                        class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
                                                     >
-                                                </button></a>
+                                                        <span
+                                                            class="mdi mdi-eye-outline text-light"
+                                                        ></span>
+                                                        <a
+                                                            :href="
+                                                                '/department_partners/' +
+                                                                partner.id
+                                                            "
+                                                            class="text-light"
+                                                            >View Details</a
+                                                        >
+                                                    </button></a
+                                                >
                                             </td>
                                         </tr>
                                     </tbody>
@@ -351,7 +367,6 @@
 
                     <h4>Department Metrics</h4>
                     <div class="card mt-3">
-                       
                         <div
                             class="card-header d-flex justify-content-between my-3"
                         >
@@ -420,8 +435,10 @@
                                     </thead>
                                     <tbody>
                                         <!-- Replace the static data with dynamic data using v-for directive -->
-                                        <tr v-for="metric in uniqueMetricWithProgress" :key="metric.id">
-
+                                        <tr
+                                            v-for="metric in uniqueMetricWithProgress"
+                                            :key="metric.id"
+                                        >
                                             <td>
                                                 <div>
                                                     {{ metric.metric.name }}
@@ -454,11 +471,13 @@
                                             </td>
 
                                             <td>
-                                                <span class="txt-gray">{{
-                                                    metric.calculatedProgress.toFixed(
-                                                        2
-                                                    )
-                                                }}%</span>
+                                                <span class="txt-gray"
+                                                    >{{
+                                                        metric.calculatedProgress.toFixed(
+                                                            2
+                                                        )
+                                                    }}%</span
+                                                >
 
                                                 <div class="progress">
                                                     <div
@@ -474,21 +493,19 @@
                                                 </div>
                                             </td>
 
-                                             <td class="td-members">
-                                                        <template
-                                                            v-for="member in topDrivers"
-                                                            :key="member.id"
-                                                        >
-                                                            <img
-                                                                v-for="member in member.topDrivers"
-                                                                :key="member.id"
-                                                                src="assets/images/faces/face1.jpg"
-                                                                :alt="
-                                                                    member.email
-                                                                "
-                                                            />
-                                                        </template>
-                                                    </td>
+                                            <td class="td-members">
+                                                <template
+                                                    v-for="member in topDrivers"
+                                                    :key="member.id"
+                                                >
+                                                    <img
+                                                        v-for="member in member.topDrivers"
+                                                        :key="member.id"
+                                                        src="assets/images/faces/face1.jpg"
+                                                        :alt="member.email"
+                                                    />
+                                                </template>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -552,9 +569,10 @@
                                                 :src="partner.logo"
                                                 alt="logo"
                                             />
-                                            <span class="pl-2 active-period txt-gray">{{
-                                                partner.name
-                                            }}</span>
+                                            <span
+                                                class="pl-2 active-period txt-gray"
+                                                >{{ partner.name }}</span
+                                            >
                                         </div>
 
                                         <div class="d-flex align-items-center">
@@ -572,60 +590,68 @@
                                                 >Active</span
                                             >
                                         </button>-->
-                                        <div class="active_status_container mt-2 d-flex flex-row justify-content-center">
-                                                    <span class="active_status_text"
-                                                        >Active</span
-                                                    >
-                                                </div>
+                                        <div
+                                            class="active_status_container mt-2 d-flex flex-row justify-content-center"
+                                        >
+                                            <span class="active_status_text"
+                                                >Active</span
+                                            >
+                                        </div>
                                     </td>
                                     <td>
-                                       <div class="container-overflow_wrapper"> <span class="txt-dark">{{
-                                            partner.business_type
-                                        }}</span
-                                        ><br />
-                                        <span class="active-period txt-gray">{{
-                                            partner.about
-                                        }}</span></div>
+                                        <div class="container-overflow_wrapper">
+                                            <span class="txt-dark">{{
+                                                partner.business_type
+                                            }}</span
+                                            ><br />
+                                            <span
+                                                class="active-period txt-gray"
+                                                >{{ partner.about }}</span
+                                            >
+                                        </div>
                                     </td>
                                     <td class="td-members">
-                                         <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
+                                        <div class="d-flex flex-row">
+                                            <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                               
-                                               <template v-for="(member,index) in partner.members"
-                                               :key="index"
-                                               >
-                                                
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
+
+                                            <template
+                                                v-for="(
+                                                    member, index
+                                                ) in partner.members"
+                                                :key="index"
+                                            >
+                                                <div
+                                                    class="member_image d-flex flex-column align-items-center"
+                                                    v-if="index < 2"
+                                                    :src="member.image"
                                                 >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                        
+                                                    <font-awesome-icon
+                                                        icon="fa-solid, fa-user"
+                                                        style="color: #979da9"
+                                                        size="md"
+                                                        class="mx-auto my-auto"
+                                                    />
                                                 </div>
 
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
+                                                <div
+                                                    class="member_image_plus"
+                                                    v-else
+                                                    :src="member.image"
                                                 >
-                                                <p class="member_image_text">+{{index - 1}}</p>
+                                                    <p
+                                                        class="member_image_text"
+                                                    >
+                                                        +{{ index - 1 }}
+                                                    </p>
                                                 </div>
-
-                                        
-                                                </template>
-
-                                                
-                                                </div>
+                                            </template>
+                                        </div>
                                         <!--<img
                                             v-for="member in partner.members"
                                             :key="member.id"
@@ -641,11 +667,13 @@
                                                 )
                                             }}%-->
 
-                                             <label class="progress_text"> {{
-                                                        partner.calculatedProgress.toFixed(
-                                                            2
-                                                        )
-                                                    }}</label>%
+                                            <label class="progress_text">
+                                                {{
+                                                    partner.calculatedProgress.toFixed(
+                                                        2
+                                                    )
+                                                }}</label
+                                            >%
                                             <div class="progress">
                                                 <div
                                                     class="progress-bar"
@@ -657,7 +685,7 @@
                                                     aria-valuemin="0"
                                                     aria-valuemax="100"
                                                 ></div>
-                                               <!-- <div
+                                                <!-- <div
                                                     class="progress-bar"
                                                     :class="
                                                         getStatusClass(partner)
@@ -705,30 +733,33 @@
 
                                     <td v-else>No Active Kpis</td>
                                     <td>
-                                       
-                                             <a :href="'/department_partners/' +
-                                                            partner.id "><button
-                                                    class="btn btn-sm px-1 py-2  btn-pri d-flex flex-row justify-content-center align-items-center"
+                                        <a
+                                            :href="
+                                                '/department_partners/' +
+                                                partner.id
+                                            "
+                                            ><button
+                                                class="btn btn-sm px-1 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                            >
+                                                <span
+                                                    class="mdi mdi-eye-outline text-light"
+                                                ></span>
+                                                <a
+                                                    :href="
+                                                        '/department_partners/' +
+                                                        partner.id
+                                                    "
+                                                    class="text-light"
+                                                    >View</a
                                                 >
-                                                    <span
-                                                        class="mdi mdi-eye-outline text-light"
-                                                    ></span>
-                                                    <a
-                                                        :href="
-                                                            '/department_partners/' +
-                                                            partner.id
-                                                        "
-                                                        class="text-light"
-                                                        >View</a
-                                                    >
-                                                </button></a>
-                                        
+                                            </button></a
+                                        >
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
 
-                         <!--<table class="table">
+                        <!--<table class="table">
                             <thead>
                                 <tr>
                                     <th>KPI Metric</th>
@@ -875,17 +906,16 @@
                                         {{ member.email }}
                                     </td>
                                     <td>
-                                      <!--  <span>
+                                        <!--  <span>
                                             {{ (member.is_active = "Active") }}
                                         </span>-->
-                                        <div class="active_status_container d-flex flex-row justify-content-center">
-                                                    <span class="active_status_text"
-                                                        >{{
-                                                            (member.is_active =
-                                                                "Active")
-                                                        }}</span
-                                                    >
-                                                </div>
+                                        <div
+                                            class="active_status_container d-flex flex-row justify-content-center"
+                                        >
+                                            <span class="active_status_text">{{
+                                                (member.is_active = "Active")
+                                            }}</span>
+                                        </div>
                                     </td>
                                     <td>
                                         <!--<span
@@ -894,37 +924,45 @@
                                         >
                                             {{ partner.name }}
                                         </span>-->
-                                         <div class="d-flex flex-row">
-                                               <!-- <div class="member_image_plus"
+                                        <div class="d-flex flex-row">
+                                            <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                               
-                                               <template v-for="(member,index) in partnersWithProgress"
-                                               :key="index"
-                                               >
 
-                                                 <div class="member_image d-flex flex-column align-items-center"
-                                                 v-if="index < 2"
-                                                :src="member.image"
+                                            <template
+                                                v-for="(
+                                                    member, index
+                                                ) in partnersWithProgress"
+                                                :key="index"
+                                            >
+                                                <div
+                                                    class="member_image d-flex flex-column align-items-center"
+                                                    v-if="index < 2"
+                                                    :src="member.image"
                                                 >
-                                                 <font-awesome-icon
-                                                 icon="fa-solid, fa-user"
-                                                 style="color: #979da9"
-                                                 size="md"
-                                                 class="mx-auto my-auto"
-                                                  />
-                                                <!--<p class="member_image_text">+1</p>-->
+                                                    <font-awesome-icon
+                                                        icon="fa-solid, fa-user"
+                                                        style="color: #979da9"
+                                                        size="md"
+                                                        class="mx-auto my-auto"
+                                                    />
+                                                    <!--<p class="member_image_text">+1</p>-->
                                                 </div>
 
-                                                 <div class="member_image_plus"
-                                                 v-else
-                                                :src="member.image"
+                                                <div
+                                                    class="member_image_plus"
+                                                    v-else
+                                                    :src="member.image"
                                                 >
-                                                <p class="member_image_text">+{{index - 1}}</p>
+                                                    <p
+                                                        class="member_image_text"
+                                                    >
+                                                        +{{ index - 1 }}
+                                                    </p>
                                                 </div>
 
                                                 <!-- <div class="member_image_plus"
@@ -934,39 +972,40 @@
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                                </template>
+                                            </template>
 
-                                                <!--<img
+                                            <!--<img
                                                     
                                                     alt="image"
                                                 />-->
-                                                </div>
+                                        </div>
                                     </td>
 
                                     <td>{{ totalOffTrackAndAtRisk }}</td>
 
                                     <td>
                                         <a
-                                        :href="
-                                                    '/department_members/' +
-                                                    member.id
-                                                "
-                                                class="text-light"
-                                        ><button
-                                            class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
-                                        >
-                                            <span
-                                                class="mdi mdi-eye-outline text-light"
-                                            ></span>
-                                            <a
-                                                :href="
-                                                    '/department_members/' +
-                                                    member.id
-                                                "
-                                                class="text-light"
-                                                >View</a
+                                            :href="
+                                                '/department_members/' +
+                                                member.id
+                                            "
+                                            class="text-light"
+                                            ><button
+                                                class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
                                             >
-                                        </button></a>
+                                                <span
+                                                    class="mdi mdi-eye-outline text-light"
+                                                ></span>
+                                                <a
+                                                    :href="
+                                                        '/department_members/' +
+                                                        member.id
+                                                    "
+                                                    class="text-light"
+                                                    >View</a
+                                                >
+                                            </button></a
+                                        >
                                     </td>
                                 </tr>
                             </tbody>
@@ -989,6 +1028,7 @@
                     <button
                         type="button"
                         class="btn btn-light border-dark p-3 btn-action cancel-btn"
+                        @click="navigateToDepartments"
                     >
                         Cancel
                     </button>
@@ -1243,6 +1283,7 @@
                             type="button"
                             style="border: lightgrey"
                             class="btn btn-light border-dark p-3 btn-action cancel-btn"
+                            @click="navigateToDepartments"
                         >
                             Cancel
                         </button>
@@ -1912,6 +1953,10 @@ export default {
         //     this.selectedMembers.splice(index, 1);
         // },
 
+        navigateToDepartments() {
+            window.location.href = "/departments";
+        },
+
         departmentSubmit() {
             const emailArray = this.departmentMembers.map(
                 (member) => member.email
@@ -2102,7 +2147,7 @@ export default {
     border-radius: 100%;
     background-color: rgba(128, 128, 128, 0.089);
     color: rgba(24, 23, 23, 0.911);*/
-  /*position: absolute;*/
+    /*position: absolute;*/
     top: 0px;
     color: rgba(24, 23, 23, 0.911);
     background-color: rgba(128, 128, 128, 0.089);
@@ -2176,45 +2221,46 @@ nav-link {
     background-color: #d9534f;
 }
 
-.on-track-label{
+.on-track-label {
     font-size: 12px;
     color: #047a48;
 }
 
-
-.primary_button{
+.primary_button {
     background-color: #084bf7;
     font-size: 14px;
     font-weight: 300;
 }
 
-th{
-     color: #667085;
+th {
+    color: #667085;
     font-size: 14px;
     font-weight: 500;
 }
 
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #9ea4b1;
-  font-size: 14px;
-  opacity: 1; /* Firefox */
+::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #9ea4b1;
+    font-size: 14px;
+    opacity: 1; /* Firefox */
 }
 
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #9ea4b1;
-  font-size: 14px;
+:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #9ea4b1;
+    font-size: 14px;
 }
 
-::-ms-input-placeholder { /* Microsoft Edge */
-  color: #9ea4b1;
-  font-size: 14px;
+::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: #9ea4b1;
+    font-size: 14px;
 }
 
-.on-track-label{
+.on-track-label {
     font-size: 12px;
     color: #047a48;
 }
-
 
 .off-track-label {
     color: #d9534f;
@@ -2226,8 +2272,7 @@ th{
     font-size: 12px;
 }
 
-
-.btn-pri{
+.btn-pri {
     /*background-color: #0072bb;*/
     background-color: #0072bb;
     font-size: 10px !important;
@@ -2236,10 +2281,9 @@ th{
     color: #eaf3ff;
     margin-top: 8px;
     border-radius: 8px;
-    
 }
 
-.txt-dark-detail{
+.txt-dark-detail {
     font-size: 14px;
 }
 

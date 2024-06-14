@@ -615,9 +615,9 @@
             <div id="account" v-if="currentPage === 2">
                 <!-- Account content -->
                 <div class="d-flex align-items-center">
-                    <img :src="partner.logo" alt="logo" />
+                    <img :src="this.partner.logo" alt="logo" />
                     <div class="partner-info">
-                        <h4>{{ partner.name }}</h4>
+                        <h4>{{ this.partner.name }}</h4>
                         <p>
                             Status:
                             <span class="text-success">{{ " Active" }}</span>
@@ -673,7 +673,7 @@
                                     type="text"
                                     class="form-control"
                                     name="name"
-                                    v-model="partner.name"
+                                    v-model="this.partner.name"
                                     autocomplete="name"
                                     autofocus
                                 />
@@ -697,7 +697,7 @@
                                         type="text"
                                         class="form-control"
                                         name="email"
-                                        v-model="partner.email"
+                                        v-model="this.partner.email"
                                         autocomplete="email"
                                         autofocus
                                     />
@@ -740,7 +740,7 @@
                                     type="text"
                                     class="form-control"
                                     name="phone"
-                                    v-model="partner.phone"
+                                    v-model="this.partner.phone"
                                     autocomplete="phone"
                                     autofocus
                                 />
@@ -761,7 +761,7 @@
                                     type="text"
                                     class="form-control"
                                     name="address"
-                                    v-model="partner.address"
+                                    v-model="this.partner.address"
                                     autocomplete="address"
                                     autofocus
                                 />
@@ -793,6 +793,7 @@
                                             name="logo"
                                             ref="logoInput"
                                             placeholder="text"
+                                            accept=".jpg, .jpeg, .png, .gif"
                                             @change="handleLogoChange"
                                         />
                                     </div>
@@ -814,9 +815,10 @@
                                     type="text"
                                     class="form-control"
                                     name="address"
-                                    v-model="partner.business_type"
+                                    v-model="this.partner.business_type"
                                     autocomplete=""
                                     autofocus
+                                    readonly
                                 />
                             </div>
                         </div>
@@ -838,7 +840,7 @@
                                     id="about"
                                     class="form-control"
                                     name="about"
-                                    v-model="partner.about"
+                                    v-model="this.partner.about"
                                     autocomplete="about"
                                     autofocus
                                 ></textarea>
@@ -2644,6 +2646,7 @@ export default {
                 role: "",
 
                 role_id: "",
+                members: [],
             },
             kpi_title: "",
             kpi_owner: "",
@@ -4040,6 +4043,7 @@ export default {
         handleLogoChange(event) {
             const file = event.target.files[0];
             if (file) {
+                console.log("I am handling logo change", file);
                 this.partner.logo = file;
                 this.logoPreview = URL.createObjectURL(file);
             }
@@ -4054,6 +4058,8 @@ export default {
 
             console.log("Hi Members , here i am:", memberArray);
 
+            console.log("Logo displayed", this.partner.logo);
+
             const partnerData = {
                 id: this.partner.id,
                 name: this.partner.name,
@@ -4067,12 +4073,16 @@ export default {
                 members: memberArray, // Use the modified memberArray
             };
 
+            console.log("What is in  partner data", partnerData);
+
             let uri =
                 this.base_url + `api/v1/partner-update/${this.partner.id}`;
             axios
-                .patch(uri, partnerData)
+                .put(uri, partnerData)
                 .then((response) => {
-                    const updatedPartner = response.data;
+                    console.log("Response after update", response.data);
+                    const updatedPartner = response.data.partner;
+
                     this.partner = updatedPartner;
                     this.isLoading = false;
                     Swal.fire({

@@ -743,6 +743,8 @@ export default {
 
         handleLogoChange(event) {
             const file = event.target.files[0];
+
+            console.log("Logo change", file);
             if (file) {
                 this.formData.logo = file;
                 this.logoPreview = URL.createObjectURL(file);

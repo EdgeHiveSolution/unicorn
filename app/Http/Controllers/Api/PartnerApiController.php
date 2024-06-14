@@ -38,48 +38,47 @@ class PartnerApiController extends Controller
     //     $this->middleware('auth');
     // }
 
-    
+
     /**
      * Display a listing of the resource.
      *
      *
      */
 
-public function index(Request $request)
+    public function index(Request $request)
 
 
-{
-    $userId = $request->input('user_id');
-    $userRoleId = $request->input('user_role_id');
+    {
+        $userId = $request->input('user_id');
+        $userRoleId = $request->input('user_role_id');
 
-    if ($userRoleId == 2) {
-        
-        $memberId = Member::where('user_id', $userId)->value('id');
-        $partnerIds = MemberPartner::where('member_id', $memberId)->pluck('partner_id');
+        if ($userRoleId == 2) {
 
-        $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
-            ->whereIn('id', $partnerIds)
-            ->get();
-    } else if ($userRoleId == 3) {
-        // User is a partner
-        $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
-            ->where('user_id', $userId)
-            ->get();
-    } else {
-        // User role is neither 2 (member) nor 3 (partner), return all partners
-        $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
-            ->get();
+            $memberId = Member::where('user_id', $userId)->value('id');
+            $partnerIds = MemberPartner::where('member_id', $memberId)->pluck('partner_id');
+
+            $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
+                ->whereIn('id', $partnerIds)
+                ->get();
+        } else if ($userRoleId == 3) {
+            // User is a partner
+            $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
+                ->where('user_id', $userId)
+                ->get();
+        } else {
+            // User role is neither 2 (member) nor 3 (partner), return all partners
+            $partners = Partner::with('departments', 'members', 'kpis.kpiMetrics.kpiMetricMembers.progress')
+                ->get();
+        }
+
+        $formattedPartners = $partners->map(function ($partner) {
+            $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
+            return $partner;
+        });
+
+        Log::info("Partners are :", ['partners' => $formattedPartners]);
+        return $formattedPartners;
     }
-
-    $formattedPartners = $partners->map(function ($partner) {
-        $partner->formatted_created_at = Carbon::parse($partner->created_at)->isoFormat('DD MMMM YYYY');
-        return $partner;
-    });
-
-    Log::info("Partners are :", ['partners' => $formattedPartners]);
-    return $formattedPartners;
-
-}
 
 
 
@@ -100,7 +99,7 @@ public function index(Request $request)
     //     Log::info("Partners are :", ['partners'=>$formattedPartners]); 
     //     return $formattedPartners;
 
-       
+
     // }
 
     public function latest(Request $request)
@@ -116,25 +115,23 @@ public function index(Request $request)
             $partnerIds = MemberPartner::where('member_id', $memberId)->pluck('partner_id');
 
 
-        $partners = Partner::with('departments', 'members', 'kpis')
-           ->whereIn('id', $partnerIds)
-            ->latest('created_at')
-            ->take(3)
-            ->get();
-
+            $partners = Partner::with('departments', 'members', 'kpis')
+                ->whereIn('id', $partnerIds)
+                ->latest('created_at')
+                ->take(3)
+                ->get();
         } else if ($userRoleId == 3) {
 
-             // User is a partner
-        $partners = Partner::with('departments', 'members', 'kpis')
-        ->where('id', $userId)
-        ->get();
-
-         } else {
+            // User is a partner
+            $partners = Partner::with('departments', 'members', 'kpis')
+                ->where('id', $userId)
+                ->get();
+        } else {
             // User role is neither 2 (member) nor 3 (partner), return all partners
             $partners = Partner::with('departments', 'members', 'kpis')
                 ->get();
         }
-    
+
 
 
         $formattedPartners = $partners->map(function ($partner) {
@@ -143,317 +140,314 @@ public function index(Request $request)
         });
 
         return $formattedPartners;
-
-
     }
-     
 
 
-//         public function store(Request $request)
-        
-//           {
-//             Log::info('Test log message');
-//             try {
 
-//                 FacadesDB::beginTransaction();
-//                 // Log the request data for debugging purposes
-//                 Log::info('Request data:', ['data' => $request->all()]);
-public function store(Request $request)
-{
-    Log::info('Test log message');
-    try {
-        DB::beginTransaction();
+    //         public function store(Request $request)
 
-        // Log the request data for debugging purposes
-        Log::info('Request data:', ['data' => $request->all()]);
+    //           {
+    //             Log::info('Test log message');
+    //             try {
 
-        $members = json_decode($request->members);
+    //                 FacadesDB::beginTransaction();
+    //                 // Log the request data for debugging purposes
+    //                 Log::info('Request data:', ['data' => $request->all()]);
+    public function store(Request $request)
+    {
+        Log::info('Test log message');
+        try {
+            DB::beginTransaction();
 
-        // Log the decoded members' data for debugging purposes
-        Log::info('Members are:', ['data' => $members]);
+            // Log the request data for debugging purposes
+            Log::info('Request data:', ['data' => $request->all()]);
 
-        Log::info("Members are", ['Display' => $members]);
+            $members = json_decode($request->members);
 
-        // Log::info("This Member:", ['member'=> $members[0]['stdClass']]);
+            // Log the decoded members' data for debugging purposes
+            Log::info('Members are:', ['data' => $members]);
 
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone' => 'nullable',
-            'address' => 'nullable',
-            'country_id' => 'nullable|integer',
-            'business_type' => 'nullable',
-            'about' => 'required',
-            'documents' => 'nullable',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
-        ]);
+            Log::info("Members are", ['Display' => $members]);
 
-        // Store the logo file in the public/partners folder
-        $logo_name = "";
-        if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $file_name = strtolower($request->name) . "-logo" . time() . '.' . $logo->getClientOriginalExtension();
-            $destinationPath = public_path('/uploads/partners/logos/');
-            $logo->move($destinationPath, $file_name);
-            $logo_name = url('/uploads/partners/logos/') . '/' . $file_name;
-        }
+            // Log::info("This Member:", ['member'=> $members[0]['stdClass']]);
 
-        $password_generator = new PasswordGeneratorUtil();
-        $password = $password_generator->generatePassword();
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required|email',
+                'phone' => 'nullable',
+                'address' => 'nullable',
+                'country_id' => 'nullable|integer',
+                'business_type' => 'nullable',
+                'about' => 'required',
+                'documents' => 'nullable',
+                'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
+            ]);
 
-        $partner = Partner::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'website' => $request->website,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'logo' => $logo_name,
-            'country_id' => $request->country_id,
-            'business_type' => $request->business_type,
-            'about' => $request->about,
-            'documents' => $request->documents,
-            'password' => Hash::make($password),
-            'is_active' => 1,
-        ]);
+            // Store the logo file in the public/partners folder
+            $logo_name = "";
+            if ($request->hasFile('logo')) {
+                $logo = $request->file('logo');
+                $file_name = strtolower($request->name) . "-logo" . time() . '.' . $logo->getClientOriginalExtension();
+                $destinationPath = public_path('/uploads/partners/logos/');
+                $logo->move($destinationPath, $file_name);
+                $logo_name = url('/uploads/partners/logos/') . '/' . $file_name;
+            }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($password),
-            'user_role_id' => UserRole::where('name', 'Partner')->first()->id,
-        ]);
+            $password_generator = new PasswordGeneratorUtil();
+            $password = $password_generator->generatePassword();
 
+            $partner = Partner::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'website' => $request->website,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'logo' => $logo_name,
+                'country_id' => $request->country_id,
+                'business_type' => $request->business_type,
+                'about' => $request->about,
+                'documents' => $request->documents,
+                'password' => Hash::make($password),
+                'is_active' => 1,
+            ]);
 
-        $partner->user_id = $user->id;
-    
-        $partner->save();
-
-        $loginLink = url('/login'); // Adjust the login URL as needed
-
-         // Send login credentials to the partner
-         try {
-            Mail::to($partner->email)->send(new PartnerLoginCredentials($partner, $loginLink, $password));
-        } catch (\Exception $e) {
-            // Log the error message
-            Log::info('Error sending login credentials email to partner: ' . $e->getMessage());
-        }
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($password),
+                'user_role_id' => UserRole::where('name', 'Partner')->first()->id,
+            ]);
 
 
-        // // Attach the partner to departments with specific roles
-        // foreach ($members as $member) {
-        //     // Check if a similar record already exists in the pivot table
-        //     $existingRecord = DB::table('department_partner')
-        //         ->where('department_id', $member->department_id)
-        //         ->where('partner_id', $partner->id)
-        //         ->where('role', $member->role)
-        //         ->first();
+            $partner->user_id = $user->id;
 
-        //     if (!$existingRecord) {
-        //         // Attach the partner to the department
-        //         $partner->departments()->attach($member->department_id, [
-        //             'role' => $member->role,
-        //         ]);
-        //     }
-        // }
+            $partner->save();
 
-        
+            $loginLink = url('/login'); // Adjust the login URL as needed
 
-        // Loop through the members and send them email invitations
-        foreach ($members as $member) {
+            // Send login credentials to the partner
+            try {
+                Mail::to($partner->email)->send(new PartnerLoginCredentials($partner, $loginLink, $password));
+            } catch (\Exception $e) {
+                // Log the error message
+                Log::info('Error sending login credentials email to partner: ' . $e->getMessage());
+            }
 
 
-           $partner->departments()->attach($member->department_id, [
+            // // Attach the partner to departments with specific roles
+            // foreach ($members as $member) {
+            //     // Check if a similar record already exists in the pivot table
+            //     $existingRecord = DB::table('department_partner')
+            //         ->where('department_id', $member->department_id)
+            //         ->where('partner_id', $partner->id)
+            //         ->where('role', $member->role)
+            //         ->first();
+
+            //     if (!$existingRecord) {
+            //         // Attach the partner to the department
+            //         $partner->departments()->attach($member->department_id, [
+            //             'role' => $member->role,
+            //         ]);
+            //     }
+            // }
+
+
+
+            // Loop through the members and send them email invitations
+            foreach ($members as $member) {
+
+
+                $partner->departments()->attach($member->department_id, [
                     'role' => $member->role,
                 ]);
 
 
-        
-            $existingMember = Member::where('email', $member->email)->first();
-            $registrationLink = url('/register?partner_id=' . $partner->id);
 
-            if ($existingMember) {
-                // If the member already exists, send the login URL and associate with the partner's department
-                try {
-                    Log::info('Existing Member Email: ' . $existingMember->email);
-                    Log::info('Department ID: ' . $member->department_id);
-                    $loginLink = url('/login');
-                    Mail::to($existingMember->email)->send(new PatnerInvitation($existingMember, $partner->name, $password, 'login', $loginLink ));
-                    $existingMember->partners()->attach($partner->id, [
-                        'department_id' => $existingMember->department_id,
-                        'role' => $member->role,
-                    ]);
-                } catch (\Exception $e) {
-                    // Log the error message
-                    Log::info('Error sending email to existing member: ' . $e->getMessage());
-                }
-            } else {
-                // If the member is new, send the register URL
-                try {
-                    // Send the registration link to the new member
-                    Log::info('New Member Email: ' . $member->email);
-                    Log::info('Department ID: ' . $member->department_id);
-                    // Send the registration link to the new member
-                    Mail::to($member->email)->send(new PatnerInvitation(null, $partner->name, null, 'register', $registrationLink));
-                } catch (\Exception $e) {
-                    // Log the error message
-                    Log::info('Error sending email to new member: ' . $e->getMessage());
+                $existingMember = Member::where('email', $member->email)->first();
+                $registrationLink = url('/register?partner_id=' . $partner->id);
+
+                if ($existingMember) {
+                    // If the member already exists, send the login URL and associate with the partner's department
+                    try {
+                        Log::info('Existing Member Email: ' . $existingMember->email);
+                        Log::info('Department ID: ' . $member->department_id);
+                        $loginLink = url('/login');
+                        Mail::to($existingMember->email)->send(new PatnerInvitation($existingMember, $partner->name, $password, 'login', $loginLink));
+                        $existingMember->partners()->attach($partner->id, [
+                            'department_id' => $existingMember->department_id,
+                            'role' => $member->role,
+                        ]);
+                    } catch (\Exception $e) {
+                        // Log the error message
+                        Log::info('Error sending email to existing member: ' . $e->getMessage());
+                    }
+                } else {
+                    // If the member is new, send the register URL
+                    try {
+                        // Send the registration link to the new member
+                        Log::info('New Member Email: ' . $member->email);
+                        Log::info('Department ID: ' . $member->department_id);
+                        // Send the registration link to the new member
+                        Mail::to($member->email)->send(new PatnerInvitation(null, $partner->name, null, 'register', $registrationLink));
+                    } catch (\Exception $e) {
+                        // Log the error message
+                        Log::info('Error sending email to new member: ' . $e->getMessage());
+                    }
                 }
             }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => 'Partner created successfully',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log any exceptions that occur during the process
+            Log::error('Error in store method:', ['message' => $e->getMessage()]);
+            return response()->json([
+                'error' => 'An error occurred while creating the partner.',
+            ], 500);
         }
-
-        DB::commit();
-
-        return response()->json([
-            'success' => 'Partner created successfully',
-        ]);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        // Log any exceptions that occur during the process
-        Log::error('Error in store method:', ['message' => $e->getMessage()]);
-        return response()->json([
-            'error' => 'An error occurred while creating the partner.',
-        ], 500);
     }
-    
-}
 
-//                 $members = json_decode($request->members);
-        
-//                 // Log the decoded members data for debugging purposes
-//                 Log::info('Members are:', ['data' => $members]);
+    //                 $members = json_decode($request->members);
 
-           
-    
-//             Log::info("Members are", ['Display' => $members]);
-    
-//             $request->validate([
-//                 'name' => 'required',
-//                 'email' => 'required|email',
-//                 'phone' => 'nullable',
-//                 'address' => 'nullable',
-//                 'country_id' => 'nullable|integer',
-//                 'business_type' => 'nullable',
-//                 'about' => 'required',
-//                 'documents' => 'nullable',
-//                 'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
-
-//             ]);
-    
-//             // Store the logo file in the public/partners folder
-//             $logo_name = "";
-//             if ($request->hasFile('logo')) {
-//                 $logo = $request->file('logo');
-//                 $file_name = strtolower($request->name) . "-logo" . time() . '.' . $logo->getClientOriginalExtension();
-//                 $destinationPath = public_path('/uploads/partners/logos/');
-//                 $logo->move($destinationPath, $file_name);
-//                 $logo_name = url('/uploads/partners/logos/') . '/' . $file_name;
-//             }
-    
-//             $password_generator = new PasswordGeneratorUtil();
-//             $password = $password_generator->generatePassword();
-    
-//             $partner = Partner::create([
-//                 'name' => $request->name,
-//                 'email' => $request->email,
-//                 'website' => $request->website,
-//                 'phone' => $request->phone,
-//                 'address' => $request->address,
-//                 'logo' => $logo_name,
-//                 'country_id' => $request->country_id,
-//                 'business_type' => $request->business_type,
-//                 'about' => $request->about,
-//                 'documents' => $request->documents,
-//                 'password' => Hash::make($password),
-//                 'is_active' => 1,
-//             ]);
-
-//             $user = User::create([
-//                 'name' => $request->name,
-//                 'email' => $request->email,
-//                 'password' => Hash::make($password),
-//                 'user_role_id' => UserRole::where('name', 'Partner')->first()->id,
-//             ]);
-            
-
-//               $partner->user_id = $user->id;
-//               $partner->save();
-
-
-//            $loginLink = url('/login'); // Adjust the login URL as needed
-
-            // Send login credentials to the partner
-            // try {
-            //     Mail::to($partner->email)->send(new PartnerLoginCredentials($partner, $loginLink, $password));
-            // } catch (\Exception $e) {
-            //     // Log the error message
-            //     Log::info('Error sending login credentials email to partner: ' . $e->getMessage());
-            // }
-
-//             // Loop through the members and associate them with the partner and department
-//         foreach ($members as $member) {
-
-
-//     $partner->departments()->attach($member->department_id, [
-//         'role' => $member->role,
-//     ]);
-    
-    
-
-//     $existingMember = Member::where('email', $member->email)->first();
-            
-//     $registrationLink = url('/register?partner_id=' . $partner->id);
-//     if ($existingMember) {
-//         // If the member already exists, send the login URL and associate with the partner's department
-//         try {
-//             Mail::to($existingMember->email)->send(new PatnerInvitation($existingMember, $partner->name, $password, 'login'));
-            
-           
-//             $existingMember->partners()->attach($partner->id, [
-//                 'department_id' => $existingMember->department_id,
-//                 'role' => $member->role,
-//             ]);
-//         } catch (\Exception $e) {
-//             // Log the error message
-//             Log::info('Error sending email to existing member: ' . $e->getMessage());
-//         }
-//     } else {
-//         // If the member is new, send the register URL and associate with the partner's department
-//         try {
-
-//             // Send the registration link to the new member
-//             Mail::to($member->email)->send(new PatnerInvitation(null, $partner->name, null, 'register', $registrationLink));
-            
-        
-
-            
-//         } catch (\Exception $e) {
-//             // Log the error message
-//             Log::info('Error sending email to new member: ' . $e->getMessage());
-//         }
-//     }
-// }
-
-//           FacadesDB::commit();
-
-//             return response()->json([
-//                 'success' => 'Partner created successfully',
-//             ]);
+    //                 // Log the decoded members data for debugging purposes
+    //                 Log::info('Members are:', ['data' => $members]);
 
 
 
-//         } catch (\Exception $e) {
-//             FacadesDB::rollBack();
-//             // Log any exceptions that occur during the process
-//             Log::error('Error in store method:', ['message' => $e->getMessage()]);
-//             return response()->json([
-//                 'error' => 'An error occurred while creating the partner.',
-//             ], 500);
-//         }
+    //             Log::info("Members are", ['Display' => $members]);
 
-//         }
-    
-    
-   
+    //             $request->validate([
+    //                 'name' => 'required',
+    //                 'email' => 'required|email',
+    //                 'phone' => 'nullable',
+    //                 'address' => 'nullable',
+    //                 'country_id' => 'nullable|integer',
+    //                 'business_type' => 'nullable',
+    //                 'about' => 'required',
+    //                 'documents' => 'nullable',
+    //                 'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
+
+    //             ]);
+
+    //             // Store the logo file in the public/partners folder
+    //             $logo_name = "";
+    //             if ($request->hasFile('logo')) {
+    //                 $logo = $request->file('logo');
+    //                 $file_name = strtolower($request->name) . "-logo" . time() . '.' . $logo->getClientOriginalExtension();
+    //                 $destinationPath = public_path('/uploads/partners/logos/');
+    //                 $logo->move($destinationPath, $file_name);
+    //                 $logo_name = url('/uploads/partners/logos/') . '/' . $file_name;
+    //             }
+
+    //             $password_generator = new PasswordGeneratorUtil();
+    //             $password = $password_generator->generatePassword();
+
+    //             $partner = Partner::create([
+    //                 'name' => $request->name,
+    //                 'email' => $request->email,
+    //                 'website' => $request->website,
+    //                 'phone' => $request->phone,
+    //                 'address' => $request->address,
+    //                 'logo' => $logo_name,
+    //                 'country_id' => $request->country_id,
+    //                 'business_type' => $request->business_type,
+    //                 'about' => $request->about,
+    //                 'documents' => $request->documents,
+    //                 'password' => Hash::make($password),
+    //                 'is_active' => 1,
+    //             ]);
+
+    //             $user = User::create([
+    //                 'name' => $request->name,
+    //                 'email' => $request->email,
+    //                 'password' => Hash::make($password),
+    //                 'user_role_id' => UserRole::where('name', 'Partner')->first()->id,
+    //             ]);
+
+
+    //               $partner->user_id = $user->id;
+    //               $partner->save();
+
+
+    //            $loginLink = url('/login'); // Adjust the login URL as needed
+
+    // Send login credentials to the partner
+    // try {
+    //     Mail::to($partner->email)->send(new PartnerLoginCredentials($partner, $loginLink, $password));
+    // } catch (\Exception $e) {
+    //     // Log the error message
+    //     Log::info('Error sending login credentials email to partner: ' . $e->getMessage());
+    // }
+
+    //             // Loop through the members and associate them with the partner and department
+    //         foreach ($members as $member) {
+
+
+    //     $partner->departments()->attach($member->department_id, [
+    //         'role' => $member->role,
+    //     ]);
+
+
+
+    //     $existingMember = Member::where('email', $member->email)->first();
+
+    //     $registrationLink = url('/register?partner_id=' . $partner->id);
+    //     if ($existingMember) {
+    //         // If the member already exists, send the login URL and associate with the partner's department
+    //         try {
+    //             Mail::to($existingMember->email)->send(new PatnerInvitation($existingMember, $partner->name, $password, 'login'));
+
+
+    //             $existingMember->partners()->attach($partner->id, [
+    //                 'department_id' => $existingMember->department_id,
+    //                 'role' => $member->role,
+    //             ]);
+    //         } catch (\Exception $e) {
+    //             // Log the error message
+    //             Log::info('Error sending email to existing member: ' . $e->getMessage());
+    //         }
+    //     } else {
+    //         // If the member is new, send the register URL and associate with the partner's department
+    //         try {
+
+    //             // Send the registration link to the new member
+    //             Mail::to($member->email)->send(new PatnerInvitation(null, $partner->name, null, 'register', $registrationLink));
+
+
+
+
+    //         } catch (\Exception $e) {
+    //             // Log the error message
+    //             Log::info('Error sending email to new member: ' . $e->getMessage());
+    //         }
+    //     }
+    // }
+
+    //           FacadesDB::commit();
+
+    //             return response()->json([
+    //                 'success' => 'Partner created successfully',
+    //             ]);
+
+
+
+    //         } catch (\Exception $e) {
+    //             FacadesDB::rollBack();
+    //             // Log any exceptions that occur during the process
+    //             Log::error('Error in store method:', ['message' => $e->getMessage()]);
+    //             return response()->json([
+    //                 'error' => 'An error occurred while creating the partner.',
+    //             ], 500);
+    //         }
+
+    //         }
+
+
+
 
 
     /**
@@ -465,248 +459,361 @@ public function store(Request $request)
      */
 
 
-     public function update(Request $request, $id)
-   {
-    
-    $members = $request->input('members', []);
+    // public function update(Request $request, $id)
+    // {
 
-    Log::info("New Members are:", ['members'=> $members]);
+    //     $members = $request->input('members', []);
+    //     Log::info('Request data:', ['data' => $request->all()]);
 
-
-   Log::info("You are in updated method of partner");
-
-    $validatedData = $request->validate([
-        'name' => 'string|max:255',
-        'email' => 'email|max:255',
-        'website' => 'nullable',
-        'phone' => 'string|max:20',
-        'address' => 'nullable',
-        'business_type' => 'string|max:100',
-        'about' => 'string|max:1000',
-        'logo' => 'nullable',
-        'members.*.email' => 'email',
-    ]);
+    //     Log::info("New Members are:", ['members' => $members]);
 
 
-    $partner = Partner::findOrFail($request->id);
+    //     Log::info("You are in updated method of partner");
 
-    if ($request->hasFile('logo')) {
-        // Delete the old logo file (if it exists)
-        Storage::delete($partner->logo);
+    //     $validatedData = $request->validate([
+    //         'name' => 'string|max:255',
+    //         'email' => 'email|max:255',
+    //         'website' => 'nullable',
+    //         'phone' => 'string|max:20',
+    //         'address' => 'nullable',
+    //         'business_type' => 'string|max:100',
+    //         'about' => 'string|max:1000',
+    //         'logo' => 'nullable',
+    //         'members.*.email' => 'email',
+    //     ]);
 
-        // Store the new logo file and update the partner's logo attribute
-        $validatedData['logo'] = $request->file('logo')->store('public/partner_logos');
-    }
 
-    // Update the partner model with the validated data (including the updated logo file URL, if applicable)
-    $partner->update($validatedData);
+    //     Log::info("Validated Data", ['validated' => $validatedData]);
 
-     // Update or add members
-     $members = $request->input('members', []);
 
-     Log::info("Members are:", ['members'=> $members]);
-     $password_generator = new PasswordGeneratorUtil();
+    //     $partner = Partner::findOrFail($request->id);
 
-     foreach ($members as $memberData) {
-        $memberEmail = trim($memberData['email']);
-        $departmentId = $memberData['department_id'] ?? null;
-    
-        // Associate the department_id with the partner
-        if ($departmentId) {
-            $partner->departments()->attach($departmentId);
-        }
-    
-        // Check if the member already exists in the partner
-        $existingMemberInPartner = $partner->members()->where('email', $memberEmail)->first();
-    
-        if (!$existingMemberInPartner) {
-            // Member doesn't exist in the partner, send emails to new members only
-            $existingMember = Member::withTrashed()->where('email', $memberEmail)->first();
-    
-            if (!$existingMember) {
-                // Include the department ID in the registration link URL
-                $registrationLink = url("/register?partner_id={$partner->id}&department_id={$departmentId}");
-    
-                // Send the registration link to the new member
-                Mail::to($memberEmail)->queue(new PatnerInvitation(null, $request->name, null, 'register', $registrationLink));
-            } else {
-                // Check if the member is soft-deleted (marked as deleted but not removed from the database)
-                if ($existingMember->trashed()) {
-                    // Reactivate the soft-deleted member
-                    $existingMember->restore();
-                }
-    
-                // Send an invitation email with the 'login' type and include the password
-                $loginLink = url('/login');
-                $password = $password_generator->generatePassword(); // Generate a password
-    
-                // Ensure that you pass a non-deleted instance of Member
-                Mail::to($existingMember->email)->queue(new PatnerInvitation(
-                    $existingMember,
-                    $request->name,
-                    $password,
-                    'login',
-                    null,
-                    $loginLink
-                ));
+    //     if ($request->hasFile('logo')) {
+    //         // Delete the old logo file (if it exists)
+    //         Storage::delete($partner->logo);
+
+    //         // Store the new logo file and update the partner's logo attribute
+    //         $validatedData['logo'] = $request->file('logo')->store('public/uploads/partner_logos');
+    //     }
+
+    //     // Update the partner model with the validated data (including the updated logo file URL, if applicable)
+    //     $partner->update($validatedData);
+
+    //     // Update or add members
+    //     $members = $request->input('members', []);
+
+    //     Log::info("Members are:", ['members' => $members]);
+    //     $password_generator = new PasswordGeneratorUtil();
+
+    //     foreach ($members as $memberData) {
+    //         $memberEmail = trim($memberData['email']);
+    //         $departmentId = $memberData['department_id'] ?? null;
+
+    //         // Associate the department_id with the partner
+    //         if ($departmentId) {
+    //             $partner->departments()->attach($departmentId);
+    //         }
+
+    //         // Check if the member already exists in the partner
+    //         $existingMemberInPartner = $partner->members()->where('email', $memberEmail)->first();
+
+    //         if (!$existingMemberInPartner) {
+    //             // Member doesn't exist in the partner, send emails to new members only
+    //             $existingMember = Member::withTrashed()->where('email', $memberEmail)->first();
+
+    //             if (!$existingMember) {
+    //                 // Include the department ID in the registration link URL
+    //                 $registrationLink = url("/register?partner_id={$partner->id}&department_id={$departmentId}");
+
+    //                 // Send the registration link to the new member
+    //                 Mail::to($memberEmail)->queue(new PatnerInvitation(null, $request->name, null, 'register', $registrationLink));
+    //             } else {
+    //                 // Check if the member is soft-deleted (marked as deleted but not removed from the database)
+    //                 if ($existingMember->trashed()) {
+    //                     // Reactivate the soft-deleted member
+    //                     $existingMember->restore();
+    //                 }
+
+    //                 // Send an invitation email with the 'login' type and include the password
+    //                 $loginLink = url('/login');
+    //                 $password = $password_generator->generatePassword(); // Generate a password
+
+    //                 // Ensure that you pass a non-deleted instance of Member
+    //                 Mail::to($existingMember->email)->queue(new PatnerInvitation(
+    //                     $existingMember,
+    //                     $request->name,
+    //                     $password,
+    //                     'login',
+    //                     null,
+    //                     $loginLink
+    //                 ));
+    //             }
+    //         }
+    //     }
+
+
+
+
+
+
+    //     // Return a response indicating the success of the update
+    //     return response()->json([
+    //         'message' => 'Partner updated successfully',
+    //         'partner' => $partner
+    //     ], 200);
+    // }
+
+    public function update(Request $request, $id)
+    {
+        $members = $request->input('members', []);
+        Log::info('Request data for update:', ['data' => $request->all()]);
+        Log::info("New Members are:", ['members' => $members]);
+        Log::info("You are in updated method of partner");
+
+
+        $validatedData = $request->validate([
+            'name' => 'string|max:255',
+            'email' => 'email|max:255',
+            'website' => 'nullable|url',
+            'phone' => 'string|max:20',
+            'address' => 'nullable',
+            'business_type' => 'string|max:100',
+            'about' => 'string|max:1000',
+            // 'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif',
+            'logo' => 'nullable',
+            'members.*.email' => 'email',
+        ]);
+
+        $partner = Partner::findOrFail($id);
+
+        if ($request->hasFile('logo')) {
+            // Check if the old logo exists and delete it
+            if ($partner->logo && Storage::exists($partner->logo)) {
+                Storage::delete($partner->logo);
             }
+
+            // Handle file upload
+            $logo = $request->file('logo');
+            $file_name = strtolower($request->name) . "-logo" . time() . '.' . $logo->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads/partners/logos/');
+            $logo->move($destinationPath, $file_name);
+            $logo_name = url('/uploads/partners/logos/') . '/' . $file_name;
+
+            // Update the logo path in the validated data
+            $validatedData['logo'] = $logo_name;
+        } else {
+            // Remove the logo key from the validated data if no file was uploaded
+            unset($validatedData['logo']);
         }
-    }
-    
-    
- 
 
+        // Update the partner model with the validated data
+        $partner->update($validatedData);
 
+        // Update or add members
+        $members = $request->input('members', []);
+        Log::info("Members are:", ['members' => $members]);
+        $password_generator = new PasswordGeneratorUtil();
 
-    // Return a response indicating the success of the update
-    return response()->json(['message' => 'Partner updated successfully'], 200);
-}
+        foreach ($members as $memberData) {
+            $memberEmail = trim($memberData['email']);
+            $departmentId = $memberData['department_id'] ?? null;
 
+            // Associate the department_id with the partner
+            if ($departmentId) {
+                $partner->departments()->attach($departmentId);
+            }
 
+            // Check if the member already exists in the partner
+            $existingMemberInPartner = $partner->members()->where('email', $memberEmail)->first();
 
+            if (!$existingMemberInPartner) {
+                // Member doesn't exist in the partner, send emails to new members only
+                $existingMember = Member::withTrashed()->where('email', $memberEmail)->first();
 
-            public function getKpiAndKpiMetricsAndProgressForPartner($partnerId)  {
+                if (!$existingMember) {
+                    // Include the department ID in the registration link URL
+                    $registrationLink = url("/register?partner_id={$partner->id}&department_id={$departmentId}");
 
-                $partner = Partner::with([
-                    'kpis' => function ($query) {
-                        $query->with(['kpiMetrics.kpiMetricMembers.progress']);
+                    // Send the registration link to the new member
+                    Mail::to($memberEmail)->queue(new PatnerInvitation(null, $request->name, null, 'register', $registrationLink));
+                } else {
+                    // Check if the member is soft-deleted (marked as deleted but not removed from the database)
+                    if ($existingMember->trashed()) {
+                        // Reactivate the soft-deleted member
+                        $existingMember->restore();
                     }
-                ])->findOrFail($partnerId);
 
-                return response()->json($partner);
+                    // Send an invitation email with the 'login' type and include the password
+                    $loginLink = url('/login');
+                    $password = $password_generator->generatePassword(); // Generate a password
+
+                    // Ensure that you pass a non-deleted instance of Member
+                    Mail::to($existingMember->email)->queue(new PatnerInvitation(
+                        $existingMember,
+                        $request->name,
+                        $password,
+                        'login',
+                        null,
+                        $loginLink
+                    ));
+                }
             }
-
-            
-
-            public function fetchPartnerMembers($partnerId)
-      {
-    try {
-        $partner = Partner::findOrFail($partnerId);
-
-        // Retrieve a list of member_ids in the department_members pivot table
-        $memberIdsInPartner = $partner->members()
-            ->select('member_partner.member_id')
-            ->get()
-            ->pluck('member_id'); // Extract member_id values into an array
-
-        // Fetch the corresponding members' emails and names
-        $members = Member::whereIn('id', $memberIdsInPartner)
-            ->select('id', 'email', 'name', 'is_active')
-            ->get();
-
-
-            Log::info("Returned Members:" .$members );
-
-        return response()->json($members);
-    } catch (\Exception $e) {
-        // Handle any errors or exceptions as needed
-        return response()->json(['error' => 'Failed to fetch member partners'], 500);
-    }
-}
-
-
-
-public function fetchPartnerMembersWithKPIs($partnerId)
-{
-    try {
-        // Fetch members with KPIs and progress for a specific partner
-        $members = Member::whereHas('kpis.kpiMetrics.kpiMetricMembers.progress', function ($query) {
-            // No need to filter by a specific KPI metric ID
-        })->with(['kpis' => function ($query) use ($partnerId) {
-            $query->where('partner_id', $partnerId)
-                  ->whereHas('kpiMetrics.kpiMetricMembers.progress');
-        }])->get();
-
-        Log::info("Returned Members:" . $members);
-
-        return response()->json($members);
-    } catch (\Exception $e) {
-        // Handle any errors or exceptions as needed
-        return response()->json(['error' => 'Failed to fetch members with KPIs and progress'], 500);
-    } 
-}
-
-
-
-
-
-
-
-
-
-
-
-public function destroy($id)
-
-{
-    // Retrieve the partner by ID from the database (including soft deleted partners)
-    $partner = Partner::withTrashed()->findOrFail($id);
-
-    // Check if the partner has any related progress records
-    $hasProgressRecords = Progress::whereIn('kpi_metric_member_id', function ($query) use ($partner) {
-        $query->select('id')
-            ->from('kpi_metric_members')
-            ->whereIn('kpi_metric_id', function ($subquery) use ($partner) {
-                $subquery->select('id')
-                    ->from('kpi_metrics')
-                    ->whereIn('kpi_id', function ($subsubquery) use ($partner) {
-                        $subsubquery->select('id')
-                            ->from('kpis')
-                            ->where('partner_id', $partner->id);
-                    });
-            });
-    })->exists();
-
-    if ($hasProgressRecords) {
-        // If there are progress records, deactivate the partner
-        $partner->update(['is_active' => false]);
-    } else {
-        // If there are no progress records, delete the partner
-        $partner->forceDelete(); // Use forceDelete to permanently delete
-    }
-
-    return response()->json(['message' => 'Partner deleted or deactivated successfully'], 200);
-}
-
-
-public function generate(Request $request)
-
-{
-    try {
-        Log::info("You are here");
-        $userId = $request->query('user_id');
-        $user = User::find($userId); // Adjust as per your User model
-        if ($user->user_role_id !== 3 && $user->user_role_id !== 1 ) {
-            return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $data = $this->fetchReportData($userId);
-
-        $export = new ReportExport($data);
-
-        // Generate the filename with a timestamp
-        $timestamp = now()->format('Y-m-d_His');
-        $fileName = 'report_' . $timestamp . '.xlsx';
-
-        Excel::store($export, 'reports/' . $fileName, 'public');
-
-        return response()->json(['url' => asset('storage/reports/' . $fileName)]);
-    } catch (\Exception $e) {
-        Log::error('Error generating report: ' . $e->getMessage());
-        return response()->json(['error' => 'Error generating report'], 500);
+        // Return a response indicating the success of the update
+        return response()->json([
+            'message' => 'Partner updated successfully',
+            'partner' => $partner
+        ], 200);
     }
-}
 
 
-private function fetchReportData($userId)
-{
-    // Get the start and end dates for the current and previous months
-    $currentMonthStart = now()->startOfMonth()->toDateTimeString();
-    $currentMonthEnd = now()->endOfMonth()->toDateTimeString();
-    $previousMonthStart = now()->subMonth()->startOfMonth()->toDateTimeString();
-    $previousMonthEnd = now()->subMonth()->endOfMonth()->toDateTimeString();
 
-    $sql = "
+
+
+    public function getKpiAndKpiMetricsAndProgressForPartner($partnerId)
+    {
+
+        $partner = Partner::with([
+            'kpis' => function ($query) {
+                $query->with(['kpiMetrics.kpiMetricMembers.progress']);
+            }
+        ])->findOrFail($partnerId);
+
+        return response()->json($partner);
+    }
+
+
+
+    public function fetchPartnerMembers($partnerId)
+    {
+        try {
+            $partner = Partner::findOrFail($partnerId);
+
+            // Retrieve a list of member_ids in the department_members pivot table
+            $memberIdsInPartner = $partner->members()
+                ->select('member_partner.member_id')
+                ->get()
+                ->pluck('member_id'); // Extract member_id values into an array
+
+            // Fetch the corresponding members' emails and names
+            $members = Member::whereIn('id', $memberIdsInPartner)
+                ->select('id', 'email', 'name', 'is_active')
+                ->get();
+
+
+            Log::info("Returned Members:" . $members);
+
+            return response()->json($members);
+        } catch (\Exception $e) {
+            // Handle any errors or exceptions as needed
+            return response()->json(['error' => 'Failed to fetch member partners'], 500);
+        }
+    }
+
+
+
+    public function fetchPartnerMembersWithKPIs($partnerId)
+    {
+        try {
+            // Fetch members with KPIs and progress for a specific partner
+            $members = Member::whereHas('kpis.kpiMetrics.kpiMetricMembers.progress', function ($query) {
+                // No need to filter by a specific KPI metric ID
+            })->with(['kpis' => function ($query) use ($partnerId) {
+                $query->where('partner_id', $partnerId)
+                    ->whereHas('kpiMetrics.kpiMetricMembers.progress');
+            }])->get();
+
+            Log::info("Returned Members:" . $members);
+
+            return response()->json($members);
+        } catch (\Exception $e) {
+            // Handle any errors or exceptions as needed
+            return response()->json(['error' => 'Failed to fetch members with KPIs and progress'], 500);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public function destroy($id)
+
+    {
+        // Retrieve the partner by ID from the database (including soft deleted partners)
+        $partner = Partner::withTrashed()->findOrFail($id);
+
+        // Check if the partner has any related progress records
+        $hasProgressRecords = Progress::whereIn('kpi_metric_member_id', function ($query) use ($partner) {
+            $query->select('id')
+                ->from('kpi_metric_members')
+                ->whereIn('kpi_metric_id', function ($subquery) use ($partner) {
+                    $subquery->select('id')
+                        ->from('kpi_metrics')
+                        ->whereIn('kpi_id', function ($subsubquery) use ($partner) {
+                            $subsubquery->select('id')
+                                ->from('kpis')
+                                ->where('partner_id', $partner->id);
+                        });
+                });
+        })->exists();
+
+        if ($hasProgressRecords) {
+            // If there are progress records, deactivate the partner
+            $partner->update(['is_active' => false]);
+        } else {
+            // If there are no progress records, delete the partner
+            $partner->forceDelete(); // Use forceDelete to permanently delete
+        }
+
+        return response()->json(['message' => 'Partner deleted or deactivated successfully'], 200);
+    }
+
+
+    public function generate(Request $request)
+
+    {
+        try {
+            Log::info("You are here");
+            $userId = $request->query('user_id');
+            $user = User::find($userId); // Adjust as per your User model
+            if ($user->user_role_id !== 3 && $user->user_role_id !== 1) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            $data = $this->fetchReportData($userId);
+
+            $export = new ReportExport($data);
+
+            // Generate the filename with a timestamp
+            $timestamp = now()->format('Y-m-d_His');
+            $fileName = 'report_' . $timestamp . '.xlsx';
+
+            Excel::store($export, 'reports/' . $fileName, 'public');
+
+            return response()->json(['url' => asset('storage/reports/' . $fileName)]);
+        } catch (\Exception $e) {
+            Log::error('Error generating report: ' . $e->getMessage());
+            return response()->json(['error' => 'Error generating report'], 500);
+        }
+    }
+
+
+    private function fetchReportData($userId)
+    {
+        // Get the start and end dates for the current and previous months
+        $currentMonthStart = now()->startOfMonth()->toDateTimeString();
+        $currentMonthEnd = now()->endOfMonth()->toDateTimeString();
+        $previousMonthStart = now()->subMonth()->startOfMonth()->toDateTimeString();
+        $previousMonthEnd = now()->subMonth()->endOfMonth()->toDateTimeString();
+
+        $sql = "
         SELECT 
             kpis.title AS kpi_title,
             kpi_metrics.title AS kpi_metric,
@@ -722,101 +829,101 @@ private function fetchReportData($userId)
         GROUP BY kpis.title, kpi_metrics.title, kpi_metrics.id
     ";
 
-    $data = DB::select($sql);
+        $data = DB::select($sql);
 
-    // Organize the data in the desired format
-    
-    $formattedData = [];
-    $currentKpiTitle = null;
+        // Organize the data in the desired format
 
-    foreach ($data as $row) {
-        $formattedData[$row->kpi_title][] = [
-            'kpi_metric' => $row->kpi_metric,
-            'current_month' => $row->current_month,
-            'previous_month' => $row->previous_month,
-            'mom_change' => $row->mom_change,
-        ];
+        $formattedData = [];
+        $currentKpiTitle = null;
+
+        foreach ($data as $row) {
+            $formattedData[$row->kpi_title][] = [
+                'kpi_metric' => $row->kpi_metric,
+                'current_month' => $row->current_month,
+                'previous_month' => $row->previous_month,
+                'mom_change' => $row->mom_change,
+            ];
+        }
+
+        // Remove duplicates
+        foreach ($formattedData as $kpiTitle => $metrics) {
+            $formattedData[$kpiTitle] = array_map("unserialize", array_unique(array_map("serialize", $metrics)));
+        }
+
+        Log::info("Formated Data:", ['formated_data' => $formattedData]);
+
+        return $formattedData;
     }
+    // private function fetchReportData($userId)
+    // {
+    //     // Get the start and end dates for the current and previous months
+    //     $currentMonthStart = now()->startOfMonth();
+    //     $currentMonthEnd = now()->endOfMonth();
+    //     $previousMonthStart = now()->subMonth()->startOfMonth();
+    //     $previousMonthEnd = now()->subMonth()->endOfMonth();
 
-    // Remove duplicates
-    foreach ($formattedData as $kpiTitle => $metrics) {
-        $formattedData[$kpiTitle] = array_map("unserialize", array_unique(array_map("serialize", $metrics)));
-    }
 
-    Log::info("Formated Data:", ['formated_data'=>$formattedData]);
+    //     $bindings1 = [
+    //         $previousMonthStart,
+    //         $previousMonthEnd,
+    //         $previousMonthStart,
+    //         $previousMonthEnd,
+    //     ];
 
-    return $formattedData;
-}
-// private function fetchReportData($userId)
-// {
-//     // Get the start and end dates for the current and previous months
-//     $currentMonthStart = now()->startOfMonth();
-//     $currentMonthEnd = now()->endOfMonth();
-//     $previousMonthStart = now()->subMonth()->startOfMonth();
-//     $previousMonthEnd = now()->subMonth()->endOfMonth();
+    //     $bindings2 = [
+    //         $previousMonthStart,
+    //         $previousMonthEnd,
+    //         $currentMonthStart,
+    //         $currentMonthEnd,
+    //         $currentMonthStart,
+    //     ];
 
- 
-//     $bindings1 = [
-//         $previousMonthStart,
-//         $previousMonthEnd,
-//         $previousMonthStart,
-//         $previousMonthEnd,
-//     ];
-    
-//     $bindings2 = [
-//         $previousMonthStart,
-//         $previousMonthEnd,
-//         $currentMonthStart,
-//         $currentMonthEnd,
-//         $currentMonthStart,
-//     ];
+    //     $data = DB::table('kpis')
+    //         ->select(
+    //             'kpis.title as kpi_title',
+    //             'kpi_metrics.title as kpi_metric',
+    //             DB::raw('SUM(progress.current_value) as current_month'),
+    //             DB::raw('SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END) as previous_month', $bindings1),
+    //             DB::raw('CONCAT(ROUND(((SUM(progress.current_value) - SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END)) / SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END) * 100), 2), "%") as mom_change', $bindings2)
+    //         )
+    //         ->join('kpi_metrics', 'kpis.id', '=', 'kpi_metrics.kpi_id')
+    //         ->join('kpi_metric_members', 'kpi_metrics.id', '=', 'kpi_metric_members.kpi_metric_id')
+    //         ->join('progress', 'kpi_metric_members.id', '=', 'progress.kpi_metric_member_id')
+    //         ->join('partners', 'partners.id', '=', 'kpis.partner_id')
+    //         ->where('progress.created_at', '>=', $currentMonthStart->format('Y-m-d H:i:s'))
+    //         ->where('progress.created_at', '<=', $currentMonthEnd->format('Y-m-d H:i:s'))
+    //         ->where('partners.user_id', $userId)
+    //         ->groupBy('kpis.title', 'kpi_metrics.title', 'kpi_metrics.id')
+    //         ->get();
 
-//     $data = DB::table('kpis')
-//         ->select(
-//             'kpis.title as kpi_title',
-//             'kpi_metrics.title as kpi_metric',
-//             DB::raw('SUM(progress.current_value) as current_month'),
-//             DB::raw('SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END) as previous_month', $bindings1),
-//             DB::raw('CONCAT(ROUND(((SUM(progress.current_value) - SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END)) / SUM(CASE WHEN progress.created_at >= ? AND progress.created_at <= ? THEN progress.current_value ELSE 0 END) * 100), 2), "%") as mom_change', $bindings2)
-//         )
-//         ->join('kpi_metrics', 'kpis.id', '=', 'kpi_metrics.kpi_id')
-//         ->join('kpi_metric_members', 'kpi_metrics.id', '=', 'kpi_metric_members.kpi_metric_id')
-//         ->join('progress', 'kpi_metric_members.id', '=', 'progress.kpi_metric_member_id')
-//         ->join('partners', 'partners.id', '=', 'kpis.partner_id')
-//         ->where('progress.created_at', '>=', $currentMonthStart->format('Y-m-d H:i:s'))
-//         ->where('progress.created_at', '<=', $currentMonthEnd->format('Y-m-d H:i:s'))
-//         ->where('partners.user_id', $userId)
-//         ->groupBy('kpis.title', 'kpi_metrics.title', 'kpi_metrics.id')
-//         ->get();
+    //     // Organize the data in the desired format
+    //     $formattedData = [];
+    //     $currentKpiTitle = null;
 
-//     // Organize the data in the desired format
-//     $formattedData = [];
-//     $currentKpiTitle = null;
-    
-//     foreach ($data as $row) {
-//         if ($row->kpi_title !== $currentKpiTitle) {
-//             // Start a new KPI section
-//             $currentKpiTitle = $row->kpi_title;
-//             $formattedData[] = [
-//                 'Kpi title' => $currentKpiTitle,
-//                 'Kpi Metric' => 'Current Month',
-//                 'Current Month' => $row->current_month,
-//                 'Previous Month' => $row->previous_month,
-//                 'MOM Change' => $row->mom_change,
-//             ];
-//         } else {
-//             // Continue the existing KPI section
-//             $formattedData[] = [
-//                 'Kpi Metric' => $row->kpi_metric,
-//                 'Current Month' => $row->current_month,
-//                 'Previous Month' => $row->previous_month,
-//                 'MOM Change' => $row->mom_change,
-//             ];
-//         }
-//     }
+    //     foreach ($data as $row) {
+    //         if ($row->kpi_title !== $currentKpiTitle) {
+    //             // Start a new KPI section
+    //             $currentKpiTitle = $row->kpi_title;
+    //             $formattedData[] = [
+    //                 'Kpi title' => $currentKpiTitle,
+    //                 'Kpi Metric' => 'Current Month',
+    //                 'Current Month' => $row->current_month,
+    //                 'Previous Month' => $row->previous_month,
+    //                 'MOM Change' => $row->mom_change,
+    //             ];
+    //         } else {
+    //             // Continue the existing KPI section
+    //             $formattedData[] = [
+    //                 'Kpi Metric' => $row->kpi_metric,
+    //                 'Current Month' => $row->current_month,
+    //                 'Previous Month' => $row->previous_month,
+    //                 'MOM Change' => $row->mom_change,
+    //             ];
+    //         }
+    //     }
 
-//     return $formattedData;
-// }
+    //     return $formattedData;
+    // }
 
 
 
@@ -842,7 +949,3 @@ private function fetchReportData($userId)
 
 //     return response()->json(['message' => 'Partner deleted successfully'], 200);
 // }
-
-
-
-
