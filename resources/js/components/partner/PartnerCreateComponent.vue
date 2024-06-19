@@ -845,6 +845,11 @@ export default {
             );
             formData.append("members", JSON.stringify(this.formData.members));
 
+            console.log(
+                "What is in this form Data for partner create",
+                formData
+            );
+
             const uri = this.base_url + "api/v1/partner-create";
 
             axios
