@@ -571,24 +571,24 @@ class PartnerApiController extends Controller
         Log::info("You are in updated method of partner");
 
 
-        // $validatedData = $request->validate([
-        //     'name' => 'string|max:255',
-        //     'email' => 'email|max:255',
-        //     'website' => 'nullable',
-        //     'phone' => 'string|max:20',
-        //     'address' => 'nullable',
-        //     'business_type' => 'string|max:100',
-        //     'about' => 'string|max:1000',
-        //     'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif',
-        //     // 'logo' => 'nullable',
-        //     'members.*.email' => 'email',
-        // ]);
-
         $validatedData = $request->validate([
-
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif',
-
+            'name' => 'string|max:255',
+            'email' => 'email|max:255',
+            'website' => 'nullable',
+            'phone' => 'string|max:20',
+            'address' => 'nullable',
+            'business_type' => 'string|max:100',
+            'about' => 'string|max:1000',
+            //'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif',
+            'logo' => 'nullable',
+            'members.*.email' => 'email',
         ]);
+
+        // $validatedData = $request->validate([
+
+        //     'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif',
+
+        // ]);
 
 
         $partner = Partner::findOrFail($id);
