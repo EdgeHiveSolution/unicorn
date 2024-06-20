@@ -174,7 +174,7 @@
                     </div>
                 </div>
 
-                <div class="my-5">
+               <!-- <div class="my-5">
                     <h4>Metrics across portfolio</h4>
 
                     <div class="row">
@@ -215,7 +215,7 @@
                                                 <tr>
                                                     <th>Metric</th>
                                                     <th>Value</th>
-                                                    <!-- <th>Top drivers</th> -->
+                                                    
                                                     <th>Progress</th>
                                                     <th>Key departments</th>
                                                 </tr>
@@ -249,8 +249,8 @@
                                                             metric.totalCurrentValue
                                                         }}
                                                     </td>
-                                                    <!-- <td class="td-members"> -->
-                                                    <!--<template
+                                                     <td class="td-members"> 
+                                                   <template
                                                             v-for="member in topDrivers"
                                                             :key="member.id"
                                                         >
@@ -262,80 +262,9 @@
                                                                     member.email
                                                                 "
                                                             />
-                                                        </template>-->
-                                                    <!-- <div
-                                                            class="d-flex flex-row"
-                                                        > -->
-                                                    <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-
-                                                    <!-- <template
-                                                                v-for="(
-                                                                    member,
-                                                                    index
-                                                                ) in topDrivers"
-                                                                :key="index"
-                                                            > -->
-                                                    <!-- <div
-                                                                    class="member_image d-flex flex-column align-items-center"
-                                                                    v-if="
-                                                                        index <
-                                                                        2
-                                                                    "
-                                                                    :src="
-                                                                        member.image
-                                                                    "
-                                                                >
-                                                                    <font-awesome-icon
-                                                                        icon="fa-solid, fa-user"
-                                                                        style="
-                                                                            color: #979da9;
-                                                                        "
-                                                                        size="md"
-                                                                        class="mx-auto my-auto"
-                                                                    /> -->
-                                                    <!---->
-                                                    <!--<p class="member_image_text">+1</p>-->
-                                                    <!-- </div>
-
-                                                                <div
-                                                                    class="member_image_plus"
-                                                                    v-else
-                                                                    :src="
-                                                                        member.image
-                                                                    "
-                                                                >
-                                                                    <p
-                                                                        class="member_image_text"
-                                                                    >
-                                                                        +{{
-                                                                            index -
-                                                                            1
-                                                                        }}
-                                                                    </p>
-                                                                </div> -->
-
-                                                    <!----->
-                                                    <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                                    <!-- </template> -->
-
-                                                    <!--<img
-                                                    
-                                                    alt="image"
-                                                />-->
-                                                    <!-- </div>
-                                                    </td> -->
+                                                        
+                                                        </template>
+                                                     </td>
                                                     <td>
                                                         {{
                                                             metric.calculatedProgress.toFixed(
@@ -356,7 +285,7 @@
                                                             ></div>
                                                         </div>
                                                     </td>
-                                                    <!-- <td>
+                                                     <td>
                                                         <div>
                                                             <template
                                                                 v-for="driver in topDrivers"
@@ -377,7 +306,7 @@
                                                                 </div>
                                                             </template>
                                                         </div>
-                                                    </td> -->
+                                                    </td> 
 
                                                     <td>
                                                         <span
@@ -398,7 +327,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="my-5">
                     <h4>KPI Breakdown</h4>
