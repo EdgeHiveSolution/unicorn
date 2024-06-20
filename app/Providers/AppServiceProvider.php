@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\URL::defaults(['X-CSRF-TOKEN' => \Illuminate\Support\Facades\Request::header('X-CSRF-TOKEN')]);
         Schema::defaultStringLength(191);
 
-        if (env('APP_ENV') !== 'local') {
+         if (env('APP_ENV') !== 'local') {
             URL::forceScheme('https');
         }
     }

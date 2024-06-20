@@ -247,6 +247,52 @@
                                             </td>
                                             <td v-else>N/A</td>
                                             <td>
+                                                 <div class="d-flex flex-row">
+                                               <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                               
+                                               <template v-for="(member,index) in partner.members"
+                                               :key="index"
+                                               >
+
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 3"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
+
+                                                
+
+                                                <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                                </template>
+
+                                                 <div class="member_image_plus"
+                                                 v-if="partner.members.length > 2"
+                                                
+                                                >
+                                                <p class="member_image_text">+{{partner.members.length - 3}}</p>
+                                                </div>
+
+                                            
+                                                </div>
                                                 <!--<img
                                                     v-for="member in partner.members"
                                                     :src="member.photo"
@@ -262,15 +308,10 @@
                                                 <p class="member_image_text">+1</p>
                                                 </div>
                                                 </div>-->
-                                                <div class="d-flex flex-row">
-                                                    <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-
+                                               
+                                               
+                                               <!-- <div class="d-flex flex-row">
+                                                
                                                     <template
                                                         v-for="(
                                                             member, index
@@ -290,7 +331,7 @@
                                                                 size="md"
                                                                 class="mx-auto my-auto"
                                                             />
-                                                            <!--<p class="member_image_text">+1</p>-->
+                                                        
                                                         </div>
 
                                                         <div
@@ -305,20 +346,11 @@
                                                             </p>
                                                         </div>
 
-                                                        <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
+                        
                                                     </template>
 
-                                                    <!--<img
-                                                    
-                                                    alt="image"
-                                                />-->
-                                                </div>
+                                                
+                                                </div>  -->
                                             </td>
                                             <td>
                                                 <!--v-for="department in partner.departments"
@@ -441,10 +473,10 @@
                                         >
                                             <td>
                                                 <div>
-                                                    {{ metric.metric.name }}
+                                                    <label>{{ metric.metric.name }}</label>
                                                 </div>
                                                 <div>
-                                                    <span class="txt-gray">
+                                                    <span class="txt-gray" style= "font-size: 14px">
                                                         Partners:
                                                         {{
                                                             metric.partners
@@ -455,7 +487,7 @@
                                             </td>
 
                                             <td>
-                                                <span class="txt-gray">{{
+                                                <span class="txt-gray" style="font-size:14px">{{
                                                     metric.totalCurrentValue.toFixed(
                                                         0
                                                     )
@@ -494,7 +526,7 @@
                                             </td>
 
                                             <td class="td-members">
-                                                <template
+                                               <!-- <template
                                                     v-for="member in topDrivers"
                                                     :key="member.id"
                                                 >
@@ -504,7 +536,45 @@
                                                         src="assets/images/faces/face1.jpg"
                                                         :alt="member.email"
                                                     />
+                                                </template>-->
+
+                                                 <div class="d-flex flex-row">
+                                               <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                               
+                                              <!-- <template v-for="(member,index) in topDrivers"
+                                               :key="index"
+                                               >
+
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 3"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                </div>
+
+                            
                                                 </template>
+
+                                                 <div class="member_image_plus"
+                                                 v-if="topDrivers.length > 2"
+                                                
+                                                >
+                                                <p class="member_image_text">+{{topDrivers.length - 3}}</p>
+                                                </div>  -->
+
+                                            
+                                                </div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -620,7 +690,42 @@
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
 
-                                            <template
+                                                 <template v-for="(member,index) in partner.members"
+                                               :key="index"
+                                               >
+
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 3"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                <!--<p class="member_image_text">+1</p>-->
+                                                </div>
+
+                                                
+
+                                                <!-- <div class="member_image_plus"
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
+                                                </template>
+
+                                                 <div class="member_image_plus"
+                                                 v-if="partner.members.length > 2"
+                                                
+                                                >
+                                                <p class="member_image_text">+{{partner.members.length - 3}}</p>
+                                                </div>
+
+                                          <!--  <template
                                                 v-for="(
                                                     member, index
                                                 ) in partner.members"
@@ -650,7 +755,7 @@
                                                         +{{ index - 1 }}
                                                     </p>
                                                 </div>
-                                            </template>
+                                            </template>-->
                                         </div>
                                         <!--<img
                                             v-for="member in partner.members"
@@ -731,7 +836,7 @@
                                         </div>
                                     </td>
 
-                                    <td v-else>No Active Kpis</td>
+                                    <td v-else style="align-items: center"><label class ="text-muted " style ="font-size:14px">No Active Kpis</label></td>
                                     <td>
                                         <a
                                             :href="
@@ -2286,6 +2391,10 @@ th {
 .txt-dark-detail {
     font-size: 14px;
 }
+
+/**td {
+     text-align: center; 
+    }**/
 
 /*.on-track {
     background-color: #5cb85c;

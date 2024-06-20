@@ -251,7 +251,7 @@
                             <input
                                 id="name"
                                 name="value"
-                                placeholder="KES 0"
+                                placeholder=""
                                 class="form-control"
                                 type="text"
                                 v-model="kpimetric_value"

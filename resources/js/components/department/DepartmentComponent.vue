@@ -48,7 +48,7 @@
                             <button
                                 class="btn btn-light p-1 btn-icon"
                                 style="
-                                    background-color: lightgrey;
+                                    background-color: #F5F5F5;
                                     color: #76aefd;
                                     height: 30px;
                                     width: 60px;
@@ -104,7 +104,35 @@
                                             >
                                         </td>
                                         <td class="td-members">
-                                            <template
+                                             <div class="d-flex flex-row">
+                                            
+                                               <template v-for="(member,index) in department.members"
+                                               :key="index"
+                                               >
+
+                                                 <div class="member_image d-flex flex-column align-items-center"
+                                                 v-if="index < 3"
+                                                :src="member.image"
+                                                >
+                                                 <font-awesome-icon
+                                                 icon="fa-solid, fa-user"
+                                                 style="color: #979da9"
+                                                 size="md"
+                                                 class="mx-auto my-auto"
+                                                  />
+                                                </div>
+                                                </template>
+
+                                                 <div class="member_image_plus"
+                                                 v-if="department.members.length > 2"
+                                                
+                                                >
+                                                <p class="member_image_text">+{{department.members.length - 3}}</p>
+                                                </div>
+
+                                            
+                                                </div>
+                                            <!--<template
                                                 v-if="
                                                     department.members.length >
                                                     0
@@ -117,7 +145,7 @@
                                                     :alt="member.email"
                                                 />
                                             </template>
-                                            <template v-else>N/A</template>
+                                            <template v-else>N/A</template>-->
                                         </td>
                                         <td
                                             v-if="
