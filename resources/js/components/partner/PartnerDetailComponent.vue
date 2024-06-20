@@ -174,7 +174,7 @@
                     </div>
                 </div>
 
-                <div class="my-5">
+                <!-- <div class="my-5">
                     <h4>Metrics across portfolio</h4>
 
                     <div class="row">
@@ -215,8 +215,8 @@
                                                 <tr>
                                                     <th>Metric</th>
                                                     <th>Value</th>
-                                                    <!-- <th>Top drivers</th> -->
-                                                    <th>Progress</th>
+                                                     <th>Top drivers</th> -->
+                <!-- <th>Progress</th>
                                                     <th>Key departments</th>
                                                 </tr>
                                             </thead>
@@ -248,9 +248,9 @@
                                                         {{
                                                             metric.totalCurrentValue
                                                         }}
-                                                    </td>
-                                                    <!-- <td class="td-members"> -->
-                                                    <!--<template
+                                                    </td> -->
+                <!-- <td class="td-members"> -->
+                <!--<template
                                                             v-for="member in topDrivers"
                                                             :key="member.id"
                                                         >
@@ -263,10 +263,10 @@
                                                                 "
                                                             />
                                                         </template>-->
-                                                    <!-- <div
+                <!-- <div
                                                             class="d-flex flex-row"
                                                         > -->
-                                                    <!-- <div class="member_image_plus"
+                <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
@@ -274,14 +274,14 @@
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
 
-                                                    <!-- <template
+                <!-- <template
                                                                 v-for="(
                                                                     member,
                                                                     index
                                                                 ) in topDrivers"
                                                                 :key="index"
                                                             > -->
-                                                    <!-- <div
+                <!-- <div
                                                                     class="member_image d-flex flex-column align-items-center"
                                                                     v-if="
                                                                         index <
@@ -299,9 +299,9 @@
                                                                         size="md"
                                                                         class="mx-auto my-auto"
                                                                     /> -->
-                                                    <!---->
-                                                    <!--<p class="member_image_text">+1</p>-->
-                                                    <!-- </div>
+                <!---->
+                <!--<p class="member_image_text">+1</p>-->
+                <!-- </div>
 
                                                                 <div
                                                                     class="member_image_plus"
@@ -320,23 +320,23 @@
                                                                     </p>
                                                                 </div> -->
 
-                                                    <!----->
-                                                    <!-- <div class="member_image_plus"
+                <!----->
+                <!-- <div class="member_image_plus"
                                                 v-for="member in partner.members"
                                                 :key="member.id"
                                                 :src="member.image"
                                                 >
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
-                                                    <!-- </template> -->
+                <!-- </template> -->
 
-                                                    <!--<img
+                <!--<img
                                                     
                                                     alt="image"
                                                 />-->
-                                                    <!-- </div>
+                <!-- </div>
                                                     </td> -->
-                                                    <td>
+                <!-- <td>
                                                         {{
                                                             metric.calculatedProgress.toFixed(
                                                                 2
@@ -355,8 +355,8 @@
                                                                 aria-valuemax="100"
                                                             ></div>
                                                         </div>
-                                                    </td>
-                                                    <!-- <td>
+                                                    </td> -->
+                <!-- <td>
                                                         <div>
                                                             <template
                                                                 v-for="driver in topDrivers"
@@ -379,7 +379,7 @@
                                                         </div>
                                                     </td> -->
 
-                                                    <td>
+                <!-- <td>
                                                         <span
                                                             class="depart-tag"
                                                             v-for="department in uniqueDepartments"
@@ -398,7 +398,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="my-5">
                     <h4>KPI Breakdown</h4>
