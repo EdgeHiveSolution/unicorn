@@ -17,7 +17,7 @@ return [
     */
 
     #'name' => env('APP_NAME', 'Laravel'),
-    'name' => env('APP_NAME', 'Unicon'),
+    'name' => env('APP_NAME', 'Unicn'),
 
     /*
     |--------------------------------------------------------------------------

@@ -24,12 +24,12 @@ class Member extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name','email','photo','is_active', 'user_id'
-        
+        'name', 'email', 'photo', 'is_active', 'user_id'
+
     ];
 
 
-    protected $with = ['departments' , 'kpis.kpiMetrics.kpiMetricMembers.progress'];   
+    protected $with = ['departments', 'kpis.kpiMetrics.kpiMetricMembers.progress'];
 
     public function user()
     {
@@ -42,17 +42,17 @@ class Member extends Model
     }
 
 
-      public function departments()
-{
-    return $this->belongsToMany(Department::class, 'department_member')
-         ->using(DepartmentMember::class)
-         ->withPivot('department_id', 'member_id')
-         ->withTimestamps();
-}
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'department_member')
+            ->using(DepartmentMember::class)
+            ->withPivot('department_id', 'member_id')
+            ->withTimestamps();
+    }
 
-    
-   
-   
+
+
+
 
 
     public function partners()
@@ -61,24 +61,22 @@ class Member extends Model
             ->using(MemberPartner::class)
             ->withPivot('department_id', 'role', 'member_id')
             ->withTimestamps();
-    }       
-
-
-            
-            public function kpiMetricMembers()
-        {
-            return $this->hasMany(KpiMetricMember::class, 'member_id');
-        }
+    }
 
 
 
-                 public function kpis()
-            {
-                return $this->belongsToMany(Kpi::class, 'kpi_member')
-                    ->using(KpiMember::class)
-                    ->withPivot('member_id', 'kpi_id') 
-                    ->withTimestamps();
-            }
+    public function kpiMetricMembers()
+    {
+        return $this->hasMany(KpiMetricMember::class, 'member_id');
+    }
 
 
+
+    public function kpis()
+    {
+        return $this->belongsToMany(Kpi::class, 'kpi_member')
+            ->using(KpiMember::class)
+            ->withPivot('member_id', 'kpi_id')
+            ->withTimestamps();
+    }
 }

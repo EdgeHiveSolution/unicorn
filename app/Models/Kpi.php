@@ -16,7 +16,7 @@ class Kpi extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
+    protected $fillable = [
         'title',
         'kpiOwner_id',
         'partner_id',
@@ -31,8 +31,8 @@ class Kpi extends Model
     }
 
 
-    
-   
+
+
 
     public function kpiOwner()
     {
@@ -47,17 +47,17 @@ class Kpi extends Model
         return $this->hasMany(KpiMetric::class);
     }
 
-    
+
 
     public function members()
     {
         return $this->belongsToMany(Member::class, 'kpi_member')
             ->using(KpiMember::class)
-            ->withPivot('kpi_id', 'member_id') 
+            ->withPivot('kpi_id', 'member_id')
             ->withTimestamps();
     }
 
-    
+
     // public function progress()
     // {
     //     return $this->hasMany(Progress::class);
