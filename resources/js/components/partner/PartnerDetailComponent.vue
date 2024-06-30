@@ -205,6 +205,8 @@
 
                     <div class="my-5">
                         <h4>Metrics across portfolio</h4>
+               <!-- <div class="my-5">
+                    <h4>Metrics across portfolio</h4>
 
                         <div class="row">
                             <div class="col-12 px-0">
@@ -281,91 +283,91 @@
                                                         </td>
                                                         <!-- <td class="td-members"> -->
                                                         <!--<template
-                                                                v-for="member in topDrivers"
+                                                            v-for="member in topDrivers"
+                                                            :key="member.id"
+                                                        >
+                                                            <img
+                                                                v-for="member in member.topDrivers"
                                                                 :key="member.id"
-                                                            >
-                                                                <img
-                                                                    v-for="member in member.topDrivers"
-                                                                    :key="member.id"
-                                                                    src="assets/images/faces/face1.jpg"
-                                                                    :alt="
-                                                                        member.email
-                                                                    "
-                                                                />
-                                                            </template>-->
+                                                                src="assets/images/faces/face1.jpg"
+                                                                :alt="
+                                                                    member.email
+                                                                "
+                                                            />
+                                                        </template>-->
                                                         <!-- <div
-                                                                class="d-flex flex-row"
-                                                            > -->
+                                                            class="d-flex flex-row"
+                                                        > -->
                                                         <!-- <div class="member_image_plus"
-                                                    v-for="member in partner.members"
-                                                    :key="member.id"
-                                                    :src="member.image"
-                                                    >
-                                                    <p class="member_image_text">+1</p>
-                                                    </div>-->
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
 
                                                         <!-- <template
-                                                                    v-for="(
-                                                                        member,
-                                                                        index
-                                                                    ) in topDrivers"
-                                                                    :key="index"
-                                                                > -->
+                                                                v-for="(
+                                                                    member,
+                                                                    index
+                                                                ) in topDrivers"
+                                                                :key="index"
+                                                            > -->
                                                         <!-- <div
-                                                                        class="member_image d-flex flex-column align-items-center"
-                                                                        v-if="
-                                                                            index <
-                                                                            2
+                                                                    class="member_image d-flex flex-column align-items-center"
+                                                                    v-if="
+                                                                        index <
+                                                                        2
+                                                                    "
+                                                                    :src="
+                                                                        member.image
+                                                                    "
+                                                                >
+                                                                    <font-awesome-icon
+                                                                        icon="fa-solid, fa-user"
+                                                                        style="
+                                                                            color: #979da9;
                                                                         "
-                                                                        :src="
-                                                                            member.image
-                                                                        "
-                                                                    >
-                                                                        <font-awesome-icon
-                                                                            icon="fa-solid, fa-user"
-                                                                            style="
-                                                                                color: #979da9;
-                                                                            "
-                                                                            size="md"
-                                                                            class="mx-auto my-auto"
-                                                                        /> -->
+                                                                        size="md"
+                                                                        class="mx-auto my-auto"
+                                                                    /> -->
                                                         <!---->
                                                         <!--<p class="member_image_text">+1</p>-->
                                                         <!-- </div>
-    
-                                                                    <div
-                                                                        class="member_image_plus"
-                                                                        v-else
-                                                                        :src="
-                                                                            member.image
-                                                                        "
+
+                                                                <div
+                                                                    class="member_image_plus"
+                                                                    v-else
+                                                                    :src="
+                                                                        member.image
+                                                                    "
+                                                                >
+                                                                    <p
+                                                                        class="member_image_text"
                                                                     >
-                                                                        <p
-                                                                            class="member_image_text"
-                                                                        >
-                                                                            +{{
-                                                                                index -
-                                                                                1
-                                                                            }}
-                                                                        </p>
-                                                                    </div> -->
+                                                                        +{{
+                                                                            index -
+                                                                            1
+                                                                        }}
+                                                                    </p>
+                                                                </div> -->
 
                                                         <!----->
                                                         <!-- <div class="member_image_plus"
-                                                    v-for="member in partner.members"
-                                                    :key="member.id"
-                                                    :src="member.image"
-                                                    >
-                                                    <p class="member_image_text">+1</p>
-                                                    </div>-->
+                                                v-for="member in partner.members"
+                                                :key="member.id"
+                                                :src="member.image"
+                                                >
+                                                <p class="member_image_text">+1</p>
+                                                </div>-->
                                                         <!-- </template> -->
 
                                                         <!--<img
-                                                        
-                                                        alt="image"
-                                                    />-->
+                                                    
+                                                    alt="image"
+                                                />-->
                                                         <!-- </div>
-                                                        </td> -->
+                                                    </td> -->
                                                         <td>
                                                             {{
                                                                 metric.calculatedProgress.toFixed(
@@ -389,27 +391,27 @@
                                                             </div>
                                                         </td>
                                                         <!-- <td>
-                                                            <div>
-                                                                <template
-                                                                    v-for="driver in topDrivers"
-                                                                    :key="driver.id"
-                                                                >
-                                                                    <div>
-                                                                        <span
-                                                                            class="department-tag"
-                                                                            v-for="department in driver.uniqueDepartments"
-                                                                            :key="
-                                                                                department
-                                                                            "
-                                                                        >
-                                                                            {{
-                                                                                department
-                                                                            }}
-                                                                        </span>
-                                                                    </div>
-                                                                </template>
-                                                            </div>
-                                                        </td> -->
+                                                        <div>
+                                                            <template
+                                                                v-for="driver in topDrivers"
+                                                                :key="driver.id"
+                                                            >
+                                                                <div>
+                                                                    <span
+                                                                        class="department-tag"
+                                                                        v-for="department in driver.uniqueDepartments"
+                                                                        :key="
+                                                                            department
+                                                                        "
+                                                                    >
+                                                                        {{
+                                                                            department
+                                                                        }}
+                                                                    </span>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </td> -->
 
                                                         <td>
                                                             <span
