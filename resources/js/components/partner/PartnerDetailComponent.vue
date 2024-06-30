@@ -18,13 +18,7 @@
             <div>
                 <nav class="navbar navbar-expand-lg navbar">
                     <ul class="navbar-nav mr-auto">
-                        <li
-                            class="nav-item"
-                            v-if="
-                                loggedUser.user_role_id === 1 ||
-                                loggedUser.user_role_id === 3
-                            "
-                        >
+                        <li class="nav-item">
                             <!--<a
                                 href="#progress"
                                 class="nav-link"
@@ -90,12 +84,7 @@
         </div>
 
         <div class="body-items">
-            <div
-                v-if="
-                    loggedUser.user_role_id === 1 ||
-                    loggedUser.user_role_id === 3
-                "
-            >
+            <div>
                 <div id="progress" v-if="currentPage === 1">
                     <!-- Progress content -->
                     <div class="d-flex align-items-center">
@@ -203,240 +192,13 @@
                         </div>
                     </div>
 
-                    <div class="my-5">
-                        <h4>Metrics across portfolio</h4>
-               <!-- <div class="my-5">
-                    <h4>Metrics across portfolio</h4>
-
-                        <div class="row">
-                            <div class="col-12 px-0">
-                                <div class="card">
-                                    <div
-                                        class="card-header d-flex justify-content-between my-3"
-                                    >
-                                        <div>
-                                            <div class="input-container">
-                                                <i
-                                                    class="mdi mdi-magnify mdi-icon"
-                                                ></i>
-                                                <input
-                                                    style="height: 10px"
-                                                    class="input-field"
-                                                    type="text"
-                                                    placeholder="Search  metrics"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <button
-                                                style="height: 10px"
-                                                class="btn btn-light p-3 btn-icon"
-                                            >
-                                                <i
-                                                    class="mdi mdi-sort-variant text-dark"
-                                                ></i>
-                                                Filters
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body mb-5">
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Metric</th>
-                                                        <th>Value</th>
-                                                        <!-- <th>Top drivers</th> -->
-                                                        <th>Progress</th>
-                                                        <th>Key departments</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr
-                                                        v-for="metric in metricWithProgress"
-                                                        :key="metric.id"
-                                                    >
-                                                        <td>
-                                                            <div>
-                                                                {{
-                                                                    metric
-                                                                        .metric
-                                                                        .name
-                                                                }}
-                                                            </div>
-                                                            <div>
-                                                                <span
-                                                                    class="txt-gray"
-                                                                    >Partners:
-                                                                    {{
-                                                                        metric
-                                                                            .partners
-                                                                            .length
-                                                                    }}
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        <td class="stats">
-                                                            {{
-                                                                metric.totalCurrentValue
-                                                            }}
-                                                        </td>
-                                                        <!-- <td class="td-members"> -->
-                                                        <!--<template
-                                                            v-for="member in topDrivers"
-                                                            :key="member.id"
-                                                        >
-                                                            <img
-                                                                v-for="member in member.topDrivers"
-                                                                :key="member.id"
-                                                                src="assets/images/faces/face1.jpg"
-                                                                :alt="
-                                                                    member.email
-                                                                "
-                                                            />
-                                                        </template>-->
-                                                        <!-- <div
-                                                            class="d-flex flex-row"
-                                                        > -->
-                                                        <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-
-                                                        <!-- <template
-                                                                v-for="(
-                                                                    member,
-                                                                    index
-                                                                ) in topDrivers"
-                                                                :key="index"
-                                                            > -->
-                                                        <!-- <div
-                                                                    class="member_image d-flex flex-column align-items-center"
-                                                                    v-if="
-                                                                        index <
-                                                                        2
-                                                                    "
-                                                                    :src="
-                                                                        member.image
-                                                                    "
-                                                                >
-                                                                    <font-awesome-icon
-                                                                        icon="fa-solid, fa-user"
-                                                                        style="
-                                                                            color: #979da9;
-                                                                        "
-                                                                        size="md"
-                                                                        class="mx-auto my-auto"
-                                                                    /> -->
-                                                        <!---->
-                                                        <!--<p class="member_image_text">+1</p>-->
-                                                        <!-- </div>
-
-                                                                <div
-                                                                    class="member_image_plus"
-                                                                    v-else
-                                                                    :src="
-                                                                        member.image
-                                                                    "
-                                                                >
-                                                                    <p
-                                                                        class="member_image_text"
-                                                                    >
-                                                                        +{{
-                                                                            index -
-                                                                            1
-                                                                        }}
-                                                                    </p>
-                                                                </div> -->
-
-                                                        <!----->
-                                                        <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                                        <!-- </template> -->
-
-                                                        <!--<img
-                                                    
-                                                    alt="image"
-                                                />-->
-                                                        <!-- </div>
-                                                    </td> -->
-                                                        <td>
-                                                            {{
-                                                                metric.calculatedProgress.toFixed(
-                                                                    2
-                                                                )
-                                                            }}%
-
-                                                            <div
-                                                                class="progress"
-                                                            >
-                                                                <div
-                                                                    class="progress-bar"
-                                                                    :style="{
-                                                                        width:
-                                                                            metric.calculatedProgress +
-                                                                            '%',
-                                                                    }"
-                                                                    aria-valuemin="0"
-                                                                    aria-valuemax="100"
-                                                                ></div>
-                                                            </div>
-                                                        </td>
-                                                        <!-- <td>
-                                                        <div>
-                                                            <template
-                                                                v-for="driver in topDrivers"
-                                                                :key="driver.id"
-                                                            >
-                                                                <div>
-                                                                    <span
-                                                                        class="department-tag"
-                                                                        v-for="department in driver.uniqueDepartments"
-                                                                        :key="
-                                                                            department
-                                                                        "
-                                                                    >
-                                                                        {{
-                                                                            department
-                                                                        }}
-                                                                    </span>
-                                                                </div>
-                                                            </template>
-                                                        </div>
-                                                    </td> -->
-
-                                                        <td>
-                                                            <span
-                                                                class="depart-tag"
-                                                                v-for="department in uniqueDepartments"
-                                                                :key="
-                                                                    department.id
-                                                                "
-                                                            >
-                                                                {{
-                                                                    department.name
-                                                                }}
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="my-5">
+                    <div
+                        v-if="
+                            loggedUser.user_role_id === 1 ||
+                            loggedUser.user_role_id === 3
+                        "
+                        class="my-5"
+                    >
                         <h4>KPI Breakdown</h4>
                         <p>A breakdown of each KPI performance</p>
 
