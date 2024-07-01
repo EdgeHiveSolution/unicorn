@@ -38,45 +38,45 @@ class KpiMetricApiController extends Controller
 
 
 
-     public function store(Request $request)
-{
-    Log::info("You are in store method"); 
+    public function store(Request $request)
+    {
+        Log::info("You are in store method");
 
-    Log::info('Raw Request Data: ' . $request->getContent());
-    $members = json_decode($request->input('members'), true);
-    Log::info("Received members data: " . json_encode($members));
-
-
+        Log::info('Raw Request Data: ' . $request->getContent());
+        $members = json_decode($request->input('members'), true);
+        Log::info("Received members data: " . json_encode($members));
 
 
-    $this->validate($request, [
-        'title' => 'required',
-        'type' => 'required',
-        'metric_id' => 'required',
-        'response_period' => 'required',
-        'kpi_id' => 'required',
-        'on_track_value' => 'required',
-        'off_track_min' => 'required',
-        'off_track_max' => 'required',
-        'at_risk_min' => 'required',
-        'at_risk_max' => 'required',
-        //'members' => 'required|array', // Add validation for members array
-        'members.targets.*.memberID' => 'required|exists:members,id', // Validate each member ID
-        'members.targets.*.memberTarget' => 'required|numeric',
-        
-    ]);
-
-   
-
-  
-
-    $kpi = Kpi::findOrFail($request->kpi_id);
 
 
-  // Extract start and end dates from review_period_range
+        $this->validate($request, [
+            'title' => 'required',
+            'type' => 'required',
+            'metric_id' => 'required',
+            'response_period' => 'required',
+            'kpi_id' => 'required',
+            'on_track_value' => 'required',
+            'off_track_min' => 'required',
+            'off_track_max' => 'required',
+            'at_risk_min' => 'required',
+            'at_risk_max' => 'required',
+            //'members' => 'required|array', // Add validation for members array
+            'members.targets.*.memberID' => 'required|exists:members,id', // Validate each member ID
+            'members.targets.*.memberTarget' => 'required|numeric',
+
+        ]);
+
+
+
+
+
+        $kpi = Kpi::findOrFail($request->kpi_id);
+
+
+        // Extract start and end dates from review_period_range
         $pattern = '/(\d{1,2})\w{2} (\w+) (\d{4})/';
         preg_match_all($pattern, $kpi->review_period_range, $matches);
-        
+
         // Parse start date components
         $startDay = $matches[1][0];
         $startMonth = $matches[2][0];
@@ -85,7 +85,7 @@ class KpiMetricApiController extends Controller
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ]) + 1;
-        
+
         // Parse end date components
         $endDay = $matches[1][1];
         $endMonth = $matches[2][1];
@@ -94,22 +94,22 @@ class KpiMetricApiController extends Controller
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ]) + 1;
-        
+
         // Create Carbon instances for start and end dates
         $start_date = Carbon::create($startYear, $startMonthNumeric, $startDay, 0, 0, 0);
         $end_date = Carbon::create($endYear, $endMonthNumeric, $endDay, 0, 0, 0);
-        
+
         $daysDifference = $end_date->diffInDays($start_date);
 
-        Log::info("Days difference is:", ['Day difference'=> $daysDifference]);
-        
+        Log::info("Days difference is:", ['Day difference' => $daysDifference]);
+
         $totalTarget = 0; // Initialize total target sum
         $totalTimelyValue = 0; // Initialize total timely value sum
-    
+
         // Loop through members and calculate total target and timely value
         foreach ($members['targets'] as $member) {
             $individualTarget = $member['memberTarget']; // Get the individual target provided by the user
-    
+
             // Calculate the timely value based on the response period and individual target
             if ($request->response_period === 'weekly') {
                 $timelyValue = $individualTarget / round($daysDifference / 7);
@@ -121,36 +121,36 @@ class KpiMetricApiController extends Controller
                 $timelyValue = 0; // Set a default value if response period is not recognized
             }
 
-            
+
 
             // Sum up the target values for all members
             $totalTarget += $individualTarget;
             // Sum up the timely values for all members
             $totalTimelyValue += $timelyValue;
         }
-    
+
         // Create KpiMetric with total target and timely value
         $kpiMetric = KpiMetric::create([
             'title' => $request->title,
             'type' => $request->type,
             'response_period' => $request->response_period,
             'kpi_id' => $request->kpi_id,
-            'metric_id' =>$request->metric_id,
-            'target' => $totalTarget, 
-            'timely_value' => $totalTimelyValue, 
+            'metric_id' => $request->metric_id,
+            'target' => $totalTarget,
+            'timely_value' => $totalTimelyValue,
             'on_track_value' => $request->on_track_value,
             'off_track_min' => $request->off_track_min,
             'off_track_max' => $request->off_track_max,
             'at_risk_min' => $request->at_risk_min,
             'at_risk_max' => $request->at_risk_max,
         ]);
-    
+
         $kpiMetricMembers = [];
 
         // Loop through members and create KpiMetricMember entries
         foreach ($members['targets'] as $member) {
             $individualTarget = $member['memberTarget']; // Get the individual target provided by the user
-    
+
             // Calculate the timely value based on the response period and individual target
             if ($request->response_period === 'weekly') {
                 $timelyValue = $individualTarget / round($daysDifference / 7);
@@ -163,15 +163,15 @@ class KpiMetricApiController extends Controller
             }
 
 
-                    // Log individual values for this member
+            // Log individual values for this member
             Log::info('Individual Target and Timely Value', [
                 'Member ID' => $member['memberID'],
                 'Individual Target' => $individualTarget,
                 'Timely Value' => $timelyValue,
             ]);
 
-       
-    
+
+
             $kpiMetricMember = KpiMetricMember::create([
                 'kpi_metric_id' => $kpiMetric->id,
                 'member_id' => $member['memberID'],
@@ -181,24 +181,25 @@ class KpiMetricApiController extends Controller
 
             $kpiMetricMembers[] = $kpiMetricMember; // Collect the created KPI metric members
 
+
+            if (!$kpi->members->contains($member['memberID'])) {
+                $kpi->members()->attach($member['memberID']);
+            }
         }
 
 
-    $kpi = Kpi::findOrFail($request->kpi_id);
-    $partner = $kpi->partner;
-    
-    // Associate the KPI Metric with the KPI and Partner
-    $partner->kpis()->save($kpi);
-    
+        $kpi = Kpi::findOrFail($request->kpi_id);
+        $partner = $kpi->partner;
 
-    
-    return response()->json([
-      'kpi_metric_members' => [$kpiMetricMembers]
-    ], 200);
+        // Associate the KPI Metric with the KPI and Partner
+        $partner->kpis()->save($kpi);
 
-   
 
-}
+
+        return response()->json([
+            'kpi_metric_members' => [$kpiMetricMembers]
+        ], 200);
+    }
 
 
 
@@ -226,7 +227,7 @@ class KpiMetricApiController extends Controller
     //     // Extract start and end dates from review_period_range
     //     $pattern = '/(\d{1,2})\w{2} (\w+) (\d{4})/';
     //     preg_match_all($pattern, $kpi->review_period_range, $matches);
-        
+
     //     // Parse start date components
     //     $startDay = $matches[1][0];
     //     $startMonth = $matches[2][0];
@@ -235,7 +236,7 @@ class KpiMetricApiController extends Controller
     //         'January', 'February', 'March', 'April', 'May', 'June',
     //         'July', 'August', 'September', 'October', 'November', 'December'
     //     ]) + 1;
-        
+
     //     // Parse end date components
     //     $endDay = $matches[1][1];
     //     $endMonth = $matches[2][1];
@@ -244,17 +245,17 @@ class KpiMetricApiController extends Controller
     //         'January', 'February', 'March', 'April', 'May', 'June',
     //         'July', 'August', 'September', 'October', 'November', 'December'
     //     ]) + 1;
-        
+
     //     // Create Carbon instances for start and end dates
     //     $start_date = Carbon::create($startYear, $startMonthNumeric, $startDay, 0, 0, 0);
     //     $end_date = Carbon::create($endYear, $endMonthNumeric, $endDay, 0, 0, 0);
-        
-    //     $daysDifference = $end_date->diffInDays($start_date);
-        
-        
-        
 
-        
+    //     $daysDifference = $end_date->diffInDays($start_date);
+
+
+
+
+
     //             // Calculate timely value based on response period
     //             if ($request->response_period === 'weekly') {
     //                 $timely_value = $request->target / ($daysDifference / 7);
@@ -282,14 +283,14 @@ class KpiMetricApiController extends Controller
     //         'at_risk_max' => $request->at_risk_max,
     //     ]);
 
-        
+
     //     $kpi = Kpi::findOrFail($request->kpi_id);
     //     $partner = $kpi->partner;
-        
+
     //     // Associate the KPI Metric with the KPI and Partner
     //     $kpiMetric->kpi()->associate($kpi);
     //     $kpiMetric->save();
-        
+
     //     $partner->kpis()->save($kpi);
 
     //     return response()->json([
@@ -298,76 +299,76 @@ class KpiMetricApiController extends Controller
 
     // }
 
-   
+
     public function getKpiMetricsByMetricId(Request $request, $metricId)
-{
-    try {
-        // Find the Metric by its ID
-        $metric = Metric::findOrFail($metricId);
+    {
+        try {
+            // Find the Metric by its ID
+            $metric = Metric::findOrFail($metricId);
 
-        Log::info("Metric ID: " . $metric->id);
+            Log::info("Metric ID: " . $metric->id);
 
-        // Get an array of partner IDs related to KpiMetrics of this Metric
-        $partnerIds = KpiMetric::whereIn('metric_id', [$metric->id])
-            ->pluck('kpi_id') // Get Kpi IDs
-            ->unique() // Ensure unique Kpi IDs
-            ->map(function ($kpiId) {
-                return Kpi::where('id', $kpiId)
-                    ->value('partner_id'); // Get Partner IDs related to Kpi IDs
-            })
-            ->unique() // Ensure unique Partner IDs
-            ->toArray(); // Convert to an array
+            // Get an array of partner IDs related to KpiMetrics of this Metric
+            $partnerIds = KpiMetric::whereIn('metric_id', [$metric->id])
+                ->pluck('kpi_id') // Get Kpi IDs
+                ->unique() // Ensure unique Kpi IDs
+                ->map(function ($kpiId) {
+                    return Kpi::where('id', $kpiId)
+                        ->value('partner_id'); // Get Partner IDs related to Kpi IDs
+                })
+                ->unique() // Ensure unique Partner IDs
+                ->toArray(); // Convert to an array
 
-        // Load the Partner models using the partner IDs
-        $partners = Partner::whereIn('id', $partnerIds)
-            ->with(['departments', 'members'])
-            ->get();
+            // Load the Partner models using the partner IDs
+            $partners = Partner::whereIn('id', $partnerIds)
+                ->with(['departments', 'members'])
+                ->get();
 
-        // Return the Metric along with its KpiMetrics and related data, including Partners
-        return response()->json([
-            'metric' => $metric,
-            'partners' => $partners,
-        ], 200);
-    } catch (\Exception $e) {
-        // Handle any exceptions that occur during the process
-        Log::error('Error fetching KpiMetrics:', ['error' => $e->getMessage()]);
-        return response()->json(['error' => 'Failed to fetch KpiMetrics'], 500);
+            // Return the Metric along with its KpiMetrics and related data, including Partners
+            return response()->json([
+                'metric' => $metric,
+                'partners' => $partners,
+            ], 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the process
+            Log::error('Error fetching KpiMetrics:', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Failed to fetch KpiMetrics'], 500);
+        }
     }
-}
 
 
-    
-    
-// public function getKpiMetricsByMetricId(Request $request, $metricId)
-// {
-//     try {
-//         // Find the Metric by its ID
-//         $metric = Metric::findOrFail($metricId);
 
-//         Log::info("Metric ID:". $metric->id);
 
-//         // Load the KpiMetrics relationship and its nested relationships
-//         $metric->load('kpiMetric.kpi.kpiMetrics.kpiMetricMembers.progress');
+    // public function getKpiMetricsByMetricId(Request $request, $metricId)
+    // {
+    //     try {
+    //         // Find the Metric by its ID
+    //         $metric = Metric::findOrFail($metricId);
 
-//         // Load relationships related to the Partner model
-//         $partner = optional($metric->kpiMetric->kpi->partner);
+    //         Log::info("Metric ID:". $metric->id);
 
-//         if ($partner) {
-//             $partner->load(['departments', 'members']);
-//         } else {
-//             Log::info("Partner is null for Metric ID: " . $metricId);
-//         }
+    //         // Load the KpiMetrics relationship and its nested relationships
+    //         $metric->load('kpiMetric.kpi.kpiMetrics.kpiMetricMembers.progress');
 
-//         // Return the Metric along with its KpiMetrics and related data, including Partners
-//         return response()->json([
-//             'metric' => $metric,
-//         ], 200);
-//     } catch (\Exception $e) {
-//         // Handle any exceptions that occur during the process
-//         Log::error('Error fetching KpiMetrics:', ['error' => $e->getMessage()]);
-//         return response()->json(['error' => 'Failed to fetch KpiMetrics'], 500);
-//     }
-// }
+    //         // Load relationships related to the Partner model
+    //         $partner = optional($metric->kpiMetric->kpi->partner);
+
+    //         if ($partner) {
+    //             $partner->load(['departments', 'members']);
+    //         } else {
+    //             Log::info("Partner is null for Metric ID: " . $metricId);
+    //         }
+
+    //         // Return the Metric along with its KpiMetrics and related data, including Partners
+    //         return response()->json([
+    //             'metric' => $metric,
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         // Handle any exceptions that occur during the process
+    //         Log::error('Error fetching KpiMetrics:', ['error' => $e->getMessage()]);
+    //         return response()->json(['error' => 'Failed to fetch KpiMetrics'], 500);
+    //     }
+    // }
 
     /**
      * Display the specified resource.

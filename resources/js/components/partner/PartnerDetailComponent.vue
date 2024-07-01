@@ -34,7 +34,13 @@
                                 >Progress</a
                             >
                         </li>
-                        <li class="nav-item">
+                        <li
+                            v-if="
+                                loggedUser.user_role_id === 1 ||
+                                loggedUser.user_role_id === 3
+                            "
+                            class="nav-item"
+                        >
                             <a
                                 href="#account"
                                 class="nav-link"
@@ -43,7 +49,13 @@
                                 >Account</a
                             >
                         </li>
-                        <li class="nav-item">
+                        <li
+                            v-if="
+                                loggedUser.user_role_id === 1 ||
+                                loggedUser.user_role_id === 3
+                            "
+                            class="nav-item"
+                        >
                             <a
                                 href="#members"
                                 class="nav-link"
@@ -72,110 +84,872 @@
         </div>
 
         <div class="body-items">
-            <div id="progress" v-if="currentPage === 1">
-                <!-- Progress content -->
-                <div class="d-flex align-items-center">
-                    <img :src="partner.logo" alt="logo" />
-                    <span class="pl-2"
-                        >{{ partner.name }} <br />
-                        {{ formattedDate }}</span
-                    >
-                </div>
+            <div>
+                <div id="progress" v-if="currentPage === 1">
+                    <!-- Progress content -->
+                    <div class="d-flex align-items-center">
+                        <img :src="partner.logo" alt="logo" />
+                        <span class="pl-2"
+                            >{{ partner.name }} <br />
+                            {{ formattedDate }}</span
+                        >
+                    </div>
 
-                <div class="col-xl-3 col-sm-6 grid-margin mt-4">
-                    <div class="d-flex justify-content-between">
-                        <div class="p-progress mr-3">
-                            <h5>Progress</h5>
-                            <p v-if="kpiPartnerProgress">
+                    <div class="col-xl-3 col-sm-6 grid-margin mt-4">
+                        <div class="d-flex justify-content-between">
+                            <div class="p-progress mr-3">
+                                <h5>Progress</h5>
+                                <p v-if="kpiPartnerProgress">
+                                    {{
+                                        kpiPartnerProgress.progress_percentage.toFixed(
+                                            2
+                                        )
+                                    }}%
+                                </p>
+                                <p v-else>N/A</p>
+                            </div>
+                            <div>
+                                <div class="status">
+                                    <h6 v-if="kpiPartnerProgress">
+                                        {{ kpiPartnerProgress.status }}
+                                    </h6>
+                                    <h6 v-else>N/A</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p v-if="kpiPartnerProgress">
+                            Completion as at:
+                            {{ kpiPartnerProgress.formattedDate }}
+                        </p>
+                        <p v-else>N/A</p>
+                    </div>
+                    <div class="my-3">
+                        <h4>Progress Burndown</h4>
+                        <p>This show the progress to complete KPIs</p>
+                    </div>
+                    <div class="card">
+                        <div class="">
+                            <p>Overall Kpi Progress</p>
+                            <p>Review Period:</p>
+                        </div>
+
+                        <!--<div style="margin-top: -30px" class="d-flex justify-content-end mx-2">-->
+                        <div
+                            style="margin-top: -30px"
+                            class="d-flex justify-content-end mx-2"
+                        >
+                            <span
+                                v-if="kpiPartnerProgress"
+                                :class="{
+                                    'on-track-header':
+                                        kpiPartnerProgress.status ===
+                                        'On Track',
+                                    'at-risk-header':
+                                        kpiPartnerProgress.status === 'At Risk',
+                                    'off-track-header':
+                                        kpiPartnerProgress.status ===
+                                        'Off Track',
+                                }"
+                            >
                                 {{
                                     kpiPartnerProgress.progress_percentage.toFixed(
                                         2
                                     )
                                 }}%
-                            </p>
-                            <p v-else>N/A</p>
+                            </span>
+                            <p v-else></p>
                         </div>
-                        <div>
-                            <div class="status">
-                                <h6 v-if="kpiPartnerProgress">
-                                    {{ kpiPartnerProgress.status }}
-                                </h6>
-                                <h6 v-else>N/A</h6>
+                        <div
+                            style="margin-top: -10px"
+                            class="d-flex justify-content-end mx-2 mt-2"
+                        >
+                            <span
+                                v-if="kpiPartnerProgress"
+                                :class="{
+                                    'on-track-header':
+                                        kpiPartnerProgress.status ===
+                                        'On Track',
+                                    'at-risk-header':
+                                        kpiPartnerProgress.status === 'At Risk',
+                                    'off-track-header':
+                                        kpiPartnerProgress.status ===
+                                        'Off Track',
+                                }"
+                            >
+                                {{ kpiPartnerProgress.status }}
+                            </span>
+                            <p v-else></p>
+                        </div>
+
+                        <hr />
+
+                        <div
+                            id="chart-container"
+                            style="width: 100%; height: 500px"
+                        >
+                            <canvas ref="chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div
+                        v-if="
+                            loggedUser.user_role_id === 1 ||
+                            loggedUser.user_role_id === 3
+                        "
+                        class="my-5"
+                    >
+                        <h4>KPI Breakdown</h4>
+                        <p>A breakdown of each KPI performance</p>
+
+                        <div
+                            class="card"
+                            v-for="kpi in this.partner.kpis"
+                            :key="kpi.id"
+                        >
+                            <div class="m-4 mb-0">
+                                <h4>{{ kpi.title }}</h4>
+                                <p>{{ kpi.review_period_range }}</p>
+                                <p></p>
+                            </div>
+                            <div
+                                class="card-header d-flex justify-content-between my-3"
+                            >
+                                <div>
+                                    <div class="input-container">
+                                        <i class="mdi mdi-magnify mdi-icon"></i>
+                                        <input
+                                            style="height: 25px"
+                                            class="input-field"
+                                            type="text"
+                                            placeholder="Search KPI metrics"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <button
+                                        style="height: 10px"
+                                        class="btn btn-light p-3 btn-icon"
+                                    >
+                                        <i
+                                            class="mdi mdi-sort-variant text-dark"
+                                        ></i>
+                                        Filters
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card-body mb-5">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>KPI Metric</th>
+                                                <th>Current</th>
+                                                <th>Target</th>
+                                                <th>Progress</th>
+                                                <th>Assigned To</th>
+                                                <th>Departments</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr
+                                                v-for="kpiMetric in kpi.kpi_metrics"
+                                                :key="kpiMetric.id"
+                                            >
+                                                <td>
+                                                    {{ kpiMetric.title }}
+                                                </td>
+                                                <td>
+                                                    <label
+                                                        class="active-period txt-gray"
+                                                        >{{
+                                                            calculateCurrentSum(
+                                                                kpiMetric
+                                                            ).toFixed(2)
+                                                        }}</label
+                                                    >
+                                                </td>
+                                                <td>
+                                                    <label
+                                                        class="active-period txt-gray"
+                                                    >
+                                                        {{
+                                                            calculateTargetSum(
+                                                                kpiMetric
+                                                            ).toFixed(2)
+                                                        }}</label
+                                                    >
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        {{
+                                                            calculateProgressPercentage(
+                                                                kpiMetric
+                                                            )
+                                                        }}%
+                                                        <div class="progress">
+                                                            <div
+                                                                class="progress-bar"
+                                                                :class="{
+                                                                    'progress-bar-on-track on-track-label':
+                                                                        calculateProgressStatus(
+                                                                            kpiMetric
+                                                                        ) ==
+                                                                        'On Track',
+                                                                    'progress-bar-at-risk at-risk-label':
+                                                                        calculateProgressStatus(
+                                                                            kpiMetric
+                                                                        ) ==
+                                                                        'At Risk',
+                                                                    'progress-bar-off-track off-track-label':
+                                                                        calculateProgressStatus(
+                                                                            kpiMetric
+                                                                        ) ==
+                                                                        'Off Track',
+                                                                }"
+                                                                role="progressbar"
+                                                                :style="{
+                                                                    width:
+                                                                        calculateProgressPercentage(
+                                                                            kpiMetric
+                                                                        ) + '%',
+                                                                }"
+                                                                aria-valuemin="0"
+                                                                aria-valuemax="100"
+                                                            ></div>
+                                                        </div>
+                                                    </div>
+                                                    <span
+                                                        :class="{
+                                                            'on-track-label':
+                                                                calculateProgressStatus(
+                                                                    kpiMetric
+                                                                ) == 'On Track',
+                                                            'at-risk-label':
+                                                                calculateProgressStatus(
+                                                                    kpiMetric
+                                                                ) == 'At Risk',
+                                                            'off-track-label':
+                                                                calculateProgressStatus(
+                                                                    kpiMetric
+                                                                ) ==
+                                                                'Off Track',
+                                                        }"
+                                                        >{{
+                                                            calculateProgressStatus(
+                                                                kpiMetric
+                                                            )
+                                                        }}</span
+                                                    >
+                                                </td>
+
+                                                <td class="td-members">
+                                                    <div
+                                                        class="d-flex flex-row"
+                                                    >
+                                                        <!-- <div class="member_image_plus"
+                                                    v-for="member in partner.members"
+                                                    :key="member.id"
+                                                    :src="member.image"
+                                                    >
+                                                    <p class="member_image_text">+1</p>
+                                                    </div>-->
+
+                                                        <template
+                                                            v-for="(
+                                                                member, index
+                                                            ) in this.partner
+                                                                .members"
+                                                            :key="index"
+                                                        >
+                                                            <div
+                                                                class="member_image d-flex flex-column align-items-center"
+                                                                v-if="index < 3"
+                                                                :src="
+                                                                    member.image
+                                                                "
+                                                            >
+                                                                <font-awesome-icon
+                                                                    icon="fa-solid, fa-user"
+                                                                    style="
+                                                                        color: #979da9;
+                                                                    "
+                                                                    size="md"
+                                                                    class="mx-auto my-auto"
+                                                                />
+                                                                <!--<p class="member_image_text">+1</p>-->
+                                                            </div>
+
+                                                            <!-- <div class="member_image_plus"
+                                                    v-for="member in partner.members"
+                                                    :key="member.id"
+                                                    :src="member.image"
+                                                    >
+                                                    <p class="member_image_text">+1</p>
+                                                    </div>-->
+                                                        </template>
+
+                                                        <div
+                                                            class="member_image_plus"
+                                                            v-if="
+                                                                this.partner
+                                                                    .members
+                                                                    .length > 2
+                                                            "
+                                                        >
+                                                            <p
+                                                                class="member_image_text"
+                                                            >
+                                                                +{{
+                                                                    this.partner
+                                                                        .members
+                                                                        .length -
+                                                                    3
+                                                                }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <!-- <div class="d-flex flex-row">
+                                                    
+    
+                                                        <template
+                                                            v-for="(
+                                                                member, index
+                                                            ) in this.partner
+                                                                .members"
+                                                            :key="index"
+                                                        >
+                                                            <div
+                                                                class="member_image d-flex flex-column align-items-center"
+                                                                v-if="index < 2"
+                                                                :src="member.image"
+                                                            >
+                                                                <font-awesome-icon
+                                                                    icon="fa-solid, fa-user"
+                                                                    style="
+                                                                        color: #979da9;
+                                                                    "
+                                                                    size="md"
+                                                                    class="mx-auto my-auto"
+                                                                />
+                                                            </div>
+    
+                                                            <div
+                                                                class="member_image_plus"
+                                                                v-else
+                                                                :src="member.image"
+                                                            >
+                                                                <p
+                                                                    class="member_image_text"
+                                                                >
+                                                                    +{{ index - 1 }}
+                                                                </p>
+                                                            </div>
+                                                        </template>
+                                                    </div>-->
+                                                    <!--<img
+                                                        v-for="member in this
+                                                            .partner.members"
+                                                        :key="member.id"
+                                                        src="assets/images/faces/face1.jpg"
+                                                        alt="image"
+                                                    />-->
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="depart-tag"
+                                                        v-for="department in uniqueDepartments"
+                                                        :key="department.id"
+                                                    >
+                                                        {{ department.name }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <p v-if="kpiPartnerProgress">
-                        Completion as at: {{ kpiPartnerProgress.formattedDate }}
-                    </p>
-                    <p v-else>N/A</p>
                 </div>
-                <div class="my-3">
-                    <h4>Progress Burndown</h4>
-                    <p>This show the progress to complete KPIs</p>
-                </div>
-                <div class="card">
-                    <div class="">
-                        <p>Overall Kpi Progress</p>
-                        <p>Review Period:</p>
-                    </div>
-
-                    <!--<div style="margin-top: -30px" class="d-flex justify-content-end mx-2">-->
-                    <div
-                        style="margin-top: -30px"
-                        class="d-flex justify-content-end mx-2"
-                    >
-                        <span
-                            v-if="kpiPartnerProgress"
-                            :class="{
-                                'on-track-header':
-                                    kpiPartnerProgress.status === 'On Track',
-                                'at-risk-header':
-                                    kpiPartnerProgress.status === 'At Risk',
-                                'off-track-header':
-                                    kpiPartnerProgress.status === 'Off Track',
-                            }"
-                        >
-                            {{
-                                kpiPartnerProgress.progress_percentage.toFixed(
-                                    2
-                                )
-                            }}%
-                        </span>
-                        <p v-else></p>
+                <div id="account" v-if="currentPage === 2">
+                    <!-- Account content -->
+                    <div class="d-flex align-items-center">
+                        <img :src="this.partner.logo" alt="logo" />
+                        <div class="partner-info">
+                            <h4>{{ this.partner.name }}</h4>
+                            <p>
+                                Status:
+                                <span class="text-success">{{
+                                    " Active"
+                                }}</span>
+                            </p>
+                        </div>
                     </div>
                     <div
-                        style="margin-top: -10px"
-                        class="d-flex justify-content-end mx-2 mt-2"
+                        class="mt-5 d-flex justify-content-between align-items-end"
                     >
-                        <span
-                            v-if="kpiPartnerProgress"
-                            :class="{
-                                'on-track-header':
-                                    kpiPartnerProgress.status === 'On Track',
-                                'at-risk-header':
-                                    kpiPartnerProgress.status === 'At Risk',
-                                'off-track-header':
-                                    kpiPartnerProgress.status === 'Off Track',
-                            }"
-                        >
-                            {{ kpiPartnerProgress.status }}
-                        </span>
-                        <p v-else></p>
-                    </div>
+                        <div class="p-info">
+                            <h4>Partner info</h4>
+                            <p>
+                                Enter the photo and basic details of the partner
+                                here
+                            </p>
+                        </div>
 
+                        <div class="text-end">
+                            <button
+                                type="button"
+                                @click="navigateToPartners"
+                                class="btn btn-light border-dark px-3 py-2 btn-action"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                class="btn btn-primary px-3 py-2 btn-action"
+                                form="form-submit"
+                                type="submit"
+                            >
+                                Save changes
+                            </button>
+                        </div>
+                    </div>
                     <hr />
+                    <div class="form-container">
+                        <form
+                            id="form-submit"
+                            class="row g-3"
+                            @submit.prevent="partnerSubmit"
+                            method="POST"
+                        >
+                            <div class="row mb-2 p-3">
+                                <label
+                                    for="name"
+                                    class="col-md-3 col-form-label text-md-start"
+                                    >{{ "Name" }}</label
+                                >
 
-                    <div
-                        id="chart-container"
-                        style="width: 100%; height: 500px"
-                    >
-                        <canvas ref="chart"></canvas>
+                                <div class="col-md-5 offset-md-0 text-center">
+                                    <input
+                                        id="name"
+                                        type="text"
+                                        class="form-control"
+                                        name="name"
+                                        v-model="this.partner.name"
+                                        autocomplete="name"
+                                        autofocus
+                                    />
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <div class="row mb-2 p-3">
+                                <label
+                                    for="email"
+                                    class="col-md-3 col-form-label text-md-start"
+                                    >{{ "Email Address" }}</label
+                                >
+
+                                <div class="col-md-5 offset-md-0 text-center">
+                                    <div class="input-container">
+                                        <!-- <span class="mdi mdi-email input-icon"></span> -->
+                                        <input
+                                            id="email"
+                                            type="text"
+                                            class="form-control"
+                                            name="email"
+                                            v-model="this.partner.email"
+                                            autocomplete="email"
+                                            autofocus
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+
+                            <div class="row mb-2 p-3">
+                                <label
+                                    for="website"
+                                    class="col-md-3 col-form-label text-md-start"
+                                    >{{ "Website" }}</label
+                                >
+
+                                <div class="col-md-5 offset-md-0 text-center">
+                                    <input
+                                        id="website"
+                                        type="text"
+                                        class="form-control"
+                                        name="website"
+                                        v-model="this.partner.website"
+                                        autocomplete="website"
+                                        autofocus
+                                    />
+                                </div>
+                            </div>
+                            <hr />
+
+                            <div class="row mb-2 p-3">
+                                <label
+                                    for="phone"
+                                    class="col-md-3 col-form-label text-md-start"
+                                    >{{ "Phone Number" }}</label
+                                >
+
+                                <div class="col-md-5 offset-md-0 text-center">
+                                    <input
+                                        id="phone"
+                                        type="text"
+                                        class="form-control"
+                                        name="phone"
+                                        v-model="this.partner.phone"
+                                        autocomplete="phone"
+                                        autofocus
+                                    />
+                                </div>
+                            </div>
+                            <hr />
+
+                            <div class="row mb-2 p-3">
+                                <label
+                                    for="address"
+                                    class="col-md-3 col-form-label text-md-start"
+                                    >{{ "Address" }}</label
+                                >
+
+                                <div class="col-md-5 offset-md-0 text-center">
+                                    <input
+                                        id="address"
+                                        type="text"
+                                        class="form-control"
+                                        name="address"
+                                        v-model="this.partner.address"
+                                        autocomplete="address"
+                                        autofocus
+                                    />
+                                </div>
+                            </div>
+                            <hr />
+
+                            <div class="row mb-2 p-3">
+                                <label
+                                    for="logo"
+                                    class="col-md-3 col-form-label text-md-start"
+                                >
+                                    {{ "Partner Logo" }} <br />
+                                    <span class="txt-gray">{{
+                                        "This will be used to identify the partner"
+                                    }}</span>
+                                </label>
+
+                                <div class="col-md-5 offset-md-0 text-center">
+                                    <div class="row styled">
+                                        <div class="col-3">
+                                            <img :src="logoPreview" alt="." />
+                                        </div>
+                                        <div class="col-9">
+                                            <input
+                                                id="logo"
+                                                type="file"
+                                                class="form-control-file"
+                                                name="logo"
+                                                ref="logoInput"
+                                                placeholder="text"
+                                                accept=".jpg, .jpeg, .png, .gif"
+                                                @change="handleLogoChange"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+
+                            <div class="row mb-2 p-3">
+                                <label
+                                    for="business_type"
+                                    class="col-md-3 col-form-label text-md-start"
+                                    >{{ "Business Type" }}</label
+                                >
+
+                                <div class="col-md-5 offset-md-0 text-center">
+                                    <input
+                                        id="business_type"
+                                        type="text"
+                                        class="form-control"
+                                        name="address"
+                                        v-model="this.partner.business_type"
+                                        autocomplete=""
+                                        autofocus
+                                        readonly
+                                    />
+                                </div>
+                            </div>
+                            <hr />
+
+                            <div class="row mb-2 p-3 about">
+                                <label
+                                    for="about"
+                                    class="col-md-3 col-form-label text-md-start"
+                                    >{{ "About" }} <br /><span class="txt-gray">
+                                        {{
+                                            "Write a short introduction of the business."
+                                        }}</span
+                                    >
+                                </label>
+
+                                <div class="col-md-5 offset-md-0 text-center">
+                                    <textarea
+                                        id="about"
+                                        class="form-control"
+                                        name="about"
+                                        v-model="this.partner.about"
+                                        autocomplete="about"
+                                        autofocus
+                                    ></textarea>
+                                    <span
+                                        v-if="true"
+                                        class="text-count"
+                                        :class="{ 'text-danger': isOverMax }"
+                                        >{{
+                                            remainingCharacters +
+                                            " characters left"
+                                        }}</span
+                                    >
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row mb-2 p-3">
+                                <label
+                                    for="documents"
+                                    class="col-md-3 col-form-label text-md-start"
+                                    >{{ "Documents" }} <br /><span
+                                        class="txt-gray"
+                                    >
+                                        {{
+                                            "Upload any relevant documents related to this business e.g KRA Pin, Company Profile e.t.c"
+                                        }}</span
+                                    >
+                                </label>
+
+                                <div class="col-md-5 offset-md-0 text-center">
+                                    <div class="col-9 styled">
+                                        <input
+                                            id="documents"
+                                            type="file"
+                                            class="form-control-file"
+                                            name="documents"
+                                            ref="logoInput"
+                                            placeholder="upload any relevant documents"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <div class="row mb-2">
+                                <label
+                                    for="members"
+                                    class="col-md-3 col-form-label text-md-start"
+                                >
+                                    {{ "Members" }} <br /><span
+                                        class="txt-gray"
+                                    >
+                                        {{
+                                            "Invite or select the relevant members to this organisation."
+                                        }}
+                                    </span>
+                                </label>
+
+                                <div class="col-md-9 offset-md-0 text-center">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input
+                                                style="
+                                                    border-radius: 10px;
+                                                    width: 200px;
+                                                    height: 40px;
+                                                "
+                                                placeholder="Enter email address"
+                                                list="memberEmails"
+                                                id="email"
+                                                type="email"
+                                                class="form-control"
+                                                name="email"
+                                                v-model="memberPartner.email"
+                                            />
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <select
+                                                id="department_id"
+                                                class="form-control"
+                                                name="department"
+                                                v-model="
+                                                    memberPartner.department_id
+                                                "
+                                            >
+                                                <option value="">
+                                                    Select department
+                                                </option>
+                                                <option
+                                                    v-for="department in departmentsUnique"
+                                                    :value="department.id"
+                                                >
+                                                    {{ department.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select
+                                                id="role_id"
+                                                class="form-control"
+                                                name="role"
+                                                v-model="memberPartner.role"
+                                            >
+                                                <option value="">
+                                                    Select role
+                                                </option>
+                                                <option value="leader">
+                                                    leader
+                                                </option>
+                                                <option value="mentor">
+                                                    Mentor
+                                                </option>
+                                                <option value="advisor">
+                                                    Advisor
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button
+                                                type="button"
+                                                class="btn btn-warning ml-0 text-light mt-md-0 mt-2"
+                                                @click.prevent="addMemberToList"
+                                            >
+                                                Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-10">
+                                            <ul class="list-group">
+                                                <li
+                                                    class="list-item"
+                                                    v-for="(
+                                                        member, index
+                                                    ) in partnerMembers"
+                                                    :key="index"
+                                                >
+                                                    <span>
+                                                        {{ member.email }}
+                                                    </span>
+
+                                                    <!-- Check if the member is active to decide which button to display -->
+                                                    <button
+                                                        class="btn btn-sm txt-gray float-end"
+                                                        @click.prevent="
+                                                            removeMemberFromList(
+                                                                member.id
+                                                            )
+                                                        "
+                                                    >
+                                                        <i
+                                                            class="mx-3 h3 mdi mdi-delete text-gray"
+                                                            id="dotted"
+                                                        ></i>
+                                                    </button>
+                                                    <!-- Display a different indicator for deactivated members -->
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <span
+                                        v-if="errors.documents"
+                                        class="invalid-feedback"
+                                        role="alert"
+                                    >
+                                        <strong>{{ errors.documents }}</strong>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <hr />
+                            <div class="row mb-2 p-3">
+                                <label
+                                    for="documents"
+                                    class="col-md-3 col-form-label text-md-start"
+                                    >{{ "Account status" }}
+                                </label>
+
+                                <div class="col-md-5 offset-md-0 text-left">
+                                    <div class="col-9 styled">
+                                        <div class="">
+                                            <button
+                                                type="button"
+                                                class="btn btn-light border"
+                                                @click="deactivateAccount"
+                                            >
+                                                Deactivate account
+                                            </button>
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <button
+                                                type="button"
+                                                class="btn btn-danger"
+                                                @click="closeAccount"
+                                            >
+                                                Close account
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+
+                            <div v-if="isLoading" class="loading"></div>
+                            <div v-else class="align-right mb-5">
+                                <div class="text-right mt-3 mb-5">
+                                    <button
+                                        type="button"
+                                        @click="navigateToPartners"
+                                        class="btn btn-light border-dark btn-action"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary btn-action"
+                                    >
+                                        Save changes
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
+                    <hr />
                 </div>
-
-               <!-- <div class="my-5">
-                    <h4>Metrics across portfolio</h4>
+                <div id="members" v-if="currentPage === 3">
+                    <!-- Members content -->
+                    <div class="d-flex align-items-center">
+                        <img :src="partner.logo" alt="logo" />
+                        <div class="partner-info">
+                            <h4>{{ partner.name }}</h4>
+                            <p>
+                                Status:
+                                <span class="text-success">{{
+                                    " Active"
+                                }}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="m-info mt-5">
+                        <h4>Members</h4>
+                        <p>All members assigned to this partner</p>
+                    </div>
 
                     <div class="row">
                         <div class="col-12 px-0">
@@ -192,7 +966,7 @@
                                                 style="height: 10px"
                                                 class="input-field"
                                                 type="text"
-                                                placeholder="Search  metrics"
+                                                placeholder="Search members"
                                             />
                                         </div>
                                     </div>
@@ -213,1063 +987,159 @@
                                         <table class="table">
                                             <thead>
                                                 <tr>
-                                                    <th>Metric</th>
-                                                    <th>Value</th>
-                                                    
-                                                    <th>Progress</th>
-                                                    <th>Key departments</th>
+                                                    <th>Member</th>
+                                                    <th>Status</th>
+                                                    <th>Departments</th>
+                                                    <th>
+                                                        Active KPIs progress
+                                                    </th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr
-                                                    v-for="metric in metricWithProgress"
-                                                    :key="metric.id"
+                                                    v-for="member in this
+                                                        .partner.members"
+                                                    :key="member.id"
                                                 >
                                                     <td>
-                                                        <div>
-                                                            {{
-                                                                metric.metric
-                                                                    .name
-                                                            }}
-                                                        </div>
-                                                        <div>
-                                                            <span
-                                                                class="txt-gray"
-                                                                >Partners:
-                                                                {{
-                                                                    metric
-                                                                        .partners
-                                                                        .length
-                                                                }}
-                                                            </span>
-                                                        </div>
+                                                        {{ member.email }}
                                                     </td>
-                                                    <td class="stats">
-                                                        {{
-                                                            metric.totalCurrentValue
-                                                        }}
-                                                    </td>
-                                                     <td class="td-members"> 
-                                                   <template
-                                                            v-for="member in topDrivers"
-                                                            :key="member.id"
-                                                        >
-                                                            <img
-                                                                v-for="member in member.topDrivers"
-                                                                :key="member.id"
-                                                                src="assets/images/faces/face1.jpg"
-                                                                :alt="
-                                                                    member.email
-                                                                "
-                                                            />
-                                                        
-                                                        </template>
-                                                     </td>
                                                     <td>
-                                                        {{
-                                                            metric.calculatedProgress.toFixed(
-                                                                2
-                                                            )
-                                                        }}%
-
+                                                        <!-- <span>
+                                                            {{
+                                                                (member.is_active =
+                                                                    "Active")
+                                                            }}
+                                                        </span>-->
+                                                        <div
+                                                            class="active_status_container d-flex flex-row justify-content-center"
+                                                        >
+                                                            <span
+                                                                class="active_status_text"
+                                                                >{{
+                                                                    (member.is_active =
+                                                                        "Active")
+                                                                }}</span
+                                                            >
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="mt-1">
+                                                            <span
+                                                                class="department-tag py-1"
+                                                                v-for="department in member.departments"
+                                                                :key="
+                                                                    department.id
+                                                                "
+                                                                >{{
+                                                                    department.name
+                                                                }}</span
+                                                            >
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                    <td>
+                                                        <!-- </td>
+                                                     
+                                                     {{calculateActiveKpiProgress(member)}}
+    
+                                                    <td
+                                                        v-if="
+                                                            calculateActiveKpiProgress(
+                                                                member
+                                                            ).percentage > 0
+                                                        "
+                                                    >
+                                                        <div
+                                                            class="progress-percentage"
+                                                        >
+                                                            {{
+                                                                calculateActiveKpiProgress(
+                                                                    member
+                                                                ).percentage
+                                                            }}%
+                                                        </div>
                                                         <div class="progress">
                                                             <div
                                                                 class="progress-bar"
+                                                                :class="{
+                                                                    'progress-bar-on-track':
+                                                                        calculateActiveKpiProgress(
+                                                                            member
+                                                                        ).label ===
+                                                                        'On Track',
+                                                                    'progress-bar-at-risk':
+                                                                        calculateActiveKpiProgress(
+                                                                            member
+                                                                        ).label ===
+                                                                        'At Risk',
+                                                                    'progress-bar-off-track':
+                                                                        calculateActiveKpiProgress(
+                                                                            member
+                                                                        ).label ===
+                                                                        'Off Track',
+                                                                }"
+                                                                role="progressbar"
                                                                 :style="{
                                                                     width:
-                                                                        metric.calculatedProgress +
+                                                                        calculateActiveKpiProgress(
+                                                                            member
+                                                                        )
+                                                                            .percentage +
                                                                         '%',
                                                                 }"
+                                                                :aria-valuenow="
+                                                                    calculateActiveKpiProgress(
+                                                                        member
+                                                                    ).percentage
+                                                                "
                                                                 aria-valuemin="0"
                                                                 aria-valuemax="100"
                                                             ></div>
                                                         </div>
-                                                    </td>
-                                                     <td>
-                                                        <div>
-                                                            <template
-                                                                v-for="driver in topDrivers"
-                                                                :key="driver.id"
-                                                            >
-                                                                <div>
-                                                                    <span
-                                                                        class="department-tag"
-                                                                        v-for="department in driver.uniqueDepartments"
-                                                                        :key="
-                                                                            department
-                                                                        "
-                                                                    >
-                                                                        {{
-                                                                            department
-                                                                        }}
-                                                                    </span>
-                                                                </div>
-                                                            </template>
-                                                        </div>
-                                                    </td> 
-
-                                                    <td>
-                                                        <span
-                                                            class="depart-tag"
-                                                            v-for="department in uniqueDepartments"
-                                                            :key="department.id"
+                                                        <div class="progress-label"
+                                                        :class="{'at-risk-label' : 
+                                                        calculateActiveKpiProgress(
+                                                                            member
+                                                                        ).label ===
+                                                                        'At Risk',
+                                                        'on-track-label' :
+                                                        calculateActiveKpiProgress(
+                                                                            member
+                                                                        ).label ===
+                                                                        'On Track',
+                                                       'off-track-label' :
+                                                        calculateActiveKpiProgress(
+                                                                            member
+                                                                        ).label ===
+                                                                        'Off Track'                                
+    
+                                                        }"
                                                         >
                                                             {{
-                                                                department.name
-                                                            }}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
-
-                <div class="my-5">
-                    <h4>KPI Breakdown</h4>
-                    <p>A breakdown of each KPI performance</p>
-
-                    <div
-                        class="card"
-                        v-for="kpi in this.partner.kpis"
-                        :key="kpi.id"
-                    >
-                        <div class="m-4 mb-0">
-                            <h4>{{ kpi.title }}</h4>
-                            <p>{{ kpi.review_period_range }}</p>
-                            <p></p>
-                        </div>
-                        <div
-                            class="card-header d-flex justify-content-between my-3"
-                        >
-                            <div>
-                                <div class="input-container">
-                                    <i class="mdi mdi-magnify mdi-icon"></i>
-                                    <input
-                                        style="height: 25px"
-                                        class="input-field"
-                                        type="text"
-                                        placeholder="Search KPI metrics"
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <button
-                                    style="height: 10px"
-                                    class="btn btn-light p-3 btn-icon"
-                                >
-                                    <i
-                                        class="mdi mdi-sort-variant text-dark"
-                                    ></i>
-                                    Filters
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="card-body mb-5">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>KPI Metric</th>
-                                            <th>Current</th>
-                                            <th>Target</th>
-                                            <th>Progress</th>
-                                            <th>Assigned To</th>
-                                            <th>Departments</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr
-                                            v-for="kpiMetric in kpi.kpi_metrics"
-                                            :key="kpiMetric.id"
-                                        >
-                                            <td>
-                                                {{ kpiMetric.title }}
-                                            </td>
-                                            <td>
-                                                <label
-                                                    class="active-period txt-gray"
-                                                    >{{
-                                                        calculateCurrentSum(
-                                                            kpiMetric
-                                                        ).toFixed(2)
-                                                    }}</label
-                                                >
-                                            </td>
-                                            <td>
-                                                <label
-                                                    class="active-period txt-gray"
-                                                >
-                                                    {{
-                                                        calculateTargetSum(
-                                                            kpiMetric
-                                                        ).toFixed(2)
-                                                    }}</label
-                                                >
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    {{
-                                                        calculateProgressPercentage(
-                                                            kpiMetric
-                                                        )
-                                                    }}%
-                                                    <div class="progress">
-                                                        <div
-                                                            class="progress-bar"
-                                                            :class="{
-                                                                'progress-bar-on-track on-track-label':
-                                                                    calculateProgressStatus(
-                                                                        kpiMetric
-                                                                    ) ==
-                                                                    'On Track',
-                                                                'progress-bar-at-risk at-risk-label':
-                                                                    calculateProgressStatus(
-                                                                        kpiMetric
-                                                                    ) ==
-                                                                    'At Risk',
-                                                                'progress-bar-off-track off-track-label':
-                                                                    calculateProgressStatus(
-                                                                        kpiMetric
-                                                                    ) ==
-                                                                    'Off Track',
-                                                            }"
-                                                            role="progressbar"
-                                                            :style="{
-                                                                width:
-                                                                    calculateProgressPercentage(
-                                                                        kpiMetric
-                                                                    ) + '%',
-                                                            }"
-                                                            aria-valuemin="0"
-                                                            aria-valuemax="100"
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                                <span
-                                                    :class="{
-                                                        'on-track-label':
-                                                            calculateProgressStatus(
-                                                                kpiMetric
-                                                            ) == 'On Track',
-                                                        'at-risk-label':
-                                                            calculateProgressStatus(
-                                                                kpiMetric
-                                                            ) == 'At Risk',
-                                                        'off-track-label':
-                                                            calculateProgressStatus(
-                                                                kpiMetric
-                                                            ) == 'Off Track',
-                                                    }"
-                                                    >{{
-                                                        calculateProgressStatus(
-                                                            kpiMetric
-                                                        )
-                                                    }}</span
-                                                >
-                                            </td>
-
-                                            <td class="td-members">
-                                                <div class="d-flex flex-row">
-                                                    <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-
-                                                    <template
-                                                        v-for="(
-                                                            member, index
-                                                        ) in this.partner
-                                                            .members"
-                                                        :key="index"
-                                                    >
-                                                        <div
-                                                            class="member_image d-flex flex-column align-items-center"
-                                                            v-if="index < 3"
-                                                            :src="member.image"
-                                                        >
-                                                            <font-awesome-icon
-                                                                icon="fa-solid, fa-user"
-                                                                style="
-                                                                    color: #979da9;
-                                                                "
-                                                                size="md"
-                                                                class="mx-auto my-auto"
-                                                            />
-                                                            <!--<p class="member_image_text">+1</p>-->
-                                                        </div>
-
-                                                        <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                                    </template>
-
-                                                    <div
-                                                        class="member_image_plus"
-                                                        v-if="
-                                                            this.partner.members
-                                                                .length > 2
-                                                        "
-                                                    >
-                                                        <p
-                                                            class="member_image_text"
-                                                        >
-                                                            +{{
-                                                                this.partner
-                                                                    .members
-                                                                    .length - 3
-                                                            }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <!-- <div class="d-flex flex-row">
-                                                
-
-                                                    <template
-                                                        v-for="(
-                                                            member, index
-                                                        ) in this.partner
-                                                            .members"
-                                                        :key="index"
-                                                    >
-                                                        <div
-                                                            class="member_image d-flex flex-column align-items-center"
-                                                            v-if="index < 2"
-                                                            :src="member.image"
-                                                        >
-                                                            <font-awesome-icon
-                                                                icon="fa-solid, fa-user"
-                                                                style="
-                                                                    color: #979da9;
-                                                                "
-                                                                size="md"
-                                                                class="mx-auto my-auto"
-                                                            />
-                                                        </div>
-
-                                                        <div
-                                                            class="member_image_plus"
-                                                            v-else
-                                                            :src="member.image"
-                                                        >
-                                                            <p
-                                                                class="member_image_text"
-                                                            >
-                                                                +{{ index - 1 }}
-                                                            </p>
-                                                        </div>
-                                                    </template>
-                                                </div>-->
-                                                <!--<img
-                                                    v-for="member in this
-                                                        .partner.members"
-                                                    :key="member.id"
-                                                    src="assets/images/faces/face1.jpg"
-                                                    alt="image"
-                                                />-->
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="depart-tag"
-                                                    v-for="department in uniqueDepartments"
-                                                    :key="department.id"
-                                                >
-                                                    {{ department.name }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="account" v-if="currentPage === 2">
-                <!-- Account content -->
-                <div class="d-flex align-items-center">
-                    <img :src="this.partner.logo" alt="logo" />
-                    <div class="partner-info">
-                        <h4>{{ this.partner.name }}</h4>
-                        <p>
-                            Status:
-                            <span class="text-success">{{ " Active" }}</span>
-                        </p>
-                    </div>
-                </div>
-                <div
-                    class="mt-5 d-flex justify-content-between align-items-end"
-                >
-                    <div class="p-info">
-                        <h4>Partner info</h4>
-                        <p>
-                            Enter the photo and basic details of the partner
-                            here
-                        </p>
-                    </div>
-
-                    <div class="text-end">
-                        <button
-                            type="button"
-                            @click="navigateToPartners"
-                            class="btn btn-light border-dark px-3 py-2 btn-action"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            class="btn btn-primary px-3 py-2 btn-action"
-                            form="form-submit"
-                            type="submit"
-                        >
-                            Save changes
-                        </button>
-                    </div>
-                </div>
-                <hr />
-                <div class="form-container">
-                    <form
-                        id="form-submit"
-                        class="row g-3"
-                        @submit.prevent="partnerSubmit"
-                        method="POST"
-                    >
-                        <div class="row mb-2 p-3">
-                            <label
-                                for="name"
-                                class="col-md-3 col-form-label text-md-start"
-                                >{{ "Name" }}</label
-                            >
-
-                            <div class="col-md-5 offset-md-0 text-center">
-                                <input
-                                    id="name"
-                                    type="text"
-                                    class="form-control"
-                                    name="name"
-                                    v-model="this.partner.name"
-                                    autocomplete="name"
-                                    autofocus
-                                />
-                            </div>
-                        </div>
-
-                        <hr />
-
-                        <div class="row mb-2 p-3">
-                            <label
-                                for="email"
-                                class="col-md-3 col-form-label text-md-start"
-                                >{{ "Email Address" }}</label
-                            >
-
-                            <div class="col-md-5 offset-md-0 text-center">
-                                <div class="input-container">
-                                    <!-- <span class="mdi mdi-email input-icon"></span> -->
-                                    <input
-                                        id="email"
-                                        type="text"
-                                        class="form-control"
-                                        name="email"
-                                        v-model="this.partner.email"
-                                        autocomplete="email"
-                                        autofocus
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <hr />
-
-                        <div class="row mb-2 p-3">
-                            <label
-                                for="website"
-                                class="col-md-3 col-form-label text-md-start"
-                                >{{ "Website" }}</label
-                            >
-
-                            <div class="col-md-5 offset-md-0 text-center">
-                                <input
-                                    id="website"
-                                    type="text"
-                                    class="form-control"
-                                    name="website"
-                                    v-model="this.partner.website"
-                                    autocomplete="website"
-                                    autofocus
-                                />
-                            </div>
-                        </div>
-                        <hr />
-
-                        <div class="row mb-2 p-3">
-                            <label
-                                for="phone"
-                                class="col-md-3 col-form-label text-md-start"
-                                >{{ "Phone Number" }}</label
-                            >
-
-                            <div class="col-md-5 offset-md-0 text-center">
-                                <input
-                                    id="phone"
-                                    type="text"
-                                    class="form-control"
-                                    name="phone"
-                                    v-model="this.partner.phone"
-                                    autocomplete="phone"
-                                    autofocus
-                                />
-                            </div>
-                        </div>
-                        <hr />
-
-                        <div class="row mb-2 p-3">
-                            <label
-                                for="address"
-                                class="col-md-3 col-form-label text-md-start"
-                                >{{ "Address" }}</label
-                            >
-
-                            <div class="col-md-5 offset-md-0 text-center">
-                                <input
-                                    id="address"
-                                    type="text"
-                                    class="form-control"
-                                    name="address"
-                                    v-model="this.partner.address"
-                                    autocomplete="address"
-                                    autofocus
-                                />
-                            </div>
-                        </div>
-                        <hr />
-
-                        <div class="row mb-2 p-3">
-                            <label
-                                for="logo"
-                                class="col-md-3 col-form-label text-md-start"
-                            >
-                                {{ "Partner Logo" }} <br />
-                                <span class="txt-gray">{{
-                                    "This will be used to identify the partner"
-                                }}</span>
-                            </label>
-
-                            <div class="col-md-5 offset-md-0 text-center">
-                                <div class="row styled">
-                                    <div class="col-3">
-                                        <img :src="logoPreview" alt="." />
-                                    </div>
-                                    <div class="col-9">
-                                        <input
-                                            id="logo"
-                                            type="file"
-                                            class="form-control-file"
-                                            name="logo"
-                                            ref="logoInput"
-                                            placeholder="text"
-                                            accept=".jpg, .jpeg, .png, .gif"
-                                            @change="handleLogoChange"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr />
-
-                        <div class="row mb-2 p-3">
-                            <label
-                                for="business_type"
-                                class="col-md-3 col-form-label text-md-start"
-                                >{{ "Business Type" }}</label
-                            >
-
-                            <div class="col-md-5 offset-md-0 text-center">
-                                <input
-                                    id="business_type"
-                                    type="text"
-                                    class="form-control"
-                                    name="address"
-                                    v-model="this.partner.business_type"
-                                    autocomplete=""
-                                    autofocus
-                                    readonly
-                                />
-                            </div>
-                        </div>
-                        <hr />
-
-                        <div class="row mb-2 p-3 about">
-                            <label
-                                for="about"
-                                class="col-md-3 col-form-label text-md-start"
-                                >{{ "About" }} <br /><span class="txt-gray">
-                                    {{
-                                        "Write a short introduction of the business."
-                                    }}</span
-                                >
-                            </label>
-
-                            <div class="col-md-5 offset-md-0 text-center">
-                                <textarea
-                                    id="about"
-                                    class="form-control"
-                                    name="about"
-                                    v-model="this.partner.about"
-                                    autocomplete="about"
-                                    autofocus
-                                ></textarea>
-                                <span
-                                    v-if="true"
-                                    class="text-count"
-                                    :class="{ 'text-danger': isOverMax }"
-                                    >{{
-                                        remainingCharacters + " characters left"
-                                    }}</span
-                                >
-                            </div>
-                        </div>
-                        <hr />
-                        <div class="row mb-2 p-3">
-                            <label
-                                for="documents"
-                                class="col-md-3 col-form-label text-md-start"
-                                >{{ "Documents" }} <br /><span class="txt-gray">
-                                    {{
-                                        "Upload any relevant documents related to this business e.g KRA Pin, Company Profile e.t.c"
-                                    }}</span
-                                >
-                            </label>
-
-                            <div class="col-md-5 offset-md-0 text-center">
-                                <div class="col-9 styled">
-                                    <input
-                                        id="documents"
-                                        type="file"
-                                        class="form-control-file"
-                                        name="documents"
-                                        ref="logoInput"
-                                        placeholder="upload any relevant documents"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr />
-
-                        <div class="row mb-2">
-                            <label
-                                for="members"
-                                class="col-md-3 col-form-label text-md-start"
-                            >
-                                {{ "Members" }} <br /><span class="txt-gray">
-                                    {{
-                                        "Invite or select the relevant members to this organisation."
-                                    }}
-                                </span>
-                            </label>
-
-                            <div class="col-md-9 offset-md-0 text-center">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <input
-                                            style="
-                                                border-radius: 10px;
-                                                width: 200px;
-                                                height: 40px;
-                                            "
-                                            placeholder="Enter email address"
-                                            list="memberEmails"
-                                            id="email"
-                                            type="email"
-                                            class="form-control"
-                                            name="email"
-                                            v-model="memberPartner.email"
-                                        />
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <select
-                                            id="department_id"
-                                            class="form-control"
-                                            name="department"
-                                            v-model="
-                                                memberPartner.department_id
-                                            "
-                                        >
-                                            <option value="">
-                                                Select department
-                                            </option>
-                                            <option
-                                                v-for="department in departmentsUnique"
-                                                :value="department.id"
-                                            >
-                                                {{ department.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select
-                                            id="role_id"
-                                            class="form-control"
-                                            name="role"
-                                            v-model="memberPartner.role"
-                                        >
-                                            <option value="">
-                                                Select role
-                                            </option>
-                                            <option value="leader">
-                                                leader
-                                            </option>
-                                            <option value="mentor">
-                                                Mentor
-                                            </option>
-                                            <option value="advisor">
-                                                Advisor
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button
-                                            type="button"
-                                            class="btn btn-warning ml-0 text-light mt-md-0 mt-2"
-                                            @click.prevent="addMemberToList"
-                                        >
-                                            Add
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-md-10">
-                                        <ul class="list-group">
-                                            <li
-                                                class="list-item"
-                                                v-for="(
-                                                    member, index
-                                                ) in partnerMembers"
-                                                :key="index"
-                                            >
-                                                <span>
-                                                    {{ member.email }}
-                                                </span>
-
-                                                <!-- Check if the member is active to decide which button to display -->
-                                                <button
-                                                    class="btn btn-sm txt-gray float-end"
-                                                    @click.prevent="
-                                                        removeMemberFromList(
-                                                            member.id
-                                                        )
-                                                    "
-                                                >
-                                                    <i
-                                                        class="mx-3 h3 mdi mdi-delete text-gray"
-                                                        id="dotted"
-                                                    ></i>
-                                                </button>
-                                                <!-- Display a different indicator for deactivated members -->
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <span
-                                    v-if="errors.documents"
-                                    class="invalid-feedback"
-                                    role="alert"
-                                >
-                                    <strong>{{ errors.documents }}</strong>
-                                </span>
-                            </div>
-                        </div>
-
-                        <hr />
-                        <div class="row mb-2 p-3">
-                            <label
-                                for="documents"
-                                class="col-md-3 col-form-label text-md-start"
-                                >{{ "Account status" }}
-                            </label>
-
-                            <div class="col-md-5 offset-md-0 text-left">
-                                <div class="col-9 styled">
-                                    <div class="">
-                                        <button
-                                            type="button"
-                                            class="btn btn-light border"
-                                            @click="deactivateAccount"
-                                        >
-                                            Deactivate account
-                                        </button>
-                                    </div>
-
-                                    <div class="mt-3">
-                                        <button
-                                            type="button"
-                                            class="btn btn-danger"
-                                            @click="closeAccount"
-                                        >
-                                            Close account
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr />
-
-                        <div v-if="isLoading" class="loading"></div>
-                        <div v-else class="align-right mb-5">
-                            <div class="text-right mt-3 mb-5">
-                                <button
-                                    type="button"
-                                    @click="navigateToPartners"
-                                    class="btn btn-light border-dark btn-action"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary btn-action"
-                                >
-                                    Save changes
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <hr />
-            </div>
-            <div id="members" v-if="currentPage === 3">
-                <!-- Members content -->
-                <div class="d-flex align-items-center">
-                    <img :src="partner.logo" alt="logo" />
-                    <div class="partner-info">
-                        <h4>{{ partner.name }}</h4>
-                        <p>
-                            Status:
-                            <span class="text-success">{{ " Active" }}</span>
-                        </p>
-                    </div>
-                </div>
-                <div class="m-info mt-5">
-                    <h4>Members</h4>
-                    <p>All members assigned to this partner</p>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 px-0">
-                        <div class="card">
-                            <div
-                                class="card-header d-flex justify-content-between my-3"
-                            >
-                                <div>
-                                    <div class="input-container">
-                                        <i class="mdi mdi-magnify mdi-icon"></i>
-                                        <input
-                                            style="height: 10px"
-                                            class="input-field"
-                                            type="text"
-                                            placeholder="Search members"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <button
-                                        style="height: 10px"
-                                        class="btn btn-light p-3 btn-icon"
-                                    >
-                                        <i
-                                            class="mdi mdi-sort-variant text-dark"
-                                        ></i>
-                                        Filters
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body mb-5">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Member</th>
-                                                <th>Status</th>
-                                                <th>Departments</th>
-                                                <th>Active KPIs progress</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr
-                                                v-for="member in this.partner
-                                                    .members"
-                                                :key="member.id"
-                                            >
-                                                <td>
-                                                    {{ member.email }}
-                                                </td>
-                                                <td>
-                                                    <!-- <span>
-                                                        {{
-                                                            (member.is_active =
-                                                                "Active")
-                                                        }}
-                                                    </span>-->
-                                                    <div
-                                                        class="active_status_container d-flex flex-row justify-content-center"
-                                                    >
-                                                        <span
-                                                            class="active_status_text"
-                                                            >{{
-                                                                (member.is_active =
-                                                                    "Active")
-                                                            }}</span
-                                                        >
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="mt-1">
-                                                        <span
-                                                            class="department-tag py-1"
-                                                            v-for="department in member.departments"
-                                                            :key="department.id"
-                                                            >{{
-                                                                department.name
-                                                            }}</span
-                                                        >
-                                                    </div>
-                                                </td>
-                                                <td></td>
-                                                <td>
-                                                    <!-- </td>
-                                                 
-                                                 {{calculateActiveKpiProgress(member)}}
-
-                                                <td
-                                                    v-if="
-                                                        calculateActiveKpiProgress(
-                                                            member
-                                                        ).percentage > 0
-                                                    "
-                                                >
-                                                    <div
-                                                        class="progress-percentage"
-                                                    >
-                                                        {{
-                                                            calculateActiveKpiProgress(
-                                                                member
-                                                            ).percentage
-                                                        }}%
-                                                    </div>
-                                                    <div class="progress">
-                                                        <div
-                                                            class="progress-bar"
-                                                            :class="{
-                                                                'progress-bar-on-track':
-                                                                    calculateActiveKpiProgress(
-                                                                        member
-                                                                    ).label ===
-                                                                    'On Track',
-                                                                'progress-bar-at-risk':
-                                                                    calculateActiveKpiProgress(
-                                                                        member
-                                                                    ).label ===
-                                                                    'At Risk',
-                                                                'progress-bar-off-track':
-                                                                    calculateActiveKpiProgress(
-                                                                        member
-                                                                    ).label ===
-                                                                    'Off Track',
-                                                            }"
-                                                            role="progressbar"
-                                                            :style="{
-                                                                width:
-                                                                    calculateActiveKpiProgress(
-                                                                        member
-                                                                    )
-                                                                        .percentage +
-                                                                    '%',
-                                                            }"
-                                                            :aria-valuenow="
                                                                 calculateActiveKpiProgress(
                                                                     member
-                                                                ).percentage
-                                                            "
-                                                            aria-valuemin="0"
-                                                            aria-valuemax="100"
-                                                        ></div>
-                                                    </div>
-                                                    <div class="progress-label"
-                                                    :class="{'at-risk-label' : 
-                                                    calculateActiveKpiProgress(
-                                                                        member
-                                                                    ).label ===
-                                                                    'At Risk',
-                                                    'on-track-label' :
-                                                    calculateActiveKpiProgress(
-                                                                        member
-                                                                    ).label ===
-                                                                    'On Track',
-                                                   'off-track-label' :
-                                                    calculateActiveKpiProgress(
-                                                                        member
-                                                                    ).label ===
-                                                                    'Off Track'                                
-
-                                                    }"
-                                                    >
+                                                                ).label
+                                                            }}
+                                                        </div>
+                                                    </td>
+                                                    <td v-else>N/A</td>
+    
+                                                     <td>
                                                         {{
                                                             calculateActiveKpiProgress(
-                                                                member
-                                                            ).label
-                                                        }}
-                                                    </div>
-                                                </td>
-                                                <td v-else>N/A</td>
-
-                                                 <td>
-                                                    {{
-                                                        calculateActiveKpiProgress(
-                                                            member.kpi_metric_members
-                                                        )
-                                                    }}%
-                                                 </td> 
-
-                                                <td>
-                                                    <button
-                                                        class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
-                                                    >
-                                                        <span
-                                                            class="mdi mdi-eye-outline text-light"
-                                                        ></span>
-                                                        <a
-                                                            :href="
-                                                                '/members/' +
-                                                                member.id
-                                                            "
-                                                            class="text-light"
-                                                            >View</a
-                                                        >
-                                                    </button>-->
-
-                                                    <a
-                                                        :href="
-                                                            '/members/' +
-                                                            member.id
-                                                        "
-                                                        ><button
-                                                            class="btn btn-sm px-1 py-1 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                                                member.kpi_metric_members
+                                                            )
+                                                        }}%
+                                                     </td> 
+    
+                                                    <td>
+                                                        <button
+                                                            class="btn btn-sm px-2 py-2 btn-pri d-flex flex-row justify-content-center align-items-center"
                                                         >
                                                             <span
-                                                                class="mdi mdi-eye-outline text-light py-0"
+                                                                class="mdi mdi-eye-outline text-light"
                                                             ></span>
                                                             <a
                                                                 :href="
@@ -1277,23 +1147,45 @@
                                                                     member.id
                                                                 "
                                                                 class="text-light"
-                                                                style="
-                                                                    font-size: 14px;
-                                                                    padding-left: 5px;
-                                                                "
                                                                 >View</a
                                                             >
-                                                        </button></a
-                                                    >
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <pagination
-                                        :total="totalPages"
-                                        :current="currentPage"
-                                        @page-change="handlePageChange"
-                                    ></pagination>
+                                                        </button>-->
+
+                                                        <a
+                                                            :href="
+                                                                '/members/' +
+                                                                member.id
+                                                            "
+                                                            ><button
+                                                                class="btn btn-sm px-1 py-1 btn-pri d-flex flex-row justify-content-center align-items-center"
+                                                            >
+                                                                <span
+                                                                    class="mdi mdi-eye-outline text-light py-0"
+                                                                ></span>
+                                                                <a
+                                                                    :href="
+                                                                        '/members/' +
+                                                                        member.id
+                                                                    "
+                                                                    class="text-light"
+                                                                    style="
+                                                                        font-size: 14px;
+                                                                        padding-left: 5px;
+                                                                    "
+                                                                    >View</a
+                                                                >
+                                                            </button></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <pagination
+                                            :total="totalPages"
+                                            :current="currentPage"
+                                            @page-change="handlePageChange"
+                                        ></pagination>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2672,6 +2564,7 @@ export default {
             success: "",
             searchQuery: "",
             currentPage: 1,
+
             base_url: "../",
             formattedDate: "",
             partner: {
@@ -3526,6 +3419,14 @@ export default {
             );
         },
 
+        //         canViewKpiActivity(kpi) {
+
+        //      const memberId = this.$store.state.loggedUser.member.id;
+        //      return kpi.kpi_members.some(
+        //          (member) => member.member_id === memberId
+        //      );
+        //         },
+
         getDepartmentName(departmentId) {
             const department = uniqueDepartments.find(
                 (department) => department.id === departmentId
@@ -4325,10 +4226,10 @@ export default {
             this.selectedKpiMember = kpiMember;
         },
 
-        handleLinkClick() {
-            this.currentPage = 1;
-            window.location.reload();
-        },
+        // handleLinkClick() {
+        //     this.currentPage = 1;
+        //     window.location.reload();
+        // },
 
         navigateToPartners() {
             window.location.href = "/partners";
