@@ -1530,6 +1530,7 @@
                                                                         membersData.length -
                                                                         3
                                                                     }}
+                                                                    
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -1773,7 +1774,7 @@
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
 
-                                                            <template
+                                                            <!--<template
                                                                 v-for="(
                                                                     member,
                                                                     index
@@ -1816,15 +1817,52 @@
                                                                         }}
                                                                     </p>
                                                                 </div>
-                                                            </template>
+                                                            </template>-->
+                                                              <template
+                                                        v-for="(
+                                                            member, index
+                                                        ) in this.partner
+                                                            .members"
+                                                        :key="index"
+                                                    >
+                                                        <div
+                                                            class="member_image d-flex flex-column align-items-center"
+                                                            v-if="index < 3"
+                                                            :src="member.image"
+                                                        >
+                                                            <font-awesome-icon
+                                                                icon="fa-solid, fa-user"
+                                                                style="
+                                                                    color: #979da9;
+                                                                "
+                                                                size="md"
+                                                                class="mx-auto my-auto"
+                                                            />
+                                                            <!--<p class="member_image_text">+1</p>-->
                                                         </div>
-                                                        <!--<img
-                                                    v-for="member in this
-                                                        .partner.members"
-                                                    :key="member.id"
-                                                    src="assets/images/faces/face1.jpg"
-                                                    alt="image"
-                                                />-->
+
+                                
+                                                    </template>
+
+                                                    <div
+                                                        class="member_image_plus"
+                                                        v-if="
+                                                            this.partner.members
+                                                                .length > 2
+                                                        "
+                                                    >
+                                                        <p
+                                                            class="member_image_text"
+                                                        >
+                                                            +{{
+                                                                this.partner
+                                                                    .members
+                                                                    .length - 3
+                                                            }}
+                                                        </p>
+                                                    </div>
+                                                        </div>
+                                                     
                                                     </td>
                                                     <td>
                                                         <template
