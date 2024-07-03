@@ -1531,8 +1531,7 @@
 
                     <div v-else-if="loggedUser.user_role_id === 2">
                         <div
-                            class="col-12 px-0"
-                            v-for="kpi in kpis"
+                            class="col-12 px-0" v-for="kpi in kpis"
                             :key="kpi.id"
                         >
                             <div class="card mb-5">
@@ -1615,10 +1614,15 @@
 
                                                  > -->
                                                 <tr
-                                                    v-for="kpimetric in kpi.kpi_metrics"
+                                                    v-for="kpimetric in getKpimetrics(kpi.kpi_metrics)"
                                                     :key="kpimetric.id"
+                                                    
                                                 >
-                                                    <td>
+                                                    <td v-if="
+                                                                canViewActivity(
+                                                                    kpimetric
+                                                                )
+                                                            ">
                                                         <div>
                                                             <span>
                                                                 {{
@@ -1627,7 +1631,11 @@
                                                             </span>
                                                         </div>
                                                     </td>
-                                                    <td class="">
+                                                    <td class="" v-if="
+                                                                canViewActivity(
+                                                                    kpimetric
+                                                                )
+                                                            ">
                                                         <div>
                                                             {{
                                                                 kpimetric.target
@@ -1635,7 +1643,11 @@
                                                             <!-- Display KPI target, assuming target is a property of the KPI -->
                                                         </div>
                                                     </td>
-                                                    <td class="">
+                                                    <td class="" v-if="
+                                                                canViewActivity(
+                                                                    kpimetric
+                                                                )
+                                                            ">
                                                         <div>
                                                             {{
                                                                 kpimetric.response_period
@@ -1654,7 +1666,11 @@
                                                             />
                                                     </td>-->
 
-                                                    <td class="td-members">
+                                                    <td class="td-members" v-if="
+                                                                canViewActivity(
+                                                                    kpimetric
+                                                                )
+                                                            ">
                                                         <div
                                                             class="d-flex flex-row"
                                                         >
@@ -1756,7 +1772,11 @@
                                                         </div>
                                                      
                                                     </td>
-                                                    <td>
+                                                    <td v-if="
+                                                                canViewActivity(
+                                                                    kpimetric
+                                                                )
+                                                            ">
                                                         <template
                                                             v-for="dataDepartment in partnersWithProgress"
                                                             :key="
@@ -3419,13 +3439,13 @@ export default {
             );
         },
 
-        //         canViewKpiActivity(kpi) {
+                canViewKpiActivity(kpi) {
 
-        //      const memberId = this.$store.state.loggedUser.member.id;
-        //      return kpi.kpi_members.some(
-        //          (member) => member.member_id === memberId
-        //      );
-        //         },
+             const memberId = this.$store.state.loggedUser.member.id;
+             return kpi.kpi_members.filter(
+                 (member) => member.member_id === memberId
+             );
+                },
 
         getDepartmentName(departmentId) {
             const department = uniqueDepartments.find(
@@ -3439,6 +3459,18 @@ export default {
         handleLinkClick() {
             this.currentPage = 1; // Set currentPage to 1
             window.location.reload(); // Reload the current page
+        },
+
+        getKpimetrics(kpi_metrics){
+            let new_kpi_metrics = kpi_metrics.filter(
+                 selected_kpi_metric => this.canViewActivity(selected_kpi_metric));
+
+          return new_kpi_metrics;
+        },
+
+        getKpis(kpis){
+            let new_kpis = kpis.filter(selected_kpi => this.canViewKpiActivity(selected_kpi));
+            return new_kpis;
         },
 
         calculateCurrentSum(kpiMetric) {
