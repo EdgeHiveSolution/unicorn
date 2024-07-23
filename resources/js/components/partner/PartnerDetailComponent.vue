@@ -1422,7 +1422,6 @@
                                                                         membersData.length -
                                                                         3
                                                                     }}
-                                                                    
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -1531,7 +1530,8 @@
 
                     <div v-else-if="loggedUser.user_role_id === 2">
                         <div
-                            class="col-12 px-0" v-for="kpi in kpis"
+                            class="col-12 px-0"
+                            v-for="kpi in userKPIs"
                             :key="kpi.id"
                         >
                             <div class="card mb-5">
@@ -1614,15 +1614,10 @@
 
                                                  > -->
                                                 <tr
-                                                    v-for="kpimetric in getKpimetrics(kpi.kpi_metrics)"
+                                                    v-for="kpimetric in kpi.kpi_metrics"
                                                     :key="kpimetric.id"
-                                                    
                                                 >
-                                                    <td v-if="
-                                                                canViewActivity(
-                                                                    kpimetric
-                                                                )
-                                                            ">
+                                                    <td>
                                                         <div>
                                                             <span>
                                                                 {{
@@ -1631,11 +1626,7 @@
                                                             </span>
                                                         </div>
                                                     </td>
-                                                    <td class="" v-if="
-                                                                canViewActivity(
-                                                                    kpimetric
-                                                                )
-                                                            ">
+                                                    <td class="">
                                                         <div>
                                                             {{
                                                                 kpimetric.target
@@ -1643,11 +1634,7 @@
                                                             <!-- Display KPI target, assuming target is a property of the KPI -->
                                                         </div>
                                                     </td>
-                                                    <td class="" v-if="
-                                                                canViewActivity(
-                                                                    kpimetric
-                                                                )
-                                                            ">
+                                                    <td class="">
                                                         <div>
                                                             {{
                                                                 kpimetric.response_period
@@ -1666,11 +1653,7 @@
                                                             />
                                                     </td>-->
 
-                                                    <td class="td-members" v-if="
-                                                                canViewActivity(
-                                                                    kpimetric
-                                                                )
-                                                            ">
+                                                    <td class="td-members">
                                                         <div
                                                             class="d-flex flex-row"
                                                         >
@@ -1682,7 +1665,7 @@
                                                 <p class="member_image_text">+1</p>
                                                 </div>-->
 
-                                                            <!--<template
+                                                            <template
                                                                 v-for="(
                                                                     member,
                                                                     index
@@ -1725,58 +1708,17 @@
                                                                         }}
                                                                     </p>
                                                                 </div>
-                                                            </template>-->
-                                                              <template
-                                                        v-for="(
-                                                            member, index
-                                                        ) in this.partner
-                                                            .members"
-                                                        :key="index"
-                                                    >
-                                                        <div
-                                                            class="member_image d-flex flex-column align-items-center"
-                                                            v-if="index < 3"
-                                                            :src="member.image"
-                                                        >
-                                                            <font-awesome-icon
-                                                                icon="fa-solid, fa-user"
-                                                                style="
-                                                                    color: #979da9;
-                                                                "
-                                                                size="md"
-                                                                class="mx-auto my-auto"
-                                                            />
-                                                            <!--<p class="member_image_text">+1</p>-->
+                                                            </template>
                                                         </div>
-
-                                
-                                                    </template>
-
-                                                    <div
-                                                        class="member_image_plus"
-                                                        v-if="
-                                                            this.partner.members
-                                                                .length > 2
-                                                        "
-                                                    >
-                                                        <p
-                                                            class="member_image_text"
-                                                        >
-                                                            +{{
-                                                                this.partner
-                                                                    .members
-                                                                    .length - 3
-                                                            }}
-                                                        </p>
-                                                    </div>
-                                                        </div>
-                                                     
+                                                        <!--<img
+                                                    v-for="member in this
+                                                        .partner.members"
+                                                    :key="member.id"
+                                                    src="assets/images/faces/face1.jpg"
+                                                    alt="image"
+                                                />-->
                                                     </td>
-                                                    <td v-if="
-                                                                canViewActivity(
-                                                                    kpimetric
-                                                                )
-                                                            ">
+                                                    <td>
                                                         <template
                                                             v-for="dataDepartment in partnersWithProgress"
                                                             :key="
@@ -2648,6 +2590,23 @@ export default {
     },
 
     computed: {
+        userKPIs() {
+            const memberId = this.$store.state.loggedUser.member.id;
+
+            const member = this.partner.members.find((m) => m.id === memberId);
+
+            if (!member) {
+                return [];
+            }
+
+            return member.kpis.map((kpi) => ({
+                ...kpi,
+                kpi_metrics: kpi.kpi_metrics.filter(
+                    (metric) => metric.kpi_id === kpi.id
+                ),
+            }));
+        },
+
         isKpiMetricMembersEmpty() {
             return (
                 this.$store.state.loggedUser.member.kpi_metric_members
@@ -3439,13 +3398,13 @@ export default {
             );
         },
 
-                canViewKpiActivity(kpi) {
+        //         canViewKpiActivity(kpi) {
 
-             const memberId = this.$store.state.loggedUser.member.id;
-             return kpi.kpi_members.filter(
-                 (member) => member.member_id === memberId
-             );
-                },
+        //      const memberId = this.$store.state.loggedUser.member.id;
+        //      return kpi.kpi_members.some(
+        //          (member) => member.member_id === memberId
+        //      );
+        //         },
 
         getDepartmentName(departmentId) {
             const department = uniqueDepartments.find(
@@ -3459,18 +3418,6 @@ export default {
         handleLinkClick() {
             this.currentPage = 1; // Set currentPage to 1
             window.location.reload(); // Reload the current page
-        },
-
-        getKpimetrics(kpi_metrics){
-            let new_kpi_metrics = kpi_metrics.filter(
-                 selected_kpi_metric => this.canViewActivity(selected_kpi_metric));
-
-          return new_kpi_metrics;
-        },
-
-        getKpis(kpis){
-            let new_kpis = kpis.filter(selected_kpi => this.canViewKpiActivity(selected_kpi));
-            return new_kpis;
         },
 
         calculateCurrentSum(kpiMetric) {
