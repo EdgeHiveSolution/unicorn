@@ -1373,7 +1373,7 @@
                                                             >   
                                                                 <div
                                                                     class="member_image d-flex flex-column align-items-center"
-                                                                    v-if="index < 1"
+                                                                    v-if="index < 4"
                                                                     :src="
                                                                         member.image
                                                                     "
@@ -1397,7 +1397,7 @@
                                                                 >
                                                                     +{{
                                                                         kpimetric.member_and_department.length -
-                                                                        1
+                                                                        4
                                                                     }}
                                                                 </p>
                                                             </div>
