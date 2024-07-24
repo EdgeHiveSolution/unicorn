@@ -1597,7 +1597,8 @@
 
                                                  > -->
                                                 <tr
-                                                    v-for="kpimetric in kpi.kpi_metrics"
+                                                    v-for="kpimetric in filterKpiMetricsByView(kpi.kpi_metrics)"
+                                            
                                                     :key="kpimetric.id"
                                                 >
                                                     <td>
@@ -3471,6 +3472,9 @@ export default {
             );
         },
 
+       filterKpiMetricsByView(kpimetrics){
+        return kpimetrics.filter((kpiMetric) => this.canViewActivity(kpiMetric));
+       },
         //         canViewKpiActivity(kpi) {
 
         //      const memberId = this.$store.state.loggedUser.member.id;
