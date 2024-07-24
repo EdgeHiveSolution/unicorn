@@ -2573,7 +2573,7 @@ export default {
     },
 
     computed: {
-        async userKPIs() {
+         userKPIs() {
             const memberId = this.$store.state.loggedUser.member.id;
 
             const member = this.partner.members.find((m) => m.id === memberId);
