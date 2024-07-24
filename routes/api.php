@@ -74,6 +74,7 @@ Route::delete('v1/metric-delete', [MetricApiController::class, 'destroy']);
 Route::get('v1/member-list', [MemberApiController::class, 'index']);
 //Route::get('v1/members/{id}', [MemberApiController::class, 'show']);
 Route::get('v1/members/{memberId}/kpis-and-metrics', [MemberApiController::class, 'getKpisAndMetricsForMember']);
+Route::get('v1/members/{memberId}/members-and-departments',[MemberApiController::class,'getKpisAndDepartmentsForMember']);
 Route::post('v1/member-create', [MemberApiController::class, 'store']);
 Route::patch('v1/member-update', [MemberApiController::class, 'update']);
 Route::delete('v1/member-delete', [MemberApiController::class, 'destroy']);

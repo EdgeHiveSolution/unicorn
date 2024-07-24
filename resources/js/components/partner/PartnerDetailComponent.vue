@@ -1237,7 +1237,7 @@
                     >
                         <div
                             class="col-12 px-0"
-                            v-for="kpi in kpis"
+                            v-for="kpi in partner.kpis"
                             :key="kpi.id"
                         >
                             <div class="card mb-5">
@@ -1264,7 +1264,7 @@
                                             data-toggle="modal"
                                             class="btn btn-light border"
                                         >
-                                            + Add KPI metric
+                                            + Add KPI metric1
                                         </button>
                                     </div>
                                 </div>
@@ -1363,27 +1363,17 @@
                                                         <div
                                                             class="d-flex flex-row"
                                                         >
-                                                            <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-
-                                                            <template
+                                                        
+                                                          <template
                                                                 v-for="(
                                                                     member,
                                                                     index
-                                                                ) in membersData"
+                                                                ) in kpimetric.member_and_department"
                                                                 :key="index"
-                                                            >
+                                                            >   
                                                                 <div
                                                                     class="member_image d-flex flex-column align-items-center"
-                                                                    v-if="
-                                                                        index <
-                                                                        3
-                                                                    "
+                                                                    v-if="index < 1"
                                                                     :src="
                                                                         member.image
                                                                     "
@@ -1398,32 +1388,25 @@
                                                                     />
                                                                     <!--<p class="member_image_text">+1</p>-->
                                                                 </div>
-
-                                                                <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-                                                            </template>
-
-                                                            <div
+                                                                 <div
                                                                 class="member_image_plus"
-                                                                v-if="
-                                                                    membersData.length >
-                                                                    2
-                                                                "
+                                                                v-else 
                                                             >
                                                                 <p
                                                                     class="member_image_text"
                                                                 >
                                                                     +{{
-                                                                        membersData.length -
-                                                                        3
+                                                                        kpimetric.member_and_department.length -
+                                                                        1
                                                                     }}
                                                                 </p>
                                                             </div>
+
+                                                                
+
+                                                        
+                                                            </template>
+                                                           
                                                         </div>
                                                         <!-- <div
                                                             class="d-flex flex-row"
@@ -3092,6 +3075,7 @@ export default {
         await this.fetchCountries();
         await this.fetchDepartments();
         await this.fetchMembers();
+        await this.fetchKpiMetricMembers();
 
         this.formattedDate = format(
             new Date(this.partner.created_at),
@@ -3216,6 +3200,7 @@ export default {
     mounted() {
         this.fetchPartnerMembers();
         this.fetchPartnerMemberswithKpis();
+       
 
         const partnerId = this.partnerId;
 
@@ -3352,6 +3337,46 @@ export default {
 
                 console.log("Departments to be added here:", this.departments);
             });
+        },
+
+         async fetchKpiMetricMembers(){
+           try{
+
+            for(let kpi of this.partner.kpis){
+                  console.log("The kpi metric new is: " + JSON.stringify(kpi));
+                  for(let kpiMetric1 of kpi.kpi_metrics){
+                   let kpi_metric_members1 = kpiMetric1.kpi_metric_members;
+                   let member_kpi = [];
+                   for(let member1 of kpi_metric_members1){
+                    const memberKpiId = member1.member_id;
+                    const uri =  this.base_url +`api/v1/members/${memberKpiId}/members-and-departments`;
+                       const response = await axios.get(uri);
+
+                        // Handle the response data as needed
+                        console.log(
+                            "API Response for KPI Metric Member with departments:",
+                            response.data
+                        );
+                       member_kpi.push(response.data); 
+                   }
+
+                    // const new_member_kpi = {
+                    //     "member_and_department": member_kpi
+                    //    };
+                    
+                    kpiMetric1.member_and_department = member_kpi;
+                    console.log( "New API Response for KPI Metric Member departments:",
+                        JSON.stringify(kpiMetric1)
+                    );
+
+                  }
+                  
+            }
+           }
+
+           catch (error) {
+                console.error("Error fetching Kpi metric members:", error);
+            }
         },
 
         // Inside your Vue.js component method (e.g., fetchMembers)
@@ -3720,6 +3745,8 @@ export default {
                 console.error("Error fetching KPI Metrics:", error);
             }
         },
+
+    
 
         toggleDateInputs(kpiId) {
             this.showInputs[kpiId] = !this.showInputs[kpiId];

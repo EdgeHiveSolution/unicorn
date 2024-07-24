@@ -51,6 +51,16 @@ class MemberApiController extends Controller
     ]);
 }
 
+public function getKpisAndDepartmentsForMember($memberId)
+{
+    $member = Member::with(['departments'])
+        ->findOrFail($memberId);
+
+    return response()->json([
+        'member' => $member,
+    ]);
+}
+
 
 //     public function getKpisAndMetricsForMember($memberId)
 // {
