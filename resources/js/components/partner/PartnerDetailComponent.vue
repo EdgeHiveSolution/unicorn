@@ -2573,7 +2573,7 @@ export default {
     },
 
     computed: {
-        userKPIs() {
+        async userKPIs() {
             const memberId = this.$store.state.loggedUser.member.id;
 
             const member = this.partner.members.find((m) => m.id === memberId);
@@ -3340,8 +3340,11 @@ export default {
         },
 
          async fetchKpiMetricMembers(){
-           try{
-
+            console.log("the logged user role id: ",store.state.loggedUser.user_role_id);
+            if((store.state.loggedUser.user_role_id===1) || (store.state.loggedUser.user_role_id===3)){
+               
+               try{
+           
             for(let kpi of this.partner.kpis){
                   console.log("The kpi metric new is: " + JSON.stringify(kpi));
                   for(let kpiMetric1 of kpi.kpi_metrics){
@@ -3376,6 +3379,51 @@ export default {
 
            catch (error) {
                 console.error("Error fetching Kpi metric members:", error);
+            }
+            }
+           
+        },
+
+        async fetchKpiMetricUserMembers(new_kpis){
+           try{
+
+            for(let kpi of new_kpis){
+                  console.log("The kpi metric new is: " + JSON.stringify(kpi));
+                  for(let kpiMetric1 of kpi.kpi_metrics){
+                   let kpi_metric_members1 = kpiMetric1.kpi_metric_members;
+                   let member_kpi = [];
+                   for(let member1 of kpi_metric_members1){
+                    const memberKpiId = member1.member_id;
+                    const uri =  this.base_url +`api/v1/members/${memberKpiId}/members-and-departments`;
+                       const response = await axios.get(uri);
+
+                        // Handle the response data as needed
+                        console.log(
+                            "API Response for KPI Metric Member with departments:",
+                            response.data
+                        );
+                       member_kpi.push(response.data); 
+                   }
+
+                    // const new_member_kpi = {
+                    //     "member_and_department": member_kpi
+                    //    };
+                    
+                    kpiMetric1.member_and_department = member_kpi;
+                    console.log( "New API User response:",
+                        JSON.stringify(kpiMetric1)
+                    );
+
+                  }
+                  
+            }
+
+            return new_kpis;
+           }
+
+           catch (error) {
+                console.error("Error fetching Kpi metric members:", error);
+                return [];
             }
         },
 
