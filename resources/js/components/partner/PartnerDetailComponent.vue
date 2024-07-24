@@ -1264,7 +1264,7 @@
                                             data-toggle="modal"
                                             class="btn btn-light border"
                                         >
-                                            + Add KPI metric1
+                                            + Add KPI metric
                                         </button>
                                     </div>
                                 </div>
