@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `countries` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.countries: ~5 rows (approximately)
-INSERT INTO `countries` (`id`, `name`, `code`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT IGNORE INTO `countries` (`id`, `name`, `code`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 'Kenya', 'KE', '2024-06-14 09:22:17', '2024-06-14 09:22:17', NULL),
 	(2, 'United States', 'US', '2024-06-14 09:22:17', '2024-06-14 09:22:17', NULL),
 	(3, 'United Kingdom', 'UK', '2024-06-14 09:22:17', '2024-06-14 09:22:17', NULL),
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `departments` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.departments: ~6 rows (approximately)
-INSERT INTO `departments` (`id`, `name`, `email`, `about`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT IGNORE INTO `departments` (`id`, `name`, `email`, `about`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 'Operations', 'operations@unicn.africa', 'Operations Team', 1, '2024-06-14 09:58:29', '2024-06-14 09:58:29', NULL),
 	(2, 'Sales', 'sales@unicn.africa', 'Sales Team', 1, '2024-06-14 09:58:54', '2024-06-14 09:58:54', NULL),
 	(3, 'Finance', 'finance@unicn.africa', 'Finance Team', 1, '2024-06-14 09:59:30', '2024-06-14 09:59:30', NULL),
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `department_member` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.department_member: ~7 rows (approximately)
-INSERT INTO `department_member` (`id`, `department_id`, `member_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT IGNORE INTO `department_member` (`id`, `department_id`, `member_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 5, 1, '2024-06-14 16:34:37', '2024-06-14 16:34:37', NULL),
 	(2, 6, 2, '2024-06-17 13:45:00', '2024-06-17 13:45:00', NULL),
 	(3, 5, 3, '2024-06-18 08:39:46', '2024-06-18 08:39:46', NULL),
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `department_partner` (
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.department_partner: ~23 rows (approximately)
-INSERT INTO `department_partner` (`id`, `department_id`, `partner_id`, `role`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `department_partner` (`id`, `department_id`, `partner_id`, `role`, `created_at`, `updated_at`) VALUES
 	(1, 5, NULL, NULL, '2024-06-14 10:04:38', '2024-06-14 10:04:38'),
 	(2, 5, NULL, NULL, '2024-06-14 10:04:40', '2024-06-14 10:04:40'),
 	(3, 5, NULL, NULL, '2024-06-14 10:09:11', '2024-06-14 10:09:11'),
@@ -170,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `kpis` (
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.kpis: ~12 rows (approximately)
-INSERT INTO `kpis` (`id`, `title`, `kpiOwner_id`, `partner_id`, `review_period_range`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT IGNORE INTO `kpis` (`id`, `title`, `kpiOwner_id`, `partner_id`, `review_period_range`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 'Financial', '2', 1, '17th June 2024 to 31st December 2024', '2024-06-17 13:50:11', '2024-06-17 13:50:11', NULL),
 	(2, 'Customer', '2', 1, '17th June 2024 to 31st December 2024', '2024-06-17 13:53:51', '2024-06-17 13:53:51', NULL),
 	(3, 'Operations', '2', 1, '17th June 2024 to 31st December 2024', '2024-06-17 13:57:31', '2024-06-17 13:57:31', NULL),
@@ -198,8 +198,8 @@ CREATE TABLE IF NOT EXISTS `kpi_member` (
   CONSTRAINT `kpi_member_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table unicorn.kpi_member: ~64 rows (approximately)
-INSERT INTO `kpi_member` (`id`, `kpi_id`, `member_id`, `created_at`, `updated_at`) VALUES
+-- Dumping data for table unicorn.kpi_member: ~72 rows (approximately)
+INSERT IGNORE INTO `kpi_member` (`id`, `kpi_id`, `member_id`, `created_at`, `updated_at`) VALUES
 	(1, 1, 1, '2024-06-17 13:50:11', '2024-06-17 13:50:11'),
 	(2, 1, 2, '2024-06-17 13:50:11', '2024-06-17 13:50:11'),
 	(3, 2, 1, '2024-06-17 13:53:51', '2024-06-17 13:53:51'),
@@ -298,8 +298,8 @@ CREATE TABLE IF NOT EXISTS `kpi_metrics` (
   CONSTRAINT `kpi_metrics_metric_id_foreign` FOREIGN KEY (`metric_id`) REFERENCES `metrics` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table unicorn.kpi_metrics: ~59 rows (approximately)
-INSERT INTO `kpi_metrics` (`id`, `metric_id`, `title`, `type`, `target`, `response_period`, `kpi_id`, `timely_value`, `on_track_value`, `off_track_min`, `off_track_max`, `at_risk_min`, `at_risk_max`, `created_at`, `updated_at`, `deleted_at`) VALUES
+-- Dumping data for table unicorn.kpi_metrics: ~63 rows (approximately)
+INSERT IGNORE INTO `kpi_metrics` (`id`, `metric_id`, `title`, `type`, `target`, `response_period`, `kpi_id`, `timely_value`, `on_track_value`, `off_track_min`, `off_track_max`, `at_risk_min`, `at_risk_max`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 3, 'Sales by Category Design', 'KSH', '1000000', 'weekly', 1, 35714.29, '70', '0', '30', '40', '60', '2024-06-17 13:52:50', '2024-06-17 13:52:50', NULL),
 	(2, 5, 'Social Media Followers - IG', 'Numeric', '3000', 'monthly', 2, 428.57, '70', '0', '30', '40', '60', '2024-06-17 13:56:37', '2024-06-17 13:56:37', NULL),
 	(3, 2, 'Attendance', 'QTY', '0', 'weekly', 3, 0.00, '70', '0', '30', '40', '60', '2024-06-17 14:00:01', '2024-06-17 14:00:01', NULL),
@@ -382,7 +382,7 @@ CREATE TABLE IF NOT EXISTS `kpi_metric_members` (
 ) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.kpi_metric_members: ~59 rows (approximately)
-INSERT INTO `kpi_metric_members` (`id`, `kpi_metric_id`, `member_id`, `target`, `timely_value`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT IGNORE INTO `kpi_metric_members` (`id`, `kpi_metric_id`, `member_id`, `target`, `timely_value`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 1, 2, 1000000, 35714.29, '2024-06-17 13:52:50', '2024-06-17 13:52:50', NULL),
 	(2, 2, 2, 3000, 428.57, '2024-06-17 13:56:37', '2024-06-17 13:56:37', NULL),
 	(3, 4, 2, 1200000, 171428.57, '2024-06-17 14:03:51', '2024-06-17 14:03:51', NULL),
@@ -479,7 +479,7 @@ CREATE TABLE IF NOT EXISTS `members` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.members: ~7 rows (approximately)
-INSERT INTO `members` (`id`, `name`, `email`, `photo`, `email_verified_at`, `remember_token`, `user_id`, `user_role_id`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT IGNORE INTO `members` (`id`, `name`, `email`, `photo`, `email_verified_at`, `remember_token`, `user_id`, `user_role_id`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 'Davies Kevin', 'info@shaeteq.com', NULL, NULL, NULL, 9, NULL, 1, '2024-06-14 16:34:37', '2024-06-14 16:34:37', NULL),
 	(2, 'VJ Mabonga', 'vj@tactive.consulting', NULL, NULL, NULL, 10, NULL, 1, '2024-06-17 13:45:00', '2024-06-17 13:45:00', NULL),
 	(3, 'Judith Mwangangi', 'judith@tactive.consulting', NULL, NULL, NULL, 11, NULL, 1, '2024-06-18 08:39:46', '2024-06-18 08:39:46', NULL),
@@ -511,7 +511,7 @@ CREATE TABLE IF NOT EXISTS `member_partner` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.member_partner: ~6 rows (approximately)
-INSERT INTO `member_partner` (`id`, `department_id`, `member_id`, `partner_id`, `role`, `kpi_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT IGNORE INTO `member_partner` (`id`, `department_id`, `member_id`, `partner_id`, `role`, `kpi_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, NULL, 1, 2, NULL, NULL, '2024-06-14 16:34:37', '2024-06-14 16:34:37', NULL),
 	(2, NULL, 2, 1, NULL, NULL, '2024-06-17 13:45:00', '2024-06-17 13:45:00', NULL),
 	(3, NULL, 4, 5, NULL, NULL, '2024-06-18 18:06:25', '2024-06-18 18:06:25', NULL),
@@ -532,7 +532,7 @@ CREATE TABLE IF NOT EXISTS `metrics` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.metrics: ~7 rows (approximately)
-INSERT INTO `metrics` (`id`, `name`, `unit`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT IGNORE INTO `metrics` (`id`, `name`, `unit`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 'USD', 'Currency', '2024-06-14 10:00:48', '2024-06-14 10:00:48', NULL),
 	(2, 'QTY', 'Unit', '2024-06-14 10:00:58', '2024-06-14 10:00:58', NULL),
 	(3, 'KSH', 'Currency', '2024-06-14 10:01:10', '2024-06-14 10:01:10', NULL),
@@ -550,7 +550,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
 ) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.migrations: ~26 rows (approximately)
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+INSERT IGNORE INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(1, '2013_10_12_084800_create_user_roles_table', 1),
 	(2, '2014_10_12_000000_create_users_table', 1),
 	(3, '2014_10_12_100000_create_password_reset_tokens_table', 1),
@@ -607,7 +607,7 @@ CREATE TABLE IF NOT EXISTS `partners` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.partners: ~7 rows (approximately)
-INSERT INTO `partners` (`id`, `name`, `address`, `phone`, `email`, `website`, `logo`, `country_id`, `business_type`, `about`, `documents`, `password`, `is_active`, `user_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT IGNORE INTO `partners` (`id`, `name`, `address`, `phone`, `email`, `website`, `logo`, `country_id`, `business_type`, `about`, `documents`, `password`, `is_active`, `user_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 'Tactive', 'The Werks, Hendred Road, Lavingtion, Tactive', '+254707249001', 'kaye@tactive.consulting', 'tactive.consulting', 'https://app.unicn.africa/uploads/partners/logos/tactive-logo1718357147.png', 1, 'Marketing', 'A management consulting firm with focus on shaping SME growth.', 'undefined', '$2y$10$eeVGq5ku6DVZZ37SYXArF.tPYhBm2eH3grRWPfkdOKTm3ioI/8/Za', 1, 5, '2024-06-14 09:25:48', '2024-06-19 07:01:07', NULL),
 	(2, 'Shaeteq', 'Riverside Drive Swiss Cottages No.1', '+254715813380', 'davies@shaeteq.com', 'shaeteq.com', 'https://app.unicn.africa/uploads/partners/logos/shaeteq-logo1718357408.png', 1, 'Technology', 'We are a Digital Systems Integrator and Design House focused on improving your efficiency', 'undefined', '$2y$10$V2zIq6oHTCR2VoU2YDdise.V2dDBRREfORFjVDAuEQ1F2Jeq2RAFq', 1, 6, '2024-06-14 09:30:08', '2024-06-14 16:26:37', NULL),
 	(5, 'Biodeal', 'P.O. BOX 32040-00600', '+254202015228', 'biodeal@unicn.africa', 'biodeal.com', 'https://app.unicn.africa/uploads/partners/logos/biodeal-logo1718716368.png', 1, 'Healthcare', 'About Biodeal', 'undefined', '$2y$10$YqnQL8k6v3J6nxDksVDeDe7iI2jvqdQbTr7i.735XOuvLyDSfMG2a', 1, 12, '2024-06-18 13:12:48', '2024-06-20 08:54:22', NULL),
@@ -677,7 +677,7 @@ CREATE TABLE IF NOT EXISTS `progress` (
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.progress: ~27 rows (approximately)
-INSERT INTO `progress` (`id`, `kpi_metric_member_id`, `kpi_metric_id`, `kpi_id`, `title`, `notes`, `current_value`, `target_value`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `progress` (`id`, `kpi_metric_member_id`, `kpi_metric_id`, `kpi_id`, `title`, `notes`, `current_value`, `target_value`, `created_at`, `updated_at`) VALUES
 	(1, 1, 1, NULL, 'Week 25', 'Tunza Social media Collateral', 25000, 35714.29, '2024-06-17 14:16:35', '2024-06-17 14:16:35'),
 	(2, 2, 2, NULL, 'June IG Update', 'Instagram; Used paid ADs to increase followers', 150, 428.57, '2024-06-17 14:19:51', '2024-06-17 14:19:51'),
 	(3, 4, 5, NULL, 'Week 25 Attendance', 'Full Attendance', 5, 3.93, '2024-06-17 14:25:13', '2024-06-17 14:25:13'),
@@ -722,7 +722,7 @@ CREATE TABLE IF NOT EXISTS `progress_chat` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.progress_chat: ~2 rows (approximately)
-INSERT INTO `progress_chat` (`id`, `progress_id`, `sender_id`, `message`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `progress_chat` (`id`, `progress_id`, `sender_id`, `message`, `created_at`, `updated_at`) VALUES
 	(1, 1, 5, 'Well done, let\'s ensure we produce MP4 videos', '2024-06-17 14:24:41', '2024-06-17 14:24:41'),
 	(2, 1, 5, 'Email me once you have created them', '2024-06-17 14:27:52', '2024-06-17 14:27:52');
 
@@ -738,8 +738,8 @@ CREATE TABLE IF NOT EXISTS `progress_files` (
   CONSTRAINT `progress_files_progress_id_foreign` FOREIGN KEY (`progress_id`) REFERENCES `progress` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table unicorn.progress_files: ~0 rows (approximately)
-INSERT INTO `progress_files` (`id`, `progress_id`, `file_paths`, `created_at`, `updated_at`) VALUES
+-- Dumping data for table unicorn.progress_files: ~1 rows (approximately)
+INSERT IGNORE INTO `progress_files` (`id`, `progress_id`, `file_paths`, `created_at`, `updated_at`) VALUES
 	(1, 11, '["ProgressUploads\\/Screenshot 2024-06-19 at 23.13.01.png"]', '2024-06-19 20:13:53', '2024-06-19 20:13:53');
 
 -- Dumping structure for table unicorn.trackings
@@ -778,7 +778,7 @@ CREATE TABLE IF NOT EXISTS `units` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.units: ~3 rows (approximately)
-INSERT INTO `units` (`id`, `name`, `type`, `metric_id`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `units` (`id`, `name`, `type`, `metric_id`, `created_at`, `updated_at`) VALUES
 	(1, 'Currency', 'number', NULL, '2024-06-14 10:00:24', '2024-06-14 10:00:24'),
 	(2, 'Unit', 'integer', NULL, '2024-06-14 10:00:36', '2024-06-14 10:00:36'),
 	(3, 'Numeric', 'number', NULL, '2024-06-17 13:11:13', '2024-06-17 13:11:13');
@@ -804,7 +804,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.users: ~18 rows (approximately)
-INSERT INTO `users` (`id`, `name`, `email`, `photo`, `email_verified_at`, `password`, `is_active`, `remember_token`, `user_role_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT IGNORE INTO `users` (`id`, `name`, `email`, `photo`, `email_verified_at`, `password`, `is_active`, `remember_token`, `user_role_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 'John Doe', 'partner@gmail.com', NULL, NULL, '$2y$10$IyGCBnVSry.w1iigYRIYsesfXcFwHVmG0gv9l/UmGIu2w7RNY12e.', 1, NULL, 3, '2024-06-14 09:22:17', '2024-06-14 09:22:17', NULL),
 	(2, 'Admin', 'admin@gmail.com', NULL, NULL, '$2y$10$j007TA5297WzOqzpGa.zr.e92kQ5hslnrlcITenVYpkwcyU4utRQq', 1, NULL, 1, '2024-06-14 09:22:17', '2024-06-14 09:22:17', NULL),
 	(3, 'Kaye', 'kaye@unicn.africa', NULL, NULL, '$2y$10$/4NaoiJNDbfaH4qaOQUvvuvEJc02zmrB3JMkOm3WLJpHdfaw9Hkvu', 1, NULL, 1, '2024-06-14 09:22:17', '2024-06-14 09:22:17', NULL),
@@ -834,7 +834,7 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table unicorn.user_roles: ~4 rows (approximately)
-INSERT INTO `user_roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `user_roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
 	(1, 'admin', '2024-06-14 09:22:17', '2024-06-14 09:22:17'),
 	(2, 'Member', '2024-06-14 09:22:17', '2024-06-14 09:22:17'),
 	(3, 'Partner', '2024-06-14 09:22:17', '2024-06-14 09:22:17'),
