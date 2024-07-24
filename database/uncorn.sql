@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `kpi_member` (
   CONSTRAINT `kpi_member_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table unicorn.kpi_member: ~64 rows (approximately)
+-- Dumping data for table unicorn.kpi_member: ~72 rows (approximately)
 INSERT INTO `kpi_member` (`id`, `kpi_id`, `member_id`, `created_at`, `updated_at`) VALUES
 	(1, 1, 1, '2024-06-17 13:50:11', '2024-06-17 13:50:11'),
 	(2, 1, 2, '2024-06-17 13:50:11', '2024-06-17 13:50:11'),
@@ -298,7 +298,7 @@ CREATE TABLE IF NOT EXISTS `kpi_metrics` (
   CONSTRAINT `kpi_metrics_metric_id_foreign` FOREIGN KEY (`metric_id`) REFERENCES `metrics` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table unicorn.kpi_metrics: ~59 rows (approximately)
+-- Dumping data for table unicorn.kpi_metrics: ~63 rows (approximately)
 INSERT INTO `kpi_metrics` (`id`, `metric_id`, `title`, `type`, `target`, `response_period`, `kpi_id`, `timely_value`, `on_track_value`, `off_track_min`, `off_track_max`, `at_risk_min`, `at_risk_max`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 3, 'Sales by Category Design', 'KSH', '1000000', 'weekly', 1, 35714.29, '70', '0', '30', '40', '60', '2024-06-17 13:52:50', '2024-06-17 13:52:50', NULL),
 	(2, 5, 'Social Media Followers - IG', 'Numeric', '3000', 'monthly', 2, 428.57, '70', '0', '30', '40', '60', '2024-06-17 13:56:37', '2024-06-17 13:56:37', NULL),
@@ -738,7 +738,7 @@ CREATE TABLE IF NOT EXISTS `progress_files` (
   CONSTRAINT `progress_files_progress_id_foreign` FOREIGN KEY (`progress_id`) REFERENCES `progress` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table unicorn.progress_files: ~0 rows (approximately)
+-- Dumping data for table unicorn.progress_files: ~1 rows (approximately)
 INSERT INTO `progress_files` (`id`, `progress_id`, `file_paths`, `created_at`, `updated_at`) VALUES
 	(1, 11, '["ProgressUploads\\/Screenshot 2024-06-19 at 23.13.01.png"]', '2024-06-19 20:13:53', '2024-06-19 20:13:53');
 
