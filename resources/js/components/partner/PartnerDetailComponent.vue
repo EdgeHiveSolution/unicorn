@@ -204,7 +204,7 @@
 
                         <div
                             class="card"
-                            v-for="kpi in this.partner.kpis"
+                            v-for="kpi in partner.kpis"
                             :key="kpi.id"
                         >
                             <div class="m-4 mb-0">
@@ -257,9 +257,7 @@
                                                 v-for="kpiMetric in kpi.kpi_metrics"
                                                 :key="kpiMetric.id"
                                             >
-                                                <td>
-                                                    {{ kpiMetric.title }}
-                                                </td>
+                                                <td>{{ kpiMetric.title }}</td>
                                                 <td>
                                                     <label
                                                         class="active-period txt-gray"
@@ -273,8 +271,7 @@
                                                 <td>
                                                     <label
                                                         class="active-period txt-gray"
-                                                    >
-                                                        {{
+                                                        >{{
                                                             calculateTargetSum(
                                                                 kpiMetric
                                                             ).toFixed(2)
@@ -336,12 +333,13 @@
                                                                 ) ==
                                                                 'Off Track',
                                                         }"
-                                                        >{{
+                                                    >
+                                                        {{
                                                             calculateProgressStatus(
                                                                 kpiMetric
                                                             )
-                                                        }}</span
-                                                    >
+                                                        }}
+                                                    </span>
                                                 </td>
 
                                                 <td class="td-members">
@@ -351,17 +349,27 @@
                                                         <template
                                                             v-for="(
                                                                 member, index
-                                                            ) in kpimetric.member_and_department"
+                                                            ) in fetchMembersForKpiMetric(
+                                                                kpiMetric
+                                                            )"
                                                             :key="index"
                                                         >
                                                             <div
                                                                 class="member_image d-flex flex-column align-items-center"
                                                                 v-if="index < 4"
-                                                                :src="
-                                                                    member.image
-                                                                "
                                                             >
+                                                                <img
+                                                                    v-if="
+                                                                        member.photo
+                                                                    "
+                                                                    :src="
+                                                                        member.photo
+                                                                    "
+                                                                    alt="Member Photo"
+                                                                    class="member-photo"
+                                                                />
                                                                 <font-awesome-icon
+                                                                    v-else
                                                                     icon="fa-solid, fa-user"
                                                                     style="
                                                                         color: #979da9;
@@ -369,18 +377,18 @@
                                                                     size="md"
                                                                     class="mx-auto my-auto"
                                                                 />
-                                                                <!--<p class="member_image_text">+1</p>-->
                                                             </div>
                                                             <div
-                                                                class="member_image_plus"
                                                                 v-else
+                                                                class="member_image_plus"
                                                             >
                                                                 <p
                                                                     class="member_image_text"
                                                                 >
                                                                     +{{
-                                                                        kpimetric
-                                                                            .member_and_department
+                                                                        fetchMembersForKpiMetric(
+                                                                            kpiMetric
+                                                                        )
                                                                             .length -
                                                                         4
                                                                     }}
@@ -388,56 +396,6 @@
                                                             </div>
                                                         </template>
                                                     </div>
-                                                    <!-- <div
-                                                        class="d-flex flex-row"
-                                                    >
-                                            
-
-                                                        <template
-                                                            v-for="(
-                                                                member,
-                                                                index
-                                                            ) in membersData"
-                                                            :key="index"
-                                                        >
-                                                            <div
-                                                                class="member_image d-flex flex-column align-items-center"
-                                                                v-if="
-                                                                    index <
-                                                                    2
-                                                                "
-                                                                :src="
-                                                                    member.photo
-                                                                "
-                                                            >
-                                                                <font-awesome-icon
-                                                                    icon="fa-solid, fa-user"
-                                                                    style="
-                                                                        color: #979da9;
-                                                                    "
-                                                                    size="md"
-                                                                    class="mx-auto my-auto"
-                                                                />
-                                                            </div>
-
-                                                            <div
-                                                                class="member_image_plus"
-                                                                v-else
-                                                                :src="
-                                                                    member.photo
-                                                                "
-                                                            >
-                                                                <p
-                                                                    class="member_image_text"
-                                                                >
-                                                                    +{{
-                                                                        index -
-                                                                        1
-                                                                    }}
-                                                                </p>
-                                                            </div>
-                                                        </template>
-                                                    </div>  -->
                                                 </td>
 
                                                 <td>
@@ -1342,106 +1300,36 @@
                                                             />
                                                        
                                                     </td>-->
-
                                                     <td class="td-members">
                                                         <div
                                                             class="d-flex flex-row"
                                                         >
-                                                            <template>
-                                                                <td
-                                                                    class="td-members"
-                                                                >
-                                                                    <div
-                                                                        class="d-flex flex-row"
-                                                                    >
-                                                                        <template>
-                                                                            <td
-                                                                                class="td-members"
-                                                                            >
-                                                                                <div
-                                                                                    class="d-flex flex-row"
-                                                                                >
-                                                                                    <template
-                                                                                        v-for="(
-                                                                                            member,
-                                                                                            index
-                                                                                        ) in membersInKpiMetric"
-                                                                                        :key="
-                                                                                            index
-                                                                                        "
-                                                                                    >
-                                                                                        <div
-                                                                                            class="member_image d-flex flex-column align-items-center"
-                                                                                            v-if="
-                                                                                                index <
-                                                                                                4
-                                                                                            "
-                                                                                        >
-                                                                                            <img
-                                                                                                v-if="
-                                                                                                    member.image
-                                                                                                "
-                                                                                                :src="
-                                                                                                    member.image
-                                                                                                "
-                                                                                                alt="Member Photo"
-                                                                                                class="member-photo"
-                                                                                            />
-                                                                                            <font-awesome-icon
-                                                                                                v-else
-                                                                                                icon="fa-solid, fa-user"
-                                                                                                style="
-                                                                                                    color: #979da9;
-                                                                                                "
-                                                                                                size="md"
-                                                                                                class="mx-auto my-auto"
-                                                                                            />
-                                                                                            <!--<p class="member_image_text">+1</p>-->
-                                                                                        </div>
-                                                                                        <div
-                                                                                            class="member_image_plus"
-                                                                                            v-else
-                                                                                        >
-                                                                                            <p
-                                                                                                class="member_image_text"
-                                                                                            >
-                                                                                                +{{
-                                                                                                    membersInKpiMetric.length -
-                                                                                                    4
-                                                                                                }}
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </template>
-                                                                                </div>
-                                                                            </td>
-                                                                        </template>
-                                                                    </div>
-                                                                </td>
-                                                            </template>
-                                                        </div>
-                                                        <!-- <div
-                                                            class="d-flex flex-row"
-                                                        >
-                                                
-
                                                             <template
                                                                 v-for="(
                                                                     member,
                                                                     index
-                                                                ) in membersData"
+                                                                ) in kpimetric.member_and_department"
                                                                 :key="index"
                                                             >
                                                                 <div
                                                                     class="member_image d-flex flex-column align-items-center"
                                                                     v-if="
                                                                         index <
-                                                                        2
-                                                                    "
-                                                                    :src="
-                                                                        member.photo
+                                                                        4
                                                                     "
                                                                 >
+                                                                    <img
+                                                                        v-if="
+                                                                            member.photo
+                                                                        "
+                                                                        :src="
+                                                                            member.photo
+                                                                        "
+                                                                        alt="Member Photo"
+                                                                        class="member-photo"
+                                                                    />
                                                                     <font-awesome-icon
+                                                                        v-else
                                                                         icon="fa-solid, fa-user"
                                                                         style="
                                                                             color: #979da9;
@@ -1450,27 +1338,24 @@
                                                                         class="mx-auto my-auto"
                                                                     />
                                                                 </div>
-
                                                                 <div
                                                                     class="member_image_plus"
                                                                     v-else
-                                                                    :src="
-                                                                        member.photo
-                                                                    "
                                                                 >
                                                                     <p
                                                                         class="member_image_text"
                                                                     >
                                                                         +{{
-                                                                            index -
-                                                                            1
+                                                                            kpimetric
+                                                                                .member_and_department
+                                                                                .length -
+                                                                            4
                                                                         }}
                                                                     </p>
                                                                 </div>
                                                             </template>
-                                                        </div>  -->
+                                                        </div>
                                                     </td>
-
                                                     <td>
                                                         <span
                                                             class="department-tag"
@@ -1644,32 +1529,34 @@
                                                         <div
                                                             class="d-flex flex-row"
                                                         >
-                                                            <!-- <div class="member_image_plus"
-                                                v-for="member in partner.members"
-                                                :key="member.id"
-                                                :src="member.image"
-                                                >
-                                                <p class="member_image_text">+1</p>
-                                                </div>-->
-
                                                             <template
                                                                 v-for="(
                                                                     member,
                                                                     index
-                                                                ) in membersData"
+                                                                ) in membersInKpiMetric(
+                                                                    kpimetric
+                                                                )"
                                                                 :key="index"
                                                             >
                                                                 <div
                                                                     class="member_image d-flex flex-column align-items-center"
                                                                     v-if="
                                                                         index <
-                                                                        2
-                                                                    "
-                                                                    :src="
-                                                                        member.photo
+                                                                        4
                                                                     "
                                                                 >
+                                                                    <img
+                                                                        v-if="
+                                                                            member.photo
+                                                                        "
+                                                                        :src="
+                                                                            member.photo
+                                                                        "
+                                                                        alt="Member Photo"
+                                                                        class="member-photo"
+                                                                    />
                                                                     <font-awesome-icon
+                                                                        v-else
                                                                         icon="fa-solid, fa-user"
                                                                         style="
                                                                             color: #979da9;
@@ -1678,32 +1565,24 @@
                                                                         class="mx-auto my-auto"
                                                                     />
                                                                 </div>
-
                                                                 <div
-                                                                    class="member_image_plus"
                                                                     v-else
-                                                                    :src="
-                                                                        member.photo
-                                                                    "
+                                                                    class="member_image_plus"
                                                                 >
                                                                     <p
                                                                         class="member_image_text"
                                                                     >
                                                                         +{{
-                                                                            index -
-                                                                            1
+                                                                            membersInKpiMetric(
+                                                                                kpiMetric
+                                                                            )
+                                                                                .length -
+                                                                            4
                                                                         }}
                                                                     </p>
                                                                 </div>
                                                             </template>
                                                         </div>
-                                                        <!--<img
-                                                    v-for="member in this
-                                                        .partner.members"
-                                                    :key="member.id"
-                                                    src="assets/images/faces/face1.jpg"
-                                                    alt="image"
-                                                />-->
                                                     </td>
                                                     <td>
                                                         <span
@@ -2498,6 +2377,7 @@ export default {
 
             selectedItems: [],
             departments: [],
+            kpiMetricMembers: [],
 
             selectedKpiMember: [],
 
@@ -2627,24 +2507,24 @@ export default {
             };
         },
 
-        membersInKpiMetric() {
-            const members = new Set();
+        // membersInKpiMetric() {
+        //     const members = new Set();
 
-            this.partner.kpis.forEach((kpi) => {
-                kpi.kpi_metrics.forEach((metric) => {
-                    metric.kpi_metric_members.forEach((metricMember) => {
-                        const member = this.partner.members.find(
-                            (m) => m.id === metricMember.member_id
-                        );
-                        if (member) {
-                            members.add(member);
-                        }
-                    });
-                });
-            });
+        //     this.partner.kpis.forEach((kpi) => {
+        //         kpi.kpi_metrics.forEach((metric) => {
+        //             metric.kpi_metric_members.forEach((metricMember) => {
+        //                 const member = this.partner.members.find(
+        //                     (m) => m.id === metricMember.member_id
+        //                 );
+        //                 if (member) {
+        //                     members.add(member);
+        //                 }
+        //             });
+        //         });
+        //     });
 
-            return Array.from(members);
-        },
+        //     return Array.from(members);
+        // },
 
         isKpiMetricMembersEmpty() {
             return (
@@ -3128,12 +3008,13 @@ export default {
     // },
 
     async created() {
+        this.fetchKpiMetricMembers();
+        this.fetchKpiMetricMembers2();
         await this.fetchMetrics();
         await this.fetchKpiMetrics();
         await this.fetchCountries();
         await this.fetchDepartments();
         await this.fetchMembers();
-        // await this.fetchKpiMetricMembers();
 
         this.formattedDate = format(
             new Date(this.partner.created_at),
@@ -3386,6 +3267,95 @@ export default {
     },
 
     methods: {
+        fetchMembersForKpiMetric(kpiMetric) {
+            const members = new Set();
+            kpiMetric.kpi_metric_members.forEach((metricMember) => {
+                const member = this.partner.members.find(
+                    (m) => m.id === metricMember.member_id
+                );
+                if (member) {
+                    members.add(member);
+                }
+            });
+            return Array.from(members);
+        },
+
+        membersInKpiMetric(kpiMetric) {
+            const members = new Set();
+            kpiMetric.kpi_metric_members.forEach((metricMember) => {
+                const member = this.partner.members.find(
+                    (m) => m.id === metricMember.member_id
+                );
+                if (member) {
+                    members.add(member);
+                }
+            });
+            return Array.from(members);
+        },
+        getMembersInKpiMetric() {
+            const members = new Set();
+
+            this.partner.kpis.forEach((kpi) => {
+                kpi.kpi_metrics.forEach((metric) => {
+                    metric.kpi_metric_members.forEach((metricMember) => {
+                        const member = this.partner.members.find(
+                            (m) => m.id === metricMember.member_id
+                        );
+                        if (member) {
+                            members.add(member);
+                        }
+                    });
+                });
+            });
+
+            return Array.from(members);
+        },
+
+        fetchKpiMetricMembers2() {
+            console.log(
+                "The logged user role id: ",
+                this.$store.state.loggedUser.user_role_id
+            );
+
+            if (
+                this.$store.state.loggedUser.user_role_id === 1 ||
+                this.$store.state.loggedUser.user_role_id === 3
+            ) {
+                const members = new Set();
+
+                for (let kpi of this.partner.kpis) {
+                    console.log(
+                        "The kpi metric new is: " + JSON.stringify(kpi)
+                    );
+
+                    for (let kpiMetric1 of kpi.kpi_metrics) {
+                        let member_kpi = [];
+
+                        for (let metricMember of kpiMetric1.kpi_metric_members) {
+                            const member = this.partner.members.find(
+                                (m) => m.id === metricMember.member_id
+                            );
+
+                            if (member) {
+                                member_kpi.push({
+                                    ...member,
+                                    departments: member.departments,
+                                });
+                                members.add(member);
+                            }
+                        }
+
+                        kpiMetric1.member_and_department = member_kpi;
+                        console.log(
+                            "New member and department data for KPI Metric:",
+                            JSON.stringify(kpiMetric1)
+                        );
+                    }
+                }
+
+                this.kpiMetricMembers = Array.from(members);
+            }
+        },
         async fetchDepartments() {
             let uri = this.base_url + `api/v1/department-list`;
             await axios.get(uri).then((response) => {
@@ -3396,55 +3366,48 @@ export default {
             });
         },
 
-        // async fetchKpiMetricMembers() {
-        //     console.log(
-        //         "the logged user role id: ",
-        //         store.state.loggedUser.user_role_id
-        //     );
-        //     if (
-        //         store.state.loggedUser.user_role_id === 1 ||
-        //         store.state.loggedUser.user_role_id === 3
-        //     ) {
-        //         try {
-        //             for (let kpi of this.partner.kpis) {
-        //                 console.log(
-        //                     "The kpi metric new is: " + JSON.stringify(kpi)
-        //                 );
-        //                 for (let kpiMetric1 of kpi.kpi_metrics) {
-        //                     let kpi_metric_members1 =
-        //                         kpiMetric1.kpi_metric_members;
-        //                     let member_kpi = [];
-        //                     for (let member1 of kpi_metric_members1) {
-        //                         const memberKpiId = member1.member_id;
-        //                         const uri =
-        //                             this.base_url +
-        //                             `api/v1/members/${memberKpiId}/members-and-departments`;
-        //                         const response = await axios.get(uri);
+        fetchKpiMetricMembers() {
+            console.log(
+                "The logged user role id: ",
+                store.state.loggedUser.user_role_id
+            );
 
-        //                         // Handle the response data as needed
-        //                         console.log(
-        //                             "API Response for KPI Metric Member with departments:",
-        //                             response.data
-        //                         );
-        //                         member_kpi.push(response.data);
-        //                     }
+            if (
+                store.state.loggedUser.user_role_id === 1 ||
+                store.state.loggedUser.user_role_id === 3
+            ) {
+                for (let kpi of this.partner.kpis) {
+                    console.log(
+                        "The kpi metric new is: " + JSON.stringify(kpi)
+                    );
 
-        //                     // const new_member_kpi = {
-        //                     //     "member_and_department": member_kpi
-        //                     //    };
+                    for (let kpiMetric1 of kpi.kpi_metrics) {
+                        let kpi_metric_members1 = kpiMetric1.kpi_metric_members;
+                        let member_kpi = [];
 
-        //                     kpiMetric1.member_and_department = member_kpi;
-        //                     console.log(
-        //                         "New API Response for KPI Metric Member departments:",
-        //                         JSON.stringify(kpiMetric1)
-        //                     );
-        //                 }
-        //             }
-        //         } catch (error) {
-        //             console.error("Error fetching Kpi metric members:", error);
-        //         }
-        //     }
-        // },
+                        for (let member1 of kpi_metric_members1) {
+                            const memberKpiId = member1.member_id;
+                            const member = this.partner.members.find(
+                                (m) => m.id === memberKpiId
+                            );
+
+                            if (member) {
+                                member_kpi.push({
+                                    ...member,
+                                    departments: member.departments,
+                                });
+                            }
+                        }
+
+                        kpiMetric1.member_and_department = member_kpi;
+                        console.log(
+                            "New member and department data for KPI Metric:",
+                            JSON.stringify(kpiMetric1)
+                        );
+                    }
+                }
+            }
+        },
 
         // async fetchKpiMetricUserMembers(new_kpis) {
         //     try {
