@@ -88,7 +88,7 @@
                 <div id="progress" v-if="currentPage === 1">
                     <!-- Progress content -->
                     <div class="d-flex align-items-center">
-                        <img :src="partner.logo" alt="logo" />
+                        <img :src="getPartnerLogo()" alt="logo" />
                         <span class="pl-2"
                             >{{ partner.name }} <br />
                             {{ formattedDate }}</span
@@ -3407,6 +3407,11 @@ export default {
                     }
                 }
             }
+        },
+
+        getPartnerLogo() {
+            console.log("Logo to be displayed", this.partner.logo);
+            return this.partner.logo;
         },
 
         // async fetchKpiMetricUserMembers(new_kpis) {
