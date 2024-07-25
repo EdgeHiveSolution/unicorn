@@ -355,19 +355,17 @@
                                                     >
                                                     <p class="member_image_text">+1</p>
                                                     </div>-->
-
                                                         <template
                                                             v-for="(
                                                                 member, index
-                                                            ) in this.partner
-                                                                .members"
+                                                            ) in membersInKpiMetric"
                                                             :key="index"
                                                         >
                                                             <div
                                                                 class="member_image d-flex flex-column align-items-center"
-                                                                v-if="index < 3"
+                                                                v-if="index < 4"
                                                                 :src="
-                                                                    member.image
+                                                                    member.photo
                                                                 "
                                                             >
                                                                 <font-awesome-icon
@@ -380,14 +378,19 @@
                                                                 />
                                                                 <!--<p class="member_image_text">+1</p>-->
                                                             </div>
-
-                                                            <!-- <div class="member_image_plus"
-                                                    v-for="member in partner.members"
-                                                    :key="member.id"
-                                                    :src="member.image"
-                                                    >
-                                                    <p class="member_image_text">+1</p>
-                                                    </div>-->
+                                                            <div
+                                                                class="member_image_plus"
+                                                                v-else
+                                                            >
+                                                                <p
+                                                                    class="member_image_text"
+                                                                >
+                                                                    +{{
+                                                                        membersInKpiMetric.length -
+                                                                        4
+                                                                    }}
+                                                                </p>
+                                                            </div>
                                                         </template>
 
                                                         <div
@@ -459,10 +462,10 @@
                                                 <td>
                                                     <span
                                                         class="depart-tag"
-                                                        v-for="department in uniqueDepartments"
-                                                        :key="department.id"
+                                                        v-for="department in uniqueDepartments3.uniqueDepartments"
+                                                        :key="department"
                                                     >
-                                                        {{ department.name }}
+                                                        {{ department }}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -1363,50 +1366,59 @@
                                                         <div
                                                             class="d-flex flex-row"
                                                         >
-                                                        
-                                                          <template
-                                                                v-for="(
-                                                                    member,
-                                                                    index
-                                                                ) in kpimetric.member_and_department"
-                                                                :key="index"
-                                                            >   
-                                                                <div
-                                                                    class="member_image d-flex flex-column align-items-center"
-                                                                    v-if="index < 4"
-                                                                    :src="
-                                                                        member.image
-                                                                    "
+                                                            <template>
+                                                                <td
+                                                                    class="td-members"
                                                                 >
-                                                                    <font-awesome-icon
-                                                                        icon="fa-solid, fa-user"
-                                                                        style="
-                                                                            color: #979da9;
-                                                                        "
-                                                                        size="md"
-                                                                        class="mx-auto my-auto"
-                                                                    />
-                                                                    <!--<p class="member_image_text">+1</p>-->
-                                                                </div>
-                                                                 <div
-                                                                class="member_image_plus"
-                                                                v-else 
-                                                            >
-                                                                <p
-                                                                    class="member_image_text"
-                                                                >
-                                                                    +{{
-                                                                        kpimetric.member_and_department.length -
-                                                                        4
-                                                                    }}
-                                                                </p>
-                                                            </div>
-
-                                                                
-
-                                                        
+                                                                    <div
+                                                                        class="d-flex flex-row"
+                                                                    >
+                                                                        <template
+                                                                            v-for="(
+                                                                                member,
+                                                                                index
+                                                                            ) in membersInKpiMetric"
+                                                                            :key="
+                                                                                index
+                                                                            "
+                                                                        >
+                                                                            <div
+                                                                                class="member_image d-flex flex-column align-items-center"
+                                                                                v-if="
+                                                                                    index <
+                                                                                    4
+                                                                                "
+                                                                                :src="
+                                                                                    member.photo
+                                                                                "
+                                                                            >
+                                                                                <font-awesome-icon
+                                                                                    icon="fa-solid, fa-user"
+                                                                                    style="
+                                                                                        color: #979da9;
+                                                                                    "
+                                                                                    size="md"
+                                                                                    class="mx-auto my-auto"
+                                                                                />
+                                                                                <!--<p class="member_image_text">+1</p>-->
+                                                                            </div>
+                                                                            <div
+                                                                                class="member_image_plus"
+                                                                                v-else
+                                                                            >
+                                                                                <p
+                                                                                    class="member_image_text"
+                                                                                >
+                                                                                    +{{
+                                                                                        membersInKpiMetric.length -
+                                                                                        4
+                                                                                    }}
+                                                                                </p>
+                                                                            </div>
+                                                                        </template>
+                                                                    </div>
+                                                                </td>
                                                             </template>
-                                                           
                                                         </div>
                                                         <!-- <div
                                                             class="d-flex flex-row"
@@ -1461,22 +1473,13 @@
                                                     </td>
 
                                                     <td>
-                                                        <template
-                                                            v-for="dataDepartment in partnersWithProgress"
-                                                            :key="
-                                                                dataDepartment.id
-                                                            "
+                                                        <span
+                                                            class="department-tag"
+                                                            v-for="department in uniqueDepartments3.uniqueDepartments"
+                                                            :key="department"
                                                         >
-                                                            <span
-                                                                class="department-tag"
-                                                                v-for="department in dataDepartment.uniqueDepartments"
-                                                                :key="
-                                                                    department
-                                                                "
-                                                            >
-                                                                {{ department }}
-                                                            </span>
-                                                        </template>
+                                                            {{ department }}
+                                                        </span>
                                                     </td>
 
                                                     <td>
@@ -1597,8 +1600,9 @@
 
                                                  > -->
                                                 <tr
-                                                    v-for="kpimetric in filterKpiMetricsByView(kpi.kpi_metrics)"
-                                            
+                                                    v-for="kpimetric in filterKpiMetricsByView(
+                                                        kpi.kpi_metrics
+                                                    )"
                                                     :key="kpimetric.id"
                                                 >
                                                     <td>
@@ -1703,22 +1707,13 @@
                                                 />-->
                                                     </td>
                                                     <td>
-                                                        <template
-                                                            v-for="dataDepartment in partnersWithProgress"
-                                                            :key="
-                                                                dataDepartment.id
-                                                            "
+                                                        <span
+                                                            class="department-tag"
+                                                            v-for="department in uniqueDepartments2"
+                                                            :key="department"
                                                         >
-                                                            <span
-                                                                class="department-tag"
-                                                                v-for="department in dataDepartment.uniqueDepartments"
-                                                                :key="
-                                                                    department
-                                                                "
-                                                            >
-                                                                {{ department }}
-                                                            </span>
-                                                        </template>
+                                                            {{ department }}
+                                                        </span>
                                                     </td>
 
                                                     <td>
@@ -2574,7 +2569,7 @@ export default {
     },
 
     computed: {
-         userKPIs() {
+        userKPIs() {
             const memberId = this.$store.state.loggedUser.member.id;
 
             const member = this.partner.members.find((m) => m.id === memberId);
@@ -2589,6 +2584,67 @@ export default {
                     (metric) => metric.kpi_id === kpi.id
                 ),
             }));
+        },
+
+        uniqueDepartments2() {
+            const memberId = this.$store.state.loggedUser.member.id;
+
+            const member = this.partner.members.find((m) => m.id === memberId);
+
+            if (!member) {
+                return [];
+            }
+
+            // Extract unique departments from KPIs
+            const departments = member.kpis.map((kpi) => kpi.title);
+            return [...new Set(departments)];
+        },
+
+        uniqueDepartments3() {
+            // Extract KPI titles
+            const kpiTitles = this.partner.kpis.map((kpi) => kpi.title);
+
+            // Extract unique departments for kpi_metrics
+            const departments = new Set();
+
+            this.partner.kpis.forEach((kpi) => {
+                kpi.kpi_metrics.forEach((metric) => {
+                    metric.kpi_metric_members.forEach((metricMember) => {
+                        const member = this.partner.members.find(
+                            (m) => m.id === metricMember.member_id
+                        );
+                        if (member) {
+                            member.departments.forEach((department) => {
+                                departments.add(department.name);
+                            });
+                        }
+                    });
+                });
+            });
+
+            return {
+                kpiTitles: [...new Set(kpiTitles)],
+                uniqueDepartments: Array.from(departments),
+            };
+        },
+
+        membersInKpiMetric() {
+            const members = new Set();
+
+            this.partner.kpis.forEach((kpi) => {
+                kpi.kpi_metrics.forEach((metric) => {
+                    metric.kpi_metric_members.forEach((metricMember) => {
+                        const member = this.partner.members.find(
+                            (m) => m.id === metricMember.member_id
+                        );
+                        if (member) {
+                            members.add(member);
+                        }
+                    });
+                });
+            });
+
+            return Array.from(members);
         },
 
         isKpiMetricMembersEmpty() {
@@ -2751,6 +2807,8 @@ export default {
 
         partnersWithProgress() {
             const partner = this.partner;
+
+            console.log("This partner containes what", partner);
 
             if (!partner) {
                 return []; // Return an empty array if partner is not available
@@ -3076,7 +3134,7 @@ export default {
         await this.fetchCountries();
         await this.fetchDepartments();
         await this.fetchMembers();
-        await this.fetchKpiMetricMembers();
+        //await this.fetchKpiMetricMembers();
 
         this.formattedDate = format(
             new Date(this.partner.created_at),
@@ -3201,7 +3259,6 @@ export default {
     mounted() {
         this.fetchPartnerMembers();
         this.fetchPartnerMemberswithKpis();
-       
 
         const partnerId = this.partnerId;
 
@@ -3340,93 +3397,98 @@ export default {
             });
         },
 
-         async fetchKpiMetricMembers(){
-            console.log("the logged user role id: ",store.state.loggedUser.user_role_id);
-            if((store.state.loggedUser.user_role_id===1) || (store.state.loggedUser.user_role_id===3)){
-               
-               try{
-           
-            for(let kpi of this.partner.kpis){
-                  console.log("The kpi metric new is: " + JSON.stringify(kpi));
-                  for(let kpiMetric1 of kpi.kpi_metrics){
-                   let kpi_metric_members1 = kpiMetric1.kpi_metric_members;
-                   let member_kpi = [];
-                   for(let member1 of kpi_metric_members1){
-                    const memberKpiId = member1.member_id;
-                    const uri =  this.base_url +`api/v1/members/${memberKpiId}/members-and-departments`;
-                       const response = await axios.get(uri);
+        // async fetchKpiMetricMembers() {
+        //     console.log(
+        //         "the logged user role id: ",
+        //         store.state.loggedUser.user_role_id
+        //     );
+        //     if (
+        //         store.state.loggedUser.user_role_id === 1 ||
+        //         store.state.loggedUser.user_role_id === 3
+        //     ) {
+        //         try {
+        //             for (let kpi of this.partner.kpis) {
+        //                 console.log(
+        //                     "The kpi metric new is: " + JSON.stringify(kpi)
+        //                 );
+        //                 for (let kpiMetric1 of kpi.kpi_metrics) {
+        //                     let kpi_metric_members1 =
+        //                         kpiMetric1.kpi_metric_members;
+        //                     let member_kpi = [];
+        //                     for (let member1 of kpi_metric_members1) {
+        //                         const memberKpiId = member1.member_id;
+        //                         const uri =
+        //                             this.base_url +
+        //                             `api/v1/members/${memberKpiId}/members-and-departments`;
+        //                         const response = await axios.get(uri);
 
-                        // Handle the response data as needed
-                        console.log(
-                            "API Response for KPI Metric Member with departments:",
-                            response.data
-                        );
-                       member_kpi.push(response.data); 
-                   }
+        //                         // Handle the response data as needed
+        //                         console.log(
+        //                             "API Response for KPI Metric Member with departments:",
+        //                             response.data
+        //                         );
+        //                         member_kpi.push(response.data);
+        //                     }
 
-                    // const new_member_kpi = {
-                    //     "member_and_department": member_kpi
-                    //    };
-                    
-                    kpiMetric1.member_and_department = member_kpi;
-                    console.log( "New API Response for KPI Metric Member departments:",
-                        JSON.stringify(kpiMetric1)
-                    );
+        //                     // const new_member_kpi = {
+        //                     //     "member_and_department": member_kpi
+        //                     //    };
 
-                  }
-                  
-            }
-           }
+        //                     kpiMetric1.member_and_department = member_kpi;
+        //                     console.log(
+        //                         "New API Response for KPI Metric Member departments:",
+        //                         JSON.stringify(kpiMetric1)
+        //                     );
+        //                 }
+        //             }
+        //         } catch (error) {
+        //             console.error("Error fetching Kpi metric members:", error);
+        //         }
+        //     }
+        // },
 
-           catch (error) {
-                console.error("Error fetching Kpi metric members:", error);
-            }
-            }
-           
-        },
+        // async fetchKpiMetricUserMembers(new_kpis) {
+        //     try {
+        //         for (let kpi of new_kpis) {
+        //             console.log(
+        //                 "The kpi metric new is: " + JSON.stringify(kpi)
+        //             );
+        //             for (let kpiMetric1 of kpi.kpi_metrics) {
+        //                 let kpi_metric_members1 = kpiMetric1.kpi_metric_members;
+        //                 let member_kpi = [];
+        //                 for (let member1 of kpi_metric_members1) {
+        //                     const memberKpiId = member1.member_id;
+        //                     const uri =
+        //                         this.base_url +
+        //                         `api/v1/members/${memberKpiId}/members-and-departments`;
+        //                     const response = await axios.get(uri);
 
-        async fetchKpiMetricUserMembers(new_kpis){
-           try{
+        //                     // Handle the response data as needed
+        //                     console.log(
+        //                         "API Response for KPI Metric Member with departments:",
+        //                         response.data
+        //                     );
+        //                     member_kpi.push(response.data);
+        //                 }
 
-            for(let kpi of new_kpis){
-                  console.log("The kpi metric new is: " + JSON.stringify(kpi));
-                  for(let kpiMetric1 of kpi.kpi_metrics){
-                   let kpi_metric_members1 = kpiMetric1.kpi_metric_members;
-                   let member_kpi = [];
-                   for(let member1 of kpi_metric_members1){
-                    const memberKpiId = member1.member_id;
-                    const uri =  this.base_url +`api/v1/members/${memberKpiId}/members-and-departments`;
-                       const response = await axios.get(uri);
+        //                 // const new_member_kpi = {
+        //                 //     "member_and_department": member_kpi
+        //                 //    };
 
-                        // Handle the response data as needed
-                        console.log(
-                            "API Response for KPI Metric Member with departments:",
-                            response.data
-                        );
-                       member_kpi.push(response.data); 
-                   }
+        //                 kpiMetric1.member_and_department = member_kpi;
+        //                 console.log(
+        //                     "New API User response:",
+        //                     JSON.stringify(kpiMetric1)
+        //                 );
+        //             }
+        //         }
 
-                    // const new_member_kpi = {
-                    //     "member_and_department": member_kpi
-                    //    };
-                    
-                    kpiMetric1.member_and_department = member_kpi;
-                    console.log( "New API User response:",
-                        JSON.stringify(kpiMetric1)
-                    );
-
-                  }
-                  
-            }
-
-            return new_kpis;
-           }
-
-           catch (error) {
-                console.error("Error fetching Kpi metric members:", error);
-                return [];
-            }
-        },
+        //         return new_kpis;
+        //     } catch (error) {
+        //         console.error("Error fetching Kpi metric members:", error);
+        //         return [];
+        //     }
+        // },
 
         // Inside your Vue.js component method (e.g., fetchMembers)
         // async fetchMembers() {
@@ -3472,9 +3534,11 @@ export default {
             );
         },
 
-       filterKpiMetricsByView(kpimetrics){
-        return kpimetrics.filter((kpiMetric) => this.canViewActivity(kpiMetric));
-       },
+        filterKpiMetricsByView(kpimetrics) {
+            return kpimetrics.filter((kpiMetric) =>
+                this.canViewActivity(kpiMetric)
+            );
+        },
         //         canViewKpiActivity(kpi) {
 
         //      const memberId = this.$store.state.loggedUser.member.id;
@@ -3797,8 +3861,6 @@ export default {
                 console.error("Error fetching KPI Metrics:", error);
             }
         },
-
-    
 
         toggleDateInputs(kpiId) {
             this.showInputs[kpiId] = !this.showInputs[kpiId];
